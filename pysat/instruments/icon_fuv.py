@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Supports the Extreme Ultraviolet (EUV) imager onboard the Ionospheric
+"""Supports the Far Ultraviolet (FUV) imager onboard the Ionospheric
 CONnection Explorer (ICON) satellite.  Accesses local data in
 netCDF format.
 
@@ -8,7 +8,7 @@ Parameters
 platform : string
     'icon'
 name : string
-    'euv'
+    'fuv'
 tag : string
     None supported
 
@@ -17,10 +17,19 @@ Warnings
 - The cleaning parameters for the instrument are still under development.
 - Only supports level-2 data.
 
+Example
+-------
+    import pysat
+    fuv = pysat.Instrument('icon', 'fuv', clean_level='clean')
+    fuv.download(pysat.datetime(2019, 1, 30), pysat.datetime(2019, 12, 31))
+    fuv.load(2017,363)
+
 Authors
 ---------
+Originated from EUV support.
 Jeff Klenzing, Mar 17, 2018, Goddard Space Flight Center
 Russell Stoneback, Mar 23, 2018, University of Texas at Dallas
+Conversion to FUV, Oct 8th, 2028, University of Texas at Dallas
 
 """
 
@@ -33,11 +42,10 @@ import pandas as pds
 import warnings
 
 import pysat
-from .methods import nasa_cdaweb as cdw
 
 
 platform = 'icon'
-name = 'euv'
+name = 'fuv'
 tags = {'level_2': 'Level 2 public geophysical data'}
 sat_ids = {'': ['level_2']}
 test_dates = {'': {'level_2': pysat.datetime(2017, 5, 27)}}
@@ -59,9 +67,46 @@ def init(self):
         modified in-place, as desired.
 
     """
+
     print("Mission acknowledgements and data restrictions will be printed " +
           "here when available.")
+
     pass
+
+
+def clean(inst, clean_level=None):
+    """Provides data cleaning based upon clean_level.
+
+    clean_level is set upon Instrument instantiation to
+    one of the following:
+
+    'Clean'
+    'Dusty'
+    'Dirty'
+    'None'
+
+    Routine is called by pysat, and not by the end user directly.
+
+    Parameters
+    -----------
+    inst : (pysat.Instrument)
+        Instrument class object, whose attribute clean_level is used to return
+        the desired level of data selectivity.
+
+    Returns
+    --------
+    Void : (NoneType)
+        data in inst is modified in-place.
+
+    Note
+    ----
+        Supports 'clean', 'dusty', 'dirty', 'none'
+
+    """
+
+    if clean_level != 'none':
+        warnings.warn("Cleaning actions for ICON FUV are not yet defined.")
+    return
 
 
 def default(inst):
@@ -80,11 +125,11 @@ def default(inst):
 
     import pysat.instruments.icon_ivm as icivm
     inst.tag = 'level_2'
-    icivm.remove_icon_names(inst, target='ICON_L2_EUV_Daytime_OP_')
+    icivm.remove_icon_names(inst, target='ICON_L2_FUV_Daytime_ON2_')
 
 
 def load(fnames, tag=None, sat_id=None):
-    """Loads ICON EUV data using pysat into pandas.
+    """Loads ICON FUV data using pysat into pandas.
 
     This routine is called as needed by pysat. It is not intended
     for direct user interaction.
@@ -119,12 +164,12 @@ def load(fnames, tag=None, sat_id=None):
     Examples
     --------
     ::
-        inst = pysat.Instrument('icon', 'euv', sat_id='a', tag='level_2')
+        inst = pysat.Instrument('icon', 'fuv')
         inst.load(2019,1)
 
     """
 
-    return pysat.utils.load_netcdf4(fnames, epoch_name='Epoch',
+    return pysat.utils.load_netcdf4(fnames, epoch_name='EPOCH',
                                     units_label='Units',
                                     name_label='Long_Name',
                                     notes_label='Var_Notes',
@@ -138,7 +183,7 @@ def load(fnames, tag=None, sat_id=None):
 
 
 def list_files(tag=None, sat_id=None, data_path=None, format_str=None):
-    """Produce a list of files corresponding to ICON EUV.
+    """Produce a list of files corresponding to ICON FUV.
 
     This routine is invoked by pysat and is not intended for direct use by
     the end user.
@@ -182,8 +227,6 @@ def list_files(tag=None, sat_id=None, data_path=None, format_str=None):
     rest discarded. This routine uses the pysat.Files.from_os constructor, thus
     the returned files are up to pysat specifications.
 
-    Currently fixed to level-2
-
     """
 
     desc = None
@@ -198,7 +241,7 @@ def list_files(tag=None, sat_id=None, data_path=None, format_str=None):
         raise ValueError('Unsupported level supplied: ' + level)
 
     if format_str is None:
-        format_str = 'ICON_'+code+'_EUV_Daytime'
+        format_str = 'ICON_'+code+'_FUV_Daytime-ON2'
         if desc is not None:
             format_str += '_' + desc + '_'
         format_str += '_{year:4d}-{month:02d}-{day:02d}'
@@ -210,7 +253,7 @@ def list_files(tag=None, sat_id=None, data_path=None, format_str=None):
 
 def download(date_array, tag, sat_id, data_path=None, user=None,
              password=None):
-    """Will download data for ICON EUV, after successful launch and operations.
+    """Will download data for ICON FUV, after successful launch and operations.
 
     Parameters
     ----------
@@ -243,40 +286,7 @@ def download(date_array, tag, sat_id, data_path=None, user=None,
 
 
     """
-    warnings.warn("ICON hasn't launched yet.")
 
-    return
+    warnings.warn("Downloads aren't yet available.")
 
-def clean(inst, clean_level=None):
-    """Provides data cleaning based upon clean_level.
-
-    clean_level is set upon Instrument instantiation to
-    one of the following:
-
-    'Clean'
-    'Dusty'
-    'Dirty'
-    'None'
-
-    Routine is called by pysat, and not by the end user directly.
-
-    Parameters
-    -----------
-    inst : (pysat.Instrument)
-        Instrument class object, whose attribute clean_level is used to return
-        the desired level of data selectivity.
-
-    Returns
-    --------
-    Void : (NoneType)
-        data in inst is modified in-place.
-
-    Note
-    ----
-        Supports 'clean', 'dusty', 'dirty', 'none'
-
-    """
-
-    if clean_level != 'none':
-        warnings.warn("Cleaning actions for ICON EUV are not yet defined.")
     return
