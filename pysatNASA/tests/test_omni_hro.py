@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pds
 
 import pysat
-from pysat.instruments import omni_hro
+from pysatNASA.instruments import omni_hro
 
 
 class TestOMNICustom():

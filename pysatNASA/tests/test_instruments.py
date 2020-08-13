@@ -1,7 +1,7 @@
 import pytest
 
 # Make sure to import your instrument library here
-import pysat
+import pysatNASA
 # Import the test classes from pysat
 from pysat.tests.instrument_test_class import generate_instrument_list
 from pysat.tests.instrument_test_class import InstTestClass
@@ -10,7 +10,7 @@ from pysat.tests.instrument_test_class import InstTestClass
 # point to their own library package
 # e.g.,
 # instruments = generate_instrument_list(package=mypackage.instruments)
-instruments = generate_instrument_list(package=pysat.instruments)
+instruments = generate_instrument_list(package=pysatNASA.instruments)
 
 # The following lines apply the custom instrument lists to each type of test
 method_list = [func for func in dir(InstTestClass)
@@ -41,7 +41,7 @@ class TestInstruments(InstTestClass):
         # Developers for instrument libraries should update the following line
         # to point to their own library package, e.g.,
         # self.package = mypackage.instruments
-        self.package = pysat.instruments
+        self.package = pysatNASA.instruments
 
     def teardown(self):
         """Runs after every method to clean up previous testing."""

@@ -4,7 +4,7 @@ import requests
 import pytest
 
 import pysat
-from pysat.instruments.methods import nasa_cdaweb as cdw
+from pysatNASA.instruments.methods import cdaweb as cdw
 
 
 class TestCDAWeb():
