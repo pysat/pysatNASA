@@ -3,7 +3,7 @@ import pysat
 Creates a constellation from NASA ICON instrumentation
 """
 
-
+# FIXME: syntax has changed since this was written.  Not imported
 ivm = pysat.Instrument('icon', 'ivm', sat_id='a', tag='level_2',
                        clean_level='clean', update_files=True)
 euv = pysat.Instrument('icon', 'euv', sat_id='', tag='level_2',
