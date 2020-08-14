@@ -47,7 +47,7 @@ import logging
 
 import pysat
 from pysat.instruments.methods import general as mm_gen
-from pysat.instruments.methods import icon as mm_icon
+from pysatNASA.instruments.methods import icon as mm_icon
 
 
 logger = logging.getLogger(__name__)

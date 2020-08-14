@@ -42,7 +42,7 @@ import functools
 import logging
 
 from pysat.instruments.methods import general as mm_gen
-from pysat.instruments.methods import nasa_cdaweb as cdw
+from pysatNASA.instruments.methods import cdaweb as cdw
 
 logger = logging.getLogger(__name__)
 
