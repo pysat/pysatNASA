@@ -44,6 +44,6 @@ Another way to use the instruments in an external repository is to register the 
 ```
 import pysat
 
-pysat.utils.registry.register(pysatNASA.instruments.icon_ivm)
+pysat.utils.registry.register('pysatNASA.instruments.icon_ivm')
 ivm = pysat.Instrument('icon', 'ivm', sat_id='a')
 ```
