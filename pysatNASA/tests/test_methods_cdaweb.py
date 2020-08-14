@@ -3,7 +3,7 @@ import requests
 
 import pytest
 
-import pysat
+import pysatNASA
 from pysatNASA.instruments.methods import cdaweb as cdw
 
 
@@ -11,7 +11,7 @@ class TestCDAWeb():
 
     def setup(self):
         """Runs before every method to create a clean testing setup."""
-        self.supported_tags = pysat.instruments.cnofs_plp.supported_tags
+        self.supported_tags = pysatNASA.instruments.cnofs_plp.supported_tags
         self.kwargs = {'tag': None, 'sat_id': None}
 
     def teardown(self):
