@@ -1,0 +1,13 @@
+include *.py
+include *.f
+include *.c
+recursive-include pysatNASA *.py
+include *.md
+include description.txt
+include LICENSE
+include pysatNASA/version.txt
+prune pysatNASA/tests
+prune docs
+prune demo
+exclude *.pdf
+exclude *.png
