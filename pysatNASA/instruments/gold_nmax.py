@@ -50,8 +50,8 @@ def init(self):
     """
 
     pysat.logger.info(mm_gold.ack_str)
-    self.meta.acknowledgements = mm_gold.ack_str
-    self.meta.references = mm_gold.ref_str
+    self.acknowledgements = mm_gold.ack_str
+    self.references = mm_gold.ref_str
 
     pass
 
