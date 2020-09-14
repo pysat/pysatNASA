@@ -142,5 +142,5 @@ def clean(inst):
 
     """
 
-    warnings.warn("Cleaning actions for GOLD Nmax are not yet defined.")
+    warnings.warn("Cleaning actions for GOLD Nmax are not yet implemented.")
     return
