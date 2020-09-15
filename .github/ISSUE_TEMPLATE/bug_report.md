@@ -28,7 +28,7 @@ If applicable, add screenshots to help explain your problem.
 
 **Desktop (please complete the following information):**
  - OS: [e.g. iOS]
- - Version [e.g. 22]
+ - Version [e.g. Python 3.7]
  - Other details about your setup that could be relevant
 
 **Additional context**
