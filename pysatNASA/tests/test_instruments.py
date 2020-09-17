@@ -9,8 +9,8 @@ from pysat.tests.instrument_test_class import InstTestClass
 # Developers for instrument libraries should update the following line to
 # point to their own library package
 # e.g.,
-# instruments = generate_instrument_list(package=mypackage.instruments)
-instruments = generate_instrument_list(package=pysatNASA.instruments)
+# instruments = generate_instrument_list(inst_loc=mypackage.instruments)
+instruments = generate_instrument_list(inst_loc=pysatNASA.instruments)
 
 # The following lines apply the custom instrument lists to each type of test
 method_list = [func for func in dir(InstTestClass)
@@ -27,10 +27,11 @@ for method in method_list:
             mark = pytest.mark.parametrize("name", instruments['names'])
             getattr(InstTestClass, method).pytestmark.append(mark)
         elif 'download' in names:
-            mark = pytest.mark.parametrize("inst", instruments['download'])
+            mark = pytest.mark.parametrize("inst_dict", instruments['download'])
             getattr(InstTestClass, method).pytestmark.append(mark)
         elif 'no_download' in names:
-            mark = pytest.mark.parametrize("inst", instruments['no_download'])
+            mark = pytest.mark.parametrize("inst_dict",
+                                           instruments['no_download'])
             getattr(InstTestClass, method).pytestmark.append(mark)
 
 
@@ -40,9 +41,9 @@ class TestInstruments(InstTestClass):
         """Runs before every method to create a clean testing setup."""
         # Developers for instrument libraries should update the following line
         # to point to their own library package, e.g.,
-        # self.package = mypackage.instruments
-        self.package = pysatNASA.instruments
+        # self.inst_loc = mypackage.instruments
+        self.inst_loc = pysatNASA.instruments
 
     def teardown(self):
         """Runs after every method to clean up previous testing."""
-        del self.package
+        del self.inst_loc
