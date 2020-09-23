@@ -36,7 +36,7 @@ platform
     'de2'
 name
     'lang'
-sat_id
+inst_id
     None Supported
 tag
     None Supported
@@ -61,7 +61,7 @@ platform = 'de2'
 name = 'lang'
 
 tags = {'': '500 ms cadence Langmuir Probe data'}
-sat_ids = {'': ['']}
+inst_ids = {'': ['']}
 _test_dates = {'': {'': dt.datetime(1983, 1, 1)}}
 
 fname = 'de2_plasma500ms_lang_{year:04d}{month:02d}{day:02d}_v01.cdf'

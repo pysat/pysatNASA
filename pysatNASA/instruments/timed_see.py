@@ -15,7 +15,7 @@ name
     'see'
 tag
     None
-sat_id
+inst_id
     None supported
 flatten_twod
     If True, then two dimensional data is flattened across
@@ -50,7 +50,7 @@ logger = logging.getLogger(__name__)
 platform = 'timed'
 name = 'see'
 tags = {'': ''}
-sat_ids = {'': ['']}
+inst_ids = {'': ['']}
 _test_dates = {'': {'': dt.datetime(2009, 1, 1)}}
 
 
