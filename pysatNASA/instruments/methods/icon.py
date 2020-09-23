@@ -283,7 +283,8 @@ def ssl_download(date_array, tag, inst_id, data_path=None,
     """
 
     # get a list of remote files
-    remote_files = list_remote_files(tag, inst_id, supported_tags=supported_tags,
+    remote_files = list_remote_files(tag, inst_id,
+                                     supported_tags=supported_tags,
                                      start=date_array[0], stop=date_array[-1])
 
     # connect to CDAWeb default port

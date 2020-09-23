@@ -58,7 +58,7 @@ tags = {'': 'Level 2 public geophysical data'}
 # is not available as of Jun 26 2020, as this mode has not yet been engaged.
 # Bypassing tests and warning checks via the password_req flag
 inst_ids = {'a': [''],
-           'b': ['']}
+            'b': ['']}
 _test_dates = {'a': {'': dt.datetime(2020, 1, 1)},
                'b': {'': dt.datetime(2020, 1, 1)}}  # IVM-B not yet engaged
 _test_download_travis = {'a': {kk: False for kk in tags.keys()}}

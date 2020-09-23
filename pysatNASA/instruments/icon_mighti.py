@@ -68,8 +68,8 @@ tags = {'los_wind_green': 'Line of sight wind data -- Green Line',
         'vector_wind_red': 'Vector wind data -- Red Line',
         'temperature': 'Neutral temperature data'}
 inst_ids = {'': ['vector_wind_green', 'vector_wind_red'],
-           'a': ['los_wind_green', 'los_wind_red', 'temperature'],
-           'b': ['los_wind_green', 'los_wind_red', 'temperature']}
+            'a': ['los_wind_green', 'los_wind_red', 'temperature'],
+            'b': ['los_wind_green', 'los_wind_red', 'temperature']}
 _test_dates = {jj: {kk: dt.datetime(2020, 1, 2) for kk in inst_ids[jj]}
                for jj in inst_ids.keys()}
 _test_download_travis = {jj: {kk: False for kk in inst_ids[jj]}
