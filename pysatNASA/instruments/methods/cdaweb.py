@@ -80,20 +80,32 @@ def load(fnames, tag=None, sat_id=None,
         # pysat than you may initially think
 
         if fake_daily_files_from_monthly:
-            # parse out date from filename
-            fname = fnames[0][0:-11]
-            date = dt.datetime.strptime(fnames[0][-10:], '%Y-%m-%d')
-            with pysatCDF.CDF(fname) as cdf:
-                # convert data to pysat format
-                data, meta = cdf.to_pysat(flatten_twod=flatten_twod)
-                # select data from monthly
-                data = data.loc[date:date + pds.DateOffset(days=1)
-                                - pds.DateOffset(microseconds=1), :]
-                return data, meta
+            ldata = []
+            for lfname in fnames:
+                # parse out date from filename
+                fname = lfname[0:-11]
+                # get date from rest of filename
+                date = dt.datetime.strptime(lfname[-10:], '%Y-%m-%d')
+                with pysatCDF.CDF(fname) as cdf:
+                    # convert data to pysat format
+                    data, meta = cdf.to_pysat(flatten_twod=flatten_twod)
+                    # select data from monthly down to daily
+                    data = data.loc[date:date + pds.DateOffset(days=1)
+                                    - pds.DateOffset(microseconds=1), :]
+                    ldata.append(data)
+            # combine individually loaded files together
+            data = pds.concat(ldata)
+            return data, meta
         else:
             # basic data return
-            with pysatCDF.CDF(fnames[0]) as cdf:
-                return cdf.to_pysat(flatten_twod=flatten_twod)
+            data = []
+            for fname in fnames:
+                with pysatCDF.CDF(fname) as cdf:
+                    temp_data, meta = cdf.to_pysat(flatten_twod=flatten_twod)
+                    data.append(temp_data)
+            # combine individual files together
+            data = pds.concat(data)
+            return data, meta
 
 
 def download(supported_tags, date_array, tag, sat_id,
