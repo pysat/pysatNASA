@@ -167,13 +167,14 @@ def default(inst):
 
 def remove_preamble(inst):
     """Removes preambles in variable names"""
+    id_str = inst.inst_id.upper()
 
     target = {'los_wind_green': 'ICON_L21_',
               'los_wind_red': 'ICON_L21_',
               'vector_wind_green': 'ICON_L22_',
               'vector_wind_red': 'ICON_L22_',
-              'temperature': ['ICON_L1_MIGHTI_{}_'.format(inst.inst_id.upper()),
-                              'ICON_L23_MIGHTI_{}_'.format(inst.inst_id.upper()),
+              'temperature': ['ICON_L1_MIGHTI_{}_'.format(id_str),
+                              'ICON_L23_MIGHTI_{}_'.format(id_str),
                               'ICON_L23_']}
     mm_gen.remove_leading_text(inst, target=target[inst.tag])
 
