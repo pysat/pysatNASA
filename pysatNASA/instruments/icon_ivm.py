@@ -11,7 +11,7 @@ name
     'ivm'
 tag
     None supported
-sat_id
+inst_id
     'a' or 'b'
 
 Example
@@ -19,7 +19,7 @@ Example
 ::
 
     import pysat
-    ivm = pysat.Instrument(platform='icon', name='ivm', sat_id='a')
+    ivm = pysat.Instrument(platform='icon', name='ivm', inst_id='a')
     ivm.download(dt.datetime(2020, 1, 1), dt.datetime(2020, 1, 31))
     ivm.load(2020, 1)
 
@@ -27,7 +27,7 @@ By default, pysat removes the ICON level tags from variable names, ie,
 ICON_L27_Ion_Density becomes Ion_Density.  To retain the original names, use
 ::
 
-    ivm = pysat.Instrument(platform='icon', name='ivm', sat_id='a',
+    ivm = pysat.Instrument(platform='icon', name='ivm', inst_id='a',
                            keep_original_names=True)
 
 Author
@@ -57,8 +57,8 @@ tags = {'': 'Level 2 public geophysical data'}
 # northward, and IVM-B when the remote instruments face southward. IVM-B data
 # is not available as of Jun 26 2020, as this mode has not yet been engaged.
 # Bypassing tests and warning checks via the password_req flag
-sat_ids = {'a': [''],
-           'b': ['']}
+inst_ids = {'a': [''],
+            'b': ['']}
 _test_dates = {'a': {'': dt.datetime(2020, 1, 1)},
                'b': {'': dt.datetime(2020, 1, 1)}}  # IVM-B not yet engaged
 _test_download_travis = {'a': {kk: False for kk in tags.keys()}}
@@ -126,7 +126,7 @@ def default(inst):
         mm_gen.remove_leading_text(inst, target='ICON_L27_')
 
 
-def load(fnames, tag=None, sat_id=None, keep_original_names=False):
+def load(fnames, tag=None, inst_id=None, keep_original_names=False):
     """Loads ICON IVM data using pysat into pandas.
 
     This routine is called as needed by pysat. It is not intended
@@ -140,7 +140,7 @@ def load(fnames, tag=None, sat_id=None, keep_original_names=False):
     tag : string
         tag name used to identify particular data set to be loaded.
         This input is nominally provided by pysat itself.
-    sat_id : string
+    inst_id : string
         Satellite ID used to identify particular data set to be loaded.
         This input is nominally provided by pysat itself.
     keep_original_names : boolean
@@ -162,7 +162,7 @@ def load(fnames, tag=None, sat_id=None, keep_original_names=False):
     --------
     ::
 
-        inst = pysat.Instrument('icon', 'ivm', sat_id='a', tag='')
+        inst = pysat.Instrument('icon', 'ivm', inst_id='a', tag='')
         inst.load(2020, 1)
 
     """

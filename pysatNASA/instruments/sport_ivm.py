@@ -27,7 +27,7 @@ tags = {'': 'Level-2 IVM Files',
         'L0': 'Level-0 IVM Files'}
 # dictionary of satellite IDs, list of corresponding tags
 # only one satellite in this case
-sat_ids = {'': ['']}
+inst_ids = {'': ['']}
 # good day to download test data for. Downloads aren't currently supported
 _test_dates = {'': {'': dt.datetime(2019, 1, 1)}}
 _test_download = {'': {kk: False for kk in tags.keys()}}
@@ -57,7 +57,7 @@ def init(self):
     return
 
 
-def load(fnames, tag=None, sat_id=None, **kwargs):
+def load(fnames, tag=None, inst_id=None, **kwargs):
     """Loads SPORT IVM data using pysat.utils.load_netcdf4.
 
     This routine is called as needed by pysat. It is not intended
@@ -71,7 +71,7 @@ def load(fnames, tag=None, sat_id=None, **kwargs):
     tag : string
         tag name used to identify particular data set to be loaded.
         This input is nominally provided by pysat itself.
-    sat_id : string
+    inst_id : string
         Satellite ID used to identify particular data set to be loaded.
         This input is nominally provided by pysat itself.
     **kwargs : extra keywords
@@ -103,7 +103,7 @@ def load(fnames, tag=None, sat_id=None, **kwargs):
     return pysat.utils.load_netcdf4(fnames, **kwargs)
 
 
-def download(date_array, tag, sat_id, data_path=None, user=None,
+def download(date_array, tag, inst_id, data_path=None, user=None,
              password=None):
     """Downloads data for SPORT IVM, once SPORT is operational and in orbit.
     This routine is invoked by pysat and is not intended for direct use by
@@ -116,7 +116,7 @@ def download(date_array, tag, sat_id, data_path=None, user=None,
     tag : string ('')
         Tag identifier used for particular dataset. This input is provided by
         pysat.
-    sat_id : string  ('')
+    inst_id : string  ('')
         Satellite ID string identifier used for particular dataset. This input
         is provided by pysat.
     data_path : string (None)

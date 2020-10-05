@@ -40,7 +40,7 @@ name
     'ivm'
 tag
     None supported
-sat_id
+inst_id
     None supported
 
 Warnings
@@ -67,7 +67,7 @@ logger = logging.getLogger(__name__)
 platform = 'cnofs'
 name = 'ivm'
 tags = {'': ''}
-sat_ids = {'': ['']}
+inst_ids = {'': ['']}
 _test_dates = {'': {'': dt.datetime(2009, 1, 1)}}
 
 

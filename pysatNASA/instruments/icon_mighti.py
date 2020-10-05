@@ -13,8 +13,8 @@ name
 tag
     Supports 'los_wind_green', 'los_wind_red', 'vector_wind_green',
     'vector_wind_red', 'temperature'.  Note that not every data product
-    available for every sat_id
-sat_id
+    available for every inst_id
+inst_id
     '', 'a', or 'b'
 
 Warnings
@@ -67,13 +67,13 @@ tags = {'los_wind_green': 'Line of sight wind data -- Green Line',
         'vector_wind_green': 'Vector wind data -- Green Line',
         'vector_wind_red': 'Vector wind data -- Red Line',
         'temperature': 'Neutral temperature data'}
-sat_ids = {'': ['vector_wind_green', 'vector_wind_red'],
-           'a': ['los_wind_green', 'los_wind_red', 'temperature'],
-           'b': ['los_wind_green', 'los_wind_red', 'temperature']}
-_test_dates = {jj: {kk: dt.datetime(2020, 1, 2) for kk in sat_ids[jj]}
-               for jj in sat_ids.keys()}
-_test_download_travis = {jj: {kk: False for kk in sat_ids[jj]}
-                         for jj in sat_ids.keys()}
+inst_ids = {'': ['vector_wind_green', 'vector_wind_red'],
+            'a': ['los_wind_green', 'los_wind_red', 'temperature'],
+            'b': ['los_wind_green', 'los_wind_red', 'temperature']}
+_test_dates = {jj: {kk: dt.datetime(2020, 1, 2) for kk in inst_ids[jj]}
+               for jj in inst_ids.keys()}
+_test_download_travis = {jj: {kk: False for kk in inst_ids[jj]}
+                         for jj in inst_ids.keys()}
 pandas_format = False
 
 datestr = '{year:04d}-{month:02d}-{day:02d}_v{version:02d}r{revision:03d}'
@@ -167,20 +167,21 @@ def default(inst):
 
 def remove_preamble(inst):
     """Removes preambles in variable names"""
+    id_str = inst.inst_id.upper()
 
     target = {'los_wind_green': 'ICON_L21_',
               'los_wind_red': 'ICON_L21_',
               'vector_wind_green': 'ICON_L22_',
               'vector_wind_red': 'ICON_L22_',
-              'temperature': ['ICON_L1_MIGHTI_{}_'.format(inst.sat_id.upper()),
-                              'ICON_L23_MIGHTI_{}_'.format(inst.sat_id.upper()),
+              'temperature': ['ICON_L1_MIGHTI_{}_'.format(id_str),
+                              'ICON_L23_MIGHTI_{}_'.format(id_str),
                               'ICON_L23_']}
     mm_gen.remove_leading_text(inst, target=target[inst.tag])
 
     return
 
 
-def load(fnames, tag=None, sat_id=None, keep_original_names=False):
+def load(fnames, tag=None, inst_id=None, keep_original_names=False):
     """Loads ICON FUV data using pysat into pandas.
 
     This routine is called as needed by pysat. It is not intended
@@ -194,7 +195,7 @@ def load(fnames, tag=None, sat_id=None, keep_original_names=False):
     tag : string
         tag name used to identify particular data set to be loaded.
         This input is nominally provided by pysat itself.
-    sat_id : string
+    inst_id : string
         Satellite ID used to identify particular data set to be loaded.
         This input is nominally provided by pysat itself.
     keep_original_names : boolean
@@ -309,11 +310,10 @@ def clean(inst):
         saa_flag = 'Quality_Flag_South_Atlantic_Anomaly'
         cal_flag = 'Quality_Flag_Bad_Calibration'
         if saa_flag not in inst.variables:
-            saa_flag = '_'.join(('ICON_L1_MIGHTI', inst.sat_id.upper(),
-                                 saa_flag))
-            cal_flag = '_'.join(('ICON_L1_MIGHTI', inst.sat_id.upper(),
-                                 cal_flag))
-            var = '_'.join(('ICON_L23_MIGHTI', inst.sat_id.upper(), var))
+            id_str = inst.inst_id.upper()
+            saa_flag = '_'.join(('ICON_L1_MIGHTI', id_str, saa_flag))
+            cal_flag = '_'.join(('ICON_L1_MIGHTI', id_str, cal_flag))
+            var = '_'.join(('ICON_L23_MIGHTI', id_str, var))
         if inst.clean_level in ['clean', 'dusty']:
             # filter out areas with bad calibration data
             # as well as data marked in the SAA

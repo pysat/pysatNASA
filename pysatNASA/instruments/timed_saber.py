@@ -11,7 +11,7 @@ name : string
     'saber'
 tag : string
     None supported
-sat_id : string
+inst_id : string
     None supported
 
 Note
@@ -59,7 +59,7 @@ logger = logging.getLogger(__name__)
 platform = 'timed'
 name = 'saber'
 tags = {'': ''}
-sat_ids = {'': ['']}
+inst_ids = {'': ['']}
 _test_dates = {'': {'': dt.datetime(2019, 1, 1)}}
 
 fname = ''.join(('timed_l2av207_saber_{year:04d}{month:02d}{day:02d}',
