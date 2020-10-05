@@ -310,11 +310,10 @@ def clean(inst):
         saa_flag = 'Quality_Flag_South_Atlantic_Anomaly'
         cal_flag = 'Quality_Flag_Bad_Calibration'
         if saa_flag not in inst.variables:
-            saa_flag = '_'.join(('ICON_L1_MIGHTI', inst.inst_id.upper(),
-                                 saa_flag))
-            cal_flag = '_'.join(('ICON_L1_MIGHTI', inst.inst_id.upper(),
-                                 cal_flag))
-            var = '_'.join(('ICON_L23_MIGHTI', inst.inst_id.upper(), var))
+            id_str = inst.inst_id.upper()
+            saa_flag = '_'.join(('ICON_L1_MIGHTI', id_str, saa_flag))
+            cal_flag = '_'.join(('ICON_L1_MIGHTI', id_str, cal_flag))
+            var = '_'.join(('ICON_L23_MIGHTI', id_str, var))
         if inst.clean_level in ['clean', 'dusty']:
             # filter out areas with bad calibration data
             # as well as data marked in the SAA
