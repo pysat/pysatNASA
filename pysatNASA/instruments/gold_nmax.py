@@ -91,7 +91,7 @@ def init(self):
 
 
 # Custom load routine for netcdf files
-def load(fnames, tag=None, sat_id=None):
+def load(fnames, tag=None, inst_id=None):
     """Loads GOLD NMAX data using pysat into xarray
 
     This routine is called as needed by pysat. It is not intended
@@ -105,7 +105,7 @@ def load(fnames, tag=None, sat_id=None):
     tag : string
         tag name used to identify particular data set to be loaded.
         This input is nominally provided by pysat itself.
-    sat_id : string
+    inst_id : string
         Satellite ID used to identify particular data set to be loaded.
         This input is nominally provided by pysat itself.
     **kwargs : extra keywords
