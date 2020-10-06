@@ -1,6 +1,39 @@
-""" Supports the Nmax data product from the GOLD spacecraft
+"""Supports the Nmax data product from the Global Observations of the Limb and
+Disk (GOLD) satellite.  Accesses data in netCDF format.
+
+Properties
+----------
+platform
+    'gold'
+name
+    'nmax'
+tag
+    None supported
+
+Warnings
+--------
+- The cleaning parameters for the instrument are still under development.
+- strict_time_flag must be set to False
+
+
+Examples
+--------
+::
+
+    import datetime as dt
+    import pysat
+    nmax = pysat.Instrument(platform='gold', name='nmax',
+                            strict_time_flag=False)
+    nmax.download(dt.datetime(2020, 1, 1), dt.datetime(2020, 1, 31))
+    nmax.load(2020, 1)
+
+
+Authors
+---------
+Jeff Klenzing, Oct 06, 2020, Goddard Space Flight Center
 
 """
+
 import datetime as dt
 import functools
 import warnings
