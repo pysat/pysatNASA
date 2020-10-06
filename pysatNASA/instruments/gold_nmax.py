@@ -47,7 +47,7 @@ platform = 'gold'
 name = 'nmax'
 
 tags = {'': 'Nmax data for the GOLD instrument'}
-sat_ids = {'': ['']}
+inst_ids = {'': ['']}
 _test_dates = {'': {'': dt.datetime(2020, 1, 1)}}
 
 fname = ''.join(('gold_l2_nmax_{year:04d}_{day:03d}_v{version:02d}',
