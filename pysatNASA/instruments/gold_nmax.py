@@ -17,7 +17,8 @@ tags = {'': 'Nmax data for the GOLD instrument'}
 sat_ids = {'': ['']}
 _test_dates = {'': {'': dt.datetime(2020, 1, 1)}}
 
-fname = 'gold_l2_nmax_{year:04d}_{day:03d}_v01_r01_c01.nc'
+fname = ''.join(('gold_l2_nmax_{year:04d}_{day:03d}_v{version:02d}',
+                 '_r{revision:02d}_c??.nc'))
 supported_tags = {'': {'': fname}}
 pandas_format = False
 
