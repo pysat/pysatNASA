@@ -109,7 +109,7 @@ refs = {'euv': ' '.join(('Stephan, A.W., Meier, R.R., England, S.L. et al.',
                              'https://doi.org/10.1007/s11214-017-0449-2\n'))}
 
 
-def list_remote_files(tag, sat_id, user=None, password=None,
+def list_remote_files(tag, inst_id, user=None, password=None,
                       supported_tags=None,
                       year=None, month=None, day=None,
                       start=None, stop=None):
@@ -121,7 +121,7 @@ def list_remote_files(tag, sat_id, user=None, password=None,
     tag : string or NoneType
         Denotes type of file to load.  Accepted types are <tag strings>.
         (default=None)
-    sat_id : string or NoneType
+    inst_id : string or NoneType
         Specifies the satellite ID for a constellation.  Not used.
         (default=None)
     user : string or NoneType
@@ -156,9 +156,9 @@ def list_remote_files(tag, sat_id, user=None, password=None,
     ftp.login()
 
     try:
-        ftp_dict = supported_tags[sat_id][tag]
+        ftp_dict = supported_tags[inst_id][tag]
     except KeyError:
-        raise ValueError('sat_id/tag name unknown.')
+        raise ValueError('inst_id/tag name unknown.')
 
     # naming scheme for files on the CDAWeb server
     remote_fname = ftp_dict['remote_fname']
@@ -252,7 +252,7 @@ def list_remote_files(tag, sat_id, user=None, password=None,
     return output[start:stop]
 
 
-def ssl_download(date_array, tag, sat_id, data_path=None,
+def ssl_download(date_array, tag, inst_id, data_path=None,
                  user=None, password=None, supported_tags=None):
     """Download ICON data from public area of SSL ftp server
 
@@ -264,7 +264,7 @@ def ssl_download(date_array, tag, sat_id, data_path=None,
     tag : string
         Tag identifier used for particular dataset. This input is provided by
         pysat. (default='')
-    sat_id : string
+    inst_id : string
         Satellite ID string identifier used for particular dataset. This input
         is provided by pysat. (default='')
     data_path : string
@@ -283,7 +283,8 @@ def ssl_download(date_array, tag, sat_id, data_path=None,
     """
 
     # get a list of remote files
-    remote_files = list_remote_files(tag, sat_id, supported_tags=supported_tags,
+    remote_files = list_remote_files(tag, inst_id,
+                                     supported_tags=supported_tags,
                                      start=date_array[0], stop=date_array[-1])
 
     # connect to CDAWeb default port

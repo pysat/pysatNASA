@@ -12,7 +12,7 @@ name
     'fpmu'
 tag
     None Supported
-sat_id
+inst_id
     None supported
 
 Warnings
@@ -35,7 +35,7 @@ logger = logging.getLogger(__name__)
 platform = 'iss'
 name = 'fpmu'
 tags = {'': ''}
-sat_ids = {'': ['']}
+inst_ids = {'': ['']}
 _test_dates = {'': {'': dt.datetime(2017, 10, 1)}}
 
 # support list files routine

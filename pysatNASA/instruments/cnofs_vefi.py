@@ -39,7 +39,7 @@ name
     'vefi'
 tag
     Select measurement type, one of {'dc_b'}
-sat_id
+inst_id
     None supported
 
 
@@ -70,7 +70,7 @@ logger = logging.getLogger(__name__)
 platform = 'cnofs'
 name = 'vefi'
 tags = {'dc_b': 'DC Magnetometer data - 1 second'}
-sat_ids = {'': ['dc_b']}
+inst_ids = {'': ['dc_b']}
 _test_dates = {'': {'dc_b': dt.datetime(2009, 1, 1)}}
 
 # support list files routine

@@ -57,7 +57,7 @@ platform
     'de2'
 name
     'wats'
-sat_id
+inst_id
     None Supported
 tag
     None Supported
@@ -82,7 +82,7 @@ platform = 'de2'
 name = 'wats'
 
 tags = {'': '2 s cadence Wind and Temperature Spectrometer data'}
-sat_ids = {'': ['']}
+inst_ids = {'': ['']}
 _test_dates = {'': {'': dt.datetime(1983, 1, 1)}}
 
 fname = 'de2_wind2s_wats_{year:04d}{month:02d}{day:02d}_v01.cdf'
