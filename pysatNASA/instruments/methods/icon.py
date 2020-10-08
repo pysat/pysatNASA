@@ -6,6 +6,8 @@ import ftplib
 import logging
 import numpy as np
 import os
+import shutil
+from zipfile import ZipFile
 
 import pysat
 from pysat.utils import files as futils
@@ -307,6 +309,18 @@ def ssl_download(date_array, tag, inst_id, data_path=None,
                 ftp.retrbinary('RETR ' + fname,
                                open(saved_local_fname, 'wb').write)
                 logger.info('Finished.')
+                # If zipped files are stored remotely, unzip them locally and
+                # delete the downloaded zip
+                if fname.find('ZIP') > 0:
+                    with ZipFile(saved_local_fname, 'r') as zipObj:
+                        for member in zipObj.namelist():
+                            if member.find('.NC') > 0:
+                                outpath = os.path.join(data_path,
+                                                       os.path.basename(member))
+                                with zipObj.open(member) as source:
+                                    with open(outpath, 'wb') as target:
+                                        shutil.copyfileobj(source, target)
+                    os.remove(saved_local_fname)
             except ftplib.error_perm as exception:
                 if str(exception.args[0]).split(" ", 1)[0] != '550':
                     raise
