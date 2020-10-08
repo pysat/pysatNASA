@@ -317,10 +317,9 @@ def ssl_download(date_array, tag, inst_id, data_path=None,
                             if member.find('.NC') > 0:
                                 outpath = os.path.join(data_path,
                                                        os.path.basename(member))
-                                source = zipObj.open(member)
-                                target = open(outpath, 'wb')
-                                with source, target:
-                                    shutil.copyfileobj(source, target)
+                                with zipObj.open(member) as source:
+                                    with open(outpath, 'wb') as target:
+                                        shutil.copyfileobj(source, target)
                     os.remove(saved_local_fname)
             except ftplib.error_perm as exception:
                 if str(exception.args[0]).split(" ", 1)[0] != '550':
