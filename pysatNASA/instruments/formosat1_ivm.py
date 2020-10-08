@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
-"""Supports the Ion Velocity Meter (IVM)
-onboard the Republic of China Satellite (ROCSAT-1). Downloads data from the
-NASA Coordinated Data Analysis Web (CDAWeb).
+"""Supports the Ion Velocity Meter (IVM) onboard the Formosat-1 (formerly
+ROCSAT-1) mission. Downloads data from the NASA Coordinated Data Analysis
+Web (CDAWeb).
 
 Properties
 ----------
 platform
-    'rocsat1'
+    'formosat1'
 name
     'ivm'
 tag
@@ -30,7 +30,7 @@ from pysatNASA.instruments.methods import cdaweb as cdw
 
 logger = logging.getLogger(__name__)
 
-platform = 'rocsat1'
+platform = 'formosat1'
 name = 'ivm'
 tags = {'': ''}
 inst_ids = {'': ['']}
@@ -85,7 +85,7 @@ def init(self):
 
 
 def clean(inst):
-    """Routine to return ROCSAT-1 IVM data cleaned to the specified level
+    """Routine to return FORMOSAT-1 IVM data cleaned to the specified level
 
     Parameters
     -----------
@@ -95,10 +95,10 @@ def clean(inst):
 
     Note
     ----
-    No cleaning currently available for ROCSAT-1 IVM.
+    No cleaning currently available for FORMOSAT-1 IVM.
 
     """
 
-    warnings.warn("No cleaning currently available for ROCSAT")
+    warnings.warn("No cleaning currently available for FORMOSAT-1")
 
     return None
