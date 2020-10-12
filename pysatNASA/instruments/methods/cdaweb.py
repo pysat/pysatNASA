@@ -203,7 +203,7 @@ class CDF(object):
             if not re.match(var_regex, variable_name):
                 # skip this variable
                 continue
-            var_atts = self._cdf_file.varattsget(variable_name, to_np = False)
+            var_atts = self._cdf_file.varattsget(variable_name, to_np=False)
             for k in var_atts:
                 var_atts[k] = var_atts[k][0]
 
@@ -338,13 +338,13 @@ class CDF(object):
         lower_names = [name.lower() for name in meta.keys()]
         for name, true_name in zip(lower_names, meta.keys()):
             if name == 'epoch':
-                meta.data.rename(index={true_name: 'Epoch'}, inplace=True)
+                meta.data.rename(index={true_name: 'epoch'}, inplace=True)
                 epoch = cdata.pop(true_name)
                 cdata['Epoch'] = epoch
 
         data = dict()
         for varname, df in cdata.items():
-            if varname != 'Epoch':
+            if varname not in ('Epoch', 'DATE'):
                 if type(df) == pds.Series:
                     data[varname] = df
 
