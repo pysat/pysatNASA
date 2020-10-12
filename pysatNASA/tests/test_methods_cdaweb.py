@@ -12,7 +12,7 @@ class TestCDAWeb():
     def setup(self):
         """Runs before every method to create a clean testing setup."""
         self.supported_tags = pysatNASA.instruments.cnofs_plp.supported_tags
-        self.kwargs = {'tag': None, 'sat_id': None}
+        self.kwargs = {'tag': None, 'inst_id': None}
 
     def teardown(self):
         """Runs after every method to clean up previous testing."""
@@ -22,7 +22,7 @@ class TestCDAWeb():
         """pysat should append suggested help to ConnectionError"""
         with pytest.raises(Exception) as excinfo:
             # Giving a bad remote_site address yields similar ConnectionError
-            cdw.list_remote_files(tag='', sat_id='',
+            cdw.list_remote_files(tag='', inst_id='',
                                   supported_tags=self.supported_tags,
                                   remote_site='http:/')
 
@@ -37,9 +37,9 @@ class TestCDAWeb():
         assert meta is None
 
     @pytest.mark.parametrize("bad_key,bad_val,err_msg",
-                             [("tag", "badval", "sat_id / tag combo unknown."),
-                              ("sat_id", "badval",
-                               "sat_id / tag combo unknown.")])
+                             [("tag", "badval", "inst_id / tag combo unknown."),
+                              ("inst_id", "badval",
+                               "inst_id / tag combo unknown.")])
     def test_bad_kwarg_download(self, bad_key, bad_val, err_msg):
         date_array = [dt.datetime(2019, 1, 1)]
         self.kwargs[bad_key] = bad_val
@@ -47,17 +47,17 @@ class TestCDAWeb():
             cdw.download(supported_tags=self.supported_tags,
                          date_array=date_array,
                          tag=self.kwargs['tag'],
-                         sat_id=self.kwargs['sat_id'])
+                         inst_id=self.kwargs['inst_id'])
         assert str(excinfo.value).find(err_msg) >= 0
 
     @pytest.mark.parametrize("bad_key,bad_val,err_msg",
-                             [("tag", "badval", "sat_id / tag combo unknown."),
-                              ("sat_id", "badval",
-                               "sat_id / tag combo unknown.")])
+                             [("tag", "badval", "inst_id / tag combo unknown."),
+                              ("inst_id", "badval",
+                               "inst_id / tag combo unknown.")])
     def test_bad_kwarg_list_remote_files(self, bad_key, bad_val, err_msg):
         self.kwargs[bad_key] = bad_val
         with pytest.raises(ValueError) as excinfo:
             cdw.list_remote_files(supported_tags=self.supported_tags,
                                   tag=self.kwargs['tag'],
-                                  sat_id=self.kwargs['sat_id'])
+                                  inst_id=self.kwargs['inst_id'])
         assert str(excinfo.value).find(err_msg) >= 0

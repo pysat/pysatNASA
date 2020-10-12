@@ -353,7 +353,7 @@ class CDF(object):
         return data, meta
 
 
-def load(fnames, tag=None, sat_id=None,
+def load(fnames, tag=None, inst_id=None,
          fake_daily_files_from_monthly=False,
          flatten_twod=True):
     """Load NASA CDAWeb CDF files.
@@ -367,7 +367,7 @@ def load(fnames, tag=None, sat_id=None,
         Series of filenames
     tag : str or NoneType
         tag or None (default=None)
-    sat_id : str or NoneType
+    inst_id : str or NoneType
         satellite id or None (default=None)
     fake_daily_files_from_monthly : bool
         Some CDAWeb instrument data files are stored by month, interfering
@@ -428,7 +428,7 @@ def load(fnames, tag=None, sat_id=None,
                 return cdf.to_pysat(flatten_twod=flatten_twod)
 
 
-def download(supported_tags, date_array, tag, sat_id,
+def download(supported_tags, date_array, tag, inst_id,
              remote_site='https://cdaweb.gsfc.nasa.gov',
              data_path=None, user=None, password=None,
              fake_daily_files_from_monthly=False,
@@ -448,7 +448,7 @@ def download(supported_tags, date_array, tag, sat_id,
         Array of datetimes to download data for. Provided by pysat.
     tag : str or NoneType
         tag or None (default=None)
-    sat_id : (str or NoneType)
+    inst_id : (str or NoneType)
         satellite id or None (default=None)
     remote_site : string or NoneType
         Remote site to download data from
@@ -486,9 +486,9 @@ def download(supported_tags, date_array, tag, sat_id,
     """
 
     try:
-        inst_dict = supported_tags[sat_id][tag]
+        inst_dict = supported_tags[inst_id][tag]
     except KeyError:
-        raise ValueError('sat_id / tag combo unknown.')
+        raise ValueError('inst_id / tag combo unknown.')
 
     # path to relevant file on CDAWeb
     remote_url = remote_site + inst_dict['dir']
@@ -503,7 +503,7 @@ def download(supported_tags, date_array, tag, sat_id,
 
     if not multi_file_day:
         # Get list of files from server
-        remote_files = list_remote_files(tag=tag, sat_id=sat_id,
+        remote_files = list_remote_files(tag=tag, inst_id=inst_id,
                                          remote_site=remote_site,
                                          supported_tags=supported_tags,
                                          start=date_array[0],
@@ -553,7 +553,7 @@ def download(supported_tags, date_array, tag, sat_id,
                 logger.info(' '.join(('Attempting to download files for',
                                       date.strftime('%d %B %Y'))))
                 sys.stdout.flush()
-                remote_files = list_remote_files(tag=tag, sat_id=sat_id,
+                remote_files = list_remote_files(tag=tag, inst_id=inst_id,
                                                  remote_site=remote_site,
                                                  supported_tags=supported_tags,
                                                  start=date,
@@ -581,7 +581,7 @@ def download(supported_tags, date_array, tag, sat_id,
                                       date.strftime('%d %B %Y'))))
 
 
-def list_remote_files(tag, sat_id,
+def list_remote_files(tag, inst_id,
                       remote_site='https://cdaweb.gsfc.nasa.gov',
                       supported_tags=None,
                       user=None, password=None,
@@ -598,7 +598,7 @@ def list_remote_files(tag, sat_id,
     tag : string or NoneType
         Denotes type of file to load.  Accepted types are <tag strings>.
         (default=None)
-    sat_id : string or NoneType
+    inst_id : string or NoneType
         Specifies the satellite ID for a constellation.
         (default=None)
     remote_site : string or NoneType
@@ -661,12 +661,12 @@ def list_remote_files(tag, sat_id,
 
     if tag is None:
         tag = ''
-    if sat_id is None:
-        sat_id = ''
+    if inst_id is None:
+        inst_id = ''
     try:
-        inst_dict = supported_tags[sat_id][tag]
+        inst_dict = supported_tags[inst_id][tag]
     except KeyError:
-        raise ValueError('sat_id / tag combo unknown.')
+        raise ValueError('inst_id / tag combo unknown.')
 
     # path to relevant file on CDAWeb
     remote_url = remote_site + inst_dict['dir']

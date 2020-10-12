@@ -61,7 +61,7 @@ platform
     'de2'
 name
     'nacs'
-sat_id
+inst_id
     None Supported
 tag
     None Supported
@@ -86,7 +86,7 @@ platform = 'de2'
 name = 'nacs'
 
 tags = {'': '1 s cadence Neutral Atmosphere Composition Spectrometer data'}
-sat_ids = {'': ['']}
+inst_ids = {'': ['']}
 _test_dates = {'': {'': dt.datetime(1983, 1, 1)}}
 
 fname = 'de2_neutral1s_nacs_{year:04d}{month:02d}{day:02d}_v01.cdf'

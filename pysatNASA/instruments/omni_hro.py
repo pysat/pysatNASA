@@ -12,7 +12,7 @@ name
     'hro'
 tag
     Select time between samples, one of {'1min', '5min'}
-sat_id
+inst_id
     None supported
 
 Note
@@ -64,7 +64,7 @@ platform = 'omni'
 name = 'hro'
 tags = {'1min': '1-minute time averaged data',
         '5min': '5-minute time averaged data'}
-sat_ids = {'': ['5min']}
+inst_ids = {'': ['5min']}
 _test_dates = {'': {'1min': dt.datetime(2009, 1, 1),
                     '5min': dt.datetime(2009, 1, 1)}}
 
