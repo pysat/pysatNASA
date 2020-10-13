@@ -128,7 +128,7 @@ def clean(omni):
             fill_attr = omni.meta.attr_case_name(fill_attr)
             for key in omni.data.columns:
                 if key != 'Epoch':
-                    idx, = np.where(omni[key] == omni.meta[key, fill_attr])
+                    idx, = np.where(omni[key] == omni.meta[key, fill_attr][0])
                     omni[idx, key] = np.nan
     return
 

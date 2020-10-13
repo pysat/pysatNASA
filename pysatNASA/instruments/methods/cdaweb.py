@@ -203,9 +203,9 @@ class CDF(object):
             if not re.match(var_regex, variable_name):
                 # skip this variable
                 continue
-            var_atts = self._cdf_file.varattsget(variable_name, to_np=False)
+            var_atts = self._cdf_file.varattsget(variable_name)#, to_np=False)
             for k in var_atts:
-                var_atts[k] = var_atts[k][0]
+                var_atts[k] = var_atts[k]#[0]
 
             if 'VAR_TYPE' not in var_atts:
 #                 print('skipping {} (no VAR_TYPE)'.format(variable_name))

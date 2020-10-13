@@ -125,5 +125,5 @@ def clean(inst):
 
     for key in inst.data.columns:
         if key != 'Epoch':
-            idx, = np.where(inst[key] == inst.meta[key, inst.fill_label])
+            idx, = np.where(inst[key] == inst.meta[key, inst.fill_label][0])
             inst[idx, key] = np.nan
