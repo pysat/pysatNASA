@@ -110,8 +110,8 @@ def download(supported_tags, date_array, tag, inst_id,
     -----------
     supported_tags : dict
         dict of dicts. Keys are supported tag names for download. Value is
-        a dict with 'remote_dir', 'remote_loc', 'fname'. Inteded to be
-        pre-set with functools.partial then assigned to new instrument code.
+        a dict with 'remote_dir', fname'. Inteded to be pre-set with
+        functools.partial then assigned to new instrument code.
     date_array : array_like
         Array of datetimes to download data for. Provided by pysat.
     tag : str or NoneType
@@ -140,12 +140,10 @@ def download(supported_tags, date_array, tag, inst_id,
     ::
 
         # download support added to cnofs_vefi.py using code below
-        rn = '{year:4d}/cnofs_vefi_bfield_1sec_{year:4d}{month:02d}{day:02d}'+
-            '_v05.cdf'
-        ln = 'cnofs_vefi_bfield_1sec_{year:4d}{month:02d}{day:02d}_v05.cdf'
-        dc_b_tag = {'remote_dir':'/pub/data/cnofs/vefi/bfield_1sec',
-                    'remote_loc': rn,
-                    'fname': ln}
+        fn = 'cnofs_vefi_bfield_1sec_{year:4d}{month:02d}{day:02d}_v05.cdf'
+        dc_b_tag = {'remote_dir': ''.join(('/pub/data/cnofs/vefi/bfield_1sec',
+                                            '/{year:4d}/')),
+                    'fname': fn}
         supported_tags = {'dc_b': dc_b_tag}
 
         download = functools.partial(nasa_cdaweb.download,
