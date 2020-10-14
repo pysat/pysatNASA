@@ -8,10 +8,10 @@ intervention.
 import datetime as dt
 import logging
 import os
-import requests
 import sys
-import numpy as np
 import re
+import requests
+import numpy as np
 import cdflib
 
 from bs4 import BeautifulSoup
@@ -22,29 +22,31 @@ from pysat.utils import files as futils
 
 logger = logging.getLogger(__name__)
 
-def convert_ndimensional(data, index = None, columns = None):
+
+def convert_ndimensional(data, index=None, columns=None):
     """converts high-dimensional data to a Dataframe"""
     if columns is None:
         columns = [range(i) for i in data.shape[1:]]
         columns = pds.MultiIndex.from_product(columns)
 
     return pds.DataFrame(data.T.reshape(data.shape[0], -1),
-        columns = columns, index = index)
+                         columns=columns, index=index)
 
-class CDF(object):
+
+class CDF():
     """cdflib wrapper for loading time series data
 
     Loading routines borrow heavily from pyspedas's cdf_to_tplot function
     """
 
     def __init__(self, filename,
-                varformat = '*', # regular expressions
-                var_types = ['data', 'support_data'],
-                center_measurement = False,
-                raise_errors = False,
-                regnames = None,
-                datetime = True,
-                **kwargs):
+                 varformat='*',  # regular expressions
+                 var_types=['data', 'support_data'],
+                 center_measurement=False,
+                 raise_errors=False,
+                 regnames=None,
+                 datetime=True,
+                 **kwargs):
         self._raise_errors = raise_errors
         self._filename = filename
         self._varformat = varformat
@@ -53,20 +55,19 @@ class CDF(object):
         self._var_types = var_types
         self._center_measurement = center_measurement
 
-        #registration names map from file parameters to kamodo-compatible names
+        # registration names map from file params to kamodo-compatible names
         if regnames is None:
             regnames = {}
         self._regnames = regnames
 
         self._cdf_file = cdflib.CDF(self._filename)
         self._cdf_info = self._cdf_file.cdf_info()
-        self.data = {} #python-in-Heliophysics Community data standard
-        self.meta = {} #python-in-Heliophysics Community metadata standard
+        self.data = {}  # python-in-Heliophysics Community data standard
+        self.meta = {}  # python-in-Heliophysics Community metadata standard
         self._dependencies = {}
 
         self._variable_names = self._cdf_info['rVariables'] +\
             self._cdf_info['zVariables']
-
 
         self.load_variables()
 
@@ -152,7 +153,7 @@ class CDF(object):
                 xdata = cdflib.cdfepoch.unixtime(xdata)
                 xdata = np.array(xdata) + delta_time
                 if self._datetime:
-                    xdata = pds.to_datetime(xdata,  unit = 's')
+                    xdata = pds.to_datetime(xdata,  unit='s')
                 self.set_dependency(x_axis_var, xdata)
 
     def get_index(self, variable_name):
@@ -174,8 +175,10 @@ class CDF(object):
                 if dependency_data is None:
                     dependency_data = self._cdf_file.varget(dependency_name)
                     # get first unique row
-                    dependency_data = pds.DataFrame(dependency_data).drop_duplicates().values[0]
-                    self.set_dependency(dependency_name, dependency_data)
+                    dependency_data = pds.DataFrame(dependency_data)
+                    dependency_data = dependency_data.drop_duplicates()
+                    self.set_dependency(dependency_name,
+                                        dependency_data.values[0])
                 dependencies.append(dependency_data)
 
         index_ = None
@@ -203,16 +206,17 @@ class CDF(object):
             if not re.match(var_regex, variable_name):
                 # skip this variable
                 continue
-            var_atts = self._cdf_file.varattsget(variable_name)#, to_np=False)
+            var_atts = self._cdf_file.varattsget(variable_name, to_np=True)
             for k in var_atts:
-                var_atts[k] = var_atts[k]#[0]
+                var_atts[k] = var_atts[k]  # [0]
 
             if 'VAR_TYPE' not in var_atts:
-#                 print('skipping {} (no VAR_TYPE)'.format(variable_name))
+                # print('skipping {} (no VAR_TYPE)'.format(variable_name))
                 continue
 
             if var_atts['VAR_TYPE'] not in self._var_types:
-#                 print('skipping {} ({})'.format(variable_name, var_atts['VAR_TYPE']))
+                # print('skipping {} ({})'.format(variable_name,
+                #                                 var_atts['VAR_TYPE']))
                 continue
 
             var_properties = self._cdf_file.varinq(variable_name)
@@ -220,13 +224,12 @@ class CDF(object):
             try:
                 ydata = self._cdf_file.varget(variable_name)
             except (TypeError):
-#                 print('skipping {} (TypeError)'.format(variable_name))
+                # print('skipping {} (TypeError)'.format(variable_name))
                 continue
 
             if ydata is None:
-#                 print('skipping {} (empty)'.format(variable_name))
+                # print('skipping {} (empty)'.format(variable_name))
                 continue
-
 
             if "FILLVAL" in var_atts:
                 if (var_properties['Data_Type_Description'] == 'CDF_FLOAT'
@@ -235,37 +238,43 @@ class CDF(object):
                     or var_properties['Data_Type_Description']
                     == 'CDF_DOUBLE'
                     or var_properties['Data_Type_Description']
-                    == 'CDF_REAL8'):
+                        == 'CDF_REAL8'):
+
                     if ydata[ydata == var_atts["FILLVAL"]].size != 0:
                         ydata[ydata == var_atts["FILLVAL"]] = np.nan
 
             index = self.get_index(variable_name)
 
-
             try:
                 if isinstance(index, pds.MultiIndex):
-                    self.data[variable_name] = pds.DataFrame(ydata.ravel(), index = index)
+                    self.data[variable_name] = pds.DataFrame(ydata.ravel(),
+                                                             index=index)
                 else:
                     if len(ydata.shape) == 1:
-                        self.data[variable_name] = pds.Series(ydata, index = index)
+                        self.data[variable_name] = pds.Series(ydata,
+                                                              index=index)
                     elif len(ydata.shape) == 2:
-                        self.data[variable_name] = pds.DataFrame(ydata, index = index)
-                    elif len(ydata.shape) >2:
-                        self.data[variable_name] = convert_ndimensional(ydata, index = index)
+                        self.data[variable_name] = pds.DataFrame(ydata,
+                                                                 index=index)
+                    elif len(ydata.shape) > 2:
+                        tmp_var = convert_ndimensional(ydata, index=index)
+                        self.data[variable_name] = tmp_var
                     else:
-                        raise NotImplementedError('Cannot handle {} with shape {}'.format(variable_name, ydata.shape))
-            except:
-                self.data[variable_name] = {'ydata':ydata, 'index':index}
+                        raise NotImplementedError('Cannot handle {} with shape'
+                                                  ' {}'.format(variable_name,
+                                                               ydata.shape))
+            except (ValueError, NotImplementedError):
+                self.data[variable_name] = {'ydata': ydata, 'index': index}
                 if self._raise_errors:
                     raise
 
             self.meta[variable_name] = var_atts
 
-    def to_pysat(self, flatten_twod=True, units_label='UNITS', name_label='long_name',
-                        fill_label='FILLVAL', plot_label='FieldNam',
-                        min_label='ValidMin', max_label='ValidMax',
-                        notes_label='Var_Notes', desc_label='CatDesc',
-                        axis_label = 'LablAxis'):
+    def to_pysat(self, flatten_twod=True, units_label='UNITS',
+                 name_label='long_name', fill_label='FILLVAL',
+                 plot_label='FieldNam', min_label='ValidMin',
+                 max_label='ValidMax', notes_label='Var_Notes',
+                 desc_label='CatDesc', axis_label='LablAxis'):
         """
         Exports loaded CDF data into data, meta for pysat module
 
@@ -292,11 +301,12 @@ class CDF(object):
         units_label : str
             Identifier within metadata for units. Defults to CDAWab standard.
         name_label : str
-            Identifier within metadata for variable name. Defults to 'long_name',
-            not normally present within CDAWeb files. If not, will use values
-            from the variable name in the file.
+            Identifier within metadata for variable name.
+            Defults to 'long_name' not normally present within CDAWeb files.
+            If not, will use values from the variable name in the file.
         fill_label : str
-            Identifier within metadata for Fill Values. Defults to CDAWab standard.
+            Identifier within metadata for Fill Values.
+            Defults to CDAWab standard.
         plot_label : str
             Identifier within metadata for variable name used when plotting.
             Defults to CDAWab standard.
@@ -323,8 +333,6 @@ class CDF(object):
             object.
 
         """
-
-
         # create pysat.Meta object using data above
         # and utilizing the attribute labels provided by the user
         meta = pysat.Meta(pds.DataFrame.from_dict(self.meta, orient='index'),
