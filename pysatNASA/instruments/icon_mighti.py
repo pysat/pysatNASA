@@ -118,7 +118,7 @@ for skey in supported_tags.keys():
     for tkey in supported_tags[skey].keys():
         fname = supported_tags[skey][tkey]
 
-        download_tags[skey][tkey] = {'dir': dirstr.format(id=ids[skey]),
+        download_tags[skey][tkey] = {'remote_dir': dirstr.format(id=ids[skey]),
                                      'remote_fname': ''.join((products[tkey],
                                                               fname))}
 
