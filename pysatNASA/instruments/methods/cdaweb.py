@@ -153,7 +153,7 @@ class CDF():
                 xdata = cdflib.cdfepoch.unixtime(xdata)
                 xdata = np.array(xdata) + delta_time
                 if self._datetime:
-                    xdata = pds.to_datetime(xdata,  unit='s')
+                    xdata = pds.to_datetime(xdata, unit='s')
                 self.set_dependency(x_axis_var, xdata)
 
     def get_index(self, variable_name):
