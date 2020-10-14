@@ -58,7 +58,7 @@ platform = 'icon'
 name = 'fuv'
 tags = {'day': 'Level 2 daytime O/N2',
         'night': 'Level 2 nighttime O profile'}
-sat_ids = {'': ['day', 'night']}
+inst_ids = {'': ['day', 'night']}
 _test_dates = {'': {kk: dt.datetime(2020, 1, 1) for kk in tags.keys()}}
 _test_download_travis = {'': {kk: False for kk in tags.keys()}}
 pandas_format = False
@@ -134,7 +134,7 @@ def remove_preamble(inst):
     mm_gen.remove_leading_text(inst, target=target[inst.tag])
 
 
-def load(fnames, tag=None, sat_id=None, keep_original_names=False):
+def load(fnames, tag=None, inst_id=None, keep_original_names=False):
     """Loads ICON FUV data using pysat into pandas.
 
     This routine is called as needed by pysat. It is not intended
@@ -148,7 +148,7 @@ def load(fnames, tag=None, sat_id=None, keep_original_names=False):
     tag : string
         tag name used to identify particular data set to be loaded.
         This input is nominally provided by pysat itself.
-    sat_id : string
+    inst_id : string
         Satellite ID used to identify particular data set to be loaded.
         This input is nominally provided by pysat itself.
     keep_original_names : boolean

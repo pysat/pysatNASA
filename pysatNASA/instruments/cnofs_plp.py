@@ -42,7 +42,7 @@ name
     'plp'
 tag
     None supported
-sat_id
+inst_id
     None supported
 
 
@@ -68,7 +68,7 @@ logger = logging.getLogger(__name__)
 platform = 'cnofs'
 name = 'plp'
 tags = {'': ''}
-sat_ids = {'': ['']}
+inst_ids = {'': ['']}
 _test_dates = {'': {'': dt.datetime(2009, 1, 1)}}
 
 

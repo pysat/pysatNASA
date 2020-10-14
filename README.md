@@ -38,7 +38,7 @@ The instrument modules are portable and designed to be run like any pysat instru
 import pysat
 from pysatNASA.instruments import icon_ivm
 
-ivm = pysat.Instrument(inst_module=icon_ivm, sat_id='a')
+ivm = pysat.Instrument(inst_module=icon_ivm, inst_id='a')
 ```
 Another way to use the instruments in an external repository is to register the instruments.  This only needs to be done the first time you load an instrument.  Afterward, pysat will identify them using the `platform` and `name` keywords.
 
@@ -46,5 +46,5 @@ Another way to use the instruments in an external repository is to register the 
 import pysat
 
 pysat.utils.registry.register('pysatNASA.instruments.icon_ivm')
-ivm = pysat.Instrument('icon', 'ivm', sat_id='a')
+ivm = pysat.Instrument('icon', 'ivm', inst_id='a')
 ```

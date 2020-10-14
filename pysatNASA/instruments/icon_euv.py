@@ -55,7 +55,7 @@ logger = logging.getLogger(__name__)
 platform = 'icon'
 name = 'euv'
 tags = {'': 'Level 2 public geophysical data'}
-sat_ids = {'': ['']}
+inst_ids = {'': ['']}
 _test_dates = {'': {'': dt.datetime(2020, 1, 1)}}
 _test_download_travis = {'': {kk: False for kk in tags.keys()}}
 pandas_format = False
@@ -115,7 +115,7 @@ def default(inst):
         mm_gen.remove_leading_text(inst, target='ICON_L26_')
 
 
-def load(fnames, tag=None, sat_id=None, keep_original_names=False):
+def load(fnames, tag=None, inst_id=None, keep_original_names=False):
     """Loads ICON EUV data using pysat into pandas.
 
     This routine is called as needed by pysat. It is not intended
@@ -129,7 +129,7 @@ def load(fnames, tag=None, sat_id=None, keep_original_names=False):
     tag : string
         tag name used to identify particular data set to be loaded.
         This input is nominally provided by pysat itself.
-    sat_id : string
+    inst_id : string
         Satellite ID used to identify particular data set to be loaded.
         This input is nominally provided by pysat itself.
     keep_original_names : boolean
@@ -154,7 +154,7 @@ def load(fnames, tag=None, sat_id=None, keep_original_names=False):
     --------
     ::
 
-        inst = pysat.Instrument('icon', 'euv', sat_id='a', tag='')
+        inst = pysat.Instrument('icon', 'euv', inst_id='a', tag='')
         inst.load(2020, 1)
 
     """

@@ -11,7 +11,7 @@ name
     'ivm'
 tag
     None
-sat_id
+inst_id
     None supported
 
 Warnings
@@ -33,7 +33,7 @@ logger = logging.getLogger(__name__)
 platform = 'rocsat1'
 name = 'ivm'
 tags = {'': ''}
-sat_ids = {'': ['']}
+inst_ids = {'': ['']}
 _test_dates = {'': {'': dt.datetime(2002, 1, 1)}}
 
 # support list files routine
