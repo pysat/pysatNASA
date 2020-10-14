@@ -52,7 +52,7 @@ basic_tag = {'remote_dir': ''.join(('/pub/data/formosat-rocsat/formosat-1',
                                     '/ipei/{year:4d}/')),
              'fname': fname}
 supported_tags = {'': {'': basic_tag}}
-download = functools.partial(cdw.download, supported_tags)
+download = functools.partial(cdw.download, supported_tags=supported_tags)
 # support listing files currently on CDAWeb
 list_remote_files = functools.partial(cdw.list_remote_files,
                                       supported_tags=supported_tags)

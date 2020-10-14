@@ -91,7 +91,7 @@ basic_tag5 = {'remote_dir': '/pub/data/omni/omni_cdaweb/hro_5min/{year:4d}/',
 supported_tags = {'': {'1min': basic_tag1,
                        '5min': basic_tag5}}
 download = functools.partial(cdw.download,
-                             supported_tags,
+                             supported_tags=supported_tags,
                              fake_daily_files_from_monthly=True)
 # support listing files currently on CDAWeb
 list_remote_files = functools.partial(cdw.list_remote_files,

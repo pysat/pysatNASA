@@ -84,7 +84,7 @@ basic_tag = {'remote_dir': ''.join(('/pub/data/timed/saber/level2a_v2_07_cdf',
                                     '/{year:4d}/{month:02d}/')),
              'fname': fname}
 supported_tags = {'': {'': basic_tag}}
-download = functools.partial(cdw.download, supported_tags, multi_file_day=True)
+download = functools.partial(cdw.download, supported_tags=supported_tags)
 
 # support listing files currently on CDAWeb
 list_remote_files = functools.partial(cdw.list_remote_files,
