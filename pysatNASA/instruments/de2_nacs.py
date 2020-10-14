@@ -89,7 +89,7 @@ tags = {'': '1 s cadence Neutral Atmosphere Composition Spectrometer data'}
 inst_ids = {'': ['']}
 _test_dates = {'': {'': dt.datetime(1983, 1, 1)}}
 
-fname = 'de2_neutral1s_nacs_{year:04d}{month:02d}{day:02d}_v01.cdf'
+fname = 'de2_neutral1s_nacs_{year:04d}{month:02d}{day:02d}_v{version:02d}.cdf'
 supported_tags = {'': {'': fname}}
 
 # use the CDAWeb methods list files routine

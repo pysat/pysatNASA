@@ -70,8 +70,8 @@ _test_dates = {'': {'1min': dt.datetime(2009, 1, 1),
 
 # support list files routine
 # use the default CDAWeb method
-fname1 = 'omni_hro_1min_{year:4d}{month:02d}{day:02d}_v01.cdf'
-fname5 = 'omni_hro_5min_{year:4d}{month:02d}{day:02d}_v01.cdf'
+fname1 = 'omni_hro_1min_{year:4d}{month:02d}{day:02d}_v{version:02d}.cdf'
+fname5 = 'omni_hro_5min_{year:4d}{month:02d}{day:02d}_v{version:02d}.cdf'
 supported_tags = {'': {'1min': fname1,
                        '5min': fname5}}
 list_files = functools.partial(mm_gen.list_files,

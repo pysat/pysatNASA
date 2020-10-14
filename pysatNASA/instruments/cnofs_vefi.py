@@ -75,7 +75,8 @@ _test_dates = {'': {'dc_b': dt.datetime(2009, 1, 1)}}
 
 # support list files routine
 # use the default CDAWeb method
-fname = 'cnofs_vefi_bfield_1sec_{year:04d}{month:02d}{day:02d}_v05.cdf'
+fname = ''.join(('cnofs_vefi_bfield_1sec_{year:04d}{month:02d}{day:02d}',
+                 '_v{version:02d}.cdf'))
 supported_tags = {'': {'dc_b': fname}}
 list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags)
