@@ -57,14 +57,14 @@ pandas_format = False
 
 # use the CDAWeb methods list files routine
 list_files = functools.partial(ps_gen.list_files,
-                               supported_tags=supported_tags)
+                               supported_tags)
 
 # support download routine
 basic_tag = {'dir': '/pub/data/gold/level2/nmax',
              'remote_fname': '{year:4d}/' + fname,
              'local_fname': fname}
 supported_tags = {'': {'': basic_tag}}
-download = functools.partial(cdw.download, supported_tags)
+download = functools.partial(cdw.download, supported_tags=supported_tags)
 
 # support listing files currently on CDAWeb
 list_remote_files = functools.partial(cdw.list_remote_files,
@@ -140,14 +140,14 @@ def load(fnames, tag=None, inst_id=None):
     return data, mdata
 
 
-def clean(inst):
+def clean(self):
     """Provides data cleaning based upon clean_level.
 
     Routine is called by pysat, and not by the end user directly.
 
     Parameters
     -----------
-    inst : pysat.Instrument
+    self : pysat.Instrument
         Instrument class object, whose attribute clean_level is used to return
         the desired level of data selectivity.
 

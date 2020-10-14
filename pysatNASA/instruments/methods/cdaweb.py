@@ -96,7 +96,7 @@ def load(fnames, tag=None, inst_id=None,
                 return cdf.to_pysat(flatten_twod=flatten_twod)
 
 
-def download(supported_tags, date_array, tag, inst_id,
+def download(date_array, tag, inst_id, supported_tags=None,
              remote_site='https://cdaweb.gsfc.nasa.gov',
              data_path=None, user=None, password=None,
              fake_daily_files_from_monthly=False,
@@ -108,16 +108,17 @@ def download(supported_tags, date_array, tag, inst_id,
 
     Parameters
     -----------
-    supported_tags : dict
-        dict of dicts. Keys are supported tag names for download. Value is
-        a dict with 'dir', 'remote_fname', 'local_fname'. Inteded to be
-        pre-set with functools.partial then assigned to new instrument code.
     date_array : array_like
         Array of datetimes to download data for. Provided by pysat.
     tag : str or NoneType
         tag or None (default=None)
     inst_id : (str or NoneType)
         satellite id or None (default=None)
+    supported_tags : dict
+        dict of dicts. Keys are supported tag names for download. Value is
+        a dict with 'dir', 'remote_fname', 'local_fname'. Inteded to be
+        pre-set with functools.partial then assigned to new instrument code.
+        (default=None)
     remote_site : string or NoneType
         Remote site to download data from
         (default='https://cdaweb.gsfc.nasa.gov')
