@@ -96,9 +96,9 @@ list_files = functools.partial(mm_gen.list_files,
 load = cdw.load
 
 # support download routine
-basic_tag = {'dir': '/pub/data/de/de2/neutral_gas_wats/wind2s_wats_cdaweb',
-             'remote_fname': '{year:4d}/' + fname,
-             'local_fname': fname}
+basic_tag = {'remote_dir': ''.join(('/pub/data/de/de2/neutral_gas_wats',
+                                    '/wind2s_wats_cdaweb/{year:4d}/')),
+             'fname': fname}
 supported_tags = {'': {'': basic_tag}}
 download = functools.partial(cdw.download, supported_tags)
 

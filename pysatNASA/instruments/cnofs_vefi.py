@@ -85,9 +85,8 @@ load = cdw.load
 
 # support download routine
 # use the default CDAWeb method
-basic_tag = {'dir': '/pub/data/cnofs/vefi/bfield_1sec',
-             'remote_fname': '{year:4d}/' + fname,
-             'local_fname': fname}
+basic_tag = {'remote_dir': '/pub/data/cnofs/vefi/bfield_1sec/{year:4d}/',
+             'fname': fname}
 supported_tags = {'': {'dc_b': basic_tag}}
 download = functools.partial(cdw.download, supported_tags)
 # support listing files currently on CDAWeb

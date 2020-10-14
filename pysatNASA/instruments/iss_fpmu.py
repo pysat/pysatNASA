@@ -50,9 +50,9 @@ load = cdw.load
 
 # support download routine
 # use the default CDAWeb method
-basic_tag = {'dir': '/pub/data/international_space_station_iss/sp_fpmu',
-             'remote_fname': '{year:4d}/' + fname,
-             'local_fname': fname}
+basic_tag = {'remote_dir': ''.join(('/pub/data/international_space_station_iss',
+                                    '/sp_fpmu/{year:4d}/')),
+             'fname': fname}
 supported_tags = {'': {'': basic_tag}}
 download = functools.partial(cdw.download, supported_tags)
 

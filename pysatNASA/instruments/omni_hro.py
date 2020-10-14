@@ -84,12 +84,10 @@ load = functools.partial(cdw.load, fake_daily_files_from_monthly=True)
 
 # support download routine
 # use the default CDAWeb method
-basic_tag1 = {'dir': '/pub/data/omni/omni_cdaweb/hro_1min',
-              'remote_fname': '{year:4d}/' + fname1,
-              'local_fname': fname1}
-basic_tag5 = {'dir': '/pub/data/omni/omni_cdaweb/hro_5min',
-              'remote_fname': '{year:4d}/' + fname5,
-              'local_fname': fname5}
+basic_tag1 = {'remote_dir': '/pub/data/omni/omni_cdaweb/hro_1min/{year:4d}/',
+              'fname': fname1}
+basic_tag5 = {'remote_dir': '/pub/data/omni/omni_cdaweb/hro_5min/{year:4d}/',
+              'fname': fname5}
 supported_tags = {'': {'1min': basic_tag1,
                        '5min': basic_tag5}}
 download = functools.partial(cdw.download,
