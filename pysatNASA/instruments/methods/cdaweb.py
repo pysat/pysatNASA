@@ -97,7 +97,7 @@ def load(fnames, tag=None, inst_id=None,
 
 
 def download(supported_tags, date_array, tag, inst_id,
-             remote_site='https://cdaweb.gsfc.nasa.gov',
+             remote_url='https://cdaweb.gsfc.nasa.gov',
              data_path=None, user=None, password=None,
              fake_daily_files_from_monthly=False,
              multi_file_day=False):
@@ -118,7 +118,7 @@ def download(supported_tags, date_array, tag, inst_id,
         tag or None (default=None)
     inst_id : (str or NoneType)
         satellite id or None (default=None)
-    remote_site : string or NoneType
+    remote_url : string or NoneType
         Remote site to download data from
         (default='https://cdaweb.gsfc.nasa.gov')
     data_path : string or NoneType
@@ -158,15 +158,12 @@ def download(supported_tags, date_array, tag, inst_id,
     except KeyError:
         raise ValueError('inst_id / tag combo unknown.')
 
-    # path to relevant file on CDAWeb
-    remote_url = remote_site
-
     # naming scheme for files on the CDAWeb server
     remote_dir = inst_dict['remote_dir']
 
     # Get list of files from server
     remote_files = list_remote_files(tag=tag, inst_id=inst_id,
-                                     remote_site=remote_site,
+                                     remote_url=remote_url,
                                      supported_tags=supported_tags,
                                      start=date_array[0],
                                      stop=date_array[-1])
@@ -205,7 +202,7 @@ def download(supported_tags, date_array, tag, inst_id,
 
 
 def list_remote_files(tag, inst_id,
-                      remote_site='https://cdaweb.gsfc.nasa.gov',
+                      remote_url='https://cdaweb.gsfc.nasa.gov',
                       supported_tags=None,
                       user=None, password=None,
                       fake_daily_files_from_monthly=False,
@@ -224,7 +221,7 @@ def list_remote_files(tag, inst_id,
     inst_id : string or NoneType
         Specifies the satellite ID for a constellation.
         (default=None)
-    remote_site : string or NoneType
+    remote_url : string or NoneType
         Remote site to download data from
         (default='https://cdaweb.gsfc.nasa.gov')
     supported_tags : dict
@@ -292,7 +289,7 @@ def list_remote_files(tag, inst_id,
         raise ValueError('inst_id / tag combo unknown.')
 
     # path to relevant file on CDAWeb
-    remote_url = remote_site
+    remote_url = remote_url
 
     # naming scheme for files on the CDAWeb server
     format_str = '/'.join((inst_dict['remote_dir'].strip('/'),
