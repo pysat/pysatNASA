@@ -80,9 +80,9 @@ pandas_format = True
 load = cdw.load
 
 # use the default CDAWeb method
-basic_tag = {'dir': '/pub/data/timed/saber/level2a_v2_07_cdf',
-             'remote_fname': '{year:4d}/{month:02d}/' + fname,
-             'local_fname': fname}
+basic_tag = {'remote_dir': ''.join(('/pub/data/timed/saber/level2a_v2_07_cdf'
+                                    '/{year:4d}/{month:02d}/')),
+             'fname': fname}
 supported_tags = {'': {'': basic_tag}}
 download = functools.partial(cdw.download, supported_tags, multi_file_day=True)
 
