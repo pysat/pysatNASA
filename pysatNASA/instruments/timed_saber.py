@@ -63,7 +63,7 @@ inst_ids = {'': ['']}
 _test_dates = {'': {'': dt.datetime(2019, 1, 1)}}
 
 fname = ''.join(('timed_l2av207_saber_{year:04d}{month:02d}{day:02d}',
-                 '????_v{version:02d}.cdf'))
+                 '{hour:02d}{minute:02d}_v{version:02d}.cdf'))
 supported_tags = {'': {'': fname}}
 # use the CDAWeb methods list files routine
 list_files = functools.partial(mm_gen.list_files,
