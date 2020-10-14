@@ -76,12 +76,9 @@ def load(fnames, tag=None, sat_id=None,
         # data and metadata for pysat using some assumptions.
         # Depending upon your needs the resulting pandas DataFrame may
         # need modification
-        # currently only loads one file, which handles more situations via
-        # pysat than you may initially think
-
-        if fake_daily_files_from_monthly:
-            ldata = []
-            for lfname in fnames:
+        ldata = []
+        for lfname in fnames:
+            if fake_daily_files_from_monthly:
                 # parse out date from filename
                 fname = lfname[0:-11]
                 # get date from rest of filename
@@ -93,19 +90,14 @@ def load(fnames, tag=None, sat_id=None,
                     data = data.loc[date:date + pds.DateOffset(days=1)
                                     - pds.DateOffset(microseconds=1), :]
                     ldata.append(data)
-            # combine individually loaded files together
-            data = pds.concat(ldata)
-            return data, meta
-        else:
-            # basic data return
-            data = []
-            for fname in fnames:
-                with pysatCDF.CDF(fname) as cdf:
+            else:
+                # basic data return
+                with pysatCDF.CDF(lfname) as cdf:
                     temp_data, meta = cdf.to_pysat(flatten_twod=flatten_twod)
-                    data.append(temp_data)
-            # combine individual files together
-            data = pds.concat(data)
-            return data, meta
+                    ldata.append(temp_data)
+        # combine individual files together
+        data = pds.concat(ldata)
+        return data, meta
 
 
 def download(supported_tags, date_array, tag, sat_id,
