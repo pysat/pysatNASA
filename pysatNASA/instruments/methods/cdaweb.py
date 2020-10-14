@@ -96,7 +96,7 @@ def load(fnames, tag=None, inst_id=None,
                 return cdf.to_pysat(flatten_twod=flatten_twod)
 
 
-def download(date_array, tag, inst_id, supported_tags=None,
+def download(date_array, tag=None, inst_id=None, supported_tags=None,
              remote_url='https://cdaweb.gsfc.nasa.gov',
              data_path=None, user=None, password=None,
              fake_daily_files_from_monthly=False):
@@ -199,7 +199,7 @@ def download(date_array, tag, inst_id, supported_tags=None,
                                   date.strftime('%d %B %Y'))))
 
 
-def list_remote_files(tag, inst_id,
+def list_remote_files(tag=None, inst_id=None,
                       remote_url='https://cdaweb.gsfc.nasa.gov',
                       supported_tags=None,
                       user=None, password=None,
