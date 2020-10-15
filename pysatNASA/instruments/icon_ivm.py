@@ -111,13 +111,19 @@ def init(self):
     return
 
 
-def default(self):
+def default(self, keep_original_names=False):
     """Default routine to be applied when loading data. Removes variable
     preambles.
 
+    Parameters
+    ----------
+    keep_original_names : boolean
+        if True then the names as given in the netCDF ICON file
+        will be used as is. If False, a preamble is removed. (default=False)
+
     """
 
-    if not self.kwargs['_load_rtn']['keep_original_names']:
+    if not keep_original_names:
         mm_gen.remove_leading_text(self, target='ICON_L27_')
     return
 

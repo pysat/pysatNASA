@@ -99,15 +99,22 @@ def init(self):
     return
 
 
-def default(self):
+def default(self, keep_original_names=False):
     """Default routine to be applied when loading data. Adjusts epoch timestamps
     to datetimes and removes variable preambles.
+
+    Parameters
+    ----------
+    keep_original_names : boolean
+        if True then the names as given in the netCDF ICON file
+        will be used as is. If False, a preamble is removed. (default=False)
 
     """
 
     mm_gen.convert_timestamp_to_datetime(self, sec_mult=1.0e-3)
-    if not self.kwargs['_load_rtn']['keep_original_names']:
+    if not keep_original_names:
         mm_gen.remove_leading_text(self, target='ICON_L26_')
+    return
 
 
 def load(fnames, tag=None, inst_id=None, keep_original_names=False):
