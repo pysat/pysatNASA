@@ -122,7 +122,7 @@ def default(self, keep_original_names=False):
 
     """
 
-    mm_gen.convert_timestamp_to_datetime(inst, sec_mult=1.0e-3)
+    mm_gen.convert_timestamp_to_datetime(self, sec_mult=1.0e-3)
     if not keep_original_names:
         remove_preamble(self)
     return
