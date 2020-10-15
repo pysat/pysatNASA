@@ -109,23 +109,18 @@ def init(self):
     return
 
 
-def clean(inst):
+def clean(self):
     """Routine to return VEFI data cleaned to the specified level
-
-    Parameters
-    -----------
-    inst : pysat.Instrument
-        Instrument class object, whose attribute clean_level is used to return
-        the desired level of data selectivity.
 
     Note
     ----
     'dusty' or 'clean' removes data when interpolation flag is set to 1
+    'dirty' is the same as 'none'
 
     """
 
-    if (inst.clean_level == 'dusty') | (inst.clean_level == 'clean'):
-        idx, = np.where(inst['B_flag'] == 0)
-        inst.data = inst[idx, :]
+    if (self.clean_level == 'dusty') | (self.clean_level == 'clean'):
+        idx, = np.where(self['B_flag'] == 0)
+        self.data = self[idx, :]
 
-    return None
+    return

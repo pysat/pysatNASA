@@ -108,14 +108,8 @@ def init(self):
     return
 
 
-def clean(inst):
+def clean(self):
     """Routine to return C/NOFS PLP data cleaned to the specified level
-
-    Parameters
-    -----------
-    inst : pysat.Instrument
-        Instrument class object, whose attribute clean_level is used to return
-        the desired level of data selectivity.
 
     Note
     ----
@@ -123,7 +117,8 @@ def clean(inst):
 
     """
 
-    for key in inst.data.columns:
+    for key in self.data.columns:
         if key != 'Epoch':
-            idx, = np.where(inst[key] == inst.meta[key, inst.fill_label])
-            inst[idx, key] = np.nan
+            idx, = np.where(self[key] == self.meta[key, self.fill_label])
+            self[idx, key] = np.nan
+    return

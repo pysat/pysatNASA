@@ -124,14 +124,8 @@ def default(ivm):
     ivm.sample_rate = 1.0 if ivm.date >= dt.datetime(2010, 7, 29) else 2.0
 
 
-def clean(inst):
+def clean(self):
     """Routine to return C/NOFS IVM data cleaned to the specified level
-
-    Parameters
-    -----------
-    inst : pysat.Instrument
-        Instrument class object, whose attribute clean_level is used to return
-        the desired level of data selectivity.
 
     Note
     ----
@@ -140,13 +134,13 @@ def clean(inst):
     """
 
     # make sure all -999999 values are NaN
-    inst.data.replace(-999999., np.nan, inplace=True)
+    self.data.replace(-999999., np.nan, inplace=True)
 
     # Set maximum flags
-    if inst.clean_level == 'clean':
+    if self.clean_level == 'clean':
         max_rpa_flag = 1
         max_dm_flag = 0
-    elif inst.clean_level == 'dusty':
+    elif self.clean_level == 'dusty':
         max_rpa_flag = 3
         max_dm_flag = 3
     else:
@@ -154,64 +148,64 @@ def clean(inst):
         max_dm_flag = 6
 
     # First pass, keep good RPA fits
-    idx, = np.where(inst.data.RPAflag <= max_rpa_flag)
-    inst.data = inst[idx, :]
+    idx, = np.where(self.data.RPAflag <= max_rpa_flag)
+    self.data = self[idx, :]
 
     # Second pass, find bad drifts, replace with NaNs
-    idx = (inst.data.driftMeterflag > max_dm_flag)
+    idx = (self.data.driftMeterflag > max_dm_flag)
 
     # Also exclude very large drifts and drifts where 100% O+
-    if (inst.clean_level == 'clean') | (inst.clean_level == 'dusty'):
-        if 'ionVelmeridional' in inst.data.columns:
+    if (self.clean_level == 'clean') | (self.clean_level == 'dusty'):
+        if 'ionVelmeridional' in self.data.columns:
             # unrealistic velocities
             # This check should be performed at the RPA or IDM velocity level
-            idx2 = (np.abs(inst.data.ionVelmeridional) >= 10000.0)
+            idx2 = (np.abs(self.data.ionVelmeridional) >= 10000.0)
             idx = (idx | idx2)
 
     if len(idx) > 0:
         drift_labels = ['ionVelmeridional', 'ionVelparallel', 'ionVelzonal',
                         'ionVelocityX', 'ionVelocityY', 'ionVelocityZ']
         for label in drift_labels:
-            inst[idx, label] = np.NaN
+            self[idx, label] = np.NaN
 
     # Check for bad RPA fits in dusty regime.
     # O+ concentration criteria from Burrell, 2012
-    if inst.clean_level == 'dusty' or inst.clean_level == 'clean':
+    if self.clean_level == 'dusty' or self.clean_level == 'clean':
         # Low O+ concentrations for RPA Flag of 3 are suspect and high O+
         # fractions create a shallow fit region for the ram velocity
-        nO = inst.data.ion1fraction * inst.data.Ni
-        idx = (((inst.data.RPAflag == 3) & (nO <= 3.0e4))
-               | (inst.data.ion1fraction >= 1.0))
+        nO = self.data.ion1fraction * self.data.Ni
+        idx = (((self.data.RPAflag == 3) & (nO <= 3.0e4))
+               | (self.data.ion1fraction >= 1.0))
 
         # Only remove data if RPA component of drift is greater than 1%
         unit_vecs = {'ionVelmeridional': 'meridionalunitvectorX',
                      'ionVelparallel': 'parallelunitvectorX',
                      'ionVelzonal': 'zonalunitvectorX'}
         for label in unit_vecs:
-            idx0 = idx & (np.abs(inst[unit_vecs[label]]) >= 0.01)
-            inst[idx0, label] = np.NaN
+            idx0 = idx & (np.abs(self[unit_vecs[label]]) >= 0.01)
+            self[idx0, label] = np.NaN
 
         # The RPA component of the ram velocity is always 100%
-        inst[idx, 'ionVelocityX'] = np.NaN
+        self[idx, 'ionVelocityX'] = np.NaN
 
         # Check for bad temperature fits (O+ < 15%), replace with NaNs
         # Criteria from Hairston et al, 2010
-        idx = inst.data.ion1fraction < 0.15
-        inst[idx, 'ionTemperature'] = np.NaN
+        idx = self.data.ion1fraction < 0.15
+        self[idx, 'ionTemperature'] = np.NaN
 
         # The ion fractions should always sum to one and never drop below zero
         ifracs = ['ion{:d}fraction'.format(i) for i in np.arange(1, 6)]
-        ion_sum = np.sum([inst[label] for label in ifracs], axis=0)
-        ion_min = np.min([inst[label] for label in ifracs], axis=0)
+        ion_sum = np.sum([self[label] for label in ifracs], axis=0)
+        ion_min = np.min([self[label] for label in ifracs], axis=0)
         idx = ((ion_sum != 1.0) | (ion_min < 0.0))
         for label in ifracs:
-            inst[idx, label] = np.NaN
+            self[idx, label] = np.NaN
 
     # basic quality check on drifts and don't let UTS go above 86400.
-    idx, = np.where(inst.data.time <= 86400.)
-    inst.data = inst[idx, :]
+    idx, = np.where(self.data.time <= 86400.)
+    self.data = self[idx, :]
 
     # make sure MLT is between 0 and 24
-    idx, = np.where((inst.data.mlt >= 0) & (inst.data.mlt <= 24.))
-    inst.data = inst[idx, :]
+    idx, = np.where((self.data.mlt >= 0) & (self.data.mlt <= 24.))
+    self.data = self[idx, :]
     return
