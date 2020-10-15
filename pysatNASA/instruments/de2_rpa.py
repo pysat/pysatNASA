@@ -109,28 +109,17 @@ def init(self):
     return
 
 
-def clean(inst):
-    """Routine to return PLATFORM/NAME data cleaned to the specified level
+def clean(self):
+    """Routine to return DE2 RPA data cleaned to the specified level
 
-    Cleaning level is specified in inst.clean_level and pysat
-    will accept user input for several strings. The clean_level is
-    specified at instantiation of the Instrument object.
-
-    'clean' All parameters should be good, suitable for statistical and
-            case studies
-    'dusty' All paramers should generally be good though same may
-            not be great
-    'dirty' There are data areas that have issues, data should be used
-            with caution
+    Note
+    ----
+    'clean' - Not specified
+    'dusty' - Not specified
+    'dirty' - Not specified
     'none'  No cleaning applied, routine not called in this case.
 
-
-    Parameters
-    -----------
-    inst : pysat.Instrument
-        Instrument class object, whose attribute clean_level is used to return
-        the desired level of data selectivity.
-
     """
+    logger.warning('No cleaning routines available')
 
     return
