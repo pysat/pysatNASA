@@ -156,8 +156,9 @@ def default(self):
     """
 
     mm_gen.convert_timestamp_to_datetime(self, sec_mult=1.0e-3)
-    if not self.kwargs['keep_original_names']:
+    if not self.kwargs['_load_rtn']['keep_original_names']:
         remove_preamble(self)
+    return
 
 
 def remove_preamble(inst):
