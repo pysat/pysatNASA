@@ -111,19 +111,15 @@ def init(self):
     return
 
 
-def default(inst):
+def default(self):
     """Default routine to be applied when loading data. Removes variable
     preambles.
 
-    Parameters
-    -----------
-    inst : pysat.Instrument
-        Instrument class object
-
     """
 
-    if not inst.kwargs['keep_original_names']:
-        mm_gen.remove_leading_text(inst, target='ICON_L27_')
+    if not self.kwargs['_load_rtn']['keep_original_names']:
+        mm_gen.remove_leading_text(self, target='ICON_L27_')
+    return
 
 
 def load(fnames, tag=None, inst_id=None, keep_original_names=False):

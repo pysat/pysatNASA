@@ -149,9 +149,19 @@ def init(self):
     return
 
 
-def default(inst):
+def default(self):
     """Default routine to be applied when loading data.  Adjusts epoch
     timestamps to datetimes and removes variable preambles.
+
+    """
+
+    mm_gen.convert_timestamp_to_datetime(self, sec_mult=1.0e-3)
+    if not self.kwargs['keep_original_names']:
+        remove_preamble(self)
+
+
+def remove_preamble(inst):
+    """Removes preambles in variable names
 
     Parameters
     -----------
@@ -159,14 +169,6 @@ def default(inst):
         Instrument class object
 
     """
-
-    mm_gen.convert_timestamp_to_datetime(inst, sec_mult=1.0e-3)
-    if not inst.kwargs['keep_original_names']:
-        remove_preamble(inst)
-
-
-def remove_preamble(inst):
-    """Removes preambles in variable names"""
     id_str = inst.inst_id.upper()
 
     target = {'los_wind_green': 'ICON_L21_',

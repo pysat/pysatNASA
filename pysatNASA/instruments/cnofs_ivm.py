@@ -108,20 +108,18 @@ def init(self):
     return
 
 
-def default(ivm):
+def default(self):
     """Apply C/NOFS IVM default attributes
 
+    Note
+    ----
     The sample rate for loaded data is attached at inst.sample_rate
     before any attached custom methods are executed.
 
-    Parameters
-    ----------
-    ivm : pysat.Instrument
-        C/NOFS IVM Instrument object
-
     """
 
-    ivm.sample_rate = 1.0 if ivm.date >= dt.datetime(2010, 7, 29) else 2.0
+    self.sample_rate = 1.0 if self.date >= dt.datetime(2010, 7, 29) else 2.0
+    return
 
 
 def clean(self):

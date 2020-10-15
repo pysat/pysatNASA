@@ -110,20 +110,15 @@ def init(self):
     return
 
 
-def default(inst):
+def default(self):
     """Default routine to be applied when loading data. Adjusts epoch timestamps
     to datetimes and removes variable preambles.
-
-    Parameters
-    -----------
-    inst : pysat.Instrument
-        Instrument class object
 
     """
 
     mm_gen.convert_timestamp_to_datetime(inst, sec_mult=1.0e-3)
-    if not inst.kwargs['keep_original_names']:
-        remove_preamble(inst)
+    if not self.kwargs['_load_rtn']['keep_original_names']:
+        remove_preamble(self)
 
 
 def remove_preamble(inst):
