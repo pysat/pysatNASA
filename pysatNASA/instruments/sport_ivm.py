@@ -132,3 +132,23 @@ def download(date_array, tag, inst_id, data_path=None, user=None,
     warnings.warn('Downloads are not currently supported - not launched yet!')
 
     pass
+
+
+def clean(inst):
+    """Routine to return SPORT IVM data cleaned to the specified level
+
+    Parameters
+    -----------
+    inst : pysat.Instrument
+        Instrument class object, whose attribute clean_level is used to return
+        the desired level of data selectivity.
+
+    Note
+    ----
+    No cleaning currently available for SPORT IVM.
+
+    """
+
+    warnings.warn("No cleaning currently available for SPORT")
+
+    return None
