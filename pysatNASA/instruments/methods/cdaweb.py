@@ -165,11 +165,8 @@ def download(date_array, tag=None, inst_id=None, supported_tags=None,
                                      supported_tags=supported_tags,
                                      start=date_array[0],
                                      stop=date_array[-1])
-    # Find only requested files that exist remotely
-    date_array = pds.DatetimeIndex(list(set(remote_files.index)
-                                        & set(date_array))).sort_values()
-
-    for date, fname in remote_files[date_array].iteritems():
+    # Download only requested files that exist remotely
+    for date, fname in remote_files.iteritems():
         # format files for specific dates and download location
         formatted_remote_dir = remote_dir.format(year=date.year,
                                                  month=date.month,
@@ -372,7 +369,9 @@ def list_remote_files(tag=None, inst_id=None,
     if start is not None:
         mask = (stored_list.index >= start)
         if stop is not None:
-            mask = mask & (stored_list.index <= stop + pds.DateOffset(days=1))
+            stop_point = (stop + pds.DateOffset(days=1)
+                          - pds.DateOffset(microseconds=1))
+            mask = mask & (stored_list.index <= stop_point)
         stored_list = stored_list[mask]
 
     return stored_list
