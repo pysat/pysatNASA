@@ -41,6 +41,12 @@ inst_id
 tag
     None Supported
 
+
+Warnings
+--------
+- Currently no cleaning routine.
+
+
 Authors
 -------
 J. Klenzing
@@ -50,6 +56,7 @@ J. Klenzing
 import datetime as dt
 import functools
 import logging
+import warnings
 
 from pysat.instruments.methods import general as mm_gen
 from pysatNASA.instruments.methods import de2 as mm_de2
@@ -110,6 +117,6 @@ def clean(self):
     'none'  No cleaning applied, routine not called in this case.
 
     """
-    logger.warning('No cleaning routines available')
+    warnings.warn('No cleaning routines available for DE2 LANG')
 
     return
