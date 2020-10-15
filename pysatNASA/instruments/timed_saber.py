@@ -37,6 +37,7 @@ Users of SABER data are asked to respect the following guidelines
 Warnings
 --------
 - Note on Temperature Errors: http://saber.gats-inc.com/temp_errors.php
+- No cleaning routine
 
 
 Authors
@@ -48,6 +49,7 @@ J. Klenzing, 4 March 2019
 import datetime as dt
 import logging
 import functools
+import warnings
 
 # CDAWeb methods prewritten for pysat
 from pysat.instruments.methods import general as mm_gen
@@ -109,13 +111,11 @@ def init(self):
     return
 
 
-def clean(inst):
-    """Routine to return PLATFORM/NAME data cleaned to the specified level
+def clean(self):
+    """Routine to return TIMED SABER data cleaned to the specified level
 
-    Cleaning level is specified in inst.clean_level and pysat
-    will accept user input for several strings. The clean_level is
-    specified at instantiation of the Instrument object.
-
+    Note
+    ----
     'clean' All parameters should be good, suitable for statistical and
             case studies
     'dusty' All paramers should generally be good though same may
@@ -124,13 +124,7 @@ def clean(inst):
             with caution
     'none'  No cleaning applied, routine not called in this case.
 
-
-    Parameters
-    ----------
-    inst : pysat.Instrument
-        Instrument class object, whose attribute clean_level is used to return
-        the desired level of data selectivity.
-
     """
+    warnings.warn('no cleaning routine available for TIMED SABER')
 
     return

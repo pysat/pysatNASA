@@ -40,6 +40,7 @@ Warnings
 import datetime as dt
 import functools
 import logging
+import warnings
 
 from pysat.instruments.methods import general as mm_gen
 from pysatNASA.instruments.methods import cdaweb as cdw
@@ -104,19 +105,14 @@ def init(self):
     return
 
 
-def clean(inst):
+def clean(self):
     """Routine to return TIMED SEE data cleaned to the specified level
-
-    Parameters
-    -----------
-    inst : pysat.Instrument
-        Instrument class object, whose attribute clean_level is used to return
-        the desired level of data selectivity.
 
     Note
     ----
     No cleaning currently available.
 
     """
+    warnings.warn('no cleaning routines available for TIMED SEE data')
 
-    return None
+    return
