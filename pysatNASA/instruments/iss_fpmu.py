@@ -90,18 +90,19 @@ def init(self):
     return
 
 
-def clean(inst):
+def clean(self):
     """Return FPMU data cleaned to the specified level.
 
-    Parameters
-    ----------
-    inst : pysat.Instrument
-        Instrument class object, whose attribute clean_level is used to return
-        the desired level of data selectivity.
+    Note
+    ----
+    'clean' - Replace Te and Ni fill values with NaN
+    'dusty' - Same as clean
+    'dirty' - Same as clean
+    'none'  - Not applied, default fill values are preserved
 
     """
 
-    inst.data.replace(-999., np.nan, inplace=True)  # Te
-    inst.data.replace(-9.9999998e+30, np.nan, inplace=True)  # Ni
+    self.data.replace(-999., np.nan, inplace=True)  # Te
+    self.data.replace(-9.9999998e+30, np.nan, inplace=True)  # Ni
 
-    return None
+    return

@@ -84,14 +84,8 @@ def init(self):
     return
 
 
-def clean(inst):
+def clean(self):
     """Routine to return ROCSAT-1 IVM data cleaned to the specified level
-
-    Parameters
-    -----------
-    inst : pysat.Instrument
-        Instrument class object, whose attribute clean_level is used to return
-        the desired level of data selectivity.
 
     Note
     ----

@@ -120,16 +120,26 @@ def init(self):
     return
 
 
-def clean(omni):
+def clean(self):
+    """ Cleaning function for OMNI data
+
+    Note
+    ----
+    'clean' - Replace default fill values with NaN
+    'dusty' - Same as clean
+    'dirty' - Same as clean
+    'none'  - Preserve original fill values
+
+    """
     for fill_attr in ["fillval", "fill"]:
         # case insensitive check for attribute name
-        if omni.meta.has_attr(fill_attr):
+        if self.meta.has_attr(fill_attr):
             # get real name
-            fill_attr = omni.meta.attr_case_name(fill_attr)
-            for key in omni.data.columns:
+            fill_attr = self.meta.attr_case_name(fill_attr)
+            for key in self.data.columns:
                 if key != 'Epoch':
-                    idx, = np.where(omni[key] == omni.meta[key, fill_attr])
-                    omni[idx, key] = np.nan
+                    idx, = np.where(self[key] == self.meta[key, fill_attr])
+                    self[idx, key] = np.nan
     return
 
 

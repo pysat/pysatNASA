@@ -5,6 +5,21 @@ Ion Velocity Meter (IVM) support for the NASA/INPE SPORT CubeSat.
 This mission is still in development. This routine is here to help
 with the development of code associated with SPORT and the IVM.
 
+Properties
+----------
+platform
+    'sport'
+name
+    'ivm'
+tag
+    '', 'L1', 'L2'
+inst_id
+    None supported
+
+Warnings
+--------
+- Currently no cleaning routine.
+
 """
 
 import datetime as dt
@@ -103,11 +118,9 @@ def load(fnames, tag=None, inst_id=None, **kwargs):
     return pysat.utils.load_netcdf4(fnames, **kwargs)
 
 
-def download(date_array, tag, inst_id, data_path=None, user=None,
-             password=None):
+def download(date_array, tag, inst_id, data_path=None):
     """Downloads data for SPORT IVM, once SPORT is operational and in orbit.
-    This routine is invoked by pysat and is not intended for direct use by
-    the end user.
+
     Parameters
     ----------
     date_array : array-like
@@ -121,14 +134,23 @@ def download(date_array, tag, inst_id, data_path=None, user=None,
         is provided by pysat.
     data_path : string (None)
         Path to directory to download data to.
-    user : string (None)
-        User string input used for download. Provided by user and passed via
-        pysat. If an account is required for dowloads this routine here must
-        error if user not supplied.
-    password : string (None)
-        Password for data download.
+
     """
 
     warnings.warn('Downloads are not currently supported - not launched yet!')
 
     pass
+
+
+def clean(self):
+    """Routine to return SPORT IVM data cleaned to the specified level
+
+    Note
+    ----
+    No cleaning currently available for SPORT IVM.
+
+    """
+
+    warnings.warn("No cleaning currently available for SPORT IVM")
+
+    return None
