@@ -177,16 +177,8 @@ def load(fnames, tag=None, inst_id=None, keep_original_names=False):
     return data, mdata
 
 
-def clean(inst):
+def clean(self):
     """Provides data cleaning based upon clean_level.
-
-    Routine is called by pysat, and not by the end user directly.
-
-    Parameters
-    -----------
-    inst : pysat.Instrument
-        Instrument class object, whose attribute clean_level is used to return
-        the desired level of data selectivity.
 
     Note
     ----
@@ -196,7 +188,7 @@ def clean(inst):
     """
 
     vars = ['HmF2', 'NmF2', 'Oplus']
-    if 'Flags' in inst.variables:
+    if 'Flags' in self.variables:
         icon_flag = 'Flags'
     else:
         icon_flag = 'ICON_L26_Flags'
@@ -204,8 +196,8 @@ def clean(inst):
 
     min_val = {'clean': 1.0,
                'dusty': 2.0}
-    if inst.clean_level in ['clean', 'dusty']:
+    if self.clean_level in ['clean', 'dusty']:
         for var in vars:
-            inst[var] = inst[var].where(inst[icon_flag]
-                                        <= min_val[inst.clean_level])
+            self[var] = self[var].where(self[icon_flag]
+                                        <= min_val[self.clean_level])
     return

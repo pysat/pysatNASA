@@ -240,16 +240,8 @@ def load(fnames, tag=None, inst_id=None, keep_original_names=False):
     return data, mdata
 
 
-def clean(inst):
+def clean(self):
     """Provides data cleaning based upon clean_level.
-
-    Routine is called by pysat, and not by the end user directly.
-
-    Parameters
-    -----------
-    inst : pysat.Instrument
-        Instrument class object, whose attribute clean_level is used to return
-        the desired level of data selectivity.
 
     Note
     ----
@@ -257,30 +249,30 @@ def clean(inst):
 
     """
 
-    if inst.tag.find('los') >= 0:
+    if self.tag.find('los') >= 0:
         # dealing with LOS winds
         wind_flag = 'Wind_Quality'
         ver_flag = 'VER_Quality'
         wind_vars = ['Line_of_Sight_Wind', 'Line_of_Sight_Wind_Error']
         ver_vars = ['Fringe_Amplitude', 'Fringe_Amplitude_Error',
                     'Relative_VER', 'Relative_VER_Error']
-        if wind_flag not in inst.variables:
+        if wind_flag not in self.variables:
             wind_flag = '_'.join(('ICON_L21', wind_flag))
             ver_flag = '_'.join(('ICON_L21', ver_flag))
             wind_vars = ['ICON_L21_' + var for var in wind_vars]
             ver_vars = ['ICON_L21_' + var for var in ver_vars]
         min_val = {'clean': 1.0,
                    'dusty': 0.5}
-        if inst.clean_level in ['clean', 'dusty']:
+        if self.clean_level in ['clean', 'dusty']:
             # find location with any of the flags set
             for var in wind_vars:
-                inst[var] = inst[var].where(inst[wind_flag]
-                                            >= min_val[inst.clean_level])
+                self[var] = self[var].where(self[wind_flag]
+                                            >= min_val[self.clean_level])
             for var in ver_vars:
-                inst[var] = inst[var].where(inst[ver_flag]
-                                            >= min_val[inst.clean_level])
+                self[var] = self[var].where(self[ver_flag]
+                                            >= min_val[self.clean_level])
 
-    elif inst.tag.find('vector') >= 0:
+    elif self.tag.find('vector') >= 0:
         # vector winds area
         wind_flag = 'Wind_Quality'
         ver_flag = 'VER_Quality'
@@ -288,38 +280,38 @@ def clean(inst):
                      'Meridional_Wind', 'Meridional_Wind_Error']
         ver_vars = ['Fringe_Amplitude', 'Fringe_Amplitude_Error',
                     'Relative_VER', 'Relative_VER_Error']
-        if wind_flag not in inst.variables:
+        if wind_flag not in self.variables:
             wind_flag = '_'.join(('ICON_L22', wind_flag))
             ver_flag = '_'.join(('ICON_L22', ver_flag))
             wind_vars = ['ICON_L22_' + var for var in wind_vars]
             ver_vars = ['ICON_L22_' + var for var in ver_vars]
         min_val = {'clean': 1.0,
                    'dusty': 0.5}
-        if inst.clean_level in ['clean', 'dusty']:
+        if self.clean_level in ['clean', 'dusty']:
             # find location with any of the flags set
             for var in wind_vars:
-                inst[var] = inst[var].where(inst[wind_flag]
-                                            >= min_val[inst.clean_level])
+                self[var] = self[var].where(self[wind_flag]
+                                            >= min_val[self.clean_level])
             for var in ver_vars:
-                inst[var] = inst[var].where(inst[ver_flag]
-                                            >= min_val[inst.clean_level])
+                self[var] = self[var].where(self[ver_flag]
+                                            >= min_val[self.clean_level])
 
-    elif inst.tag.find('temp') >= 0:
+    elif self.tag.find('temp') >= 0:
         # neutral temperatures
         var = 'Temperature'
         saa_flag = 'Quality_Flag_South_Atlantic_Anomaly'
         cal_flag = 'Quality_Flag_Bad_Calibration'
-        if saa_flag not in inst.variables:
-            id_str = inst.inst_id.upper()
+        if saa_flag not in self.variables:
+            id_str = self.self_id.upper()
             saa_flag = '_'.join(('ICON_L1_MIGHTI', id_str, saa_flag))
             cal_flag = '_'.join(('ICON_L1_MIGHTI', id_str, cal_flag))
             var = '_'.join(('ICON_L23_MIGHTI', id_str, var))
-        if inst.clean_level in ['clean', 'dusty']:
+        if self.clean_level in ['clean', 'dusty']:
             # filter out areas with bad calibration data
             # as well as data marked in the SAA
-            inst[var] = inst[var].where((inst[saa_flag] == 0)
-                                        & (inst[cal_flag] == 0))
+            self[var] = self[var].where((self[saa_flag] == 0)
+                                        & (self[cal_flag] == 0))
             # filter out negative temperatures
-            inst[var] = inst[var].where(inst[var] > 0)
+            self[var] = self[var].where(self[var] > 0)
 
     return

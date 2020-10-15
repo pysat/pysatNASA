@@ -189,16 +189,8 @@ def load(fnames, tag=None, inst_id=None, keep_original_names=False):
                                     pandas_format=pandas_format)
 
 
-def clean(inst):
+def clean(self):
     """Provides data cleaning based upon clean_level.
-
-    Routine is called by pysat, and not by the end user directly.
-
-    Parameters
-    -----------
-    inst : pysat.Instrument
-        Instrument class object, whose attribute clean_level is used to return
-        the desired level of data selectivity.
 
     Note
     ----

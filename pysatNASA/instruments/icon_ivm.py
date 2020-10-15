@@ -180,16 +180,8 @@ def load(fnames, tag=None, inst_id=None, keep_original_names=False):
                                     fill_label='FillVal')
 
 
-def clean(inst):
+def clean(self):
     """Provides data cleaning based upon clean_level.
-
-    Routine is called by pysat, and not by the end user directly.
-
-    Parameters
-    -----------
-    inst : pysat.Instrument
-        Instrument class object, whose attribute clean_level is used to return
-        the desired level of data selectivity.
 
     Note
     ----
@@ -205,7 +197,7 @@ def clean(inst):
     rpa_variables = ['Ion_Temperature', 'Ion_Density',
                      'Fractional_Ion_Density_H',
                      'Fractional_Ion_Density_O']
-    if 'RPA_Flag' in inst.variables:
+    if 'RPA_Flag' in self.variables:
         rpa_flag = 'RPA_Flag'
         dm_flag = 'DM_Flag'
     else:
@@ -215,20 +207,20 @@ def clean(inst):
         cross_drift_variables = ['ICON_L27_' + x for x in cross_drift_variables]
         rpa_variables = ['ICON_L27_' + x for x in rpa_variables]
 
-    if inst.clean_level in ['clean', 'dusty']:
+    if self.clean_level in ['clean', 'dusty']:
         # remove drift values impacted by RPA
-        idx, = np.where(inst[rpa_flag] >= 1)
+        idx, = np.where(self[rpa_flag] >= 1)
         for var in drift_variables:
-            inst[idx, var] = np.nan
+            self[idx, var] = np.nan
         # DM values
-        idx, = np.where(inst[dm_flag] >= 1)
+        idx, = np.where(self[dm_flag] >= 1)
         for var in cross_drift_variables:
-            inst[idx, var] = np.nan
+            self[idx, var] = np.nan
 
-    if inst.clean_level == 'clean':
+    if self.clean_level == 'clean':
         # other RPA parameters
-        idx, = np.where(inst[rpa_flag] >= 2)
+        idx, = np.where(self[rpa_flag] >= 2)
         for var in rpa_variables:
-            inst[idx, var] = np.nan
+            self[idx, var] = np.nan
 
     return
