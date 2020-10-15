@@ -221,7 +221,7 @@ def list_remote_files(tag=None, inst_id=None,
         (default='https://cdaweb.gsfc.nasa.gov')
     supported_tags : dict
         dict of dicts. Keys are supported tag names for download. Value is
-        a dict with 'remote_dir', 'remote_loc', 'fname'. Inteded to be
+        a dict with 'remote_dir', fname'. Inteded to be
         pre-set with functools.partial then assigned to new instrument code.
         (default=None)
     user : string or NoneType
