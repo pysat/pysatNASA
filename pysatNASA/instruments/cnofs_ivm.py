@@ -78,30 +78,6 @@ inst_ids = {'': ['']}
 _test_dates = {'': {'': dt.datetime(2009, 1, 1)}}
 
 # ----------------------------------------------------------------------------
-# Instrument functions
-#
-# Use the default CDAWeb and pysat methods
-
-# Set the list_files routine
-fname = 'cnofs_cindi_ivm_500ms_{year:4d}{month:02d}{day:02d}_v01.cdf'
-list_tags = {'': {'': fname}}
-list_files = functools.partial(mm_gen.list_files, supported_tags=list_tags)
-
-# Set the load routine
-load = cdw.load
-
-# Set the download routine
-basic_tag = {'dir': '/pub/data/cnofs/cindi/ivm_500ms_cdf',
-             'remote_fname': '{year:4d}/' + fname,
-             'local_fname': fname}
-download_tags = {'': {'': basic_tag}}
-download = functools.partial(cdw.download, download_tags)
-
-# Set the list_remote_files routine
-list_remote_files = functools.partial(cdw.list_remote_files,
-                                      supported_tags=download_tags)
-
-# ----------------------------------------------------------------------------
 # Instrument methods
 
 
@@ -218,3 +194,28 @@ def clean(self):
     idx, = np.where((self.data.mlt >= 0) & (self.data.mlt <= 24.))
     self.data = self[idx, :]
     return
+
+
+# ----------------------------------------------------------------------------
+# Instrument functions
+#
+# Use the default CDAWeb and pysat methods
+
+# Set the list_files routine
+fname = 'cnofs_cindi_ivm_500ms_{year:4d}{month:02d}{day:02d}_v01.cdf'
+list_tags = {'': {'': fname}}
+list_files = functools.partial(mm_gen.list_files, supported_tags=list_tags)
+
+# Set the load routine
+load = cdw.load
+
+# Set the download routine
+basic_tag = {'dir': '/pub/data/cnofs/cindi/ivm_500ms_cdf',
+             'remote_fname': '{year:4d}/' + fname,
+             'local_fname': fname}
+download_tags = {'': {'': basic_tag}}
+download = functools.partial(cdw.download, download_tags)
+
+# Set the list_remote_files routine
+list_remote_files = functools.partial(cdw.list_remote_files,
+                                      supported_tags=download_tags)

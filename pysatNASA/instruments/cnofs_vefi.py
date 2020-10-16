@@ -81,30 +81,6 @@ inst_ids = {'': ['dc_b']}
 _test_dates = {'': {'dc_b': dt.datetime(2009, 1, 1)}}
 
 # ----------------------------------------------------------------------------
-# Instrument functions
-#
-# Use the default CDAWeb and pysat methods
-
-# Set the list_files routine
-fname = 'cnofs_vefi_bfield_1sec_{year:04d}{month:02d}{day:02d}_v05.cdf'
-list_tags = {'': {'dc_b': fname}}
-list_files = functools.partial(mm_gen.list_files, supported_tags=list_tags)
-
-# Set the load routine
-load = cdw.load
-
-# Set the download routine
-basic_tag = {'dir': '/pub/data/cnofs/vefi/bfield_1sec',
-             'remote_fname': '{year:4d}/' + fname,
-             'local_fname': fname}
-download_tags = {'': {'dc_b': basic_tag}}
-download = functools.partial(cdw.download, download_tags)
-
-# Set the list_remote_files routine
-list_remote_files = functools.partial(cdw.list_remote_files,
-                                      supported_tags=download_tags)
-
-# ----------------------------------------------------------------------------
 # Instrument methods
 
 
@@ -137,3 +113,28 @@ def clean(self):
         self.data = self[idx, :]
 
     return
+
+
+# ----------------------------------------------------------------------------
+# Instrument functions
+#
+# Use the default CDAWeb and pysat methods
+
+# Set the list_files routine
+fname = 'cnofs_vefi_bfield_1sec_{year:04d}{month:02d}{day:02d}_v05.cdf'
+list_tags = {'': {'dc_b': fname}}
+list_files = functools.partial(mm_gen.list_files, supported_tags=list_tags)
+
+# Set the load routine
+load = cdw.load
+
+# Set the download routine
+basic_tag = {'dir': '/pub/data/cnofs/vefi/bfield_1sec',
+             'remote_fname': '{year:4d}/' + fname,
+             'local_fname': fname}
+download_tags = {'': {'dc_b': basic_tag}}
+download = functools.partial(cdw.download, download_tags)
+
+# Set the list_remote_files routine
+list_remote_files = functools.partial(cdw.list_remote_files,
+                                      supported_tags=download_tags)

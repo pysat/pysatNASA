@@ -97,30 +97,6 @@ inst_ids = {'': ['']}
 _test_dates = {'': {'': dt.datetime(1983, 1, 1)}}
 
 # ----------------------------------------------------------------------------
-# Instrument functions
-#
-# Use the default CDAWeb and pysat methods
-
-# Set the list_files routine
-fname = 'de2_wind2s_wats_{year:04d}{month:02d}{day:02d}_v01.cdf'
-list_tags = {'': {'': fname}}
-list_files = functools.partial(mm_gen.list_files, supported_tags=list_tags)
-
-# Set the load routine
-load = cdw.load
-
-# Set the download routine
-basic_tag = {'dir': '/pub/data/de/de2/neutral_gas_wats/wind2s_wats_cdaweb',
-             'remote_fname': '{year:4d}/' + fname,
-             'local_fname': fname}
-download_tags = {'': {'': basic_tag}}
-download = functools.partial(cdw.download, download_tags)
-
-# Set the list_remote_files routine
-list_remote_files = functools.partial(cdw.list_remote_files,
-                                      supported_tags=download_tags)
-
-# ----------------------------------------------------------------------------
 # Instrument methods
 
 
@@ -151,3 +127,28 @@ def clean(self):
     warnings.warn('No cleaning routines available for DE2 WATS')
 
     return
+
+
+# ----------------------------------------------------------------------------
+# Instrument functions
+#
+# Use the default CDAWeb and pysat methods
+
+# Set the list_files routine
+fname = 'de2_wind2s_wats_{year:04d}{month:02d}{day:02d}_v01.cdf'
+list_tags = {'': {'': fname}}
+list_files = functools.partial(mm_gen.list_files, supported_tags=list_tags)
+
+# Set the load routine
+load = cdw.load
+
+# Set the download routine
+basic_tag = {'dir': '/pub/data/de/de2/neutral_gas_wats/wind2s_wats_cdaweb',
+             'remote_fname': '{year:4d}/' + fname,
+             'local_fname': fname}
+download_tags = {'': {'': basic_tag}}
+download = functools.partial(cdw.download, download_tags)
+
+# Set the list_remote_files routine
+list_remote_files = functools.partial(cdw.list_remote_files,
+                                      supported_tags=download_tags)
