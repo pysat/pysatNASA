@@ -134,14 +134,8 @@ def download(date_array, tag, inst_id, data_path=None, user=None,
     pass
 
 
-def clean(inst):
+def clean(self):
     """Routine to return SPORT IVM data cleaned to the specified level
-
-    Parameters
-    -----------
-    inst : pysat.Instrument
-        Instrument class object, whose attribute clean_level is used to return
-        the desired level of data selectivity.
 
     Note
     ----
@@ -151,4 +145,4 @@ def clean(inst):
 
     warnings.warn("No cleaning currently available for SPORT")
 
-    return None
+    return
