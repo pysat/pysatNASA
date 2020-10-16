@@ -87,19 +87,28 @@ from pysatNASA.instruments.methods import cdaweb as cdw
 
 logger = logging.getLogger(__name__)
 
+# ----------------------------------------------------------------------------
+# Instrument attributes
+
 platform = 'de2'
 name = 'nacs'
-
 tags = {'': '1 s cadence Neutral Atmosphere Composition Spectrometer data'}
 inst_ids = {'': ['']}
+
+# ----------------------------------------------------------------------------
+# Instrument test attributes
+
 _test_dates = {'': {'': dt.datetime(1983, 1, 1)}}
 
-fname = 'de2_neutral1s_nacs_{year:04d}{month:02d}{day:02d}_v01.cdf'
-supported_tags = {'': {'': fname}}
+# ----------------------------------------------------------------------------
+# Instrument functions
+#
+# Use the default CDAWeb and pysat methods
 
-# use the CDAWeb methods list files routine
-list_files = functools.partial(mm_gen.list_files,
-                               supported_tags=supported_tags)
+# Set the list_files routine
+fname = 'de2_neutral1s_nacs_{year:04d}{month:02d}{day:02d}_v01.cdf'
+list_tags = {'': {'': fname}}
+list_files = functools.partial(mm_gen.list_files, supported_tags=list_tags)
 
 # use the default CDAWeb method
 load = cdw.load
@@ -108,12 +117,15 @@ load = cdw.load
 basic_tag = {'dir': '/pub/data/de/de2/neutral_gas_nacs/neutral1s_nacs_cdaweb',
              'remote_fname': '{year:4d}/' + fname,
              'local_fname': fname}
-supported_tags = {'': {'': basic_tag}}
-download = functools.partial(cdw.download, supported_tags)
+download_tags = {'': {'': basic_tag}}
+download = functools.partial(cdw.download, download_tags)
 
 # support listing files currently on CDAWeb
 list_remote_files = functools.partial(cdw.list_remote_files,
-                                      supported_tags=supported_tags)
+                                      supported_tags=download_tags)
+
+# ----------------------------------------------------------------------------
+# Instrument methods
 
 
 def init(self):
