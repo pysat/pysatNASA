@@ -65,33 +65,45 @@ from pysatNASA.instruments.methods import cdaweb as cdw
 
 logger = logging.getLogger(__name__)
 
+# ----------------------------------------------------------------------------
+# Instrument attributes
+
 platform = 'cnofs'
 name = 'plp'
 tags = {'': ''}
 inst_ids = {'': ['']}
+
+# ----------------------------------------------------------------------------
+# Instrument test attributes
+
 _test_dates = {'': {'': dt.datetime(2009, 1, 1)}}
 
+# ----------------------------------------------------------------------------
+# Instrument functions
+#
+# Use the default CDAWeb and pysat methods
 
-# support list files routine
-# use the default CDAWeb method
+# Set the list_files routine
 fname = 'cnofs_plp_plasma_1sec_{year:04d}{month:02d}{day:02d}_v01.cdf'
-supported_tags = {'': {'': fname}}
-list_files = functools.partial(mm_gen.list_files,
-                               supported_tags=supported_tags)
-# support load routine
-# use the default CDAWeb method
+list_tags = {'': {'': fname}}
+list_files = functools.partial(mm_gen.list_files, supported_tags=list_tags)
+
+# Set the load routine
 load = cdw.load
 
-# support download routine
-# use the default CDAWeb method
+# Set the download routine
 basic_tag = {'dir': '/pub/data/cnofs/plp/plasma_1sec',
              'remote_fname': '{year:4d}/' + fname,
              'local_fname': fname}
-supported_tags = {'': {'': basic_tag}}
-download = functools.partial(cdw.download, supported_tags)
-# support listing files currently on CDAWeb
+download_tags = {'': {'': basic_tag}}
+download = functools.partial(cdw.download, download_tags)
+
+# Set the list_remote_files routine
 list_remote_files = functools.partial(cdw.list_remote_files,
-                                      supported_tags=supported_tags)
+                                      supported_tags=download_tags)
+
+# ----------------------------------------------------------------------------
+# Instrument methods
 
 
 def init(self):

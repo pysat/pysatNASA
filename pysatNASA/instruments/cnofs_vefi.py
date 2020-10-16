@@ -67,32 +67,45 @@ from pysatNASA.instruments.methods import cdaweb as cdw
 
 logger = logging.getLogger(__name__)
 
+# ----------------------------------------------------------------------------
+# Instrument attributes
+
 platform = 'cnofs'
 name = 'vefi'
 tags = {'dc_b': 'DC Magnetometer data - 1 second'}
 inst_ids = {'': ['dc_b']}
+
+# ----------------------------------------------------------------------------
+# Instrument test attributes
+
 _test_dates = {'': {'dc_b': dt.datetime(2009, 1, 1)}}
 
-# support list files routine
-# use the default CDAWeb method
+# ----------------------------------------------------------------------------
+# Instrument functions
+#
+# Use the default CDAWeb and pysat methods
+
+# Set the list_files routine
 fname = 'cnofs_vefi_bfield_1sec_{year:04d}{month:02d}{day:02d}_v05.cdf'
-supported_tags = {'': {'dc_b': fname}}
-list_files = functools.partial(mm_gen.list_files,
-                               supported_tags=supported_tags)
-# support load routine
-# use the default CDAWeb method
+list_tags = {'': {'dc_b': fname}}
+list_files = functools.partial(mm_gen.list_files, supported_tags=list_tags)
+
+# Set the load routine
 load = cdw.load
 
-# support download routine
-# use the default CDAWeb method
+# Set the download routine
 basic_tag = {'dir': '/pub/data/cnofs/vefi/bfield_1sec',
              'remote_fname': '{year:4d}/' + fname,
              'local_fname': fname}
-supported_tags = {'': {'dc_b': basic_tag}}
-download = functools.partial(cdw.download, supported_tags)
-# support listing files currently on CDAWeb
+download_tags = {'': {'dc_b': basic_tag}}
+download = functools.partial(cdw.download, download_tags)
+
+# Set the list_remote_files routine
 list_remote_files = functools.partial(cdw.list_remote_files,
-                                      supported_tags=supported_tags)
+                                      supported_tags=download_tags)
+
+# ----------------------------------------------------------------------------
+# Instrument methods
 
 
 def init(self):
