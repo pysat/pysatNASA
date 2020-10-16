@@ -54,40 +54,25 @@ from pysatNASA.instruments.methods import icon as mm_icon
 
 logger = logging.getLogger(__name__)
 
+# ----------------------------------------------------------------------------
+# Instrument attributes
+
 platform = 'icon'
 name = 'fuv'
 tags = {'day': 'Level 2 daytime O/N2',
         'night': 'Level 2 nighttime O profile'}
 inst_ids = {'': ['day', 'night']}
-_test_dates = {'': {kk: dt.datetime(2020, 1, 1) for kk in tags.keys()}}
-_test_download_travis = {'': {kk: False for kk in tags.keys()}}
+
 pandas_format = False
 
-fname24 = ''.join(('ICON_L2-4_FUV_Day_{year:04d}-{month:02d}-{day:02d}_',
-                   'v{version:02d}r{revision:03d}.NC'))
-fname25 = ''.join(('ICON_L2-5_FUV_Night_{year:04d}-{month:02d}-{day:02d}_',
-                   'v{version:02d}r{revision:03d}.NC'))
-supported_tags = {'': {'day': fname24,
-                       'night': fname25}}
+# ----------------------------------------------------------------------------
+# Instrument test attributes
 
-# use the standard methods list files routine
-list_files = functools.partial(mm_gen.list_files,
-                               supported_tags=supported_tags)
+_test_dates = {'': {kk: dt.datetime(2020, 1, 1) for kk in tags.keys()}}
+_test_download_travis = {'': {kk: False for kk in tags.keys()}}
 
-# support download routine
-basic_tag24 = {'dir': '/pub/LEVEL.2/FUV',
-               'remote_fname': fname24}
-basic_tag25 = {'dir': '/pub/LEVEL.2/FUV',
-               'remote_fname': fname25}
-
-download_tags = {'': {'day': basic_tag24,
-                      'night': basic_tag25}}
-
-download = functools.partial(mm_icon.ssl_download, supported_tags=download_tags)
-
-# support listing files on SSL
-list_remote_files = functools.partial(mm_icon.list_remote_files,
-                                      supported_tags=download_tags)
+# ----------------------------------------------------------------------------
+# Instrument methods
 
 
 def init(self):
@@ -128,12 +113,44 @@ def default(self, keep_original_names=False):
     return
 
 
-def remove_preamble(inst):
-    """Removes preambles in variable names"""
+def clean(self):
+    """Provides data cleaning based upon clean_level.
 
-    target = {'day': 'ICON_L24_',
-              'night': 'ICON_L25_'}
-    mm_gen.remove_leading_text(inst, target=target[inst.tag])
+    Note
+    ----
+        Supports 'clean', 'dusty', 'dirty', 'none'
+
+    """
+
+    warnings.warn("Cleaning actions for ICON FUV are not yet defined.")
+    return
+
+
+# ----------------------------------------------------------------------------
+# Instrument functions
+#
+# Use the ICON and pysat methods
+
+# Set the list_files routine
+fname24 = ''.join(('ICON_L2-4_FUV_Day_{year:04d}-{month:02d}-{day:02d}_',
+                   'v{version:02d}r{revision:03d}.NC'))
+fname25 = ''.join(('ICON_L2-5_FUV_Night_{year:04d}-{month:02d}-{day:02d}_',
+                   'v{version:02d}r{revision:03d}.NC'))
+supported_tags = {'': {'day': fname24, 'night': fname25}}
+
+list_files = functools.partial(mm_gen.list_files,
+                               supported_tags=supported_tags)
+
+# Set the download routine
+basic_tag24 = {'dir': '/pub/LEVEL.2/FUV', 'remote_fname': fname24}
+basic_tag25 = {'dir': '/pub/LEVEL.2/FUV', 'remote_fname': fname25}
+download_tags = {'': {'day': basic_tag24, 'night': basic_tag25}}
+
+download = functools.partial(mm_icon.ssl_download, supported_tags=download_tags)
+
+# Set the list_remote_files routine
+list_remote_files = functools.partial(mm_icon.list_remote_files,
+                                      supported_tags=download_tags)
 
 
 def load(fnames, tag=None, inst_id=None, keep_original_names=False):
@@ -190,15 +207,20 @@ def load(fnames, tag=None, inst_id=None, keep_original_names=False):
                                     fill_label='FillVal',
                                     pandas_format=pandas_format)
 
+# ----------------------------------------------------------------------------
+# Local functions
 
-def clean(self):
-    """Provides data cleaning based upon clean_level.
 
-    Note
-    ----
-        Supports 'clean', 'dusty', 'dirty', 'none'
+def remove_preamble(inst):
+    """Removes preambles in variable names
+
+    Parameters
+    ----------
+    inst : pysat.Instrument
+        ICON FUV Instrument object
 
     """
 
-    warnings.warn("Cleaning actions for ICON FUV are not yet defined.")
+    target = {'day': 'ICON_L24_', 'night': 'ICON_L25_'}
+    mm_gen.remove_leading_text(inst, target=target[inst.tag])
     return

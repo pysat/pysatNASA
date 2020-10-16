@@ -60,6 +60,9 @@ from pysatNASA.instruments.methods import icon as mm_icon
 
 logger = logging.getLogger(__name__)
 
+# ----------------------------------------------------------------------------
+# Instrument attributes
+
 platform = 'icon'
 name = 'mighti'
 tags = {'los_wind_green': 'Line of sight wind data -- Green Line',
@@ -70,63 +73,19 @@ tags = {'los_wind_green': 'Line of sight wind data -- Green Line',
 inst_ids = {'': ['vector_wind_green', 'vector_wind_red'],
             'a': ['los_wind_green', 'los_wind_red', 'temperature'],
             'b': ['los_wind_green', 'los_wind_red', 'temperature']}
+
+pandas_format = False
+
+# ----------------------------------------------------------------------------
+# Instrument test attributes
+
 _test_dates = {jj: {kk: dt.datetime(2020, 1, 2) for kk in inst_ids[jj]}
                for jj in inst_ids.keys()}
 _test_download_travis = {jj: {kk: False for kk in inst_ids[jj]}
                          for jj in inst_ids.keys()}
-pandas_format = False
 
-datestr = '{year:04d}-{month:02d}-{day:02d}_v{version:02d}r{revision:03d}'
-fname1 = 'ICON_L2-1_MIGHTI-{id:s}_LOS-Wind-{color:s}_{date:s}.NC'
-fname2 = 'ICON_L2-2_MIGHTI_Vector-Wind-{color:s}_{date:s}.NC'
-fname3 = 'ICON_L2-3_MIGHTI-{id:s}_Temperature_{date:s}.NC'
-supported_tags = {'': {'vector_wind_green': fname2.format(color='Green',
-                                                          date=datestr),
-                       'vector_wind_red': fname2.format(color='Red',
-                                                        date=datestr)},
-                  'a': {'los_wind_green': fname1.format(id='A', color='Green',
-                                                        date=datestr),
-                        'los_wind_red': fname1.format(id='A', color='Red',
-                                                      date=datestr),
-                        'temperature': fname3.format(id='A', date=datestr)},
-                  'b': {'los_wind_green': fname1.format(id='B', color='Green',
-                                                        date=datestr),
-                        'los_wind_red': fname1.format(id='B', color='Red',
-                                                      date=datestr),
-                        'temperature': fname3.format(id='B', date=datestr)}}
-
-# use the CDAWeb methods list files routine
-list_files = functools.partial(mm_gen.list_files,
-                               supported_tags=supported_tags)
-
-# support download routine
-dirstr = '/pub/LEVEL.2/MIGHTI{id:s}'
-dirdatestr = '{year:4d}/{doy:03d}/'
-ids = {'': '',
-       'a': '-A',
-       'b': '-B'}
-products = {'vector_wind_green': 'Vector-Winds/',
-            'vector_wind_red': 'Vector-Winds/',
-            'los_wind_green': 'LOS-Winds/',
-            'los_wind_red': 'LOS-Winds/',
-            'temperature': 'Temperature/'}
-datestr = '{year:04d}-{month:02d}-{day:02d}'
-
-download_tags = {}
-for skey in supported_tags.keys():
-    download_tags[skey] = {}
-    for tkey in supported_tags[skey].keys():
-        fname = supported_tags[skey][tkey]
-
-        download_tags[skey][tkey] = {'dir': dirstr.format(id=ids[skey]),
-                                     'remote_fname': ''.join((products[tkey],
-                                                              fname))}
-
-download = functools.partial(mm_icon.ssl_download, supported_tags=download_tags)
-
-# support listing files on SSL
-list_remote_files = functools.partial(mm_icon.list_remote_files,
-                                      supported_tags=download_tags)
+# ----------------------------------------------------------------------------
+# Instrument methods
 
 
 def init(self):
@@ -165,88 +124,6 @@ def default(self, keep_original_names=False):
     if not keep_original_names:
         remove_preamble(self)
     return
-
-
-def remove_preamble(inst):
-    """Removes preambles in variable names
-
-    Parameters
-    -----------
-    inst : pysat.Instrument
-        Instrument class object
-
-    """
-    id_str = inst.inst_id.upper()
-
-    target = {'los_wind_green': 'ICON_L21_',
-              'los_wind_red': 'ICON_L21_',
-              'vector_wind_green': 'ICON_L22_',
-              'vector_wind_red': 'ICON_L22_',
-              'temperature': ['ICON_L1_MIGHTI_{}_'.format(id_str),
-                              'ICON_L23_MIGHTI_{}_'.format(id_str),
-                              'ICON_L23_']}
-    mm_gen.remove_leading_text(inst, target=target[inst.tag])
-
-    return
-
-
-def load(fnames, tag=None, inst_id=None, keep_original_names=False):
-    """Loads ICON FUV data using pysat into pandas.
-
-    This routine is called as needed by pysat. It is not intended
-    for direct user interaction.
-
-    Parameters
-    ----------
-    fnames : array-like
-        iterable of filename strings, full path, to data files to be loaded.
-        This input is nominally provided by pysat itself.
-    tag : string
-        tag name used to identify particular data set to be loaded.
-        This input is nominally provided by pysat itself.
-    inst_id : string
-        Satellite ID used to identify particular data set to be loaded.
-        This input is nominally provided by pysat itself.
-    keep_original_names : boolean
-        if True then the names as given in the netCDF ICON file
-        will be used as is. If False, a preamble is removed.
-
-    Returns
-    -------
-    data, metadata
-        Data and Metadata are formatted for pysat. Data is a pandas
-        DataFrame while metadata is a pysat.Meta instance.
-
-    Note
-    ----
-    Any additional keyword arguments passed to pysat.Instrument
-    upon instantiation are passed along to this routine.
-
-    Examples
-    --------
-    ::
-
-        inst = pysat.Instrument('icon', 'fuv')
-        inst.load(2020, 1)
-
-    """
-
-    data, mdata = pysat.utils.load_netcdf4(fnames, epoch_name='Epoch',
-                                           units_label='Units',
-                                           name_label='Long_Name',
-                                           notes_label='Var_Notes',
-                                           desc_label='CatDesc',
-                                           plot_label='FieldNam',
-                                           axis_label='LablAxis',
-                                           scale_label='ScaleTyp',
-                                           min_label='ValidMin',
-                                           max_label='ValidMax',
-                                           fill_label='FillVal',
-                                           pandas_format=pandas_format)
-    # xarray can't merge if variable and dim names are the same
-    if 'Altitude' in data.dims:
-        data = data.rename_dims(dims_dict={'Altitude': 'Alt'})
-    return data, mdata
 
 
 def clean(self):
@@ -322,5 +199,147 @@ def clean(self):
                                         & (self[cal_flag] == 0))
             # filter out negative temperatures
             self[var] = self[var].where(self[var] > 0)
+
+    return
+
+
+# ----------------------------------------------------------------------------
+# Instrument functions
+#
+# Use the ICON and pysat methods
+
+# Set the list_files routine
+datestr = '{year:04d}-{month:02d}-{day:02d}_v{version:02d}r{revision:03d}'
+fname1 = 'ICON_L2-1_MIGHTI-{id:s}_LOS-Wind-{color:s}_{date:s}.NC'
+fname2 = 'ICON_L2-2_MIGHTI_Vector-Wind-{color:s}_{date:s}.NC'
+fname3 = 'ICON_L2-3_MIGHTI-{id:s}_Temperature_{date:s}.NC'
+supported_tags = {'': {'vector_wind_green': fname2.format(color='Green',
+                                                          date=datestr),
+                       'vector_wind_red': fname2.format(color='Red',
+                                                        date=datestr)},
+                  'a': {'los_wind_green': fname1.format(id='A', color='Green',
+                                                        date=datestr),
+                        'los_wind_red': fname1.format(id='A', color='Red',
+                                                      date=datestr),
+                        'temperature': fname3.format(id='A', date=datestr)},
+                  'b': {'los_wind_green': fname1.format(id='B', color='Green',
+                                                        date=datestr),
+                        'los_wind_red': fname1.format(id='B', color='Red',
+                                                      date=datestr),
+                        'temperature': fname3.format(id='B', date=datestr)}}
+
+list_files = functools.partial(mm_gen.list_files,
+                               supported_tags=supported_tags)
+
+# Set the download routine
+dirstr = '/pub/LEVEL.2/MIGHTI{id:s}'
+dirdatestr = '{year:4d}/{doy:03d}/'
+ids = {'': '', 'a': '-A', 'b': '-B'}
+products = {'vector_wind_green': 'Vector-Winds/',
+            'vector_wind_red': 'Vector-Winds/',
+            'los_wind_green': 'LOS-Winds/',
+            'los_wind_red': 'LOS-Winds/',
+            'temperature': 'Temperature/'}
+datestr = '{year:04d}-{month:02d}-{day:02d}'
+
+download_tags = {}
+for skey in supported_tags.keys():
+    download_tags[skey] = {}
+    for tkey in supported_tags[skey].keys():
+        fname = supported_tags[skey][tkey]
+
+        download_tags[skey][tkey] = {'dir': dirstr.format(id=ids[skey]),
+                                     'remote_fname': ''.join((products[tkey],
+                                                              fname))}
+
+download = functools.partial(mm_icon.ssl_download, supported_tags=download_tags)
+
+# Set the list_remote_files routine
+list_remote_files = functools.partial(mm_icon.list_remote_files,
+                                      supported_tags=download_tags)
+
+
+def load(fnames, tag=None, inst_id=None, keep_original_names=False):
+    """Loads ICON FUV data using pysat into pandas.
+
+    This routine is called as needed by pysat. It is not intended
+    for direct user interaction.
+
+    Parameters
+    ----------
+    fnames : array-like
+        iterable of filename strings, full path, to data files to be loaded.
+        This input is nominally provided by pysat itself.
+    tag : string
+        tag name used to identify particular data set to be loaded.
+        This input is nominally provided by pysat itself.
+    inst_id : string
+        Satellite ID used to identify particular data set to be loaded.
+        This input is nominally provided by pysat itself.
+    keep_original_names : boolean
+        if True then the names as given in the netCDF ICON file
+        will be used as is. If False, a preamble is removed.
+
+    Returns
+    -------
+    data, metadata
+        Data and Metadata are formatted for pysat. Data is a pandas
+        DataFrame while metadata is a pysat.Meta instance.
+
+    Note
+    ----
+    Any additional keyword arguments passed to pysat.Instrument
+    upon instantiation are passed along to this routine.
+
+    Examples
+    --------
+    ::
+
+        inst = pysat.Instrument('icon', 'fuv')
+        inst.load(2020, 1)
+
+    """
+
+    data, mdata = pysat.utils.load_netcdf4(fnames, epoch_name='Epoch',
+                                           units_label='Units',
+                                           name_label='Long_Name',
+                                           notes_label='Var_Notes',
+                                           desc_label='CatDesc',
+                                           plot_label='FieldNam',
+                                           axis_label='LablAxis',
+                                           scale_label='ScaleTyp',
+                                           min_label='ValidMin',
+                                           max_label='ValidMax',
+                                           fill_label='FillVal',
+                                           pandas_format=pandas_format)
+    # xarray can't merge if variable and dim names are the same
+    if 'Altitude' in data.dims:
+        data = data.rename_dims(dims_dict={'Altitude': 'Alt'})
+    return data, mdata
+
+
+# ----------------------------------------------------------------------------
+# Local functions
+
+
+def remove_preamble(inst):
+    """Removes preambles in variable names
+
+    Parameters
+    -----------
+    inst : pysat.Instrument
+        ICON MIGHTI Instrument class object
+
+    """
+    id_str = inst.inst_id.upper()
+
+    target = {'los_wind_green': 'ICON_L21_',
+              'los_wind_red': 'ICON_L21_',
+              'vector_wind_green': 'ICON_L22_',
+              'vector_wind_red': 'ICON_L22_',
+              'temperature': ['ICON_L1_MIGHTI_{}_'.format(id_str),
+                              'ICON_L23_MIGHTI_{}_'.format(id_str),
+                              'ICON_L23_']}
+    mm_gen.remove_leading_text(inst, target=target[inst.tag])
 
     return
