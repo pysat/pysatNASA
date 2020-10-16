@@ -49,6 +49,7 @@ calculate_dayside_reconnection
 
 import datetime as dt
 import functools
+import logging
 import numpy as np
 import pandas as pds
 import scipy.stats as stats
@@ -57,47 +58,25 @@ import warnings
 from pysat.instruments.methods import general as mm_gen
 from pysatNASA.instruments.methods import cdaweb as cdw
 
-import logging
 logger = logging.getLogger(__name__)
+
+# ----------------------------------------------------------------------------
+# Instrument attributes
 
 platform = 'omni'
 name = 'hro'
 tags = {'1min': '1-minute time averaged data',
         '5min': '5-minute time averaged data'}
 inst_ids = {'': ['5min']}
+
+# ----------------------------------------------------------------------------
+# Instrument test attributes
+
 _test_dates = {'': {'1min': dt.datetime(2009, 1, 1),
                     '5min': dt.datetime(2009, 1, 1)}}
 
-# support list files routine
-# use the default CDAWeb method
-fname1 = 'omni_hro_1min_{year:4d}{month:02d}{day:02d}_v01.cdf'
-fname5 = 'omni_hro_5min_{year:4d}{month:02d}{day:02d}_v01.cdf'
-supported_tags = {'': {'1min': fname1,
-                       '5min': fname5}}
-list_files = functools.partial(mm_gen.list_files,
-                               supported_tags=supported_tags,
-                               fake_daily_files_from_monthly=True)
-
-# support load routine
-# use the default CDAWeb method
-load = functools.partial(cdw.load, fake_daily_files_from_monthly=True)
-
-# support download routine
-# use the default CDAWeb method
-basic_tag1 = {'dir': '/pub/data/omni/omni_cdaweb/hro_1min',
-              'remote_fname': '{year:4d}/' + fname1,
-              'local_fname': fname1}
-basic_tag5 = {'dir': '/pub/data/omni/omni_cdaweb/hro_5min',
-              'remote_fname': '{year:4d}/' + fname5,
-              'local_fname': fname5}
-supported_tags = {'': {'1min': basic_tag1,
-                       '5min': basic_tag5}}
-download = functools.partial(cdw.download,
-                             supported_tags,
-                             fake_daily_files_from_monthly=True)
-# support listing files currently on CDAWeb
-list_remote_files = functools.partial(cdw.list_remote_files,
-                                      supported_tags=supported_tags)
+# ----------------------------------------------------------------------------
+# Instrument methods
 
 
 def init(self):
@@ -143,17 +122,52 @@ def clean(self):
     return
 
 
+# ----------------------------------------------------------------------------
+# Instrument functions
+#
+# Use the default CDAWeb and pysat methods
+
+# Set the list_files routine
+fname1 = 'omni_hro_1min_{year:4d}{month:02d}{day:02d}_v01.cdf'
+fname5 = 'omni_hro_5min_{year:4d}{month:02d}{day:02d}_v01.cdf'
+list_tags = {'': {'1min': fname1,  '5min': fname5}}
+list_files = functools.partial(mm_gen.list_files, supported_tags=list_tags,
+                               fake_daily_files_from_monthly=True)
+
+# Set the load routine
+load = functools.partial(cdw.load, fake_daily_files_from_monthly=True)
+
+# Set the download routine
+basic_tag1 = {'dir': '/pub/data/omni/omni_cdaweb/hro_1min',
+              'remote_fname': '{year:4d}/' + fname1,
+              'local_fname': fname1}
+basic_tag5 = {'dir': '/pub/data/omni/omni_cdaweb/hro_5min',
+              'remote_fname': '{year:4d}/' + fname5,
+              'local_fname': fname5}
+supported_tags = {'': {'1min': basic_tag1,
+                       '5min': basic_tag5}}
+download = functools.partial(cdw.download, supported_tags,
+                             fake_daily_files_from_monthly=True)
+
+# Set the list_remote_files routine
+list_remote_files = functools.partial(cdw.list_remote_files,
+                                      supported_tags=supported_tags)
+
+# ----------------------------------------------------------------------------
+# Local functions
+
+
 def time_shift_to_magnetic_poles(inst):
     """ OMNI data is time-shifted to bow shock. Time shifted again
     to intersections with magnetic pole.
 
     Parameters
-    -----------
+    ----------
     inst : Instrument class object
         Instrument with OMNI HRO data
 
-    Notes
-    ---------
+    Note
+    ----
     Time shift calculated using distance to bow shock nose (BSN)
     and velocity of solar wind along x-direction.
 
@@ -198,6 +212,7 @@ def calculate_clock_angle(inst):
     -----------
     inst : pysat.Instrument
         Instrument with OMNI HRO data
+
     """
 
     # Calculate clock angle in degrees
@@ -220,7 +235,7 @@ def calculate_imf_steadiness(inst, steady_window=15, min_window_frac=0.75,
     the coefficient of variation of the IMF magnitude in the GSM Y-Z plane
 
     Parameters
-    -----------
+    ----------
     inst : pysat.Instrument
         Instrument with OMNI HRO data
     steady_window : int
@@ -304,12 +319,12 @@ def calculate_dayside_reconnection(inst):
     """ Calculate the dayside reconnection rate (Milan et al. 2014)
 
     Parameters
-    -----------
+    ----------
     inst : pysat.Instrument
         Instrument with OMNI HRO data, requires BYZ_GSM and clock_angle
 
     Note
-    -----
+    ----
     recon_day = 3.8 Re (Vx / 4e5 m/s)^1/3 Vx B_yz (sin(theta/2))^9/2
 
     """
