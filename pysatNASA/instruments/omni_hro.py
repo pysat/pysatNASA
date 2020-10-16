@@ -88,14 +88,14 @@ basic_tag1 = {'remote_dir': '/pub/data/omni/omni_cdaweb/hro_1min/{year:4d}/',
               'fname': fname1}
 basic_tag5 = {'remote_dir': '/pub/data/omni/omni_cdaweb/hro_5min/{year:4d}/',
               'fname': fname5}
-supported_tags = {'': {'1min': basic_tag1,
-                       '5min': basic_tag5}}
+download_tags = {'': {'1min': basic_tag1,
+                      '5min': basic_tag5}}
 download = functools.partial(cdw.download,
-                             supported_tags=supported_tags,
+                             supported_tags=download_tags,
                              fake_daily_files_from_monthly=True)
 # support listing files currently on CDAWeb
 list_remote_files = functools.partial(cdw.list_remote_files,
-                                      supported_tags=supported_tags)
+                                      supported_tags=download_tags)
 
 
 def init(self):

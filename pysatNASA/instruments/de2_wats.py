@@ -99,12 +99,12 @@ load = cdw.load
 basic_tag = {'remote_dir': ''.join(('/pub/data/de/de2/neutral_gas_wats',
                                     '/wind2s_wats_cdaweb/{year:4d}/')),
              'fname': fname}
-supported_tags = {'': {'': basic_tag}}
-download = functools.partial(cdw.download, supported_tags=supported_tags)
+download_tags = {'': {'': basic_tag}}
+download = functools.partial(cdw.download, supported_tags=download_tags)
 
 # support listing files currently on CDAWeb
 list_remote_files = functools.partial(cdw.list_remote_files,
-                                      supported_tags=supported_tags)
+                                      supported_tags=download_tags)
 
 
 def init(self):
