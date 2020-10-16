@@ -58,18 +58,13 @@ from pysatNASA.instruments.methods import cdaweb as cdw
 
 logger = logging.getLogger(__name__)
 
+# ----------------------------------------------------------------------------
+# Instrument attributes
+
 platform = 'timed'
 name = 'saber'
 tags = {'': ''}
 inst_ids = {'': ['']}
-_test_dates = {'': {'': dt.datetime(2019, 1, 1)}}
-
-fname = ''.join(('timed_l2av207_saber_{year:04d}{month:02d}{day:02d}',
-                 '????_v01.cdf'))
-supported_tags = {'': {'': fname}}
-# use the CDAWeb methods list files routine
-list_files = functools.partial(mm_gen.list_files,
-                               supported_tags=supported_tags)
 
 # let pysat know that data is spread across more than one file
 multi_file_day = True
@@ -78,19 +73,13 @@ multi_file_day = True
 # Set to True if data will be returned via a pandas DataFrame
 pandas_format = True
 
-# use the default CDAWeb method
-load = cdw.load
+# ----------------------------------------------------------------------------
+# Instrument test attributes
 
-# use the default CDAWeb method
-basic_tag = {'dir': '/pub/data/timed/saber/level2a_v2_07_cdf',
-             'remote_fname': '{year:4d}/{month:02d}/' + fname,
-             'local_fname': fname}
-supported_tags = {'': {'': basic_tag}}
-download = functools.partial(cdw.download, supported_tags, multi_file_day=True)
+_test_dates = {'': {'': dt.datetime(2019, 1, 1)}}
 
-# support listing files currently on CDAWeb
-list_remote_files = functools.partial(cdw.list_remote_files,
-                                      supported_tags=supported_tags)
+# ----------------------------------------------------------------------------
+# Instrument methods
 
 
 def init(self):
@@ -98,12 +87,11 @@ def init(self):
 
     Runs once upon instantiation.
 
-
     """
 
     rules_url = 'http://saber.gats-inc.com/data_services.php'
-    ackn_str = ' '.join(('Please see the Rules of the Road at',
-                         rules_url))
+    ackn_str = ' '.join(('Please see the Rules of the Road at', rules_url))
+
     logger.info(ackn_str)
     self.acknowledgements = ackn_str
     self.references = ''
@@ -128,3 +116,29 @@ def clean(self):
     warnings.warn('no cleaning routine available for TIMED SABER')
 
     return
+
+
+# ----------------------------------------------------------------------------
+# Instrument functions
+#
+# Use the default CDAWeb and pysat methods
+
+# Set the list_files routine
+fname = ''.join(('timed_l2av207_saber_{year:04d}{month:02d}{day:02d}',
+                 '????_v01.cdf'))
+list_tags = {'': {'': fname}}
+list_files = functools.partial(mm_gen.list_files, supported_tags=list_tags)
+
+# Set the load routine
+load = cdw.load
+
+# Set the download routine
+basic_tag = {'dir': '/pub/data/timed/saber/level2a_v2_07_cdf',
+             'remote_fname': '{year:4d}/{month:02d}/' + fname,
+             'local_fname': fname}
+supported_tags = {'': {'': basic_tag}}
+download = functools.partial(cdw.download, supported_tags, multi_file_day=True)
+
+# Set the list_remote_files routine
+list_remote_files = functools.partial(cdw.list_remote_files,
+                                      supported_tags=supported_tags)
