@@ -137,7 +137,7 @@ load = cdw.load
 basic_tag = {'remote_dir': ''.join(('/pub/data/timed/saber/level2a_v2_07_cdf',
                                     '/{year:4d}/{month:02d}/')),
              'fname': fname}
-supported_tags = {'': {'': basic_tag}}
+download_tags = {'': {'': basic_tag}}
 download = functools.partial(cdw.download, supported_tags=download_tags)
 
 # Set the list_remote_files routine

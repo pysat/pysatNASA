@@ -106,7 +106,6 @@ def clean(self):
 # Use the default CDAWeb and pysat methods
 
 # Set the list_files routine
-# support list files routine
 fname = 'timed_l3a_see_{year:04d}{month:02d}{day:02d}_v{version:02d}.cdf'
 supported_tags = {'': {'': fname}}
 list_files = functools.partial(mm_gen.list_files,
