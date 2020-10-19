@@ -63,7 +63,7 @@ inst_ids = {'': ['']}
 _test_dates = {'': {'': dt.datetime(2019, 1, 1)}}
 
 fname = ''.join(('timed_l2av207_saber_{year:04d}{month:02d}{day:02d}',
-                 '????_v01.cdf'))
+                 '{hour:02d}{minute:02d}_v{version:02d}.cdf'))
 supported_tags = {'': {'': fname}}
 # use the CDAWeb methods list files routine
 list_files = functools.partial(mm_gen.list_files,
@@ -80,15 +80,15 @@ pandas_format = True
 load = cdw.load
 
 # use the default CDAWeb method
-basic_tag = {'dir': '/pub/data/timed/saber/level2a_v2_07_cdf',
-             'remote_fname': '{year:4d}/{month:02d}/' + fname,
-             'local_fname': fname}
-supported_tags = {'': {'': basic_tag}}
-download = functools.partial(cdw.download, supported_tags, multi_file_day=True)
+basic_tag = {'remote_dir': ''.join(('/pub/data/timed/saber/level2a_v2_07_cdf',
+                                    '/{year:4d}/{month:02d}/')),
+             'fname': fname}
+download_tags = {'': {'': basic_tag}}
+download = functools.partial(cdw.download, supported_tags=download_tags)
 
 # support listing files currently on CDAWeb
 list_remote_files = functools.partial(cdw.list_remote_files,
-                                      supported_tags=supported_tags)
+                                      supported_tags=download_tags)
 
 
 def init(self):

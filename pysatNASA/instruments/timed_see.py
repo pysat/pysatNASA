@@ -56,7 +56,7 @@ _test_dates = {'': {'': dt.datetime(2009, 1, 1)}}
 
 # support list files routine
 # use the default CDAWeb method
-fname = 'timed_l3a_see_{year:04d}{month:02d}{day:02d}_v01.cdf'
+fname = 'timed_l3a_see_{year:04d}{month:02d}{day:02d}_v{version:02d}.cdf'
 supported_tags = {'': {'': fname}}
 list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags,
@@ -64,14 +64,14 @@ list_files = functools.partial(mm_gen.list_files,
 
 # support download routine
 # use the default CDAWeb method
-basic_tag = {'dir': '/pub/data/timed/see/data/level3a_cdf',
-             'remote_fname': '{year:4d}/{month:02d}/' + fname,
-             'local_fname': fname}
-supported_tags = {'': {'': basic_tag}}
-download = functools.partial(cdw.download, supported_tags)
+basic_tag = {'remote_dir': ''.join(('/pub/data/timed/see/data/level3a_cdf',
+                                    '/{year:4d}/{month:02d}/')),
+             'fname': fname}
+download_tags = {'': {'': basic_tag}}
+download = functools.partial(cdw.download, supported_tags=download_tags)
 # support listing files currently on CDAWeb
 list_remote_files = functools.partial(cdw.list_remote_files,
-                                      supported_tags=supported_tags)
+                                      supported_tags=download_tags)
 
 # support load routine
 # use the default CDAWeb method
