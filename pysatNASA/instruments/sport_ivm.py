@@ -12,7 +12,7 @@ platform
 name
     'ivm'
 tag
-    '', 'L1', 'L2'
+    '', 'l1', 'l2'
 inst_id
     None supported
 
@@ -37,8 +37,8 @@ logger = logging.getLogger(__name__)
 platform = 'sport'
 name = 'ivm'
 tags = {'': 'Level-2 IVM Files',
-        'L1': 'Level-1 IVM Files',
-        'L0': 'Level-0 IVM Files'}
+        'l1': 'Level-1 IVM Files',
+        'l0': 'Level-0 IVM Files'}
 inst_ids = {'': [tag for tag in tags.keys()]}
 
 # ----------------------------------------------------------------------------
@@ -90,8 +90,8 @@ prefix = 'SPORT_{tag}_IVM_'
 format_str = ''.join(('{year:04d}-{month:02d}-{day:02d}',
                       '_v{version:02d}r{revision:04d}.NC'))
 supported_tags = {'': {'': ''.join((prefix.format(tag='L2'), format_str)),
-                       'L1': ''.join((prefix.format(tag='L1'), format_str)),
-                       'L0': ''.join((prefix.format(tag='L0'), format_str))}}
+                       'l1': ''.join((prefix.format(tag='L1'), format_str)),
+                       'l0': ''.join((prefix.format(tag='L0'), format_str))}}
 list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags)
 
@@ -134,7 +134,7 @@ def load(fnames, tag=None, inst_id=None, **kwargs):
     --------
     ::
 
-        inst = pysat.Instrument('sport', 'ivm')
+        inst = pysat.Instrument('sport', 'ivm', '')
         inst.load(2019,1)
 
     """
@@ -164,17 +164,3 @@ def download(date_array, tag, inst_id, data_path=None):
     warnings.warn('Downloads are not currently supported - not launched yet!')
 
     pass
-
-
-def clean(self):
-    """Routine to return SPORT IVM data cleaned to the specified level
-
-    Note
-    ----
-    No cleaning currently available for SPORT IVM.
-
-    """
-
-    warnings.warn("No cleaning currently available for SPORT")
-
-    return
