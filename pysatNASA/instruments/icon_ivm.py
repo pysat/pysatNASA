@@ -170,7 +170,7 @@ aname = ''.join(('ICON_L2-7_IVM-A_{year:04d}-{month:02d}-{day:02d}_',
                  'v{version:02d}r{revision:03d}.NC'))
 bname = ''.join(('ICON_L2-7_IVM-B_{year:04d}-{month:02d}-{day:02d}_',
                  'v{version:02d}r{revision:03d}.NC'))
-supported_tags = {'a': {'': aname},  'b': {'': bname}}
+supported_tags = {'a': {'': aname}, 'b': {'': bname}}
 
 list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags)
