@@ -133,7 +133,7 @@ basic_tag = {'dir': '/pub/data/cnofs/vefi/bfield_1sec',
              'remote_fname': '{year:4d}/' + fname,
              'local_fname': fname}
 download_tags = {'': {'dc_b': basic_tag}}
-download = functools.partial(cdw.download, download_tags)
+download = functools.partial(cdw.download, supported_tags=download_tags)
 
 # Set the list_remote_files routine
 list_remote_files = functools.partial(cdw.list_remote_files,

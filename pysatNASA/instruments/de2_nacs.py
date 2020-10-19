@@ -139,7 +139,7 @@ def clean(self):
 # Use the default CDAWeb and pysat methods
 
 # Set the list_files routine
-fname = 'de2_neutral1s_nacs_{year:04d}{month:02d}{day:02d}_v01.cdf'
+fname = 'de2_neutrals_nacs_{year:04d}{month:02d}{day:02d}_v01.cdf'
 list_tags = {'': {'': fname}}
 list_files = functools.partial(mm_gen.list_files, supported_tags=list_tags)
 
@@ -147,11 +147,11 @@ list_files = functools.partial(mm_gen.list_files, supported_tags=list_tags)
 load = cdw.load
 
 # support download routine
-basic_tag = {'dir': '/pub/data/de/de2/neutral_gas_nacs/neutral1s_nacs_cdaweb',
+basic_tag = {'dir': '/pub/data/de/de2/neutral_gas_nacs/neutrals_nacs_cdaweb',
              'remote_fname': '{year:4d}/' + fname,
              'local_fname': fname}
 download_tags = {'': {'': basic_tag}}
-download = functools.partial(cdw.download, download_tags)
+download = functools.partial(cdw.download, supported_tags=download_tags)
 
 # support listing files currently on CDAWeb
 list_remote_files = functools.partial(cdw.list_remote_files,
