@@ -69,7 +69,6 @@ def init(self):
 
     Runs once upon instantiation.
 
-
     """
 
     rules_url = 'http://www.timed.jhuapl.edu/WWW/scripts/mdc_rules.pl'
@@ -108,21 +107,22 @@ def clean(self):
 
 # Set the list_files routine
 # support list files routine
-fname = 'timed_l3a_see_{year:04d}{month:02d}{day:02d}_v01.cdf'
-list_tags = {'': {'': fname}}
-list_files = functools.partial(mm_gen.list_files, supported_tags=list_tags,
+fname = 'timed_l3a_see_{year:04d}{month:02d}{day:02d}_v{version:02d}.cdf'
+supported_tags = {'': {'': fname}}
+list_files = functools.partial(mm_gen.list_files,
+                               supported_tags=supported_tags,
                                fake_daily_files_from_monthly=True)
 
 # Set the load routine
 load = functools.partial(cdw.load, fake_daily_files_from_monthly=True)
 
 # Set the download routine
-basic_tag = {'dir': '/pub/data/timed/see/data/level3a_cdf',
-             'remote_fname': '{year:4d}/{month:02d}/' + fname,
-             'local_fname': fname}
-supported_tags = {'': {'': basic_tag}}
-download = functools.partial(cdw.download, supported_tags=supported_tags)
+basic_tag = {'remote_dir': ''.join(('/pub/data/timed/see/data/level3a_cdf',
+                                    '/{year:4d}/{month:02d}/')),
+             'fname': fname}
+download_tags = {'': {'': basic_tag}}
+download = functools.partial(cdw.download, supported_tags=download_tags)
 
 # Set the list_remote_files routine
 list_remote_files = functools.partial(cdw.list_remote_files,
-                                      supported_tags=supported_tags)
+                                      supported_tags=download_tags)

@@ -125,21 +125,21 @@ def clean(self):
 
 # Set the list_files routine
 fname = ''.join(('timed_l2av207_saber_{year:04d}{month:02d}{day:02d}',
-                 '????_v01.cdf'))
-list_tags = {'': {'': fname}}
-list_files = functools.partial(mm_gen.list_files, supported_tags=list_tags)
+                 '{hour:02d}{minute:02d}_v{version:02d}.cdf'))
+supported_tags = {'': {'': fname}}
+list_files = functools.partial(mm_gen.list_files,
+                               supported_tags=supported_tags)
 
 # Set the load routine
 load = cdw.load
 
 # Set the download routine
-basic_tag = {'dir': '/pub/data/timed/saber/level2a_v2_07_cdf',
-             'remote_fname': '{year:4d}/{month:02d}/' + fname,
-             'local_fname': fname}
+basic_tag = {'remote_dir': ''.join(('/pub/data/timed/saber/level2a_v2_07_cdf',
+                                    '/{year:4d}/{month:02d}/')),
+             'fname': fname}
 supported_tags = {'': {'': basic_tag}}
-download = functools.partial(cdw.download, supported_tags=supported_tags,
-                             multi_file_day=True)
+download = functools.partial(cdw.download, supported_tags=download_tags)
 
 # Set the list_remote_files routine
 list_remote_files = functools.partial(cdw.list_remote_files,
-                                      supported_tags=supported_tags)
+                                      supported_tags=download_tags)

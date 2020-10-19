@@ -102,20 +102,21 @@ def clean(self):
 # Use the default CDAWeb and pysat methods
 
 # Set the list_files routine
-fname = 'iss_sp_fpmu_{year:04d}{month:02d}{day:02d}_v01.cdf'
-list_tags = {'': {'': fname}}
-list_files = functools.partial(mm_gen.list_files, supported_tags=list_tags)
+fname = 'iss_sp_fpmu_{year:04d}{month:02d}{day:02d}_v{version:02d}.cdf'
+supported_tags = {'': {'': fname}}
+list_files = functools.partial(mm_gen.list_files,
+                               supported_tags=supported_tags)
 
 # Set the load routine
 load = cdw.load
 
 # Set the download routine
-basic_tag = {'dir': '/pub/data/international_space_station_iss/sp_fpmu',
-             'remote_fname': '{year:4d}/' + fname,
-             'local_fname': fname}
-supported_tags = {'': {'': basic_tag}}
-download = functools.partial(cdw.download, supported_tags=supported_tags)
+basic_tag = {'remote_dir': ''.join(('/pub/data/international_space_station_iss',
+                                    '/sp_fpmu/{year:4d}/')),
+             'fname': fname}
+download_tags = {'': {'': basic_tag}}
+download = functools.partial(cdw.download, supported_tags=download_tags)
 
 # Set the list_remote_files routine
 list_remote_files = functools.partial(cdw.list_remote_files,
-                                      supported_tags=supported_tags)
+                                      supported_tags=download_tags)

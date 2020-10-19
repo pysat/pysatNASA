@@ -118,17 +118,18 @@ def clean(self):
 # Use the default CDAWeb and pysat methods
 
 # Set the list_files routine
-fname = 'cnofs_plp_plasma_1sec_{year:04d}{month:02d}{day:02d}_v01.cdf'
-list_tags = {'': {'': fname}}
-list_files = functools.partial(mm_gen.list_files, supported_tags=list_tags)
+fname = ''.join(('cnofs_plp_plasma_1sec_{year:04d}{month:02d}{day:02d}',
+                 '_v{version:02d}.cdf'))
+supported_tags = {'': {'': fname}}
+list_files = functools.partial(mm_gen.list_files,
+                               supported_tags=supported_tags)
 
 # Set the load routine
 load = cdw.load
 
 # Set the download routine
-basic_tag = {'dir': '/pub/data/cnofs/plp/plasma_1sec',
-             'remote_fname': '{year:4d}/' + fname,
-             'local_fname': fname}
+basic_tag = {'remote_dir': '/pub/data/cnofs/plp/plasma_1sec/{year:4d}/',
+             'fname': fname}
 download_tags = {'': {'': basic_tag}}
 download = functools.partial(cdw.download, supported_tags=download_tags)
 

@@ -128,30 +128,30 @@ def clean(self):
 # Use the default CDAWeb and pysat methods
 
 # Set the list_files routine
-fname1 = 'omni_hro_1min_{year:4d}{month:02d}{day:02d}_v01.cdf'
-fname5 = 'omni_hro_5min_{year:4d}{month:02d}{day:02d}_v01.cdf'
+fname1 = 'omni_hro_1min_{year:4d}{month:02d}{day:02d}_v{version:02d}.cdf'
+fname5 = 'omni_hro_5min_{year:4d}{month:02d}{day:02d}_v{version:02d}.cdf'
 list_tags = {'': {'1min': fname1,  '5min': fname5}}
-list_files = functools.partial(mm_gen.list_files, supported_tags=list_tags,
+list_files = functools.partial(mm_gen.list_files,
+                               supported_tags=supported_tags,
                                fake_daily_files_from_monthly=True)
 
 # Set the load routine
 load = functools.partial(cdw.load, fake_daily_files_from_monthly=True)
 
 # Set the download routine
-basic_tag1 = {'dir': '/pub/data/omni/omni_cdaweb/hro_1min',
-              'remote_fname': '{year:4d}/' + fname1,
-              'local_fname': fname1}
-basic_tag5 = {'dir': '/pub/data/omni/omni_cdaweb/hro_5min',
-              'remote_fname': '{year:4d}/' + fname5,
-              'local_fname': fname5}
-supported_tags = {'': {'1min': basic_tag1,
-                       '5min': basic_tag5}}
-download = functools.partial(cdw.download, supported_tags=supported_tags,
+basic_tag1 = {'remote_dir': '/pub/data/omni/omni_cdaweb/hro_1min/{year:4d}/',
+              'fname': fname1}
+basic_tag5 = {'remote_dir': '/pub/data/omni/omni_cdaweb/hro_5min/{year:4d}/',
+              'fname': fname5}
+download_tags = {'': {'1min': basic_tag1,
+                      '5min': basic_tag5}}
+download = functools.partial(cdw.download,
+                             supported_tags=download_tags,
                              fake_daily_files_from_monthly=True)
 
 # Set the list_remote_files routine
 list_remote_files = functools.partial(cdw.list_remote_files,
-                                      supported_tags=supported_tags)
+                                      supported_tags=download_tags)
 
 # ----------------------------------------------------------------------------
 # Local functions

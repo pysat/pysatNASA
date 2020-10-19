@@ -164,3 +164,17 @@ def download(date_array, tag, inst_id, data_path=None):
     warnings.warn('Downloads are not currently supported - not launched yet!')
 
     pass
+
+
+def clean(self):
+    """Routine to return SPORT IVM data cleaned to the specified level
+
+    Note
+    ----
+    No cleaning currently available for SPORT IVM.
+
+    """
+
+    warnings.warn("No cleaning currently available for SPORT")
+
+    return

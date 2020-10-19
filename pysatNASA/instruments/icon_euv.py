@@ -144,11 +144,12 @@ def clean(self):
 # Set the list_files routine
 fname = ''.join(('ICON_L2-6_EUV_{year:04d}-{month:02d}-{day:02d}_',
                  'v{version:02d}r{revision:03d}.NC'))
-list_tags = {'': {'': fname}}
-list_files = functools.partial(mm_gen.list_files, supported_tags=list_tags)
+supported_tags = {'': {'': fname}}
+list_files = functools.partial(mm_gen.list_files,
+                               supported_tags=supported_tags)
 
 # Set the download routine
-basic_tag = {'dir': '/pub/LEVEL.2/EUV',
+basic_tag = {'remote_dir': '/pub/LEVEL.2/EUV',
              'remote_fname': 'Data/' + fname}
 download_tags = {'': {'': basic_tag}}
 download = functools.partial(mm_icon.ssl_download, supported_tags=download_tags)
