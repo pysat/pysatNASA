@@ -57,18 +57,17 @@ pandas_format = False
 
 # use the CDAWeb methods list files routine
 list_files = functools.partial(ps_gen.list_files,
-                               supported_tags)
+                               supported_tags=supported_tags)
 
 # support download routine
-basic_tag = {'dir': '/pub/data/gold/level2/nmax',
-             'remote_fname': '{year:4d}/' + fname,
-             'local_fname': fname}
-supported_tags = {'': {'': basic_tag}}
-download = functools.partial(cdw.download, supported_tags=supported_tags)
+basic_tag = {'remote_dir': '/pub/data/gold/level2/nmax/{year:4d}/',
+             'fname': fname}
+download_tags = {'': {'': basic_tag}}
+download = functools.partial(cdw.download, supported_tags=download_tags)
 
 # support listing files currently on CDAWeb
 list_remote_files = functools.partial(cdw.list_remote_files,
-                                      supported_tags=supported_tags)
+                                      supported_tags=download_tags)
 
 
 def init(self):
