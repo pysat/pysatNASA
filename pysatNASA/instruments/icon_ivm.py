@@ -77,10 +77,10 @@ list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags)
 
 # support download routine
-basic_tag_a = {'dir': '/pub/LEVEL.2/IVM-A',
-               'remote_fname': 'Data/' + aname}
-basic_tag_b = {'dir': '/pub/LEVEL.2/IVM-B',
-               'remote_fname': 'Data/' + bname}
+basic_tag_a = {'remote_dir': '/pub/LEVEL.2/IVM-A',
+               'remote_fname': ''.join(('ZIP/', aname[:-2], 'ZIP'))}
+basic_tag_b = {'remote_dir': '/pub/LEVEL.2/IVM-B',
+               'remote_fname': ''.join(('ZIP/', bname[:-2], 'ZIP'))}
 
 download_tags = {'a': {'': basic_tag_a},
                  'b': {'': basic_tag_b}}

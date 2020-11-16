@@ -75,7 +75,8 @@ _test_dates = {'': {'dc_b': dt.datetime(2009, 1, 1)}}
 
 # support list files routine
 # use the default CDAWeb method
-fname = 'cnofs_vefi_bfield_1sec_{year:04d}{month:02d}{day:02d}_v05.cdf'
+fname = ''.join(('cnofs_vefi_bfield_1sec_{year:04d}{month:02d}{day:02d}',
+                 '_v{version:02d}.cdf'))
 supported_tags = {'': {'dc_b': fname}}
 list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags)
@@ -85,14 +86,13 @@ load = cdw.load
 
 # support download routine
 # use the default CDAWeb method
-basic_tag = {'dir': '/pub/data/cnofs/vefi/bfield_1sec',
-             'remote_fname': '{year:4d}/' + fname,
-             'local_fname': fname}
-supported_tags = {'': {'dc_b': basic_tag}}
-download = functools.partial(cdw.download, supported_tags)
+basic_tag = {'remote_dir': '/pub/data/cnofs/vefi/bfield_1sec/{year:4d}/',
+             'fname': fname}
+download_tags = {'': {'dc_b': basic_tag}}
+download = functools.partial(cdw.download, supported_tags=download_tags)
 # support listing files currently on CDAWeb
 list_remote_files = functools.partial(cdw.list_remote_files,
-                                      supported_tags=supported_tags)
+                                      supported_tags=download_tags)
 
 
 def init(self):

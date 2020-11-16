@@ -70,8 +70,8 @@ _test_dates = {'': {'1min': dt.datetime(2009, 1, 1),
 
 # support list files routine
 # use the default CDAWeb method
-fname1 = 'omni_hro_1min_{year:4d}{month:02d}{day:02d}_v01.cdf'
-fname5 = 'omni_hro_5min_{year:4d}{month:02d}{day:02d}_v01.cdf'
+fname1 = 'omni_hro_1min_{year:4d}{month:02d}{day:02d}_v{version:02d}.cdf'
+fname5 = 'omni_hro_5min_{year:4d}{month:02d}{day:02d}_v{version:02d}.cdf'
 supported_tags = {'': {'1min': fname1,
                        '5min': fname5}}
 list_files = functools.partial(mm_gen.list_files,
@@ -84,20 +84,18 @@ load = functools.partial(cdw.load, fake_daily_files_from_monthly=True)
 
 # support download routine
 # use the default CDAWeb method
-basic_tag1 = {'dir': '/pub/data/omni/omni_cdaweb/hro_1min',
-              'remote_fname': '{year:4d}/' + fname1,
-              'local_fname': fname1}
-basic_tag5 = {'dir': '/pub/data/omni/omni_cdaweb/hro_5min',
-              'remote_fname': '{year:4d}/' + fname5,
-              'local_fname': fname5}
-supported_tags = {'': {'1min': basic_tag1,
-                       '5min': basic_tag5}}
+basic_tag1 = {'remote_dir': '/pub/data/omni/omni_cdaweb/hro_1min/{year:4d}/',
+              'fname': fname1}
+basic_tag5 = {'remote_dir': '/pub/data/omni/omni_cdaweb/hro_5min/{year:4d}/',
+              'fname': fname5}
+download_tags = {'': {'1min': basic_tag1,
+                      '5min': basic_tag5}}
 download = functools.partial(cdw.download,
-                             supported_tags,
+                             supported_tags=download_tags,
                              fake_daily_files_from_monthly=True)
 # support listing files currently on CDAWeb
 list_remote_files = functools.partial(cdw.list_remote_files,
-                                      supported_tags=supported_tags)
+                                      supported_tags=download_tags)
 
 
 def init(self):

@@ -74,7 +74,7 @@ tags = {'': '2 sec cadence RPA data'}  # this is the default
 inst_ids = {'': ['']}
 _test_dates = {'': {'': dt.datetime(1983, 1, 1)}}
 
-fname = 'de2_ion2s_rpa_{year:04d}{month:02d}{day:02d}_v01.cdf'
+fname = 'de2_ion2s_rpa_{year:04d}{month:02d}{day:02d}_v{version:02d}.cdf'
 supported_tags = {'': {'': fname}}
 
 # use the CDAWeb methods list files routine
@@ -85,15 +85,15 @@ list_files = functools.partial(mm_gen.list_files,
 load = cdw.load
 
 # support download routine
-basic_tag = {'dir': '/pub/data/de/de2/plasma_rpa/ion2s_cdaweb',
-             'remote_fname': '{year:4d}/' + fname,
-             'local_fname': fname}
-supported_tags = {'': {'': basic_tag}}
-download = functools.partial(cdw.download, supported_tags)
+basic_tag = {'remote_dir': ''.join(('/pub/data/de/de2/plasma_rpa',
+                                    '/ion2s_cdaweb/{year:4d}/')),
+             'fname': fname}
+download_tags = {'': {'': basic_tag}}
+download = functools.partial(cdw.download, supported_tags=download_tags)
 
 # support listing files currently on CDAWeb
 list_remote_files = functools.partial(cdw.list_remote_files,
-                                      supported_tags=supported_tags)
+                                      supported_tags=download_tags)
 
 
 def init(self):

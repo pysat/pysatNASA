@@ -119,11 +119,11 @@ load = cdw.load
 # a dictionary needs to be created for each inst_id and tag
 # combination along with the file format template
 # outer dict keyed by inst_id, inner dict keyed by tag
-basic_tag = {'dir': '/pub/data/cnofs/vefi/bfield_1sec',
+basic_tag = {'remote_dir': '/pub/data/cnofs/vefi/bfield_1sec',
              'remote_fname': '{year:4d}/' + fname,
-             'local_fname': fname}
+             'fname': fname}
 supported_tags = {'': {'': basic_tag}}
-download = functools.partial(cdw.download, supported_tags)
+download = functools.partial(cdw.download, supported_tags=supported_tags)
 
 # support listing files currently on CDAWeb
 list_remote_files = functools.partial(cdw.list_remote_files,
