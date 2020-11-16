@@ -305,14 +305,12 @@ def list_remote_files(tag=None, inst_id=None,
     # Parse the path to find the number of levels to search
     format_dir = dir_split[0]
     search_dir = futils.construct_searchstring_from_format(format_dir)
-    print(search_dir)
     n_layers = len(search_dir['keys'])
 
     # only keep file portion of format
     format_str = dir_split[-1]
     # Generate list of targets to identify files
     search_dict = futils.construct_searchstring_from_format(format_str)
-    print(search_dict)
     targets = [x.strip('?') for x in search_dict['string_blocks'] if len(x) > 0]
 
     remote_dirs = []
@@ -337,7 +335,6 @@ def list_remote_files(tag=None, inst_id=None,
                 search_times = pds.date_range(start,
                                               stop + pds.DateOffset(years=1),
                                               freq='Y')
-                print(search_times)
             url_list = []
             for time in search_times:
                 subdir = format_dir.format(year=time.year, month=time.month)

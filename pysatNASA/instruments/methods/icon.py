@@ -185,7 +185,6 @@ def list_remote_files(tag, inst_id, user=None, password=None,
     for item in temp_dirs:
         # parse raw string
         parsed = item.split(' ')
-        # print(parsed[-1])
         remote_years.append(ftp_dict['remote_dir'] + '/' + parsed[-1])
         years.append(parsed[-1])
 
@@ -198,7 +197,6 @@ def list_remote_files(tag, inst_id, user=None, password=None,
         for item in temp_dirs:
             # parse raw string
             parsed = item.split(' ')
-            # print(parsed[-1])
             remote_days.append(year + '/' + parsed[-1])
             days.append(parsed[-1])
             yrdoys.append(int(year_int) * 1000 + int(parsed[-1]))
