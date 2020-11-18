@@ -58,41 +58,28 @@ Warnings
 
 import datetime as dt
 import functools
-import logging
 import numpy as np
 
+from pysat import logger
 from pysat.instruments.methods import general as mm_gen
 from pysatNASA.instruments.methods import cnofs as mm_cnofs
 from pysatNASA.instruments.methods import cdaweb as cdw
 
-logger = logging.getLogger(__name__)
+# ----------------------------------------------------------------------------
+# Instrument attributes
 
 platform = 'cnofs'
 name = 'vefi'
 tags = {'dc_b': 'DC Magnetometer data - 1 second'}
 inst_ids = {'': ['dc_b']}
+
+# ----------------------------------------------------------------------------
+# Instrument test attributes
+
 _test_dates = {'': {'dc_b': dt.datetime(2009, 1, 1)}}
 
-# support list files routine
-# use the default CDAWeb method
-fname = ''.join(('cnofs_vefi_bfield_1sec_{year:04d}{month:02d}{day:02d}',
-                 '_v{version:02d}.cdf'))
-supported_tags = {'': {'dc_b': fname}}
-list_files = functools.partial(mm_gen.list_files,
-                               supported_tags=supported_tags)
-# support load routine
-# use the default CDAWeb method
-load = cdw.load
-
-# support download routine
-# use the default CDAWeb method
-basic_tag = {'remote_dir': '/pub/data/cnofs/vefi/bfield_1sec/{year:4d}/',
-             'fname': fname}
-download_tags = {'': {'dc_b': basic_tag}}
-download = functools.partial(cdw.download, supported_tags=download_tags)
-# support listing files currently on CDAWeb
-list_remote_files = functools.partial(cdw.list_remote_files,
-                                      supported_tags=download_tags)
+# ----------------------------------------------------------------------------
+# Instrument methods
 
 
 def init(self):
@@ -109,23 +96,44 @@ def init(self):
     return
 
 
-def clean(inst):
+def clean(self):
     """Routine to return VEFI data cleaned to the specified level
-
-    Parameters
-    -----------
-    inst : pysat.Instrument
-        Instrument class object, whose attribute clean_level is used to return
-        the desired level of data selectivity.
 
     Note
     ----
     'dusty' or 'clean' removes data when interpolation flag is set to 1
+    'dirty' is the same as 'none'
 
     """
 
-    if (inst.clean_level == 'dusty') | (inst.clean_level == 'clean'):
-        idx, = np.where(inst['B_flag'] == 0)
-        inst.data = inst[idx, :]
+    if (self.clean_level == 'dusty') | (self.clean_level == 'clean'):
+        idx, = np.where(self['B_flag'] == 0)
+        self.data = self[idx, :]
 
-    return None
+    return
+
+
+# ----------------------------------------------------------------------------
+# Instrument functions
+#
+# Use the default CDAWeb and pysat methods
+
+# Set the list_files routine
+fname = ''.join(('cnofs_vefi_bfield_1sec_{year:04d}{month:02d}{day:02d}',
+                 '_v{version:02d}.cdf'))
+supported_tags = {'': {'dc_b': fname}}
+list_files = functools.partial(mm_gen.list_files,
+                               supported_tags=supported_tags)
+
+# Set the load routine
+load = cdw.load
+
+# Set the download routine
+basic_tag = {'remote_dir': '/pub/data/cnofs/vefi/bfield_1sec/{year:4d}/',
+             'fname': fname}
+download_tags = {'': {'dc_b': basic_tag}}
+download = functools.partial(cdw.download, supported_tags=download_tags)
+
+# Set the list_remote_files routine
+list_remote_files = functools.partial(cdw.list_remote_files,
+                                      supported_tags=download_tags)

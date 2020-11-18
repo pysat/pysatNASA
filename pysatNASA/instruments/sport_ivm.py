@@ -5,41 +5,49 @@ Ion Velocity Meter (IVM) support for the NASA/INPE SPORT CubeSat.
 This mission is still in development. This routine is here to help
 with the development of code associated with SPORT and the IVM.
 
+Properties
+----------
+platform
+    'sport'
+name
+    'ivm'
+tag
+    '', 'l1', 'l2'
+inst_id
+    None supported
+
+Warnings
+--------
+- Currently no cleaning routine.
+
 """
 
 import datetime as dt
 import functools
-import logging
 import warnings
 
 import pysat
+from pysat import logger
 from pysat.instruments.methods import general as mm_gen
 
-logger = logging.getLogger(__name__)
-
-
-# pysat required parameters
+# ----------------------------------------------------------------------------
+# Instrument attributes
 platform = 'sport'
 name = 'ivm'
-# dictionary of data 'tags' and corresponding description
 tags = {'': 'Level-2 IVM Files',
-        'L1': 'Level-1 IVM Files',
-        'L0': 'Level-0 IVM Files'}
-# dictionary of satellite IDs, list of corresponding tags
-# only one satellite in this case
-inst_ids = {'': ['']}
-# good day to download test data for. Downloads aren't currently supported
-_test_dates = {'': {'': dt.datetime(2019, 1, 1)}}
+        'l1': 'Level-1 IVM Files',
+        'l0': 'Level-0 IVM Files'}
+inst_ids = {'': [tag for tag in tags.keys()]}
+
+# ----------------------------------------------------------------------------
+# Instrument test attributes
+
+# A good day to download test data for. Downloads aren't currently supported
+_test_dates = {'': {kk: dt.datetime(2019, 1, 1) for kk in tags.keys()}}
 _test_download = {'': {kk: False for kk in tags.keys()}}
 
-prefix = 'SPORT_{tag}_IVM_'
-format_str = ''.join(('{year:04d}-{month:02d}-{day:02d}',
-                      '_v{version:02d}r{revision:04d}.NC'))
-supported_tags = {'': {'': ''.join((prefix.format(tag='L2'), format_str)),
-                       'L1': ''.join((prefix.format(tag='L1'), format_str)),
-                       'L0': ''.join((prefix.format(tag='L0'), format_str))}}
-list_files = functools.partial(mm_gen.list_files,
-                               supported_tags=supported_tags)
+# ----------------------------------------------------------------------------
+# Instrument methods
 
 
 def init(self):
@@ -55,6 +63,35 @@ def init(self):
     logger.info(self.acknowledgements)
 
     return
+
+
+def clean(self):
+    """Routine to return SPORT IVM data cleaned to the specified level
+
+    Note
+    ----
+    No cleaning currently available for SPORT IVM.
+
+    """
+    warnings.warn("No cleaning currently available for SPORT IVM")
+
+    return
+
+
+# ----------------------------------------------------------------------------
+# Instrument functions
+#
+# Use the default CDAWeb and pysat methods
+
+# Set the list_files routine
+prefix = 'SPORT_{tag}_IVM_'
+format_str = ''.join(('{year:04d}-{month:02d}-{day:02d}',
+                      '_v{version:02d}r{revision:04d}.NC'))
+supported_tags = {'': {'': ''.join((prefix.format(tag='L2'), format_str)),
+                       'l1': ''.join((prefix.format(tag='L1'), format_str)),
+                       'l0': ''.join((prefix.format(tag='L0'), format_str))}}
+list_files = functools.partial(mm_gen.list_files,
+                               supported_tags=supported_tags)
 
 
 def load(fnames, tag=None, inst_id=None, **kwargs):
@@ -95,7 +132,7 @@ def load(fnames, tag=None, inst_id=None, **kwargs):
     --------
     ::
 
-        inst = pysat.Instrument('sport', 'ivm')
+        inst = pysat.Instrument('sport', 'ivm', '')
         inst.load(2019,1)
 
     """
@@ -103,11 +140,9 @@ def load(fnames, tag=None, inst_id=None, **kwargs):
     return pysat.utils.load_netcdf4(fnames, **kwargs)
 
 
-def download(date_array, tag, inst_id, data_path=None, user=None,
-             password=None):
+def download(date_array, tag, inst_id, data_path=None):
     """Downloads data for SPORT IVM, once SPORT is operational and in orbit.
-    This routine is invoked by pysat and is not intended for direct use by
-    the end user.
+
     Parameters
     ----------
     date_array : array-like
@@ -121,28 +156,9 @@ def download(date_array, tag, inst_id, data_path=None, user=None,
         is provided by pysat.
     data_path : string (None)
         Path to directory to download data to.
-    user : string (None)
-        User string input used for download. Provided by user and passed via
-        pysat. If an account is required for dowloads this routine here must
-        error if user not supplied.
-    password : string (None)
-        Password for data download.
+
     """
 
     warnings.warn('Downloads are not currently supported - not launched yet!')
 
     pass
-
-
-def clean(self):
-    """Routine to return SPORT IVM data cleaned to the specified level
-
-    Note
-    ----
-    No cleaning currently available for SPORT IVM.
-
-    """
-
-    warnings.warn("No cleaning currently available for SPORT")
-
-    return
