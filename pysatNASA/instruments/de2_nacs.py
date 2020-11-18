@@ -66,6 +66,10 @@ inst_id
 tag
     None Supported
 
+Warnings
+--------
+- Currently no cleaning routine.
+
 Authors
 -------
 J. Klenzing
@@ -74,25 +78,67 @@ J. Klenzing
 
 import datetime as dt
 import functools
-import logging
+import warnings
 
+from pysat import logger
 from pysat.instruments.methods import general as mm_gen
 from pysatNASA.instruments.methods import de2 as mm_de2
 from pysatNASA.instruments.methods import cdaweb as cdw
 
-logger = logging.getLogger(__name__)
+# ----------------------------------------------------------------------------
+# Instrument attributes
 
 platform = 'de2'
 name = 'nacs'
-
 tags = {'': '1 s cadence Neutral Atmosphere Composition Spectrometer data'}
 inst_ids = {'': ['']}
+
+# ----------------------------------------------------------------------------
+# Instrument test attributes
+
 _test_dates = {'': {'': dt.datetime(1983, 1, 1)}}
 
+# ----------------------------------------------------------------------------
+# Instrument methods
+
+
+def init(self):
+    """Initializes the Instrument object with instrument specific values.
+
+    Runs once upon instantiation.
+
+    """
+
+    logger.info(mm_de2.ackn_str)
+    self.acknowledgements = mm_de2.ackn_str
+    self.references = mm_de2.refs['lang']
+    return
+
+
+def clean(self):
+    """Routine to return DE2 NACS data cleaned to the specified level
+
+    Note
+    ----
+    'clean' - Not specified
+    'dusty' - Not specified
+    'dirty' - Not specified
+    'none'  No cleaning applied, routine not called in this case.
+
+    """
+    warnings.warn('No cleaning routines available for DE2 NACS')
+
+    return
+
+
+# ----------------------------------------------------------------------------
+# Instrument functions
+#
+# Use the default CDAWeb and pysat methods
+
+# Set the list_files routine
 fname = 'de2_neutral1s_nacs_{year:04d}{month:02d}{day:02d}_v{version:02d}.cdf'
 supported_tags = {'': {'': fname}}
-
-# use the CDAWeb methods list files routine
 list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags)
 
@@ -109,43 +155,3 @@ download = functools.partial(cdw.download, supported_tags=download_tags)
 # support listing files currently on CDAWeb
 list_remote_files = functools.partial(cdw.list_remote_files,
                                       supported_tags=download_tags)
-
-
-def init(self):
-    """Initializes the Instrument object with instrument specific values.
-
-    Runs once upon instantiation.
-
-    """
-
-    logger.info(mm_de2.ackn_str)
-    self.acknowledgements = mm_de2.ackn_str
-    self.references = mm_de2.refs['lang']
-    return
-
-
-def clean(inst):
-    """Routine to return PLATFORM/NAME data cleaned to the specified level
-
-    Cleaning level is specified in inst.clean_level and pysat
-    will accept user input for several strings. The clean_level is
-    specified at instantiation of the Instrument object.
-
-    'clean' All parameters should be good, suitable for statistical and
-            case studies
-    'dusty' All paramers should generally be good though same may
-            not be great
-    'dirty' There are data areas that have issues, data should be used
-            with caution
-    'none'  No cleaning applied, routine not called in this case.
-
-
-    Parameters
-    -----------
-    inst : pysat.Instrument
-        Instrument class object, whose attribute clean_level is used to return
-        the desired level of data selectivity.
-
-    """
-
-    return
