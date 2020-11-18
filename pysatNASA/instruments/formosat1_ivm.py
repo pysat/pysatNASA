@@ -22,13 +22,11 @@ Warnings
 
 import datetime as dt
 import functools
-import logging
 import warnings
 
+from pysat import logger
 from pysat.instruments.methods import general as mm_gen
 from pysatNASA.instruments.methods import cdaweb as cdw
-
-logger = logging.getLogger(__name__)
 
 # ----------------------------------------------------------------------------
 # Instrument attributes

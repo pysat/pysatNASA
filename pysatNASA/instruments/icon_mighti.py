@@ -51,14 +51,11 @@ Conversion to MIGHTI, Oct 8th, 2028, University of Texas at Dallas
 
 import datetime as dt
 import functools
-import logging
 
 import pysat
+from pysat import logger
 from pysat.instruments.methods import general as mm_gen
 from pysatNASA.instruments.methods import icon as mm_icon
-
-
-logger = logging.getLogger(__name__)
 
 # ----------------------------------------------------------------------------
 # Instrument attributes

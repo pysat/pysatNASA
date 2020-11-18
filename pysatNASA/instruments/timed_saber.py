@@ -47,16 +47,13 @@ J. Klenzing, 4 March 2019
 """
 
 import datetime as dt
-import logging
 import functools
 import warnings
 
 # CDAWeb methods prewritten for pysat
+from pysat import logger
 from pysat.instruments.methods import general as mm_gen
 from pysatNASA.instruments.methods import cdaweb as cdw
-
-
-logger = logging.getLogger(__name__)
 
 # ----------------------------------------------------------------------------
 # Instrument attributes

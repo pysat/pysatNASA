@@ -24,13 +24,11 @@ Warnings
 
 import datetime as dt
 import functools
-import logging
 import warnings
 
 import pysat
+from pysat import logger
 from pysat.instruments.methods import general as mm_gen
-
-logger = logging.getLogger(__name__)
 
 # ----------------------------------------------------------------------------
 # Instrument attributes
