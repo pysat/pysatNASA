@@ -1,5 +1,5 @@
 # pysatNASA: pysat support for NASA instruments
-[![Build Status](https://travis-ci.org/pysat/pysatNASA.svg?branch=main)](https://travis-ci.org/pysat/pysatNASA)
+[![Build Status](https://travis-ci.com/pysat/pysatNASA.svg?branch=main)](https://travis-ci.com/pysat/pysatNASA)
 [![Coverage Status](https://coveralls.io/repos/github/pysat/pysatNASA/badge.svg?branch=main)](https://coveralls.io/github/pysat/pysatNASA?branch=main)
 [![DOI](https://zenodo.org/badge/287387638.svg)](https://zenodo.org/badge/latestdoi/287387638)
 
