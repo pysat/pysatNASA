@@ -38,36 +38,29 @@ import datetime as dt
 import functools
 import warnings
 
-import pysat
+from pysat import logger
 from pysat.instruments.methods import general as ps_gen
+from pysat.utils import load_netcdf4
 from pysatNASA.instruments.methods import gold as mm_gold
 from pysatNASA.instruments.methods import cdaweb as cdw
 
+# ----------------------------------------------------------------------------
+# Instrument attributes
+
 platform = 'gold'
 name = 'nmax'
-
 tags = {'': 'Nmax data for the GOLD instrument'}
 inst_ids = {'': ['']}
-_test_dates = {'': {'': dt.datetime(2020, 1, 1)}}
 
-fname = ''.join(('gold_l2_nmax_{year:04d}_{day:03d}_v{version:02d}',
-                 '_r{revision:02d}_c{cycle:02d}.nc'))
-supported_tags = {'': {'': fname}}
 pandas_format = False
 
-# use the CDAWeb methods list files routine
-list_files = functools.partial(ps_gen.list_files,
-                               supported_tags=supported_tags)
+# ----------------------------------------------------------------------------
+# Instrument test attributes
 
-# support download routine
-basic_tag = {'remote_dir': '/pub/data/gold/level2/nmax/{year:4d}/',
-             'fname': fname}
-download_tags = {'': {'': basic_tag}}
-download = functools.partial(cdw.download, supported_tags=download_tags)
+_test_dates = {'': {'': dt.datetime(2020, 1, 1)}}
 
-# support listing files currently on CDAWeb
-list_remote_files = functools.partial(cdw.list_remote_files,
-                                      supported_tags=download_tags)
+# ----------------------------------------------------------------------------
+# Instrument methods
 
 
 def init(self):
@@ -77,19 +70,62 @@ def init(self):
 
     Parameters
     -----------
-    inst : pysat.Instrument
+    self : pysat.Instrument
         Instrument class object
 
     """
 
-    pysat.logger.info(mm_gold.ack_str)
+    logger.info(mm_gold.ack_str)
     self.acknowledgements = mm_gold.ack_str
     self.references = mm_gold.ref_str
 
     pass
 
 
-# Custom load routine for netcdf files
+def clean(self):
+    """Provides data cleaning based upon clean_level.
+
+    Routine is called by pysat, and not by the end user directly.
+
+    Parameters
+    -----------
+    self : pysat.Instrument
+        Instrument class object, whose attribute clean_level is used to return
+        the desired level of data selectivity.
+
+    Note
+    ----
+        Supports 'clean', 'dusty', 'dirty', 'none'
+
+    """
+
+    warnings.warn("Cleaning actions for GOLD Nmax are not yet implemented.")
+    return
+
+
+# ----------------------------------------------------------------------------
+# Instrument functions
+#
+# Use the pysat and CDAWeb methods
+
+# Set the list_files routine
+fname = ''.join(('gold_l2_nmax_{year:04d}_{day:03d}_v{version:02d}',
+                 '_r{revision:02d}_c{cycle:02d}.nc'))
+supported_tags = {'': {'': fname}}
+list_files = functools.partial(ps_gen.list_files,
+                               supported_tags=supported_tags)
+
+# Set the download routine
+basic_tag = {'remote_dir': '/pub/data/gold/level2/nmax/{year:4d}/',
+             'fname': fname}
+download_tags = {'': {'': basic_tag}}
+download = functools.partial(cdw.download, supported_tags=download_tags)
+
+# Set the list_remote_files routine
+list_remote_files = functools.partial(cdw.list_remote_files,
+                                      supported_tags=download_tags)
+
+
 def load(fnames, tag=None, inst_id=None):
     """Loads GOLD NMAX data using pysat into xarray
 
@@ -132,29 +168,8 @@ def load(fnames, tag=None, inst_id=None):
 
     """
 
-    data, mdata = pysat.utils.load_netcdf4(fnames, pandas_format=pandas_format)
+    data, mdata = load_netcdf4(fnames, pandas_format=pandas_format)
     data['time'] = [dt.datetime.strptime(str(val), "b'%Y-%m-%dT%H:%M:%SZ'")
                     for val in data['scan_start_time'].values]
 
     return data, mdata
-
-
-def clean(self):
-    """Provides data cleaning based upon clean_level.
-
-    Routine is called by pysat, and not by the end user directly.
-
-    Parameters
-    -----------
-    self : pysat.Instrument
-        Instrument class object, whose attribute clean_level is used to return
-        the desired level of data selectivity.
-
-    Note
-    ----
-        Supports 'clean', 'dusty', 'dirty', 'none'
-
-    """
-
-    warnings.warn("Cleaning actions for GOLD Nmax are not yet implemented.")
-    return
