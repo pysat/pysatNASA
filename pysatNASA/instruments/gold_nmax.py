@@ -76,6 +76,11 @@ def init(self):
     """
 
     logger.info(mm_gold.ack_str)
+    logger.warning(' '.join(('Time stamps may be non-unique because Channel A',
+                             'and B are different instruments.  An upgrade to',
+                             'the pysat.Constellation object is required to',
+                             'solve this issue. See pysat issue #614 for more',
+                             'info.')))
     self.acknowledgements = mm_gold.ack_str
     self.references = mm_gold.ref_str
 
@@ -156,8 +161,10 @@ def load(fnames, tag=None, inst_id=None):
 
     Note
     ----
-    Any additional keyword arguments passed to pysat.Instrument
-    upon instantiation are passed along to this routine.
+    - Any additional keyword arguments passed to pysat.Instrument
+      upon instantiation are passed along to this routine.
+    - Using scan_start_time as time dimesion for pysat compatibility, renames
+      ``nscans`` dimension as ``time``.
 
     Examples
     --------
@@ -169,7 +176,15 @@ def load(fnames, tag=None, inst_id=None):
     """
 
     data, mdata = load_netcdf4(fnames, pandas_format=pandas_format)
-    data['time'] = [dt.datetime.strptime(str(val), "b'%Y-%m-%dT%H:%M:%SZ'")
-                    for val in data['scan_start_time'].values]
+    # Add time coordinate from scan_start_time
+    data['time'] = ('nscans',
+                    [dt.datetime.strptime(str(val), "b'%Y-%m-%dT%H:%M:%SZ'")
+                     for val in data['scan_start_time'].values])
+    data = data.swap_dims({'nscans': 'time'})
+    data = data.assign_coords({'nlats': data['nlats'],
+                               'nlons': data['nlons'],
+                               'nmask': data['nmask'],
+                               'channel': data['channel'],
+                               'hemisphere': data['hemisphere']})
 
     return data, mdata
