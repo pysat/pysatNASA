@@ -115,11 +115,11 @@ def download(date_array, tag=None, inst_id=None, supported_tags=None,
         Array of datetimes to download data for. Provided by pysat.
     tag : str or NoneType
         tag or None (default=None)
-    inst_id : (str or NoneType)
+    inst_id : str or NoneType
         satellite id or None (default=None)
     supported_tags : dict
         dict of dicts. Keys are supported tag names for download. Value is
-        a dict with 'remote_dir', fname'. Inteded to be pre-set with
+        a dict with 'remote_dir', 'fname'. Inteded to be pre-set with
         functools.partial then assigned to new instrument code.
         (default=None)
     remote_url : string or NoneType
@@ -155,6 +155,10 @@ def download(date_array, tag=None, inst_id=None, supported_tags=None,
 
     """
 
+    if tag is None:
+        tag = ''
+    if inst_id is None:
+        inst_id = ''
     try:
         inst_dict = supported_tags[inst_id][tag]
     except KeyError:
@@ -225,7 +229,7 @@ def list_remote_files(tag=None, inst_id=None,
         (default='https://cdaweb.gsfc.nasa.gov')
     supported_tags : dict
         dict of dicts. Keys are supported tag names for download. Value is
-        a dict with 'remote_dir', fname'. Inteded to be
+        a dict with 'remote_dir', 'fname'. Inteded to be
         pre-set with functools.partial then assigned to new instrument code.
         (default=None)
     user : string or NoneType
