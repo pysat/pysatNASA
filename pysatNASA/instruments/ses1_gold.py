@@ -4,7 +4,7 @@ Disk (GOLD) satellite.  Accesses data in netCDF format.
 Properties
 ----------
 platform
-    'ses1'
+    'ses14'
 name
     'gold'
 tag
@@ -22,7 +22,7 @@ Examples
 
     import datetime as dt
     import pysat
-    nmax = pysat.Instrument(platform='ses1', name='gold', tag='nmax'
+    nmax = pysat.Instrument(platform='ses14', name='gold', tag='nmax'
                             strict_time_flag=False)
     nmax.download(dt.datetime(2020, 1, 1), dt.datetime(2020, 1, 31))
     nmax.load(2020, 1)
@@ -47,9 +47,9 @@ from pysatNASA.instruments.methods import cdaweb as cdw
 # ----------------------------------------------------------------------------
 # Instrument attributes
 
-platform = 'ses1'
+platform = 'ses14'
 name = 'gold'
-tags = {'nmax': 'Nmax data for the GOLD instrument'}
+tags = {'nmax': 'Level 2 Nmax data for the GOLD instrument'}
 inst_ids = {'': ['nmax']}
 
 pandas_format = False
@@ -84,7 +84,7 @@ def init(self):
     self.acknowledgements = mm_gold.ack_str
     self.references = mm_gold.ref_str
 
-    pass
+    return
 
 
 def clean(self):
