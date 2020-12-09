@@ -118,9 +118,10 @@ def load(fnames, tag=None, inst_id=None, **kwargs):
 
     Returns
     -------
-    data, metadata
-        Data and Metadata are formatted for pysat. Data is a pandas
-        DataFrame while metadata is a pysat.Meta instance.
+    data, meta
+        Data and Metadata are formatted for pysat using
+        pysat.utils.load_netcdf4. Data is a pandas DataFrame and metadata
+        is a pysat.Meta instance.
 
     Note
     ----
