@@ -72,30 +72,32 @@ def load(fnames, tag=None, inst_id=None,
     if len(fnames) <= 0:
         return pds.DataFrame(None), None
     else:
-        # going to use pysatCDF to load the CDF and format
-        # data and metadata for pysat using some assumptions.
-        # Depending upon your needs the resulting pandas DataFrame may
-        # need modification
+        # Going to use pysatCDF to load the CDF and format data and
+        # metadata for pysat using some assumptions. Depending upon your needs
+        # the resulting pandas DataFrame may need modification
         ldata = []
         for lfname in fnames:
             if fake_daily_files_from_monthly:
-                # parse out date from filename
+                # Parse out date from filename
                 fname = lfname[0:-11]
-                # get date from rest of filename
+
+                # Get date from rest of filename
                 date = dt.datetime.strptime(lfname[-10:], '%Y-%m-%d')
                 with pysatCDF.CDF(fname) as cdf:
-                    # convert data to pysat format
+                    # Convert data to pysat format
                     data, meta = cdf.to_pysat(flatten_twod=flatten_twod)
-                    # select data from monthly down to daily
+
+                    # Select data from monthly down to daily
                     data = data.loc[date:date + pds.DateOffset(days=1)
                                     - pds.DateOffset(microseconds=1), :]
                     ldata.append(data)
             else:
-                # basic data return
+                # Basic data return
                 with pysatCDF.CDF(lfname) as cdf:
                     temp_data, meta = cdf.to_pysat(flatten_twod=flatten_twod)
                     ldata.append(temp_data)
-        # combine individual files together
+
+        # Combine individual files together
         data = pds.concat(ldata)
         return data, meta
 
