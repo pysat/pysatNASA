@@ -33,7 +33,13 @@ install:
   - pip install coveralls
   - pip install pytest-flake8
   # Dependencies not available through conda, install through pip
-  - pip install pysatCDF >/dev/null
+  # Custon pysatCDF install
+  # - pip install pysatCDF >/dev/null
+  - cd ..
+  - git clone --single-branch --branch develop-3 https://github.com/pysat/pysatCDF.git
+  - cd pysatCDF
+  - python setup.py install
+  - export PYTHONPATH=$PYTHONPATH:$(pwd)
   # Custom pysat install
   - cd ..
   - git clone https://github.com/pysat/pysat.git
