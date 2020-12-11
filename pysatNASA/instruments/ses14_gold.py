@@ -116,14 +116,14 @@ def clean(self):
 # Set the list_files routine
 fname = ''.join(('gold_l2_nmax_{year:04d}_{day:03d}_v{version:02d}',
                  '_r{revision:02d}_c{cycle:02d}.nc'))
-supported_tags = {'': {'': fname}}
+supported_tags = {'': {'nmax': fname}}
 list_files = functools.partial(ps_gen.list_files,
                                supported_tags=supported_tags)
 
 # Set the download routine
 basic_tag = {'remote_dir': '/pub/data/gold/level2/nmax/{year:4d}/',
              'fname': fname}
-download_tags = {'': {'': basic_tag}}
+download_tags = {'': {'nmax': basic_tag}}
 download = functools.partial(cdw.download, supported_tags=download_tags)
 
 # Set the list_remote_files routine
