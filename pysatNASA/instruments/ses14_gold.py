@@ -114,16 +114,20 @@ def clean(self):
 # Use the pysat and CDAWeb methods
 
 # Set the list_files routine
-fname = ''.join(('gold_l2_nmax_{year:04d}_{day:03d}_v{version:02d}',
-                 '_r{revision:02d}_c{cycle:02d}.nc'))
-supported_tags = {'': {'nmax': fname}}
+fname = ''.join(('gold_l2_{tag:s}_{{year:04d}}_{{day:03d}}_v{{version:02d}}',
+                 '_r{{revision:02d}}_c{{cycle:02d}}.nc'))
+supported_tags = {'': {}}
+for tag in inst_ids['']:
+    supported_tags[''][tag] = fname.format(tag=tag)
 list_files = functools.partial(ps_gen.list_files,
                                supported_tags=supported_tags)
 
 # Set the download routine
-basic_tag = {'remote_dir': '/pub/data/gold/level2/nmax/{year:4d}/',
-             'fname': fname}
-download_tags = {'': {'nmax': basic_tag}}
+download_tags = {'': {}}
+for tag in inst_ids['']:
+    download_tags[''][tag] = {'remote_dir': ''.join(('/pub/data/gold/level2/',
+                                                     tag, '/{year:4d}/')),
+                              'fname': fname.format(tag=tag)}
 download = functools.partial(cdw.download, supported_tags=download_tags)
 
 # Set the list_remote_files routine
