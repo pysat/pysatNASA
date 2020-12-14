@@ -94,9 +94,8 @@ def init(self):
     return
 
 
-def default(self, keep_original_names=False):
-    """Default routine to be applied when loading data. Removes variable
-    preambles.
+def preprocess(self, keep_original_names=False):
+    """Removes variable preambles.
 
     Parameters
     ----------
