@@ -33,6 +33,8 @@ install:
   - pip install coveralls
   - pip install pytest-flake8
   - pip install portalocker
+  # Dependencies not available through conda, install through pip
+  - pip install pysatCDF >/dev/null
   # Custom pysat install
   - cd ..
   - git clone https://github.com/pysat/pysat.git
