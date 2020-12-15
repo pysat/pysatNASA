@@ -65,7 +65,7 @@ platform = 'omni'
 name = 'hro'
 tags = {'1min': '1-minute time averaged data',
         '5min': '5-minute time averaged data'}
-inst_ids = {'': [tag for tags.keys()]}
+inst_ids = {'': [tag for tag in tags.keys()]}
 
 # ----------------------------------------------------------------------------
 # Instrument test attributes
@@ -139,9 +139,9 @@ load = functools.partial(cdw.load, file_cadance=pds.DateOffset(months=1))
 
 # Set the download routine
 remote_dir = '/pub/data/omni/omni_cdaweb/hro_{tag:s}/{{year:4d}}/'
-download_tags = {inst_id: {tag: {'remote_dir': remote_dir.format(tag),
-                                 'fname': suppoorted_tags[inst_id][tag]}
-                           for tag in tags.keys()}
+download_tags = {inst_id: {tag: {'remote_dir': remote_dir.format(tag=tag),
+                                 'fname': supported_tags[inst_id][tag]}
+                           for tag in inst_ids[inst_id]}
                  for inst_id in inst_ids.keys()}
 download = functools.partial(cdw.download, supported_tags=download_tags)
 
