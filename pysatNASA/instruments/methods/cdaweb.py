@@ -6,7 +6,6 @@ intervention.
 """
 
 import datetime as dt
-import logging
 import os
 import requests
 import sys
@@ -14,43 +13,42 @@ import sys
 from bs4 import BeautifulSoup
 import pandas as pds
 
+from pysat import logger
 from pysat.utils import files as futils
 
-logger = logging.getLogger(__name__)
 
-
-def load(fnames, tag=None, inst_id=None,
-         fake_daily_files_from_monthly=False,
+def load(fnames, tag=None, inst_id=None, file_cadance=dt.timedelta(days=1),
          flatten_twod=True):
     """Load NASA CDAWeb CDF files.
 
-    This routine is intended to be used by pysat instrument modules supporting
-    a particular NASA CDAWeb dataset.
-
     Parameters
-    ------------
+    ----------
     fnames : pandas.Series
         Series of filenames
     tag : str or NoneType
         tag or None (default=None)
     inst_id : str or NoneType
         satellite id or None (default=None)
-    fake_daily_files_from_monthly : bool
-        Some CDAWeb instrument data files are stored by month, interfering
-        with pysat's functionality of loading by day. This flag, when true,
-        parses of daily dates to monthly files that were added internally
-        by the list_files routine, when flagged. These dates are
-        used here to provide data by day.
+    file_cadance : dt.timedelta or pds.DateOffset
+        pysat assumes a daily file cadance, but some instrument data file
+        contain longer periods of time.  This parameter allows the specification
+        of regular file cadances greater than or equal to a day (e.g., weekly,
+        monthly, or yearly). (default=dt.timedelta(days=1))
     flatted_twod : bool
         Flattens 2D data into different columns of root DataFrame rather
         than produce a Series of DataFrames
 
     Returns
-    ---------
+    -------
     data : pandas.DataFrame
         Object containing satellite data
     meta : pysat.Meta
         Object containing metadata such as column names and units
+
+    Note
+    ----
+    This routine is intended to be used by pysat instrument modules supporting
+    a particular NASA CDAWeb dataset.
 
     Examples
     --------
@@ -78,39 +76,40 @@ def load(fnames, tag=None, inst_id=None,
         # need modification
         ldata = []
         for lfname in fnames:
-            if fake_daily_files_from_monthly:
-                # parse out date from filename
+            if file_cadance.days > 1:
+                # Parse out date from filename
                 fname = lfname[0:-11]
-                # get date from rest of filename
+
+                # Get date from rest of filename
                 date = dt.datetime.strptime(lfname[-10:], '%Y-%m-%d')
                 with pysatCDF.CDF(fname) as cdf:
-                    # convert data to pysat format
+                    # Convert data to pysat format
                     data, meta = cdf.to_pysat(flatten_twod=flatten_twod)
-                    # select data from monthly down to daily
-                    data = data.loc[date:date + pds.DateOffset(days=1)
-                                    - pds.DateOffset(microseconds=1), :]
+
+                    # Select data from multi-day down to daily
+                    data = data.loc[date:date + dt.timedelta(days=1)
+                                    - dt.timedelta(microseconds=1), :]
                     ldata.append(data)
             else:
-                # basic data return
+                # Basic data return
                 with pysatCDF.CDF(lfname) as cdf:
                     temp_data, meta = cdf.to_pysat(flatten_twod=flatten_twod)
                     ldata.append(temp_data)
-        # combine individual files together
+
+        # Combine individual files together
         data = pds.concat(ldata)
         return data, meta
 
 
 def download(date_array, tag=None, inst_id=None, supported_tags=None,
-             remote_url='https://cdaweb.gsfc.nasa.gov',
-             data_path=None, user=None, password=None,
-             fake_daily_files_from_monthly=False):
+             remote_url='https://cdaweb.gsfc.nasa.gov', data_path=None):
     """Routine to download NASA CDAWeb CDF data.
 
     This routine is intended to be used by pysat instrument modules supporting
     a particular NASA CDAWeb dataset.
 
     Parameters
-    -----------
+    ----------
     date_array : array_like
         Array of datetimes to download data for. Provided by pysat.
     tag : str or NoneType
@@ -128,16 +127,6 @@ def download(date_array, tag=None, inst_id=None, supported_tags=None,
     data_path : string or NoneType
         Path to data directory.  If None is specified, the value previously
         set in Instrument.files.data_path is used.  (default=None)
-    user : string or NoneType
-        Username to be passed along to resource with relevant data.
-        (default=None)
-    password : string or NoneType
-        User password to be passed along to resource with relevant data.
-        (default=None)
-    fake_daily_files_from_monthly : bool
-        Some CDAWeb instrument data files are stored by month. This flag,
-        when true, accomodates this reality with user feedback on a monthly
-        time frame.
 
     Examples
     --------
@@ -202,54 +191,25 @@ def download(date_array, tag=None, inst_id=None, supported_tags=None,
         except requests.exceptions.RequestException as exception:
             logger.info(' '.join((exception, '- File not available for',
                                   date.strftime('%d %B %Y'))))
+    return
 
 
-def list_remote_files(tag=None, inst_id=None,
+def list_remote_files(tag=None, inst_id=None, start=None, stop=None,
                       remote_url='https://cdaweb.gsfc.nasa.gov',
-                      supported_tags=None,
-                      user=None, password=None,
-                      fake_daily_files_from_monthly=False,
-                      two_digit_year_break=None, delimiter=None,
-                      start=None, stop=None):
+                      supported_tags=None, two_digit_year_break=None,
+                      delimiter=None):
     """Return a Pandas Series of every file for chosen remote data.
 
     This routine is intended to be used by pysat instrument modules supporting
     a particular NASA CDAWeb dataset.
 
     Parameters
-    -----------
+    ----------
     tag : string or NoneType
         Denotes type of file to load.  Accepted types are <tag strings>.
         (default=None)
     inst_id : string or NoneType
         Specifies the satellite ID for a constellation.
-        (default=None)
-    remote_url : string or NoneType
-        Remote site to download data from
-        (default='https://cdaweb.gsfc.nasa.gov')
-    supported_tags : dict
-        dict of dicts. Keys are supported tag names for download. Value is
-        a dict with 'remote_dir', 'fname'. Inteded to be
-        pre-set with functools.partial then assigned to new instrument code.
-        (default=None)
-    user : string or NoneType
-        Username to be passed along to resource with relevant data.
-        (default=None)
-    password : string or NoneType
-        User password to be passed along to resource with relevant data.
-        (default=None)
-    fake_daily_files_from_monthly : bool
-        Some CDAWeb instrument data files are stored by month. This flag,
-        when true, accomodates this reality with user feedback on a monthly
-        time frame.
-        (default=False)
-    two_digit_year_break : int or NoneType
-        If filenames only store two digits for the year, then
-        '1900' will be added for years >= two_digit_year_break
-        and '2000' will be added for years < two_digit_year_break.
-        (default=None)
-    delimiter : string or NoneType
-        If filename is delimited, then provide delimiter alone e.g. '_'
         (default=None)
     start : dt.datetime or NoneType
         Starting time for file list. A None value will start with the first
@@ -259,9 +219,25 @@ def list_remote_files(tag=None, inst_id=None,
         Ending time for the file list.  A None value will stop with the last
         file found.
         (default=None)
+    remote_url : string or NoneType
+        Remote site to download data from
+        (default='https://cdaweb.gsfc.nasa.gov')
+    supported_tags : dict
+        dict of dicts. Keys are supported tag names for download. Value is
+        a dict with 'remote_dir', 'fname'. Inteded to be
+        pre-set with functools.partial then assigned to new instrument code.
+        (default=None)
+    two_digit_year_break : int or NoneType
+        If filenames only store two digits for the year, then
+        '1900' will be added for years >= two_digit_year_break
+        and '2000' will be added for years < two_digit_year_break.
+        (default=None)
+    delimiter : string or NoneType
+        If filename is delimited, then provide delimiter alone e.g. '_'
+        (default=None)
 
     Returns
-    --------
+    -------
     pysat.Files.from_os : (pysat._files.Files)
         A class containing the verified available files
 
@@ -364,15 +340,16 @@ def list_remote_files(tag=None, inst_id=None,
                                    'exceeds the server limit. Please try',
                                    'again using a smaller data range.')))
 
-    # parse remote filenames to get date information
+    # Parse remote filenames to get date information
     if delimiter is None:
         stored = futils.parse_fixed_width_filenames(full_files, format_str)
     else:
         stored = futils.parse_delimited_filenames(full_files, format_str,
                                                   delimiter)
 
-    # process the parsed filenames and return a properly formatted Series
+    # Process the parsed filenames and return a properly formatted Series
     stored_list = futils.process_parsed_filenames(stored, two_digit_year_break)
+
     # Downselect to user-specified dates, if needed
     if start is not None:
         mask = (stored_list.index >= start)
