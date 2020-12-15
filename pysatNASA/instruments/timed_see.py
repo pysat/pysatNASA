@@ -39,6 +39,7 @@ Warnings
 
 import datetime as dt
 import functools
+import pandas as pds
 import warnings
 
 from pysat import logger
