@@ -118,10 +118,10 @@ def clean(self):
     """
 
     vars = ['HmF2', 'NmF2', 'Oplus']
-    if 'Flags' in self.variables:
-        icon_flag = 'Flags'
+    if 'Flag' in self.variables:
+        icon_flag = 'Flag'
     else:
-        icon_flag = 'ICON_L26_Flags'
+        icon_flag = 'ICON_L26_Flag'
         vars = ['ICON_L26_' + x for x in vars]
 
     min_val = {'clean': 1.0,
