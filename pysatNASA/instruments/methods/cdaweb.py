@@ -13,8 +13,10 @@ import sys
 from bs4 import BeautifulSoup
 import pandas as pds
 
+import pysatCDF
 from pysat import logger
 from pysat.utils import files as futils
+from pysat.instruments.methods import general
 
 
 def load(fnames, tag=None, inst_id=None, file_cadance=dt.timedelta(days=1),
@@ -65,8 +67,6 @@ def load(fnames, tag=None, inst_id=None, file_cadance=dt.timedelta(days=1),
 
     """
 
-    import pysatCDF
-
     if len(fnames) <= 0:
         return pds.DataFrame(None), None
     else:
@@ -76,7 +76,7 @@ def load(fnames, tag=None, inst_id=None, file_cadance=dt.timedelta(days=1),
         # need modification
         ldata = []
         for lfname in fnames:
-            if file_cadance.days > 1:
+            if not general.is_daily_file_cadance(file_cadance):
                 # Parse out date from filename
                 fname = lfname[0:-11]
 
