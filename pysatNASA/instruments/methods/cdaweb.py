@@ -19,7 +19,7 @@ from pysat.utils import files as futils
 from pysat.instruments.methods import general
 
 
-def load(fnames, tag=None, inst_id=None, file_cadance=dt.timedelta(days=1),
+def load(fnames, tag=None, inst_id=None, file_cadence=dt.timedelta(days=1),
          flatten_twod=True):
     """Load NASA CDAWeb CDF files.
 
@@ -31,10 +31,10 @@ def load(fnames, tag=None, inst_id=None, file_cadance=dt.timedelta(days=1),
         tag or None (default=None)
     inst_id : str or NoneType
         satellite id or None (default=None)
-    file_cadance : dt.timedelta or pds.DateOffset
-        pysat assumes a daily file cadance, but some instrument data file
+    file_cadence : dt.timedelta or pds.DateOffset
+        pysat assumes a daily file cadence, but some instrument data file
         contain longer periods of time.  This parameter allows the specification
-        of regular file cadances greater than or equal to a day (e.g., weekly,
+        of regular file cadences greater than or equal to a day (e.g., weekly,
         monthly, or yearly). (default=dt.timedelta(days=1))
     flatted_twod : bool
         Flattens 2D data into different columns of root DataFrame rather
@@ -76,7 +76,7 @@ def load(fnames, tag=None, inst_id=None, file_cadance=dt.timedelta(days=1),
         # need modification
         ldata = []
         for lfname in fnames:
-            if not general.is_daily_file_cadance(file_cadance):
+            if not general.is_daily_file_cadence(file_cadence):
                 # Parse out date from filename
                 fname = lfname[0:-11]
 

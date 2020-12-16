@@ -132,10 +132,10 @@ supported_tags = {inst_id: {tag: fname.format(tag=tag) for tag in tags.keys()}
                   for inst_id in inst_ids.keys()}
 list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags,
-                               file_cadance=pds.DateOffset(months=1))
+                               file_cadence=pds.DateOffset(months=1))
 
 # Set the load routine
-load = functools.partial(cdw.load, file_cadance=pds.DateOffset(months=1))
+load = functools.partial(cdw.load, file_cadence=pds.DateOffset(months=1))
 
 # Set the download routine
 remote_dir = '/pub/data/omni/omni_cdaweb/hro_{tag:s}/{{year:4d}}/'

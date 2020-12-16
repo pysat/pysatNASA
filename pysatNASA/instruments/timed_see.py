@@ -109,10 +109,10 @@ fname = 'timed_l3a_see_{year:04d}{month:02d}{day:02d}_v{version:02d}.cdf'
 supported_tags = {'': {'': fname}}
 list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags,
-                               file_cadance=pds.DateOffset(months=1))
+                               file_cadence=pds.DateOffset(months=1))
 
 # Set the load routine
-load = functools.partial(cdw.load, file_cadance=pds.DateOffset(months=1))
+load = functools.partial(cdw.load, file_cadence=pds.DateOffset(months=1))
 
 # Set the download routine
 basic_tag = {'remote_dir': ''.join(('/pub/data/timed/see/data/level3a_cdf',
