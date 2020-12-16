@@ -47,8 +47,8 @@ Jeff Klenzing, Mar 17, 2018, Goddard Space Flight Center
 Russell Stoneback, Mar 23, 2018, University of Texas at Dallas
 Conversion to MIGHTI, Oct 8th, 2018, University of Texas at Dallas
 
-Note:
------
+Note
+----
 Currently red and green data products are bundled together in zip files on the
 server.  This results in 'double downloading'.  This will be fixed once data is
 transfered to SPDF.
