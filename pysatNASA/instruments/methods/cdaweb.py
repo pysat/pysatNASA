@@ -32,7 +32,7 @@ def load(fnames, tag=None, inst_id=None, file_cadence=dt.timedelta(days=1),
     inst_id : str or NoneType
         satellite id or None (default=None)
     file_cadence : dt.timedelta or pds.DateOffset
-        pysat assumes a daily file cadence, but some instrument data file
+        pysat assumes a daily file cadence, but some instrument data files
         contain longer periods of time.  This parameter allows the specification
         of regular file cadences greater than or equal to a day (e.g., weekly,
         monthly, or yearly). (default=dt.timedelta(days=1))
