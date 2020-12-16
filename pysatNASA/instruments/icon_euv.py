@@ -117,10 +117,10 @@ def clean(self):
     """
 
     vars = ['HmF2', 'NmF2', 'Oplus']
-    if 'Flags' in self.variables:
-        icon_flag = 'Flags'
+    if 'Flag' in self.variables:
+        icon_flag = 'Flag'
     else:
-        icon_flag = 'ICON_L26_Flags'
+        icon_flag = 'ICON_L26_Flag'
         vars = ['ICON_L26_' + x for x in vars]
 
     min_val = {'clean': 1.0,
@@ -146,7 +146,7 @@ list_files = functools.partial(mm_gen.list_files,
 
 # Set the download routine
 basic_tag = {'remote_dir': '/pub/LEVEL.2/EUV',
-             'remote_fname': 'Data/' + fname}
+             'remote_fname': ''.join(('ZIP/', fname[:-2], 'ZIP'))}
 download_tags = {'': {'': basic_tag}}
 download = functools.partial(mm_icon.ssl_download, supported_tags=download_tags)
 

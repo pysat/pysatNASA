@@ -41,11 +41,17 @@ ICON_L27_Ion_Density becomes Ion_Density.  To retain the original names, use
                               keep_original_names=True)
 
 Authors
----------
+-------
 Originated from EUV support.
 Jeff Klenzing, Mar 17, 2018, Goddard Space Flight Center
 Russell Stoneback, Mar 23, 2018, University of Texas at Dallas
-Conversion to MIGHTI, Oct 8th, 2028, University of Texas at Dallas
+Conversion to MIGHTI, Oct 8th, 2018, University of Texas at Dallas
+
+Note
+----
+Currently red and green data products are bundled together in zip files on the
+server.  This results in 'double downloading'.  This will be fixed once data is
+transfered to SPDF.
 
 """
 
@@ -76,7 +82,7 @@ pandas_format = False
 # ----------------------------------------------------------------------------
 # Instrument test attributes
 
-_test_dates = {jj: {kk: dt.datetime(2020, 1, 2) for kk in inst_ids[jj]}
+_test_dates = {jj: {kk: dt.datetime(2020, 1, 1) for kk in inst_ids[jj]}
                for jj in inst_ids.keys()}
 _test_download_travis = {jj: {kk: False for kk in inst_ids[jj]}
                          for jj in inst_ids.keys()}
@@ -228,25 +234,26 @@ list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags)
 
 # Set the download routine
-dirstr = '/pub/LEVEL.2/MIGHTI{id:s}'
-dirdatestr = '{year:4d}/{doy:03d}/'
-ids = {'': '', 'a': '-A', 'b': '-B'}
-products = {'vector_wind_green': 'Vector-Winds/',
-            'vector_wind_red': 'Vector-Winds/',
-            'los_wind_green': 'LOS-Winds/',
-            'los_wind_red': 'LOS-Winds/',
-            'temperature': 'Temperature/'}
-datestr = '{year:04d}-{month:02d}-{day:02d}'
+dirstr = '/pub/LEVEL.2/MIGHTI'
+zname1 = 'ZIP/ICON_L2-1_MIGHTI-{id:s}_{date:s}.ZIP'
+zname2 = 'ZIP/ICON_L2-2_MIGHTI_{date:s}.ZIP'
+zname3 = 'ZIP/ICON_L2-3_MIGHTI-{id:s}_Temperature_{date:s}.ZIP'
+znames = {'los_wind_green': zname1,
+          'los_wind_red': zname1,
+          'vector_wind_green': zname2,
+          'vector_wind_red': zname2,
+          'temperature': zname3}
 
 download_tags = {}
-for skey in supported_tags.keys():
-    download_tags[skey] = {}
-    for tkey in supported_tags[skey].keys():
-        fname = supported_tags[skey][tkey]
+for inst_id in supported_tags.keys():
+    download_tags[inst_id] = {}
+    for tag in supported_tags[inst_id].keys():
+        fname = supported_tags[inst_id][tag]
 
-        download_tags[skey][tkey] = {'remote_dir': dirstr.format(id=ids[skey]),
-                                     'remote_fname': ''.join((products[tkey],
-                                                              fname))}
+        download_tags[inst_id][tag] = \
+            {'remote_dir': dirstr,
+             'remote_fname': znames[tag].format(id=inst_id.upper(),
+                                                date=datestr)}
 
 download = functools.partial(mm_icon.ssl_download, supported_tags=download_tags)
 
@@ -333,8 +340,8 @@ def remove_preamble(inst):
               'los_wind_red': 'ICON_L21_',
               'vector_wind_green': 'ICON_L22_',
               'vector_wind_red': 'ICON_L22_',
-              'temperature': ['ICON_L1_MIGHTI_{}_'.format(id_str),
-                              'ICON_L23_MIGHTI_{}_'.format(id_str),
+              'temperature': ['ICON_L1_MIGHTI_{id:s}_'.format(id=id_str),
+                              'ICON_L23_MIGHTI_{id:s}_'.format(id=id_str),
                               'ICON_L23_']}
     mm_gen.remove_leading_text(inst, target=target[inst.tag])
 

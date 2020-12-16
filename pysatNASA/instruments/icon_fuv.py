@@ -138,8 +138,10 @@ list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags)
 
 # Set the download routine
-basic_tag24 = {'dir': '/pub/LEVEL.2/FUV', 'remote_fname': fname24}
-basic_tag25 = {'dir': '/pub/LEVEL.2/FUV', 'remote_fname': fname25}
+basic_tag24 = {'remote_dir': '/pub/LEVEL.2/FUV',
+               'remote_fname': ''.join(('ZIP/', fname24[:-2], 'ZIP'))}
+basic_tag25 = {'remote_dir': '/pub/LEVEL.2/FUV',
+               'remote_fname': ''.join(('ZIP/', fname25[:-2], 'ZIP'))}
 download_tags = {'': {'day': basic_tag24, 'night': basic_tag25}}
 
 download = functools.partial(mm_icon.ssl_download, supported_tags=download_tags)
