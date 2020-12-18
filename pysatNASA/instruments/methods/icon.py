@@ -178,15 +178,14 @@ def list_remote_files(tag, inst_id, user=None, password=None,
     # path to highest directory, below which is custom structure
     # and files
     # change directory
-    ftp.cwd(ftp_dict['dir'])
+    ftp.cwd(ftp_dict['remote_dir'])
     # get directory contents
     ftp.dir(temp_dirs.append)
     # need to parse output to obtain list of paths to years
     for item in temp_dirs:
         # parse raw string
         parsed = item.split(' ')
-        # print(parsed[-1])
-        remote_years.append(ftp_dict['dir'] + '/' + parsed[-1])
+        remote_years.append(ftp_dict['remote_dir'] + '/' + parsed[-1])
         years.append(parsed[-1])
 
     # get files under each year, first identify day directories
@@ -198,7 +197,6 @@ def list_remote_files(tag, inst_id, user=None, password=None,
         for item in temp_dirs:
             # parse raw string
             parsed = item.split(' ')
-            # print(parsed[-1])
             remote_days.append(year + '/' + parsed[-1])
             days.append(parsed[-1])
             yrdoys.append(int(year_int) * 1000 + int(parsed[-1]))

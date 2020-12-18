@@ -441,11 +441,10 @@ def load(fnames, tag=None, inst_id=None,
         return data, meta
 
 
-def download(supported_tags, date_array, tag, inst_id,
-             remote_site='https://cdaweb.gsfc.nasa.gov',
+def download(date_array, tag=None, inst_id=None, supported_tags=None,
+             remote_url='https://cdaweb.gsfc.nasa.gov',
              data_path=None, user=None, password=None,
-             fake_daily_files_from_monthly=False,
-             multi_file_day=False):
+             fake_daily_files_from_monthly=False):
     """Routine to download NASA CDAWeb CDF data.
 
     This routine is intended to be used by pysat instrument modules supporting
@@ -453,17 +452,18 @@ def download(supported_tags, date_array, tag, inst_id,
 
     Parameters
     -----------
-    supported_tags : dict
-        dict of dicts. Keys are supported tag names for download. Value is
-        a dict with 'dir', 'remote_fname', 'local_fname'. Inteded to be
-        pre-set with functools.partial then assigned to new instrument code.
     date_array : array_like
         Array of datetimes to download data for. Provided by pysat.
     tag : str or NoneType
         tag or None (default=None)
-    inst_id : (str or NoneType)
+    inst_id : str or NoneType
         satellite id or None (default=None)
-    remote_site : string or NoneType
+    supported_tags : dict
+        dict of dicts. Keys are supported tag names for download. Value is
+        a dict with 'remote_dir', 'fname'. Inteded to be pre-set with
+        functools.partial then assigned to new instrument code.
+        (default=None)
+    remote_url : string or NoneType
         Remote site to download data from
         (default='https://cdaweb.gsfc.nasa.gov')
     data_path : string or NoneType
@@ -485,12 +485,10 @@ def download(supported_tags, date_array, tag, inst_id,
     ::
 
         # download support added to cnofs_vefi.py using code below
-        rn = '{year:4d}/cnofs_vefi_bfield_1sec_{year:4d}{month:02d}{day:02d}'+
-            '_v05.cdf'
-        ln = 'cnofs_vefi_bfield_1sec_{year:4d}{month:02d}{day:02d}_v05.cdf'
-        dc_b_tag = {'dir':'/pub/data/cnofs/vefi/bfield_1sec',
-                    'remote_fname': rn,
-                    'local_fname': ln}
+        fn = 'cnofs_vefi_bfield_1sec_{year:4d}{month:02d}{day:02d}_v05.cdf'
+        dc_b_tag = {'remote_dir': ''.join(('/pub/data/cnofs/vefi/bfield_1sec',
+                                            '/{year:4d}/')),
+                    'fname': fn}
         supported_tags = {'dc_b': dc_b_tag}
 
         download = functools.partial(nasa_cdaweb.download,
@@ -498,104 +496,57 @@ def download(supported_tags, date_array, tag, inst_id,
 
     """
 
+    if tag is None:
+        tag = ''
+    if inst_id is None:
+        inst_id = ''
     try:
         inst_dict = supported_tags[inst_id][tag]
     except KeyError:
         raise ValueError('inst_id / tag combo unknown.')
 
-    # path to relevant file on CDAWeb
-    remote_url = remote_site + inst_dict['dir']
-
     # naming scheme for files on the CDAWeb server
-    remote_fname = inst_dict['remote_fname']
+    remote_dir = inst_dict['remote_dir']
 
-    # naming scheme for local files, should be closely related
-    # to CDAWeb scheme, though directory structures may be reduced
-    # if desired
-    local_fname = inst_dict['local_fname']
-
-    if not multi_file_day:
-        # Get list of files from server
-        remote_files = list_remote_files(tag=tag, inst_id=inst_id,
-                                         remote_site=remote_site,
-                                         supported_tags=supported_tags,
-                                         start=date_array[0],
-                                         stop=date_array[-1])
-        # Find only requested files that exist remotely
-        date_array = pds.DatetimeIndex(list(set(remote_files.index)
-                                            & set(date_array))).sort_values()
-
-    for date in date_array:
+    # Get list of files from server
+    remote_files = list_remote_files(tag=tag, inst_id=inst_id,
+                                     remote_url=remote_url,
+                                     supported_tags=supported_tags,
+                                     start=date_array[0],
+                                     stop=date_array[-1])
+    # Download only requested files that exist remotely
+    for date, fname in remote_files.iteritems():
         # format files for specific dates and download location
-        formatted_remote_fname = remote_fname.format(year=date.year,
-                                                     month=date.month,
-                                                     day=date.day,
-                                                     hour=date.hour,
-                                                     min=date.minute,
-                                                     sec=date.second)
-        formatted_local_fname = local_fname.format(year=date.year,
-                                                   month=date.month,
-                                                   day=date.day,
-                                                   hour=date.hour,
-                                                   min=date.minute,
-                                                   sec=date.second)
-        saved_local_fname = os.path.join(data_path, formatted_local_fname)
+        formatted_remote_dir = remote_dir.format(year=date.year,
+                                                 month=date.month,
+                                                 day=date.day,
+                                                 hour=date.hour,
+                                                 min=date.minute,
+                                                 sec=date.second)
+        saved_local_fname = os.path.join(data_path, fname)
 
         # perform download
-        if not multi_file_day:
-            # standard download
-            try:
-                logger.info(' '.join(('Attempting to download file for',
+        try:
+            logger.info(' '.join(('Attempting to download file for',
+                                  date.strftime('%d %B %Y'))))
+            sys.stdout.flush()
+            remote_path = '/'.join((remote_url.strip('/'),
+                                    formatted_remote_dir.strip('/'),
+                                    fname))
+            req = requests.get(remote_path)
+            if req.status_code != 404:
+                open(saved_local_fname, 'wb').write(req.content)
+                logger.info('Finished.')
+            else:
+                logger.info(' '.join(('File not available for',
                                       date.strftime('%d %B %Y'))))
-                sys.stdout.flush()
-                remote_path = '/'.join((remote_url.strip('/'),
-                                        formatted_remote_fname))
-                req = requests.get(remote_path)
-                if req.status_code != 404:
-                    open(saved_local_fname, 'wb').write(req.content)
-                    logger.info('Finished.')
-                else:
-                    logger.info(' '.join(('File not available for',
-                                          date.strftime('%d %B %Y'))))
-            except requests.exceptions.RequestException as exception:
-                logger.info(' '.join((exception, '- File not available for',
-                                      date.strftime('%d %B %Y'))))
-
-        else:
-            try:
-                logger.info(' '.join(('Attempting to download files for',
-                                      date.strftime('%d %B %Y'))))
-                sys.stdout.flush()
-                remote_files = list_remote_files(tag=tag, inst_id=inst_id,
-                                                 remote_site=remote_site,
-                                                 supported_tags=supported_tags,
-                                                 start=date,
-                                                 stop=date)
-
-                # Get the files
-                i = 0
-                n = len(remote_files.values)
-                for remote_file in remote_files.values:
-                    remote_dir = os.path.split(formatted_remote_fname)[0]
-                    remote_file_path = '/'.join((remote_url.strip('/'),
-                                                 remote_dir.strip('/'),
-                                                 remote_file))
-                    saved_local_fname = os.path.join(data_path, remote_file)
-                    req = requests.get(remote_file_path)
-                    if req.status_code != 404:
-                        open(saved_local_fname, 'wb').write(req.content)
-                        i += 1
-                    else:
-                        logger.info(' '.join(('File not available for',
-                                              date.strftime('%d %B %Y'))))
-                logger.info('Downloaded {i:} of {n:} files.'.format(i=i, n=n))
-            except requests.exceptions.RequestException as exception:
-                logger.info(' '.join((exception, '- Files not available for',
-                                      date.strftime('%d %B %Y'))))
+        except requests.exceptions.RequestException as exception:
+            logger.info(' '.join((exception, '- File not available for',
+                                  date.strftime('%d %B %Y'))))
 
 
-def list_remote_files(tag, inst_id,
-                      remote_site='https://cdaweb.gsfc.nasa.gov',
+def list_remote_files(tag=None, inst_id=None,
+                      remote_url='https://cdaweb.gsfc.nasa.gov',
                       supported_tags=None,
                       user=None, password=None,
                       fake_daily_files_from_monthly=False,
@@ -614,13 +565,14 @@ def list_remote_files(tag, inst_id,
     inst_id : string or NoneType
         Specifies the satellite ID for a constellation.
         (default=None)
-    remote_site : string or NoneType
+    remote_url : string or NoneType
         Remote site to download data from
         (default='https://cdaweb.gsfc.nasa.gov')
     supported_tags : dict
         dict of dicts. Keys are supported tag names for download. Value is
-        a dict with 'dir', 'remote_fname', 'local_fname'. Inteded to be
+        a dict with 'remote_dir', 'fname'. Inteded to be
         pre-set with functools.partial then assigned to new instrument code.
+        (default=None)
     user : string or NoneType
         Username to be passed along to resource with relevant data.
         (default=None)
@@ -682,10 +634,11 @@ def list_remote_files(tag, inst_id,
         raise ValueError('inst_id / tag combo unknown.')
 
     # path to relevant file on CDAWeb
-    remote_url = remote_site + inst_dict['dir']
+    remote_url = remote_url
 
     # naming scheme for files on the CDAWeb server
-    format_str = inst_dict['remote_fname']
+    format_str = '/'.join((inst_dict['remote_dir'].strip('/'),
+                           inst_dict['fname']))
 
     # Break string format into path and filename
     dir_split = os.path.split(format_str)
@@ -765,7 +718,9 @@ def list_remote_files(tag, inst_id,
     if start is not None:
         mask = (stored_list.index >= start)
         if stop is not None:
-            mask = mask & (stored_list.index <= stop)
+            stop_point = (stop + pds.DateOffset(days=1)
+                          - pds.DateOffset(microseconds=1))
+            mask = mask & (stored_list.index <= stop_point)
         stored_list = stored_list[mask]
 
     return stored_list
