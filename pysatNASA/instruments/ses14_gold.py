@@ -158,9 +158,10 @@ def load(fnames, tag=None, inst_id=None):
 
     Returns
     -------
-    data, metadata
-        Data and Metadata are formatted for pysat. Data is a pandas
-        DataFrame while metadata is a pysat.Meta instance.
+    data : xr.Dataset
+        An xarray Dataset with data prepared for the pysat.Instrument
+    meta : pysat.Meta
+        Metadata formatted for a pysat.Instrument object.
 
     Note
     ----
@@ -191,4 +192,4 @@ def load(fnames, tag=None, inst_id=None):
                                    'channel': data['channel'],
                                    'hemisphere': data['hemisphere']})
 
-    return data, mdata
+    return data, meta

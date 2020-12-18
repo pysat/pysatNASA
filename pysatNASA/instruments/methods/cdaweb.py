@@ -411,11 +411,9 @@ def load(fnames, tag=None, inst_id=None, file_cadence=dt.timedelta(days=1),
     if len(fnames) <= 0:
         return pds.DataFrame(None), None
     else:
-        # going to use pysatCDF to load the CDF and format
-        # data and metadata for pysat using some assumptions.
-        # Depending upon your needs the resulting pandas DataFrame may
-        # need modification
-
+        # Going to use pysatCDF to load the CDF and format data and
+        # metadata for pysat using some assumptions. Depending upon your needs
+        # the resulting pandas DataFrame may need modification
         ldata = []
         for lfname in fnames:
             if not general.is_daily_file_cadence(file_cadence):
