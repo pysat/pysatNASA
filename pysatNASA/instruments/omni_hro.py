@@ -65,7 +65,7 @@ platform = 'omni'
 name = 'hro'
 tags = {'1min': '1-minute time averaged data',
         '5min': '5-minute time averaged data'}
-inst_ids = {'': ['5min']}
+inst_ids = {'': [tag for tag in tags.keys()]}
 
 # ----------------------------------------------------------------------------
 # Instrument test attributes
@@ -126,26 +126,24 @@ def clean(self):
 # Use the default CDAWeb and pysat methods
 
 # Set the list_files routine
-fname1 = 'omni_hro_1min_{year:4d}{month:02d}{day:02d}_v{version:02d}.cdf'
-fname5 = 'omni_hro_5min_{year:4d}{month:02d}{day:02d}_v{version:02d}.cdf'
-supported_tags = {'': {'1min': fname1, '5min': fname5}}
+fname = ''.join(['omni_hro_{tag:s}_{{year:4d}}{{month:02d}}{{day:02d}}_',
+                 'v{{version:02d}}.cdf'])
+supported_tags = {inst_id: {tag: fname.format(tag=tag) for tag in tags.keys()}
+                  for inst_id in inst_ids.keys()}
 list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags,
-                               fake_daily_files_from_monthly=True)
+                               file_cadence=pds.DateOffset(months=1))
 
 # Set the load routine
-load = functools.partial(cdw.load, fake_daily_files_from_monthly=True)
+load = functools.partial(cdw.load, file_cadence=pds.DateOffset(months=1))
 
 # Set the download routine
-basic_tag1 = {'remote_dir': '/pub/data/omni/omni_cdaweb/hro_1min/{year:4d}/',
-              'fname': fname1}
-basic_tag5 = {'remote_dir': '/pub/data/omni/omni_cdaweb/hro_5min/{year:4d}/',
-              'fname': fname5}
-download_tags = {'': {'1min': basic_tag1,
-                      '5min': basic_tag5}}
-download = functools.partial(cdw.download,
-                             supported_tags=download_tags,
-                             fake_daily_files_from_monthly=True)
+remote_dir = '/pub/data/omni/omni_cdaweb/hro_{tag:s}/{{year:4d}}/'
+download_tags = {inst_id: {tag: {'remote_dir': remote_dir.format(tag=tag),
+                                 'fname': supported_tags[inst_id][tag]}
+                           for tag in inst_ids[inst_id]}
+                 for inst_id in inst_ids.keys()}
+download = functools.partial(cdw.download, supported_tags=download_tags)
 
 # Set the list_remote_files routine
 list_remote_files = functools.partial(cdw.list_remote_files,

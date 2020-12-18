@@ -311,11 +311,12 @@ def ssl_download(date_array, tag, inst_id, data_path=None,
                 # delete the downloaded zip
                 if fname.find('ZIP') > 0:
                     with ZipFile(saved_local_fname, 'r') as zipObj:
-                        for member in zipObj.namelist():
-                            if member.find('.NC') > 0:
+                        # Check for file we want
+                        for item in zipObj.namelist():
+                            if item.find('.NC') > 0:
                                 outpath = os.path.join(data_path,
-                                                       os.path.basename(member))
-                                with zipObj.open(member) as source:
+                                                       os.path.basename(item))
+                                with zipObj.open(item) as source:
                                     with open(outpath, 'wb') as target:
                                         shutil.copyfileobj(source, target)
                     os.remove(saved_local_fname)

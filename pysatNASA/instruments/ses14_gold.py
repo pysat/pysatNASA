@@ -4,11 +4,11 @@ Disk (GOLD) satellite.  Accesses data in netCDF format.
 Properties
 ----------
 platform
-    'gold'
+    'ses14'
 name
-    'nmax'
+    'gold'
 tag
-    None supported
+    'nmax'
 
 Warnings
 --------
@@ -22,7 +22,7 @@ Examples
 
     import datetime as dt
     import pysat
-    nmax = pysat.Instrument(platform='gold', name='nmax',
+    nmax = pysat.Instrument(platform='ses14', name='gold', tag='nmax'
                             strict_time_flag=False)
     nmax.download(dt.datetime(2020, 1, 1), dt.datetime(2020, 1, 31))
     nmax.load(2020, 1)
@@ -47,17 +47,17 @@ from pysatNASA.instruments.methods import cdaweb as cdw
 # ----------------------------------------------------------------------------
 # Instrument attributes
 
-platform = 'gold'
-name = 'nmax'
-tags = {'': 'Nmax data for the GOLD instrument'}
-inst_ids = {'': ['']}
+platform = 'ses14'
+name = 'gold'
+tags = {'nmax': 'Level 2 Nmax data for the GOLD instrument'}
+inst_ids = {'': ['nmax']}
 
 pandas_format = False
 
 # ----------------------------------------------------------------------------
 # Instrument test attributes
 
-_test_dates = {'': {'': dt.datetime(2020, 1, 1)}}
+_test_dates = {'': {'nmax': dt.datetime(2020, 1, 1)}}
 
 # ----------------------------------------------------------------------------
 # Instrument methods
@@ -76,10 +76,15 @@ def init(self):
     """
 
     logger.info(mm_gold.ack_str)
+    logger.warning(' '.join(('Time stamps may be non-unique because Channel A',
+                             'and B are different instruments.  An upgrade to',
+                             'the pysat.Constellation object is required to',
+                             'solve this issue. See pysat issue #614 for more',
+                             'info.')))
     self.acknowledgements = mm_gold.ack_str
     self.references = mm_gold.ref_str
 
-    pass
+    return
 
 
 def clean(self):
@@ -109,16 +114,19 @@ def clean(self):
 # Use the pysat and CDAWeb methods
 
 # Set the list_files routine
-fname = ''.join(('gold_l2_nmax_{year:04d}_{day:03d}_v{version:02d}',
-                 '_r{revision:02d}_c{cycle:02d}.nc'))
-supported_tags = {'': {'': fname}}
+fname = ''.join(('gold_l2_{tag:s}_{{year:04d}}_{{day:03d}}_v{{version:02d}}',
+                 '_r{{revision:02d}}_c{{cycle:02d}}.nc'))
+supported_tags = {inst_id: {tag: fname.format(tag=tag) for tag in tags.keys()}
+                  for inst_id in inst_ids.keys()}
 list_files = functools.partial(ps_gen.list_files,
                                supported_tags=supported_tags)
 
 # Set the download routine
-basic_tag = {'remote_dir': '/pub/data/gold/level2/nmax/{year:4d}/',
-             'fname': fname}
-download_tags = {'': {'': basic_tag}}
+download_tags = {inst_id:
+                 {tag: {'remote_dir': ''.join(('/pub/data/gold/level2/', tag,
+                                               '/{year:4d}/')),
+                        'fname': supported_tags[''][tag]}
+                  for tag in tags.keys()} for inst_id in inst_ids.keys()}
 download = functools.partial(cdw.download, supported_tags=download_tags)
 
 # Set the list_remote_files routine
@@ -156,8 +164,10 @@ def load(fnames, tag=None, inst_id=None):
 
     Note
     ----
-    Any additional keyword arguments passed to pysat.Instrument
-    upon instantiation are passed along to this routine.
+    - Any additional keyword arguments passed to pysat.Instrument
+      upon instantiation are passed along to this routine.
+    - Using scan_start_time as time dimesion for pysat compatibility, renames
+      ``nscans`` dimension as ``time``.
 
     Examples
     --------
@@ -169,7 +179,16 @@ def load(fnames, tag=None, inst_id=None):
     """
 
     data, mdata = load_netcdf4(fnames, pandas_format=pandas_format)
-    data['time'] = [dt.datetime.strptime(str(val), "b'%Y-%m-%dT%H:%M:%SZ'")
-                    for val in data['scan_start_time'].values]
+    if tag == 'nmax':
+        # Add time coordinate from scan_start_time
+        data['time'] = ('nscans',
+                        [dt.datetime.strptime(str(val), "b'%Y-%m-%dT%H:%M:%SZ'")
+                         for val in data['scan_start_time'].values])
+        data = data.swap_dims({'nscans': 'time'})
+        data = data.assign_coords({'nlats': data['nlats'],
+                                   'nlons': data['nlons'],
+                                   'nmask': data['nmask'],
+                                   'channel': data['channel'],
+                                   'hemisphere': data['hemisphere']})
 
     return data, mdata
