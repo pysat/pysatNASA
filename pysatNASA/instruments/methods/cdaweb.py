@@ -271,7 +271,7 @@ class CDF():
 
     def to_pysat(self, flatten_twod=True, labels={'units': ('Units', str),
                  'name': ('Long_Name', str), 'notes': ('Var_Notes', str),
-                 'desc': ('CatDesc', str), 'plot': ('FieldNam', str), 
+                 'desc': ('CatDesc', str), 'plot': ('FieldNam', str),
                  'axis': ('LablAxis', str), 'scale': ('ScaleTyp', str),
                  'min_val': ('ValidMin', float),
                  'max_val': ('ValidMax', float),
@@ -301,15 +301,15 @@ class CDF():
             indexed by Epoch. data.ix[0, 'item']
 
         labels : dict
-                Dict where keys are the label attribute names and the values 
-                are tuples that have the label values and value types in 
+                Dict where keys are the label attribute names and the values
+                are tuples that have the label values and value types in
                 that order.
                 (default={'units': ('units', str), 'name': ('long_name', str),
                           'notes': ('notes', str), 'desc': ('desc', str),
                           'plot': ('plot_label', str), 'axis': ('axis', str),
-                          'scale': ('scale', str), 
+                          'scale': ('scale', str),
                           'min_val': ('value_min', float),
-                          'max_val': ('value_max', float), 
+                          'max_val': ('value_max', float),
                           'fill_val': ('fill', float)})
 
         Returns
