@@ -106,7 +106,7 @@ def clean(self):
     for key in self.data.columns:
         if key != 'Epoch':
             idx, = np.where(self[key] == self.meta[key,
-                                                   self.meta.labels.fill_val])
+                                                   self.meta.labels.fill_val][0])
             self[idx, key] = np.nan
     return
 

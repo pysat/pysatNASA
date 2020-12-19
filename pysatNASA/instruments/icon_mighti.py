@@ -191,7 +191,7 @@ def clean(self):
         saa_flag = 'Quality_Flag_South_Atlantic_Anomaly'
         cal_flag = 'Quality_Flag_Bad_Calibration'
         if saa_flag not in self.variables:
-            id_str = self.self_id.upper()
+            id_str = self.inst_id.upper()
             saa_flag = '_'.join(('ICON_L1_MIGHTI', id_str, saa_flag))
             cal_flag = '_'.join(('ICON_L1_MIGHTI', id_str, cal_flag))
             var = '_'.join(('ICON_L23_MIGHTI', id_str, var))

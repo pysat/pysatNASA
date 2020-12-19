@@ -269,11 +269,13 @@ class CDF():
 
             self.meta[variable_name] = var_atts
 
-    def to_pysat(self, flatten_twod=True, units_label='UNITS',
-                 name_label='long_name', fill_label='FILLVAL',
-                 plot_label='FieldNam', min_label='ValidMin',
-                 max_label='ValidMax', notes_label='Var_Notes',
-                 desc_label='CatDesc', axis_label='LablAxis'):
+    def to_pysat(self, flatten_twod=True, labels={'units': ('Units', str),
+                 'name': ('Long_Name', str), 'notes': ('Var_Notes', str),
+                 'desc': ('CatDesc', str), 'plot': ('FieldNam', str), 
+                 'axis': ('LablAxis', str), 'scale': ('ScaleTyp', str),
+                 'min_val': ('ValidMin', float),
+                 'max_val': ('ValidMax', float),
+                 'fill_val': ('FillVal', float)}):
         """
         Exports loaded CDF data into data, meta for pysat module
 
@@ -297,33 +299,18 @@ class CDF():
             may be accessed via, data.ix[:,'item':'item_end']
             If False, then 2D data is stored as a series of DataFrames,
             indexed by Epoch. data.ix[0, 'item']
-        units_label : str
-            Identifier within metadata for units. Defults to CDAWab standard.
-        name_label : str
-            Identifier within metadata for variable name.
-            Defults to 'long_name' not normally present within CDAWeb files.
-            If not, will use values from the variable name in the file.
-        fill_label : str
-            Identifier within metadata for Fill Values.
-            Defults to CDAWab standard.
-        plot_label : str
-            Identifier within metadata for variable name used when plotting.
-            Defults to CDAWab standard.
-        min_label : str
-            Identifier within metadata for minimim variable value.
-            Defults to CDAWab standard.
-        max_label : str
-            Identifier within metadata for maximum variable value.
-            Defults to CDAWab standard.
-        notes_label : str
-            Identifier within metadata for notes. Defults to CDAWab standard.
-        desc_label : str
-            Identifier within metadata for a variable description.
-            Defults to CDAWab standard.
-        axis_label : str
-            Identifier within metadata for axis name used when plotting.
-            Defults to CDAWab standard.
 
+        labels : dict
+                Dict where keys are the label attribute names and the values 
+                are tuples that have the label values and value types in 
+                that order.
+                (default={'units': ('units', str), 'name': ('long_name', str),
+                          'notes': ('notes', str), 'desc': ('desc', str),
+                          'plot': ('plot_label', str), 'axis': ('axis', str),
+                          'scale': ('scale', str), 
+                          'min_val': ('value_min', float),
+                          'max_val': ('value_max', float), 
+                          'fill_val': ('fill', float)})
 
         Returns
         -------
@@ -335,11 +322,7 @@ class CDF():
         # create pysat.Meta object using data above
         # and utilizing the attribute labels provided by the user
         meta = pysat.Meta(pds.DataFrame.from_dict(self.meta, orient='index'),
-                          units_label=units_label, name_label=name_label,
-                          fill_label=fill_label, plot_label=plot_label,
-                          min_label=min_label, max_label=max_label,
-                          notes_label=notes_label, desc_label=desc_label,
-                          axis_label=axis_label)
+                          labels=labels)
 
         cdata = self.data.copy()
         lower_names = [name.lower() for name in meta.keys()]

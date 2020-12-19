@@ -111,7 +111,7 @@ def clean(self):
     for key in self.data.columns:
         if key != 'Epoch':
             idx, = np.where(self[key] == self.meta[key,
-                                                   self.meta.labels.fill_val])
+                                                   self.meta.labels.fill_val][0])
             # Set the fill values to NaN
             self[idx, key] = np.nan
 
@@ -120,7 +120,7 @@ def clean(self):
                                   "Standard vaaluee was: {:}".format(
                                       self.meta[key,
                                                 self.meta.labels.fill_val])])
-            notes = '\n'.join([self.meta[key, self.meta.labels.notes],
+            notes = '\n'.join([str(self.meta[key, self.meta.labels.notes]),
                                fill_notes])
             self.meta[key, self.meta.labels.notes] = notes
             self.meta[key, self.meta.labels.fill_val] = np.nan
