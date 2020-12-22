@@ -23,7 +23,22 @@ from pysat.instruments.methods import general
 
 
 def convert_ndimensional(data, index=None, columns=None):
-    """converts high-dimensional data to a Dataframe"""
+    """converts high-dimensional data to a Dataframe
+
+    Parameters
+    ----------
+    data : numpy.ndarray or List object
+        Data from cdf to be converted
+    index : pandas.Index or array-like
+        Index to use for resulting frame
+    columns : pandas.Index or array-like
+        Column labels to use for resulting frame
+
+    Returns
+    -------
+    pandas.DataFrame
+
+    """
     if columns is None:
         columns = [range(i) for i in data.shape[1:]]
         columns = pds.MultiIndex.from_product(columns)
@@ -65,7 +80,7 @@ class CDF():
         self.meta = {}
         self._dependencies = {}
 
-        self._variable_names = (self._cdf_info['rVariables'] 
+        self._variable_names = (self._cdf_info['rVariables']
                                 + self._cdf_info['zVariables'])
 
         self.load_variables()
@@ -77,11 +92,27 @@ class CDF():
         pass
 
     def get_dependency(self, x_axis_var):
-        """Retrieves variable dependency unique to filename"""
+        """Retrieves variable dependency unique to filename
+
+        Parameter
+        ---------
+        x_axis_var : string
+            name of variable
+        """
+
         return self._dependencies.get(self._filename + x_axis_var)
 
     def set_dependency(self, x_axis_var, x_axis_data):
-        """Sets variable dependency unique to filename"""
+        """Sets variable dependency unique to filename
+
+        Parameters
+        ----------
+        x_axis_var : string
+            name of variable
+        x_axis_data : array-like
+            epoch dependency data
+        """
+
         self._dependencies[self._filename + x_axis_var] = x_axis_data
 
     def set_epoch(self, x_axis_var):
@@ -156,6 +187,18 @@ class CDF():
                 self.set_dependency(x_axis_var, xdata)
 
     def get_index(self, variable_name):
+        """Return index of variable
+
+        Parameter
+        ---------
+        variable_name : string
+
+        Returns
+        -------
+        index_ : Dependency or pandas.MultiIndex
+
+        """
+
         var_atts = self._cdf_file.varattsget(variable_name)
 
         if "DEPEND_TIME" in var_atts:
@@ -192,7 +235,6 @@ class CDF():
 
     def load_variables(self):
         """loads cdf variables based on varformat
-
         """
         varformat = self._varformat
         if varformat is None:
@@ -386,8 +428,6 @@ def load(fnames, tag=None, inst_id=None, file_cadence=dt.timedelta(days=1),
         # support load routine
         # use the default CDAWeb method
         load = cdw.load
-
-
     """
 
     if len(fnames) <= 0:
