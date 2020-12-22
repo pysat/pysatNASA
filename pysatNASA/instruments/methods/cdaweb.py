@@ -39,7 +39,7 @@ class CDF():
     """
 
     def __init__(self, filename,
-                 varformat='*',  # regular expressions
+                 varformat='*',  # Regular expressions
                  var_types=['data', 'support_data'],
                  center_measurement=False,
                  raise_errors=False,
@@ -54,19 +54,19 @@ class CDF():
         self._var_types = var_types
         self._center_measurement = center_measurement
 
-        # registration names map from file params to kamodo-compatible names
+        # Registration names map from file params to kamodo-compatible names
         if regnames is None:
             regnames = {}
         self._regnames = regnames
 
         self._cdf_file = cdflib.CDF(self._filename)
         self._cdf_info = self._cdf_file.cdf_info()
-        self.data = {}  # python-in-Heliophysics Community data standard
-        self.meta = {}  # python-in-Heliophysics Community metadata standard
+        self.data = {}
+        self.meta = {}
         self._dependencies = {}
 
-        self._variable_names = self._cdf_info['rVariables'] +\
-            self._cdf_info['zVariables']
+        self._variable_names = (self._cdf_info['rVariables'] 
+                                + self._cdf_info['zVariables'])
 
         self.load_variables()
 
@@ -100,7 +100,7 @@ class CDF():
             xdata = cdf_file.varget(x_axis_var)
             epoch_var_atts = cdf_file.varattsget(x_axis_var)
 
-            # check for DELTA_PLUS_VAR/DELTA_MINUS_VAR attributes
+            # Check for DELTA_PLUS_VAR/DELTA_MINUS_VAR attributes
             if center_measurement:
                 if 'DELTA_PLUS_VAR' in epoch_var_atts:
                     delta_plus_var = cdf_file.varget(
@@ -108,7 +108,7 @@ class CDF():
                     delta_plus_var_att = cdf_file.varattsget(
                         epoch_var_atts['DELTA_PLUS_VAR'])
 
-                    # check if a conversion to seconds is required
+                    # Check if a conversion to seconds is required
                     if 'SI_CONVERSION' in delta_plus_var_att:
                         si_conv = delta_plus_var_att['SI_CONVERSION']
                         delta_plus_var = delta_plus_var.astype(float) \
@@ -124,7 +124,7 @@ class CDF():
                     delta_minus_var_att = cdf_file.varattsget(
                         epoch_var_atts['DELTA_MINUS_VAR'])
 
-                    # check if a conversion to seconds is required
+                    # Check if a conversion to seconds is required
                     if 'SI_CONVERSION' in delta_minus_var_att:
                         si_conv = delta_minus_var_att['SI_CONVERSION']
                         delta_minus_var = \
@@ -136,12 +136,12 @@ class CDF():
                             delta_minus_var.astype(float) \
                             * np.float(si_conv.split('>')[0])
 
-                # sometimes these are specified as arrays
+                # Sometimes these are specified as arrays
                 if isinstance(delta_plus_var, np.ndarray) \
                         and isinstance(delta_minus_var, np.ndarray):
                     delta_time = (delta_plus_var
                                   - delta_minus_var) / 2.0
-                else:  # and sometimes constants
+                else:  # And sometimes constants
                     if delta_plus_var != 0.0 or delta_minus_var != 0.0:
                         delta_time = (delta_plus_var
                                       - delta_minus_var) / 2.0
@@ -173,7 +173,7 @@ class CDF():
                 dependency_data = self.get_dependency(dependency_name)
                 if dependency_data is None:
                     dependency_data = self._cdf_file.varget(dependency_name)
-                    # get first unique row
+                    # Get first unique row
                     dependency_data = pds.DataFrame(dependency_data)
                     dependency_data = dependency_data.drop_duplicates()
                     self.set_dependency(dependency_name,
@@ -203,7 +203,7 @@ class CDF():
 
         for variable_name in self._variable_names:
             if not re.match(var_regex, variable_name):
-                # skip this variable
+                # Skip this variable
                 continue
             var_atts = self._cdf_file.varattsget(variable_name, to_np=True)
             for k in var_atts:
@@ -279,16 +279,6 @@ class CDF():
         """
         Exports loaded CDF data into data, meta for pysat module
 
-        Notes
-        -----
-        The *_labels should be set to the values in the file, if present.
-        Note that once the meta object returned from this function is attached
-        to a pysat.Instrument object then the *_labels on the Instrument
-        are assigned to the newly attached Meta object.
-
-        The pysat Meta object will use data with labels that match the patterns
-        in *_labels even if the case does not match.
-
         Parameters
         ----------
         flatten_twod : bool (True)
@@ -318,8 +308,17 @@ class CDF():
             Data and Metadata suitable for attachment to a pysat.Instrument
             object.
 
+        Note
+        ----
+        The *_labels should be set to the values in the file, if present.
+        Note that once the meta object returned from this function is attached
+        to a pysat.Instrument object then the *_labels on the Instrument
+        are assigned to the newly attached Meta object.
+
+        The pysat Meta object will use data with labels that match the patterns
+        in *_labels even if the case does not match.
         """
-        # create pysat.Meta object using data above
+        # Create pysat.Meta object using data above
         # and utilizing the attribute labels provided by the user
         meta = pysat.Meta(pds.DataFrame.from_dict(self.meta, orient='index'),
                           labels=labels)
@@ -394,7 +393,7 @@ def load(fnames, tag=None, inst_id=None, file_cadence=dt.timedelta(days=1),
     if len(fnames) <= 0:
         return pds.DataFrame(None), None
     else:
-        # Going to use pysatCDF to load the CDF and format data and
+        # Using cdflib wrapper to load the CDF and format data and
         # metadata for pysat using some assumptions. Depending upon your needs
         # the resulting pandas DataFrame may need modification
         ldata = []
@@ -406,7 +405,7 @@ def load(fnames, tag=None, inst_id=None, file_cadence=dt.timedelta(days=1),
                 # Get date from rest of filename
                 date = dt.datetime.strptime(lfname[-10:], '%Y-%m-%d')
                 with CDF(fname) as cdf:
-                    # convert data to pysat format
+                    # Convert data to pysat format
                     data, meta = cdf.to_pysat(flatten_twod=flatten_twod)
 
                     # Select data from multi-day down to daily
@@ -414,7 +413,7 @@ def load(fnames, tag=None, inst_id=None, file_cadence=dt.timedelta(days=1),
                                     - dt.timedelta(microseconds=1), :]
                     ldata.append(data)
             else:
-                # basic data return
+                # Basic data return
                 with CDF(lfname) as cdf:
                     temp_data, meta = cdf.to_pysat(flatten_twod=flatten_twod)
                     ldata.append(temp_data)
@@ -476,7 +475,7 @@ def download(date_array, tag=None, inst_id=None, supported_tags=None,
     except KeyError:
         raise ValueError('inst_id / tag combo unknown.')
 
-    # naming scheme for files on the CDAWeb server
+    # Naming scheme for files on the CDAWeb server
     remote_dir = inst_dict['remote_dir']
 
     # Get list of files from server
@@ -487,7 +486,7 @@ def download(date_array, tag=None, inst_id=None, supported_tags=None,
                                      stop=date_array[-1])
     # Download only requested files that exist remotely
     for date, fname in remote_files.iteritems():
-        # format files for specific dates and download location
+        # Format files for specific dates and download location
         formatted_remote_dir = remote_dir.format(year=date.year,
                                                  month=date.month,
                                                  day=date.day,
@@ -496,7 +495,7 @@ def download(date_array, tag=None, inst_id=None, supported_tags=None,
                                                  sec=date.second)
         saved_local_fname = os.path.join(data_path, fname)
 
-        # perform download
+        # Perform download
         try:
             logger.info(' '.join(('Attempting to download file for',
                                   date.strftime('%d %B %Y'))))
@@ -591,10 +590,10 @@ def list_remote_files(tag=None, inst_id=None, start=None, stop=None,
     except KeyError:
         raise ValueError('inst_id / tag combo unknown.')
 
-    # path to relevant file on CDAWeb
+    # Path to relevant file on CDAWeb
     remote_url = remote_url
 
-    # naming scheme for files on the CDAWeb server
+    # Naming scheme for files on the CDAWeb server
     format_str = '/'.join((inst_dict['remote_dir'].strip('/'),
                            inst_dict['fname']))
 
@@ -606,7 +605,7 @@ def list_remote_files(tag=None, inst_id=None, start=None, stop=None,
     search_dir = futils.construct_searchstring_from_format(format_dir)
     n_layers = len(search_dir['keys'])
 
-    # only keep file portion of format
+    # Only keep file portion of format
     format_str = dir_split[-1]
     # Generate list of targets to identify files
     search_dict = futils.construct_searchstring_from_format(format_str)
