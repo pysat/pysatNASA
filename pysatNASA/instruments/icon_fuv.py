@@ -92,9 +92,8 @@ def init(self):
     return
 
 
-def default(self, keep_original_names=False):
-    """Default routine to be applied when loading data. Adjusts epoch timestamps
-    to datetimes and removes variable preambles.
+def preprocess(self, keep_original_names=False):
+    """Adjusts epoch timestamps to datetimes and removes variable preambles.
 
     Parameters
     ----------

@@ -93,7 +93,7 @@ def init(self):
     return
 
 
-def default(self):
+def preprocess(self):
     """Apply C/NOFS IVM default attributes
 
     Note
