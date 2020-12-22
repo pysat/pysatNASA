@@ -51,6 +51,24 @@ class CDF():
     """cdflib wrapper for loading time series data
 
     Loading routines borrow heavily from pyspedas's cdf_to_tplot function
+
+    Parameters
+    ----------
+    filename : string
+        full filename to location of .cdf
+    varformat : string
+        format of variables for regex parsing
+    var_types : list of strings
+        list of the different variable types in cdf
+    center_measurement : bool
+        indicates center measurement
+    raise_errors : bool
+        turn error raising on or off
+    regnames : dict
+        dictionary to map Registration names to kamodo-compatible names
+    datetime : bool
+        True if epoch dependency data should be in datetime format
+
     """
 
     def __init__(self, filename,
@@ -66,7 +84,6 @@ class CDF():
         self._varformat = varformat
         self._var_types = var_types
         self._datetime = datetime
-        self._var_types = var_types
         self._center_measurement = center_measurement
 
         # Registration names map from file params to kamodo-compatible names
