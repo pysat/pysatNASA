@@ -23,7 +23,7 @@ from pysat.instruments.methods import general
 
 
 def convert_ndimensional(data, index=None, columns=None):
-    """converts high-dimensional data to a Dataframe
+    """Converts high-dimensional data to a Dataframe
 
     Parameters
     ----------
