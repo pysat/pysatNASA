@@ -231,9 +231,6 @@ def load(fnames, tag=None, inst_id=None, keep_original_names=False):
                                     name_label='Long_Name',
                                     notes_label='Var_Notes',
                                     desc_label='CatDesc',
-                                    plot_label='FieldNam',
-                                    axis_label='LablAxis',
-                                    scale_label='ScaleTyp',
                                     min_label='ValidMin',
                                     max_label='ValidMax',
                                     fill_label='FillVal')
