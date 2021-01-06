@@ -306,8 +306,7 @@ def load(fnames, tag=None, inst_id=None, keep_original_names=False):
     """
     labels = {'units': ('Units', str), 'name': ('Long_Name', str),
               'notes': ('Var_Notes', str), 'desc': ('CatDesc', str),
-              'plot': ('FieldNam', str), 'axis': ('LablAxis', str),
-              'scale': ('ScaleTyp', str), 'min_val': ('ValidMin', float),
+              'min_val': ('ValidMin', float),
               'max_val': ('ValidMax', float), 'fill_val': ('FillVal', float)}
 
     data, meta = pysat.utils.load_netcdf4(fnames, epoch_name='Epoch',

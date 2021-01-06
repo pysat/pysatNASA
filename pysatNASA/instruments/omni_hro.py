@@ -117,7 +117,7 @@ def clean(self):
 
             # Replace the old fill value with NaN and add this to the notes
             fill_notes = "".join(["Replaced standard fill value with NaN. ",
-                                  "Standard vaaluee was: {:}".format(
+                                  "Standard value was: {:}".format(
                                       self.meta[key,
                                                 self.meta.labels.fill_val])])
             notes = '\n'.join([str(self.meta[key, self.meta.labels.notes]),
