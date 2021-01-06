@@ -179,7 +179,7 @@ def load(fnames, tag=None, inst_id=None):
 
     """
 
-    data, mdata = load_netcdf4(fnames, pandas_format=pandas_format)
+    data, meta = load_netcdf4(fnames, pandas_format=pandas_format)
     if tag == 'nmax':
         # Add time coordinate from scan_start_time
         data['time'] = ('nscans',
