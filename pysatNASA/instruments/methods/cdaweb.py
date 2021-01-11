@@ -29,10 +29,10 @@ def convert_ndimensional(data, index=None, columns=None):
     ----------
     data : numpy.ndarray or List object
         Data from cdf to be converted
-    index : pandas.Index or array-like
-        Index to use for resulting frame
-    columns : pandas.Index or array-like
-        Column labels to use for resulting frame
+    index : pandas.Index or array-like or NoneType
+        Index to use for resulting frame. (default=None)
+    columns : pandas.Index or array-like or NoneType
+        Column labels to use for resulting frame. (default=None)
 
     Returns
     -------
@@ -57,17 +57,20 @@ class CDF():
     filename : string
         full filename to location of .cdf
     varformat : string
-        format of variables for regex parsing
+        format of variables for regex parsing. (default='*')
     var_types : list of strings
         list of the different variable types in cdf
+        (default=['data', 'support_data'])
     center_measurement : bool
-        indicates center measurement
+        indicates center measurement. (default=False)
     raise_errors : bool
-        turn error raising on or off
-    regnames : dict
+        turn error raising on or off. (default=False)
+    regnames : dict or NoneType
         dictionary to map Registration names to kamodo-compatible names
+        (default=None)
     datetime : bool
         True if epoch dependency data should be in datetime format
+        (default=True)
 
     """
 
@@ -114,7 +117,7 @@ class CDF():
         """Context manager protocol
         If any exceptions occur while attempting to execute the block
         of code nested after the with statement, Python will pass
-        information about the exception into the __exit__ method
+        information about the exception into this method
         
         Parameters
         ----------
@@ -152,7 +155,13 @@ class CDF():
         self._dependencies[self._filename + x_axis_var] = x_axis_data
 
     def set_epoch(self, x_axis_var):
-        """Stores epoch dependency"""
+        """Stores epoch dependency
+        
+        Parameter
+        ---------
+        x_axis_var : string
+            name of variable
+        """
 
         data_type_description \
             = self._cdf_file.varinq(x_axis_var)['Data_Type_Description']
@@ -270,7 +279,7 @@ class CDF():
         return index_
 
     def load_variables(self):
-        """loads cdf variables based on varformat
+        """Loads cdf variables based on varformat
         """
         varformat = self._varformat
         if varformat is None:
@@ -358,24 +367,24 @@ class CDF():
 
         Parameters
         ----------
-        flatten_twod : bool (True)
+        flatten_twod : bool
             If True, then two dimensional data is flattened across
             columns. Name mangling is used to group data, first column
             is 'name', last column is 'name_end'. In between numbers are
             appended 'name_1', 'name_2', etc. All data for a given 2D array
             may be accessed via, data.ix[:,'item':'item_end']
             If False, then 2D data is stored as a series of DataFrames,
-            indexed by Epoch. data.ix[0, 'item']
+            indexed by Epoch. data.ix[0, 'item']  (default=True)
 
         labels : dict
-                Dict where keys are the label attribute names and the values
-                are tuples that have the label values and value types in
-                that order.
-                (default={'units': ('units', str), 'name': ('long_name', str),
-                          'notes': ('notes', str), 'desc': ('desc', str),
-                          'min_val': ('value_min', float),
-                          'max_val': ('value_max', float),
-                          'fill_val': ('fill', float)})
+            Dict where keys are the label attribute names and the values
+            are tuples that have the label values and value types in
+            that order.
+            (default={'units': ('units', str), 'name': ('long_name', str),
+                      'notes': ('notes', str), 'desc': ('desc', str),
+                      'min_val': ('value_min', float),
+                      'max_val': ('value_max', float)
+                      'fill_val': ('fill', float)})
 
         Returns
         -------
@@ -436,7 +445,7 @@ def load(fnames, tag=None, inst_id=None, file_cadence=dt.timedelta(days=1),
         monthly, or yearly). (default=dt.timedelta(days=1))
     flatted_twod : bool
         Flattens 2D data into different columns of root DataFrame rather
-        than produce a Series of DataFrames
+        than produce a Series of DataFrames. (default=True)
 
     Returns
     -------
