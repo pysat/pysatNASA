@@ -108,7 +108,7 @@ class CDF():
     def __enter__(self):
         """Context manager protocol
         enters runtime context related to this object.
-        The with statement will bind this method’s return value 
+        The with statement will bind this method’s return value
         to the target(s) specified in the as clause of the statement
         """
         return self
@@ -118,7 +118,7 @@ class CDF():
         If any exceptions occur while attempting to execute the block
         of code nested after the with statement, Python will pass
         information about the exception into this method
-        
+
         Parameters
         ----------
         type : string
@@ -156,7 +156,7 @@ class CDF():
 
     def set_epoch(self, x_axis_var):
         """Stores epoch dependency
-        
+
         Parameter
         ---------
         x_axis_var : string
@@ -358,7 +358,7 @@ class CDF():
 
     def to_pysat(self, flatten_twod=True, labels={'units': ('Units', str),
                  'name': ('Long_Name', str), 'notes': ('Var_Notes', str),
-                 'desc': ('CatDesc', str), 
+                 'desc': ('CatDesc', str),
                  'min_val': ('ValidMin', float),
                  'max_val': ('ValidMax', float),
                  'fill_val': ('FillVal', float)}):
