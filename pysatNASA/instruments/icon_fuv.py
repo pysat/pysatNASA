@@ -48,6 +48,7 @@ import warnings
 
 import pysat
 from pysat.instruments.methods import general as mm_gen
+from pysatNASA.instruments.methods import cdaweb as cdw
 from pysatNASA.instruments.methods import icon as mm_icon
 
 logger = pysat.logger
@@ -67,7 +68,6 @@ pandas_format = False
 # Instrument test attributes
 
 _test_dates = {'': {kk: dt.datetime(2020, 1, 1) for kk in tags.keys()}}
-_test_download_travis = {'': {kk: False for kk in tags.keys()}}
 
 # ----------------------------------------------------------------------------
 # Instrument methods
@@ -139,16 +139,16 @@ list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags)
 
 # Set the download routine
-basic_tag24 = {'remote_dir': '/pub/LEVEL.2/FUV',
-               'remote_fname': ''.join(('ZIP/', fname24[:-2], 'ZIP'))}
-basic_tag25 = {'remote_dir': '/pub/LEVEL.2/FUV',
-               'remote_fname': ''.join(('ZIP/', fname25[:-2], 'ZIP'))}
+basic_tag24 = {'remote_dir': '/pub/data/icon/l2/l2-4_fuv_day/{year:04d}/',
+               'fname': fname24}
+basic_tag25 = {'remote_dir': '/pub/data/icon/l2/l2-5_fuv_night/{year:04d}/',
+               'fname': fname25}
 download_tags = {'': {'day': basic_tag24, 'night': basic_tag25}}
 
-download = functools.partial(mm_icon.ssl_download, supported_tags=download_tags)
+download = functools.partial(cdw.download, supported_tags=download_tags)
 
 # Set the list_remote_files routine
-list_remote_files = functools.partial(mm_icon.list_remote_files,
+list_remote_files = functools.partial(cdw.list_remote_files,
                                       supported_tags=download_tags)
 
 

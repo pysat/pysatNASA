@@ -43,6 +43,7 @@ import numpy as np
 import pysat
 from pysat import logger
 from pysat.instruments.methods import general as mm_gen
+from pysatNASA.instruments.methods import cdaweb as cdw
 from pysatNASA.instruments.methods import icon as mm_icon
 
 # ----------------------------------------------------------------------------
@@ -66,7 +67,6 @@ inst_ids = {'a': [''], 'b': ['']}
 
 _test_dates = {'a': {'': dt.datetime(2020, 1, 1)},
                'b': {'': dt.datetime(2020, 1, 1)}}  # IVM-B not yet engaged
-_test_download_travis = {'a': {kk: False for kk in tags.keys()}}
 _test_download = {'b': {kk: False for kk in tags.keys()}}
 _password_req = {'b': {kk: True for kk in tags.keys()}}
 
@@ -172,16 +172,16 @@ list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags)
 
 # Set the download routine
-basic_tag_a = {'remote_dir': '/pub/LEVEL.2/IVM-A',
-               'remote_fname': ''.join(('ZIP/', aname[:-2], 'ZIP'))}
-basic_tag_b = {'remote_dir': '/pub/LEVEL.2/IVM-B',
-               'remote_fname': ''.join(('ZIP/', bname[:-2], 'ZIP'))}
+basic_tag_a = {'remote_dir': '/pub/data/icon/l2/l2-7_ivm-a/{year:4d}/',
+               'fname': aname}
+basic_tag_b = {'remote_dir': '/pub/data/icon/l2/l2-7_ivm-b/{year:4d}/',
+               'fname': aname}
 
 download_tags = {'a': {'': basic_tag_a}, 'b': {'': basic_tag_b}}
-download = functools.partial(mm_icon.ssl_download, supported_tags=download_tags)
+download = functools.partial(cdw.download, supported_tags=download_tags)
 
 # Set the list_remote_files routine
-list_remote_files = functools.partial(mm_icon.list_remote_files,
+list_remote_files = functools.partial(cdw.list_remote_files,
                                       supported_tags=download_tags)
 
 
