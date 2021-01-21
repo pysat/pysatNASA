@@ -241,8 +241,8 @@ class CDF():
 
         Returns
         -------
-        index_ : Dependency or pandas.MultiIndex
-            Index used to select desired data
+        index_ : pandas.DataFrame or pandas.MultiIndex
+            Dependency data used to index and select desired data
 
         """
 
