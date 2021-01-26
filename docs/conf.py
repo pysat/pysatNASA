@@ -18,8 +18,9 @@
 #
 import os
 import sys
-import pysatNASA
 sys.path.insert(0, os.path.abspath('..'))
+# Need to set path before importing pysatNASA
+import pysatNASA
 
 # -- General configuration ------------------------------------------------
 
