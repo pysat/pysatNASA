@@ -40,13 +40,15 @@ Development
 To set up `pysatNASA` for local development:
 
 1. `Fork pysatNASA on GitHub <https://github.com/pysat/pysatNASA/fork>`_.
-2. Clone your fork locally::
+2. Clone your fork locally
+   ::
 
-    git clone git@github.com:your_name_here/pysatNASA.git
+      git clone git@github.com:your_name_here/pysatNASA.git
 
-3. Create a branch for local development::
+3. Create a branch for local development
+   ::
 
-    git checkout -b name-of-your-bugfix-or-feature
+      git checkout -b name-of-your-bugfix-or-feature
 
    Now you can make your changes locally. Tests for new instruments are
    performed automatically.  Tests for custom functions should be added to the
