@@ -43,6 +43,12 @@ DE2 WATS
 .. automodule:: pysatNASA.instruments.de2_wats
    :members: __doc__
 
+FORMOSAT-1 IVM
+--------------
+
+.. automodule:: pysatNASA.instruments.formosat1_ivm
+  :members: __doc__
+
 ICON EUV
 --------
 
@@ -79,12 +85,6 @@ OMNI_HRO
 .. automodule:: pysatNASA.instruments.omni_hro
    :members: __doc__, calculate_clock_angle, calculate_imf_steadiness, time_shift_to_magnetic_poles
 
-
-ROCSAT-1 IVM
-------------
-
-.. automodule:: pysatNASA.instruments.rocsat1_ivm
-  :members: __doc__
 
 SES14 GOLD
 ----------

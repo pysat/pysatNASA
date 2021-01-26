@@ -56,7 +56,7 @@ master_doc = 'index'
 # General information about the project.
 project = u'pysatNASA'
 copyright = u'2020, Jeffrey Klenzing, Russell Stoneback, Angeline G Burrell'
-author = u'Jeffrey Klenzing, Russell Stoneback, Jonathon Smith, Angeline G Burrell,Asher Pembroke, Carey Spance'
+author = u'Jeff Klenzing, Russell Stoneback, Jonathon Smith, Angeline G Burrell, Asher Pembroke, Carey Spance'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -108,7 +108,7 @@ html_theme = 'alabaster'
 # -- Options for HTMLHelp output ------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'pysatSpaceWeatherdoc'
+htmlhelp_basename = 'pysatNASAdoc'
 
 
 # -- Options for LaTeX output ---------------------------------------------
@@ -135,8 +135,8 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'pysatSpaceWeather.tex', u'pysatSpaceWeather Documentation',
-     u'Angeline G Burrell, Jeffrey Klenzing, and Russell Stoneback', 'manual'),
+    (master_doc, 'pysatNASA.tex', u'pysatNASA Documentation',
+     u'Jeff Klenzing, Russell Stoneback, and Angeline G Burrell, ', 'manual'),
 ]
 
 
@@ -145,7 +145,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'pysatSpaceWeather', u'pysatSpaceWeather Documentation',
+    (master_doc, 'pysatNASA', u'pysatNASA Documentation',
      [author], 1)
 ]
 
@@ -156,8 +156,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'pysatSpaceWeather', u'pysatSpaceWeather Documentation',
-     author, 'pysatSpaceWeather', 'Tools for space weather indices.',
+    (master_doc, 'pysatNASA', u'pysatNASA Documentation',
+     author, 'pysatNASA', 'Tools for NASA CDAWeb instruments.',
      'Space Physics'),
 ]
 

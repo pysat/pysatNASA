@@ -16,17 +16,17 @@ pysatNASA uses common Python modules, as well as modules developed by
 and for the Space Physics community.  This module officially supports
 Python 3.6+.
 
- ============== =================
- Common modules Community modules
- ============== =================
-  netCDF4        cdflib
-  numpy          pysat
+ ================ =================
+ Common modules   Community modules
+ ================ =================
+  netCDF4          cdflib
+  numpy            pysat
   pandas
   requests
   xarray
   beautifulsoup4
   lxml
- ============== =================
+ ================ =================
 
 
 Installation Options
