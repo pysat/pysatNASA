@@ -39,14 +39,15 @@ install:
   # Useful for debugging any issues with conda
   - conda info -a
   # Create conda test environment
-  - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION numpy scipy pandas xarray requests beautifulsoup4 lxml netCDF4 pytest-cov pytest-ordering future
+  - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION
   - conda activate test-environment
-  # Get latest coveralls from pip, not conda
-  - pip install coveralls
-  - pip install pytest-flake8
-  - pip install portalocker
-  # Dependencies not available through conda, install through pip
+  # Once pysat 3.0 is released, remove the custom pysat install and change
+  # this to:
+  # - while read requirement; do conda install --yes $requirement; done < requirements.txt
+  - conda install --yes numpy scipy pandas xarray requests beautifulsoup4 lxml netCDF4
   - pip install cdflib==0.3.19
+  # Get latest coveralls from pip, not conda
+  - pip install -r test_requirements.txt
   # Custom pysat install
   - cd ..
   - git clone https://github.com/pysat/pysat.git
