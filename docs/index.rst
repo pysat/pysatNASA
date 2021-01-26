@@ -14,5 +14,6 @@ CDAWeb interface.
    overview.rst
    installation.rst
    citing.rst
+   examples.rst
    develop_guide.rst
    history.rst
