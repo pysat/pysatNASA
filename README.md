@@ -1,5 +1,5 @@
 # pysatNASA: pysat support for NASA instruments
-[![PyPI Package latest release]](https://img.shields.io/pypi/v/pysatNASA.svg)](https://pypi.python.org/pypi/pysatNASA)
+[![PyPI Package latest release](https://img.shields.io/pypi/v/pysatNASA.svg)](https://pypi.python.org/pypi/pysatNASA)
 [![Build Status](https://travis-ci.com/pysat/pysatNASA.svg?branch=main)](https://travis-ci.com/pysat/pysatNASA)
 [![Coverage Status](https://coveralls.io/repos/github/pysat/pysatNASA/badge.svg?branch=main)](https://coveralls.io/github/pysat/pysatNASA?branch=main)
 
