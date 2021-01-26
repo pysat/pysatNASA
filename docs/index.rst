@@ -14,6 +14,15 @@ CDAWeb interface.
    overview.rst
    installation.rst
    citing.rst
+   supported_instruments.rst
    examples.rst
    develop_guide.rst
    history.rst
+
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
