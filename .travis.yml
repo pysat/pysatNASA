@@ -1,9 +1,21 @@
 language: python
 dist: xenial
-matrix:
+jobs:
   include:
-    - python: 3.6
-    - python: 3.7
+    - name: '3.6'
+      python: '3.6'
+      script: pytest --cov=pysatNASA/
+    - name: 'docs'
+      python: '3.7'
+      script:
+        - sphinx-build -E -b html docs dist/docs
+        - sphinx-build -b linkcheck docs dist/docs
+    - name: '3.7 with flake8'
+      python: '3.7'
+      script: pytest --flake8 --cov=pysatNASA/
+    - name: '3.8'
+      python: '3.8'
+      script: pytest --cov=pysatNASA/
 
 services: xvfb
 cache: pip
@@ -47,10 +59,6 @@ install:
   - cd ../pysatNASA
   # install pysatNASA
   - python setup.py install
-
-# command to run tests
-script:
- - pytest -vs --flake8 --cov=pysatNASA/
 
 after_success:
  - coveralls --rcfile=setup.cfg
