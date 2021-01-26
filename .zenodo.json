@@ -6,13 +6,18 @@
         "orcid": "0000-0001-8321-6074"
       },
       {
-        "affiliation": "University of Texas at Dallas",
+        "affiliation": "The University of Texas at Dallas",
         "name": "Russell Stoneback",
         "orcid": "0000-0001-7216-4336"
       },
       {
+        "affiliation": "Catholic University of America, Goddard Space Flight Center",
+        "name": "Jonathon Smith",
+        "orcid": "0000-0002-8191-4765"
+      },
+      {
         "affiliation": "U.S. Naval Research Laboratory",
-        "name": "Angeline Burrell",
+        "name": "Angeline G. Burrell",
         "orcid": "0000-0001-8875-9326"
       },
       {
@@ -22,10 +27,4 @@
         "name": "Carey Spence",
         "orcid": "0000-0001-8340-5625"
       }
-    ],
-    "access_right": "open",
-    "resource_type": {
-      "type": "software",
-      "title": "Software"
-    }
 }
