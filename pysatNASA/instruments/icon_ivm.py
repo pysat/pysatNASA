@@ -208,9 +208,10 @@ def load(fnames, tag=None, inst_id=None, keep_original_names=False):
 
     Returns
     -------
-    data, metadata
-        Data and Metadata are formatted for pysat. Data is a pandas
-        DataFrame while metadata is a pysat.Meta instance.
+    data : pds.DataFrame
+        A pandas DataFrame with data prepared for the pysat.Instrument
+    meta : pysat.Meta
+        Metadata formatted for a pysat.Instrument object.
 
     Note
     ----
@@ -225,15 +226,12 @@ def load(fnames, tag=None, inst_id=None, keep_original_names=False):
         inst.load(2020, 1)
 
     """
+    labels = {'units': ('Units', str), 'name': ('Long_Name', str),
+              'notes': ('Var_Notes', str), 'desc': ('CatDesc', str),
+              'min_val': ('ValidMin', float),
+              'max_val': ('ValidMax', float), 'fill_val': ('FillVal', float)}
 
-    return pysat.utils.load_netcdf4(fnames, epoch_name='Epoch',
-                                    units_label='Units',
-                                    name_label='Long_Name',
-                                    notes_label='Var_Notes',
-                                    desc_label='CatDesc',
-                                    plot_label='FieldNam',
-                                    axis_label='LablAxis',
-                                    scale_label='ScaleTyp',
-                                    min_label='ValidMin',
-                                    max_label='ValidMax',
-                                    fill_label='FillVal')
+    data, meta = pysat.utils.load_netcdf4(fnames, epoch_name='Epoch',
+                                          labels=labels)
+
+    return data, meta

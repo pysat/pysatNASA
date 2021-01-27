@@ -190,7 +190,7 @@ def clean(self):
         saa_flag = 'Quality_Flag_South_Atlantic_Anomaly'
         cal_flag = 'Quality_Flag_Bad_Calibration'
         if saa_flag not in self.variables:
-            id_str = self.self_id.upper()
+            id_str = self.inst_id.upper()
             saa_flag = '_'.join(('ICON_L1_MIGHTI', id_str, saa_flag))
             cal_flag = '_'.join(('ICON_L1_MIGHTI', id_str, cal_flag))
             var = '_'.join(('ICON_L23_MIGHTI', id_str, var))
@@ -285,9 +285,10 @@ def load(fnames, tag=None, inst_id=None, keep_original_names=False):
 
     Returns
     -------
-    data, metadata
-        Data and Metadata are formatted for pysat. Data is a pandas
-        DataFrame while metadata is a pysat.Meta instance.
+    data : xr.Dataset
+        An xarray Dataset with data prepared for the pysat.Instrument
+    meta : pysat.Meta
+        Metadata formatted for a pysat.Instrument object.
 
     Note
     ----
@@ -302,23 +303,20 @@ def load(fnames, tag=None, inst_id=None, keep_original_names=False):
         inst.load(2020, 1)
 
     """
+    labels = {'units': ('Units', str), 'name': ('Long_Name', str),
+              'notes': ('Var_Notes', str), 'desc': ('CatDesc', str),
+              'min_val': ('ValidMin', float),
+              'max_val': ('ValidMax', float), 'fill_val': ('FillVal', float)}
 
-    data, mdata = pysat.utils.load_netcdf4(fnames, epoch_name='Epoch',
-                                           units_label='Units',
-                                           name_label='Long_Name',
-                                           notes_label='Var_Notes',
-                                           desc_label='CatDesc',
-                                           plot_label='FieldNam',
-                                           axis_label='LablAxis',
-                                           scale_label='ScaleTyp',
-                                           min_label='ValidMin',
-                                           max_label='ValidMax',
-                                           fill_label='FillVal',
-                                           pandas_format=pandas_format)
+    data, meta = pysat.utils.load_netcdf4(fnames, epoch_name='Epoch',
+                                          pandas_format=pandas_format,
+                                          labels=labels)
+
     # xarray can't merge if variable and dim names are the same
     if 'Altitude' in data.dims:
         data = data.rename_dims(dims_dict={'Altitude': 'Alt'})
-    return data, mdata
+
+    return data, meta
 
 
 # ----------------------------------------------------------------------------

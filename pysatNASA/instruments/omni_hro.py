@@ -108,15 +108,23 @@ def clean(self):
     'none'  - Preserve original fill values
 
     """
-    for fill_attr in ["fillval", "fill"]:
-        # case insensitive check for attribute name
-        if self.meta.has_attr(fill_attr):
-            # get real name
-            fill_attr = self.meta.attr_case_name(fill_attr)
-            for key in self.data.columns:
-                if key != 'Epoch':
-                    idx, = np.where(self[key] == self.meta[key, fill_attr])
-                    self[idx, key] = np.nan
+    for key in self.data.columns:
+        if key != 'Epoch':
+            fill = self.meta[key, self.meta.labels.fill_val][0]
+            idx, = np.where(self[key] == fill)
+            # Set the fill values to NaN
+            self[idx, key] = np.nan
+
+            # Replace the old fill value with NaN and add this to the notes
+            fill_notes = "".join(["Replaced standard fill value with NaN. ",
+                                  "Standard value was: {:}".format(
+                                      self.meta[key,
+                                                self.meta.labels.fill_val])])
+            notes = '\n'.join([str(self.meta[key, self.meta.labels.notes]),
+                               fill_notes])
+            self.meta[key, self.meta.labels.notes] = notes
+            self.meta[key, self.meta.labels.fill_val] = np.nan
+
     return
 
 
