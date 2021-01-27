@@ -175,8 +175,8 @@ def load(fnames, tag=None, inst_id=None, keep_original_names=False):
 
     Returns
     -------
-    data : pds.DataFrame
-        A pandas DataFrame with data prepared for the pysat.Instrument
+    data : xr.Dataset
+        An xarray Dataset with data prepared for the pysat.Instrument
     meta : pysat.Meta
         Metadata formatted for a pysat.Instrument object.
 

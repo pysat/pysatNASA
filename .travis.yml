@@ -45,7 +45,7 @@ install:
   # this to:
   # - while read requirement; do conda install --yes $requirement; done < requirements.txt
   - conda install --yes numpy scipy pandas xarray requests beautifulsoup4 lxml netCDF4
-  - pip install cdflib==0.3.19
+  - pip install "cdflib<0.3.20"
   # Get latest coveralls from pip, not conda
   - pip install -r test_requirements.txt
   # Custom pysat install
