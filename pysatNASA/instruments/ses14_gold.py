@@ -192,4 +192,4 @@ def load(fnames, tag=None, inst_id=None):
                                    'channel': data['channel'],
                                    'hemisphere': data['hemisphere']})
 
-    return data, meta
+    return data, mdata

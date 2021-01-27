@@ -93,9 +93,8 @@ def init(self):
     return
 
 
-def default(self, keep_original_names=False):
-    """Default routine to be applied when loading data. Adjusts epoch timestamps
-    to datetimes and removes variable preambles.
+def preprocess(self, keep_original_names=False):
+    """Adjusts epoch timestamps to datetimes and removes variable preambles.
 
     Parameters
     ----------
@@ -176,8 +175,8 @@ def load(fnames, tag=None, inst_id=None, keep_original_names=False):
 
     Returns
     -------
-    data : pds.DataFrame
-        A pandas DataFrame with data prepared for the pysat.Instrument
+    data : xr.Dataset
+        An xarray Dataset with data prepared for the pysat.Instrument
     meta : pysat.Meta
         Metadata formatted for a pysat.Instrument object.
 
@@ -196,8 +195,7 @@ def load(fnames, tag=None, inst_id=None, keep_original_names=False):
     """
     labels = {'units': ('Units', str), 'name': ('Long_Name', str),
               'notes': ('Var_Notes', str), 'desc': ('CatDesc', str),
-              'plot': ('FieldNam', str), 'axis': ('LablAxis', str),
-              'scale': ('ScaleTyp', str), 'min_val': ('ValidMin', float),
+              'min_val': ('ValidMin', float),
               'max_val': ('ValidMax', float), 'fill_val': ('FillVal', float)}
 
     data, meta = pysat.utils.load_netcdf4(fnames, epoch_name='Epoch',
