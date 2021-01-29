@@ -162,22 +162,19 @@ def clean(self):
 # Use the default CDAWeb and pysat methods
 
 # Set the list_files routine
-aname = ''.join(('ICON_L2-7_IVM-A_{year:04d}-{month:02d}-{day:02d}_',
-                 'v{version:02d}r{revision:03d}.NC'))
-bname = ''.join(('ICON_L2-7_IVM-B_{year:04d}-{month:02d}-{day:02d}_',
-                 'v{version:02d}r{revision:03d}.NC'))
-supported_tags = {'a': {'': aname}, 'b': {'': bname}}
+fname = ''.join(('icon_l2-7_ivm-{id:s}_{{year:04d}}{{month:02d}}{{day:02d}}_',
+                'v{{version:02d}}r{{revision:03d}}.nc'))
+supported_tags = {id: {'': fname.format(id=id)}
+                  for id in ['a', 'b']}
 
 list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags)
 
 # Set the download routine
-basic_tag_a = {'remote_dir': '/pub/data/icon/l2/l2-7_ivm-a/{year:4d}/',
-               'fname': aname}
-basic_tag_b = {'remote_dir': '/pub/data/icon/l2/l2-7_ivm-b/{year:4d}/',
-               'fname': aname}
-
-download_tags = {'a': {'': basic_tag_a}, 'b': {'': basic_tag_b}}
+dirstr = '/pub/data/icon/l2/l2-7_ivm-{id:s}/{{year:4d}}/'
+download_tags = {id: {'': {'remote_dir': dirstr.format(id=id),
+                           'fname': supported_tags[id]['']}}
+                 for id in ['a', 'b']}
 download = functools.partial(cdw.download, supported_tags=download_tags)
 
 # Set the list_remote_files routine

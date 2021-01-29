@@ -138,8 +138,8 @@ def clean(self):
 # Use the ICON and pysat methods
 
 # Set the list_files routine
-fname = ''.join(('ICON_L2-6_EUV_{year:04d}-{month:02d}-{day:02d}_',
-                 'v{version:02d}r{revision:03d}.NC'))
+fname = ''.join(('icon_l2-6_euv_{year:04d}{month:02d}{day:02d}_',
+                 'v{version:02d}r{revision:03d}.nc'))
 supported_tags = {'': {'': fname}}
 list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags)

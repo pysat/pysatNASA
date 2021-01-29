@@ -210,24 +210,24 @@ def clean(self):
 # Use the ICON and pysat methods
 
 # Set the list_files routine
-datestr = '{year:04d}-{month:02d}-{day:02d}_v{version:02d}r{revision:03d}'
-fname1 = 'ICON_L2-1_MIGHTI-{id:s}_LOS-Wind-{color:s}_{date:s}.NC'
-fname2 = 'ICON_L2-2_MIGHTI_Vector-Wind-{color:s}_{date:s}.NC'
-fname3 = 'ICON_L2-3_MIGHTI-{id:s}_Temperature_{date:s}.NC'
-supported_tags = {'': {'vector_wind_green': fname2.format(color='Green',
+datestr = '{year:04d}{month:02d}{day:02d}_v{version:02d}r{revision:03d}'
+fname1 = 'icon_l2-1_mighti-{id:s}_los-wind-{color:s}_{date:s}.nc'
+fname2 = 'icon_l2-2_mighti_vector-wind-{color:s}_{date:s}.nc'
+fname3 = 'icon_l2-3_mighti-{id:s}_temperature_{date:s}.nc'
+supported_tags = {'': {'vector_wind_green': fname2.format(color='green',
                                                           date=datestr),
-                       'vector_wind_red': fname2.format(color='Red',
+                       'vector_wind_red': fname2.format(color='red',
                                                         date=datestr)},
-                  'a': {'los_wind_green': fname1.format(id='A', color='Green',
+                  'a': {'los_wind_green': fname1.format(id='a', color='green',
                                                         date=datestr),
-                        'los_wind_red': fname1.format(id='A', color='Red',
+                        'los_wind_red': fname1.format(id='a', color='red',
                                                       date=datestr),
-                        'temperature': fname3.format(id='A', date=datestr)},
-                  'b': {'los_wind_green': fname1.format(id='B', color='Green',
+                        'temperature': fname3.format(id='a', date=datestr)},
+                  'b': {'los_wind_green': fname1.format(id='b', color='green',
                                                         date=datestr),
-                        'los_wind_red': fname1.format(id='B', color='Red',
+                        'los_wind_red': fname1.format(id='b', color='red',
                                                       date=datestr),
-                        'temperature': fname3.format(id='B', date=datestr)}}
+                        'temperature': fname3.format(id='b', date=datestr)}}
 
 list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags)

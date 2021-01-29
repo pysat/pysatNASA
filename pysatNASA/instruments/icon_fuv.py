@@ -129,10 +129,10 @@ def clean(self):
 # Use the ICON and pysat methods
 
 # Set the list_files routine
-fname24 = ''.join(('ICON_L2-4_FUV_Day_{year:04d}-{month:02d}-{day:02d}_',
-                   'v{version:02d}r{revision:03d}.NC'))
-fname25 = ''.join(('ICON_L2-5_FUV_Night_{year:04d}-{month:02d}-{day:02d}_',
-                   'v{version:02d}r{revision:03d}.NC'))
+fname24 = ''.join(('icon_l2-4_fuv_day_{year:04d}{month:02d}{day:02d}_',
+                   'v{version:02d}r{revision:03d}.nc'))
+fname25 = ''.join(('icon_l2-5_fuv_night_{year:04d}{month:02d}{day:02d}_',
+                   'v{version:02d}r{revision:03d}.nc'))
 supported_tags = {'': {'day': fname24, 'night': fname25}}
 
 list_files = functools.partial(mm_gen.list_files,
