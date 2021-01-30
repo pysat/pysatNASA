@@ -43,6 +43,7 @@ import numpy as np
 import pysat
 from pysat import logger
 from pysat.instruments.methods import general as mm_gen
+from pysatNASA.instruments.methods import cdaweb as cdw
 from pysatNASA.instruments.methods import icon as mm_icon
 
 # ----------------------------------------------------------------------------
@@ -66,7 +67,6 @@ inst_ids = {'a': [''], 'b': ['']}
 
 _test_dates = {'a': {'': dt.datetime(2020, 1, 1)},
                'b': {'': dt.datetime(2020, 1, 1)}}  # IVM-B not yet engaged
-_test_download_travis = {'a': {kk: False for kk in tags.keys()}}
 _test_download = {'b': {kk: False for kk in tags.keys()}}
 _password_req = {'b': {kk: True for kk in tags.keys()}}
 
@@ -162,26 +162,23 @@ def clean(self):
 # Use the default CDAWeb and pysat methods
 
 # Set the list_files routine
-aname = ''.join(('ICON_L2-7_IVM-A_{year:04d}-{month:02d}-{day:02d}_',
-                 'v{version:02d}r{revision:03d}.NC'))
-bname = ''.join(('ICON_L2-7_IVM-B_{year:04d}-{month:02d}-{day:02d}_',
-                 'v{version:02d}r{revision:03d}.NC'))
-supported_tags = {'a': {'': aname}, 'b': {'': bname}}
+fname = ''.join(('icon_l2-7_ivm-{id:s}_{{year:04d}}{{month:02d}}{{day:02d}}_',
+                'v{{version:02d}}r{{revision:03d}}.nc'))
+supported_tags = {id: {'': fname.format(id=id)}
+                  for id in ['a', 'b']}
 
 list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags)
 
 # Set the download routine
-basic_tag_a = {'remote_dir': '/pub/LEVEL.2/IVM-A',
-               'remote_fname': ''.join(('ZIP/', aname[:-2], 'ZIP'))}
-basic_tag_b = {'remote_dir': '/pub/LEVEL.2/IVM-B',
-               'remote_fname': ''.join(('ZIP/', bname[:-2], 'ZIP'))}
-
-download_tags = {'a': {'': basic_tag_a}, 'b': {'': basic_tag_b}}
-download = functools.partial(mm_icon.ssl_download, supported_tags=download_tags)
+dirstr = '/pub/data/icon/l2/l2-7_ivm-{id:s}/{{year:4d}}/'
+download_tags = {id: {'': {'remote_dir': dirstr.format(id=id),
+                           'fname': supported_tags[id]['']}}
+                 for id in ['a', 'b']}
+download = functools.partial(cdw.download, supported_tags=download_tags)
 
 # Set the list_remote_files routine
-list_remote_files = functools.partial(mm_icon.list_remote_files,
+list_remote_files = functools.partial(cdw.list_remote_files,
                                       supported_tags=download_tags)
 
 
