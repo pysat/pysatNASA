@@ -164,10 +164,6 @@ class CDF():
 
         cdf_file = self._cdf_file
         if self.get_dependency(x_axis_var) is None:
-            delta_plus_var = 0.0
-            delta_minus_var = 0.0
-            delta_time = 0.0
-
             xdata = cdf_file.varget(x_axis_var)
             epoch_var_atts = cdf_file.varattsget(x_axis_var)
 
