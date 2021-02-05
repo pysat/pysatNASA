@@ -165,7 +165,6 @@ class CDF():
         cdf_file = self._cdf_file
         if self.get_dependency(x_axis_var) is None:
             xdata = cdf_file.varget(x_axis_var)
-            epoch_var_atts = cdf_file.varattsget(x_axis_var)
 
             if ('CDF_TIME' in data_type_description) or \
                     ('CDF_EPOCH' in data_type_description):
