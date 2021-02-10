@@ -115,7 +115,7 @@ def clean(self):
 
 # Set the list_files routine
 fname = ''.join(('gold_l2_{tag:s}_{{year:04d}}_{{day:03d}}_v{{version:02d}}',
-                 '_r{{revision:02d}}_c{{cycle:02d}}.nc'))
+                 '_r{{revision:02d}}_c??.nc'))
 supported_tags = {inst_id: {tag: fname.format(tag=tag) for tag in tags.keys()}
                   for inst_id in inst_ids.keys()}
 list_files = functools.partial(ps_gen.list_files,

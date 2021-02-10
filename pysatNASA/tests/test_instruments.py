@@ -50,8 +50,8 @@ class TestInstruments(InstTestClass):
         # Make sure to use a temporary directory so that the user's setup is not
         # altered
         self.tempdir = tempfile.TemporaryDirectory()
-        self.saved_path = pysat.data_dir
-        pysat.utils.set_data_dir(self.tempdir.name, store=False)
+        self.saved_path = pysat.params['data_dirs']
+        pysat.params.data['data_dirs'] = [self.tempdir.name]
         # Developers for instrument libraries should update the following line
         # to point to their own subpackage location, e.g.,
         # self.inst_loc = mypackage.instruments
@@ -59,6 +59,6 @@ class TestInstruments(InstTestClass):
 
     def teardown_class(self):
         """Runs once to clean up testing from this class."""
-        pysat.utils.set_data_dir(self.saved_path, store=False)
+        pysat.params.data['data_dirs'] = self.saved_path
         self.tempdir.cleanup()
         del self.inst_loc, self.saved_path, self.tempdir

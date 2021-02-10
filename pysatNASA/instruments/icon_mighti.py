@@ -234,7 +234,7 @@ list_files = functools.partial(mm_gen.list_files,
 
 # Set the download routine
 dirstr1 = '/pub/data/icon/l2/l2-1_mighti-{{id:s}}_los-wind-{color:s}/'
-dirstr2 = '/pub/data/icon/l2/l2-2_mighti-vector-wind-{color:s}/'
+dirstr2 = '/pub/data/icon/l2/l2-2_mighti_vector-wind-{color:s}/'
 dirstr3 = '/pub/data/icon/l2/l2-3_mighti-{id:s}_temperature/'
 dirnames = {'los_wind_green': dirstr1.format(color='green'),
             'los_wind_red': dirstr1.format(color='red'),

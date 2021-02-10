@@ -691,6 +691,15 @@ def list_remote_files(tag=None, inst_id=None, start=None, stop=None,
     search_dict = futils.construct_searchstring_from_format(format_str)
     targets = [x.strip('?') for x in search_dict['string_blocks'] if len(x) > 0]
 
+    # Remove any additional '?' characters that the user may have supplied
+    new_targets = []
+    for target in targets:
+        tstrs = target.split('?')
+        for tstr in tstrs:
+            if tstr != '':
+                new_targets.append(tstr)
+    targets = new_targets
+
     remote_dirs = []
     for level in range(n_layers + 1):
         remote_dirs.append([])
@@ -748,7 +757,6 @@ def list_remote_files(tag=None, inst_id=None, start=None, stop=None,
     else:
         stored = futils.parse_delimited_filenames(full_files, format_str,
                                                   delimiter)
-
     # Process the parsed filenames and return a properly formatted Series
     stored_list = futils.process_parsed_filenames(stored, two_digit_year_break)
 
