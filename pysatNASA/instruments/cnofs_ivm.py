@@ -130,12 +130,8 @@ def clean(self):
         max_rpa_flag = 4
         max_dm_flag = 6
 
-    # First pass, keep good RPA fits
-    idx, = np.where(self.data.RPAflag <= max_rpa_flag)
-    self.data = self[idx, :]
-
-    # Second pass, find bad drifts, replace with NaNs
-    idx = (self.data.driftMeterflag > max_dm_flag)
+    idx = ((self.data.driftMeterflag > max_dm_flag)
+           & (self.data.RPAflag > max_rpa_flag))
 
     # Also exclude very large drifts and drifts where 100% O+
     if (self.clean_level == 'clean') | (self.clean_level == 'dusty'):
