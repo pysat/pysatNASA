@@ -36,15 +36,9 @@ install:
   # Dependencies not available through conda, install through pip
   - pip install "cdflib<0.3.20"
   # Custom pysat install
-  - cd ..
-  - git clone https://github.com/pysat/pysat.git
-  - cd pysat
-  - git checkout develop-3
-  - python setup.py install
-  - export PYTHONPATH=$PYTHONPATH:$(pwd)
+  - pip install --index-url https://test.pypi.org/simple/ pysat==3.0.0rc2
   # set up data directory
   - mkdir /home/travis/build/pysatData
-  - cd ../pysatNASA
   # install pysatNASA
   - python setup.py install
 
