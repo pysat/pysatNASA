@@ -29,6 +29,8 @@ install:
   # Create conda test environment
   - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION numpy scipy pandas xarray requests beautifulsoup4 lxml netCDF4 pytest-cov pytest-ordering future
   - conda activate test-environment
+  # Delete below once we migrate fully to pip
+  - conda install dask portalocker toolz
   # Get latest coveralls from pip, not conda
   - pip install coveralls
   - pip install pytest-flake8
