@@ -215,9 +215,6 @@ class CDF():
                             delta_minus_var.astype(float) \
                             * np.float(si_conv.split('>')[0])
 
-                # Only calculate delta_time if 
-                if np.all(has_plus_minus):
-
             if ('CDF_TIME' in data_type_description) or \
                     ('CDF_EPOCH' in data_type_description):
                 if self._datetime:
