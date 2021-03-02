@@ -161,6 +161,7 @@ class CDF():
         ----------
         x_axis_var : str
             name of variable
+
         """
 
         data_type_description \
@@ -171,7 +172,7 @@ class CDF():
         if self.get_dependency(x_axis_var) is None:
             delta_plus_var = 0.0
             delta_minus_var = 0.0
-            delta_time = 0.0
+            has_plus_minus = [False, False]
 
             xdata = cdf_file.varget(x_axis_var)
             epoch_var_atts = cdf_file.varattsget(x_axis_var)
@@ -183,6 +184,7 @@ class CDF():
                         epoch_var_atts['DELTA_PLUS_VAR'])
                     delta_plus_var_att = cdf_file.varattsget(
                         epoch_var_atts['DELTA_PLUS_VAR'])
+                    has_plus_minus[0] = True
 
                     # Check if a conversion to seconds is required
                     if 'SI_CONVERSION' in delta_plus_var_att:
@@ -199,6 +201,7 @@ class CDF():
                         epoch_var_atts['DELTA_MINUS_VAR'])
                     delta_minus_var_att = cdf_file.varattsget(
                         epoch_var_atts['DELTA_MINUS_VAR'])
+                    has_plus_minus[1] = True
 
                     # Check if a conversion to seconds is required
                     if 'SI_CONVERSION' in delta_minus_var_att:
@@ -212,21 +215,30 @@ class CDF():
                             delta_minus_var.astype(float) \
                             * np.float(si_conv.split('>')[0])
 
-                # Sometimes these are specified as arrays
-                if isinstance(delta_plus_var, np.ndarray) \
-                        and isinstance(delta_minus_var, np.ndarray):
-                    delta_time = (delta_plus_var
-                                  - delta_minus_var) / 2.0
-                else:  # And sometimes constants
-                    if delta_plus_var != 0.0 or delta_minus_var != 0.0:
-                        delta_time = (delta_plus_var
-                                      - delta_minus_var) / 2.0
+                # Only calculate delta_time if 
+                if np.all(has_plus_minus):
 
             if ('CDF_TIME' in data_type_description) or \
                     ('CDF_EPOCH' in data_type_description):
                 if self._datetime:
-                    xdata = cdflib.cdfepoch.to_datetime(xdata)
-                    # convert delta_time to datetime and add to xdata
+                    # Convert xdata to datetime
+                    new_xdata = cdflib.cdfepoch.to_datetime(xdata)
+
+                    # Add delta to time, if both plus and minus are defined
+                    if np.all(has_plus_minus):
+                        # This defines delta_time in seconds supplied
+                        delta_time = np.asarray((delta_plus_var
+                                                 - delta_minus_var) / 2.0)
+
+                        # delta_time may be a single value or an array
+                        xdata = np.array(
+                            [xx + dt.timedelta(seconds=int(delta_time))
+                             if delta_time.shape == ()
+                             else xx + dt.timedelta(seconds=delta_time[i])
+                             for i, xx in enumerate(new_xdata)])
+                    else:
+                        xdata = new_xdata
+
                 self.set_dependency(x_axis_var, xdata)
 
     def get_index(self, variable_name):
