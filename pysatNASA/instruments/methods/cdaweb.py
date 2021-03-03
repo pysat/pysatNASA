@@ -228,11 +228,10 @@ class CDF():
                                                  - delta_minus_var) / 2.0)
 
                         # delta_time may be a single value or an array
-                        xdata = np.array(
-                            [xx + dt.timedelta(seconds=int(delta_time))
-                             if delta_time.shape == ()
-                             else xx + dt.timedelta(seconds=delta_time[i])
-                             for i, xx in enumerate(new_xdata)])
+                        xdata = [xx + dt.timedelta(seconds=int(delta_time))
+                                 if delta_time.shape == ()
+                                 else xx + dt.timedelta(seconds=delta_time[i])
+                                 for i, xx in enumerate(new_xdata)]
                     else:
                         xdata = new_xdata
 
@@ -360,12 +359,12 @@ class CDF():
 
             self.meta[variable_name] = var_atts
 
-    def to_pysat(self, flatten_twod=True, labels={'units': ('Units', str),
-                 'name': ('Long_Name', str), 'notes': ('Var_Notes', str),
-                 'desc': ('CatDesc', str),
-                 'min_val': ('ValidMin', float),
-                 'max_val': ('ValidMax', float),
-                 'fill_val': ('FillVal', float)}):
+    def to_pysat(self, flatten_twod=True,
+                 labels={'units': ('Units', str), 'name': ('Long_Name', str),
+                         'notes': ('Var_Notes', str), 'desc': ('CatDesc', str),
+                         'min_val': ('ValidMin', float),
+                         'max_val': ('ValidMax', float),
+                         'fill_val': ('FillVal', float)}):
         """
         Exports loaded CDF data into data, meta for pysat module
 
