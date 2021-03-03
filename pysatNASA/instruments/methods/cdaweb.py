@@ -12,7 +12,6 @@ import pandas as pds
 import re
 import requests
 import sys
-import warnings
 
 from bs4 import BeautifulSoup
 import cdflib
@@ -493,6 +492,7 @@ def load(fnames, tag=None, inst_id=None, file_cadence=dt.timedelta(days=1),
             if not general.is_daily_file_cadence(file_cadence):
                 # Parse out date from filename
                 fname = lfname[0:-11]
+                date = dt.datetime.strptime(lfname[-10:], '%Y-%m-%d')
 
                 with CDF(fname) as cdf:
                     # Convert data to pysat format
@@ -513,8 +513,8 @@ def load(fnames, tag=None, inst_id=None, file_cadence=dt.timedelta(days=1),
             try:
                 data = pds.concat(ldata)
             except InvalidIndexError as ierr:
-                wmsg = "Invalid times in data file(s): {:}".format(str(ierr))
-                warnings.warn(wmsg)
+                estr = "Invalid times in data file(s): {:}".format(str(ierr))
+                logger.warning(estr)
 
         return data, meta
 
