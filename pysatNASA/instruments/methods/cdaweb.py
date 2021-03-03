@@ -6,15 +6,16 @@ intervention.
 """
 
 import datetime as dt
+import numpy as np
 import os
-import sys
+import pandas as pds
 import re
 import requests
-import numpy as np
-import cdflib
+import sys
+import warnings
 
 from bs4 import BeautifulSoup
-import pandas as pds
+import cdflib
 
 import pysat
 from pysat import logger
@@ -474,10 +475,15 @@ def load(fnames, tag=None, inst_id=None, file_cadence=dt.timedelta(days=1),
         # support load routine
         # use the default CDAWeb method
         load = cdw.load
-    """
 
+    """
+    # Initialize the output
+    data = pds.DataFrame(None)
+    meta = None
+
+    # Load data from any files provided
     if len(fnames) <= 0:
-        return pds.DataFrame(None), None
+        return data, meta
     else:
         # Using cdflib wrapper to load the CDF and format data and
         # metadata for pysat using some assumptions. Depending upon your needs
@@ -488,16 +494,14 @@ def load(fnames, tag=None, inst_id=None, file_cadence=dt.timedelta(days=1),
                 # Parse out date from filename
                 fname = lfname[0:-11]
 
-                # Get date from rest of filename
-                date = dt.datetime.strptime(lfname[-10:], '%Y-%m-%d')
                 with CDF(fname) as cdf:
                     # Convert data to pysat format
-                    data, meta = cdf.to_pysat(flatten_twod=flatten_twod)
+                    temp_data, meta = cdf.to_pysat(flatten_twod=flatten_twod)
 
                     # Select data from multi-day down to daily
-                    data = data.loc[date:date + dt.timedelta(days=1)
-                                    - dt.timedelta(microseconds=1), :]
-                    ldata.append(data)
+                    temp_data = temp_data.loc[date:date + dt.timedelta(days=1)
+                                              - dt.timedelta(microseconds=1), :]
+                    ldata.append(temp_data)
             else:
                 # Basic data return
                 with CDF(lfname) as cdf:
@@ -505,7 +509,13 @@ def load(fnames, tag=None, inst_id=None, file_cadence=dt.timedelta(days=1),
                     ldata.append(temp_data)
 
         # Combine individual files together
-        data = pds.concat(ldata)
+        if len(ldata) > 0:
+            try:
+                data = pds.concat(ldata)
+            except InvalidIndexError as ierr:
+                wmsg = "Invalid times in data file(s): {:}".format(str(ierr))
+                warnings.warn(wmsg)
+
         return data, meta
 
 
