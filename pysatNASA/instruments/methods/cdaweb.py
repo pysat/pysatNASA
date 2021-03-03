@@ -512,7 +512,7 @@ def load(fnames, tag=None, inst_id=None, file_cadence=dt.timedelta(days=1),
         if len(ldata) > 0:
             try:
                 data = pds.concat(ldata)
-            except InvalidIndexError as ierr:
+            except pds.error.InvalidIndexError as ierr:
                 estr = "Invalid times in data file(s): {:}".format(str(ierr))
                 logger.warning(estr)
 
