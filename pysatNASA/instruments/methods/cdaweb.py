@@ -425,7 +425,11 @@ class CDF():
                 if type(df) == pds.Series:
                     data[varname] = df
 
-        data = pds.DataFrame(data)
+        try:
+            data = pds.DataFrame(data)
+        except pds.core.indexes.base.InvalidIndexError as ierr:
+            estr = "Invalid times in data file(s): {:}".format(str(ierr))
+            logger.warning(estr)
 
         return data, meta
 
@@ -510,11 +514,7 @@ def load(fnames, tag=None, inst_id=None, file_cadence=dt.timedelta(days=1),
 
         # Combine individual files together
         if len(ldata) > 0:
-            try:
-                data = pds.concat(ldata)
-            except pds.error.InvalidIndexError as ierr:
-                estr = "Invalid times in data file(s): {:}".format(str(ierr))
-                logger.warning(estr)
+            data = pds.concat(ldata)
 
         return data, meta
 
