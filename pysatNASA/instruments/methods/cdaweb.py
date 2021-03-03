@@ -430,6 +430,7 @@ class CDF():
         except pds.core.indexes.base.InvalidIndexError as ierr:
             estr = "Invalid times in data file(s): {:}".format(str(ierr))
             logger.warning(estr)
+            data = pds.DataFrame(None)
 
         return data, meta
 
