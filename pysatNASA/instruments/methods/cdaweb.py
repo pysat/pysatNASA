@@ -432,6 +432,10 @@ class CDF():
                     if type(df.index) == pds.DatetimeIndex and index is None:
                         index = df.index
 
+        if index is None:
+            raise ValueError(''.join(['cdflib did not load a DatetimeIndex, ',
+                                      'not pysat compatible']))
+
         try:
             data = pds.DataFrame(data, index=index)
         except pds.core.indexes.base.InvalidIndexError as ierr:
