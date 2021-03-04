@@ -420,13 +420,20 @@ class CDF():
                 cdata['Epoch'] = epoch
 
         data = dict()
+        index = None
         for varname, df in cdata.items():
             if varname not in ('Epoch', 'DATE'):
                 if type(df) == pds.Series:
                     data[varname] = df
 
+                    # CDF data Series are saved using a mix of Range and
+                    # Datetime Indexes. This requires that the user specify
+                    # the desired index when creating a DataFrame
+                    if type(df.index) == pds.DatetimeIndex and index is None:
+                        index = df.index
+
         try:
-            data = pds.DataFrame(data)
+            data = pds.DataFrame(data, index=index)
         except pds.core.indexes.base.InvalidIndexError as ierr:
             estr = "Invalid times in data file(s): {:}".format(str(ierr))
             logger.warning(estr)
