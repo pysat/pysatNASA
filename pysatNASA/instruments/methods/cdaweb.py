@@ -512,17 +512,28 @@ def load(fnames, tag=None, inst_id=None, file_cadence=dt.timedelta(days=1),
 
                 with CDF(fname) as cdf:
                     # Convert data to pysat format
-                    temp_data, meta = cdf.to_pysat(flatten_twod=flatten_twod)
+                    try:
+                        temp_data, meta = cdf.to_pysat(
+                            flatten_twod=flatten_twod)
 
-                    # Select data from multi-day down to daily
-                    temp_data = temp_data.loc[date:date + dt.timedelta(days=1)
-                                              - dt.timedelta(microseconds=1), :]
-                    ldata.append(temp_data)
+                        # Select data from multi-day down to daily
+                        temp_data = temp_data.loc[
+                            date:date + dt.timedelta(days=1)
+                            - dt.timedelta(microseconds=1), :]
+                        ldata.append(temp_data)
+                    except ValueError as verr:
+                        logger.warn("unable to load {:}: {:}".format(fname,
+                                                                     str(verr)))
             else:
                 # Basic data return
                 with CDF(lfname) as cdf:
-                    temp_data, meta = cdf.to_pysat(flatten_twod=flatten_twod)
-                    ldata.append(temp_data)
+                    try:
+                        temp_data, meta = cdf.to_pysat(
+                            flatten_twod=flatten_twod)
+                        ldata.append(temp_data)
+                    except ValueError as verr:
+                        logger.warn("unable to load {:}: {:}".format(lfname,
+                                                                     str(verr)))
 
         # Combine individual files together
         if len(ldata) > 0:
