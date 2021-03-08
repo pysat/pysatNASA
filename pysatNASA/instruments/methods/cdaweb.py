@@ -494,7 +494,7 @@ def load(fnames, tag=None, inst_id=None, file_cadence=dt.timedelta(days=1),
     """
     # Initialize the output
     data = pds.DataFrame(None)
-    meta = None
+    meta = pysat.Meta()
 
     # Load data from any files provided
     if len(fnames) <= 0:
