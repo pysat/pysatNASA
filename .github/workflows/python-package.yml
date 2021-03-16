@@ -38,7 +38,7 @@ jobs:
           pip install --no-binary :numpy: numpy==$NUMPY_VER;
         fi
         pip install scipy pandas xarray netCDF4 portalocker dask toolz
-        pip install requests beautifulsoup4 lxml cdflib<0.3.20
+        pip install requests beautifulsoup4 lxml "cdflib<0.3.20"
         pip install --index-url https://test.pypi.org/simple/ pysat==3.0.0rc2
 
     - name: Set up pysat
