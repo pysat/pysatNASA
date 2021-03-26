@@ -219,7 +219,12 @@ class CDF():
                     ('CDF_EPOCH' in data_type_description):
                 if self._datetime:
                     # Convert xdata to datetime
-                    new_xdata = cdflib.cdfepoch.to_datetime(xdata)
+                    try:
+                        new_xdata = cdflib.cdfepoch.to_datetime(xdata)
+                    except TypeError as terr:
+                        estr = "Invalid data file(s). Please contact CDAWeb for assistance: {:}".format(str(terr))
+                        logger.warning(estr)
+                        new_xdata = []
 
                     # Add delta to time, if both plus and minus are defined
                     if np.all(has_plus_minus):
@@ -492,13 +497,10 @@ def load(fnames, tag=None, inst_id=None, file_cadence=dt.timedelta(days=1),
         load = cdw.load
 
     """
-    # Initialize the output
-    data = pds.DataFrame(None)
-    meta = pysat.Meta()
 
     # Load data from any files provided
     if len(fnames) <= 0:
-        return data, meta
+        return pds.DataFrame(None), None
     else:
         # Using cdflib wrapper to load the CDF and format data and
         # metadata for pysat using some assumptions. Depending upon your needs
