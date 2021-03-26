@@ -222,7 +222,8 @@ class CDF():
                     try:
                         new_xdata = cdflib.cdfepoch.to_datetime(xdata)
                     except TypeError as terr:
-                        estr = "Invalid data file(s). Please contact CDAWeb for assistance: {:}".format(str(terr))
+                        estr = ("Invalid data file(s). Please contact CDAWeb "
+                                "for assistance: {:}".format(str(terr)))
                         logger.warning(estr)
                         new_xdata = []
 
