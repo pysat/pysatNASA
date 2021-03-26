@@ -624,7 +624,8 @@ def download(date_array, tag=None, inst_id=None, supported_tags=None,
                                     fname))
             req = requests.get(remote_path)
             if req.status_code != 404:
-                open(saved_local_fname, 'wb').write(req.content)
+                with open(saved_local_fname, 'wb') as open_f:
+                    open_f.write(req.content)
                 logger.info('Finished.')
             else:
                 logger.info(' '.join(('File not available for',
