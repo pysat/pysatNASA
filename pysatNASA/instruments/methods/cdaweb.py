@@ -709,7 +709,9 @@ def list_remote_files(tag=None, inst_id=None, start=None, stop=None,
     full_files = []
 
     if start is None and stop is None:
-        url_list = [remote_url]
+        # Use the topmost directory without variables
+        url_list = ['/'.join((remote_url,
+                              search_dir['string_blocks'][0]))]
     elif start is not None:
         stop = dt.datetime.now() if (stop is None) else stop
 
