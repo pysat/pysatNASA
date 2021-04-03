@@ -123,7 +123,10 @@ def clean(self):
     drift_variables = ['Ion_Velocity_X', 'Ion_Velocity_Zonal',
                        'Ion_Velocity_Meridional',
                        'Ion_Velocity_Field_Aligned']
-    cross_drift_variables = ['Ion_Velocity_Z', 'Ion_Velocity_Y']
+    cross_drift_variables = ['Ion_Velocity_Z', 'Ion_Velocity_Y',
+                             'Ion_Velocity_Zonal',
+                             'Ion_Velocity_Meridional',
+                             'Ion_Velocity_Field_Aligned']
     rpa_variables = ['Ion_Temperature', 'Ion_Density',
                      'Fractional_Ion_Density_H',
                      'Fractional_Ion_Density_O']
