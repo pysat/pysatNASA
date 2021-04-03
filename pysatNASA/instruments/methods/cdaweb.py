@@ -670,9 +670,6 @@ def list_remote_files(tag=None, inst_id=None, start=None, stop=None,
     except KeyError:
         raise ValueError('inst_id / tag combo unknown.')
 
-    # Path to relevant file on CDAWeb
-    remote_url = remote_url
-
     # Naming scheme for files on the CDAWeb server
     format_str = '/'.join((inst_dict['remote_dir'].strip('/'),
                            inst_dict['fname']))
