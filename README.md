@@ -1,5 +1,5 @@
 # pysatNASA: pysat support for NASA instruments
-[![Build Status](https://github.com/github/docs/actions/workflows/main.yml/badge.svg)
+[![Build Status][(https://github.com/github/docs/actions/workflows/main.yml/badge.svg)](https://github.com/github/docs/actions/workflows/main.yml/badge.svg)
 [![Coverage Status](https://coveralls.io/repos/github/pysat/pysatNASA/badge.svg?branch=main)](https://coveralls.io/github/pysat/pysatNASA?branch=main)
 [![DOI](https://zenodo.org/badge/287387638.svg)](https://zenodo.org/badge/latestdoi/287387638)
 
