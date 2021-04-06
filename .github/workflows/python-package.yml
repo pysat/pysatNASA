@@ -8,10 +8,10 @@ on: [push, pull_request]
 jobs:
   build:
 
-    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
+        runs-on: [windows]
         python-version: [3.8, 3.9]
         numpy_ver: [latest]
         include:
