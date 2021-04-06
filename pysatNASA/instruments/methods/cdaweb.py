@@ -585,7 +585,8 @@ def download(date_array, tag=None, inst_id=None, supported_tags=None,
                                     fname))
             req = requests.get(remote_path)
             if req.status_code != 404:
-                open(saved_local_fname, 'wb').write(req.content)
+                with open(saved_local_fname, 'wb') as open_f:
+                    open_f.write(req.content)
                 logger.info('Finished.')
             else:
                 logger.info(' '.join(('File not available for',
@@ -670,9 +671,6 @@ def list_remote_files(tag=None, inst_id=None, start=None, stop=None,
     except KeyError:
         raise ValueError('inst_id / tag combo unknown.')
 
-    # Path to relevant file on CDAWeb
-    remote_url = remote_url
-
     # Naming scheme for files on the CDAWeb server
     format_str = '/'.join((inst_dict['remote_dir'].strip('/'),
                            inst_dict['fname']))
@@ -709,7 +707,9 @@ def list_remote_files(tag=None, inst_id=None, start=None, stop=None,
     full_files = []
 
     if start is None and stop is None:
-        url_list = [remote_url]
+        # Use the topmost directory without variables
+        url_list = ['/'.join((remote_url,
+                              search_dir['string_blocks'][0]))]
     elif start is not None:
         stop = dt.datetime.now() if (stop is None) else stop
 

@@ -7,6 +7,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - New Instruments
   - GOLD Nmax
 - Use GitHub Actions as primary CI test environment
+- Bug Fixes
+  - remote_file_list error if start/stop dates unspecified
 
 ## [0.0.1] - 2020-08-13
 - initial port of existing routines from pysat
