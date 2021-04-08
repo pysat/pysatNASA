@@ -6,15 +6,15 @@ intervention.
 """
 
 import datetime as dt
+import numpy as np
 import os
-import sys
+import pandas as pds
 import re
 import requests
-import numpy as np
-import cdflib
+import sys
 
 from bs4 import BeautifulSoup
-import pandas as pds
+import cdflib
 
 import pysat
 from pysat import logger
@@ -161,6 +161,7 @@ class CDF():
         ----------
         x_axis_var : str
             name of variable
+
         """
 
         data_type_description \
@@ -171,7 +172,7 @@ class CDF():
         if self.get_dependency(x_axis_var) is None:
             delta_plus_var = 0.0
             delta_minus_var = 0.0
-            delta_time = 0.0
+            has_plus_minus = [False, False]
 
             xdata = cdf_file.varget(x_axis_var)
             epoch_var_atts = cdf_file.varattsget(x_axis_var)
@@ -183,6 +184,7 @@ class CDF():
                         epoch_var_atts['DELTA_PLUS_VAR'])
                     delta_plus_var_att = cdf_file.varattsget(
                         epoch_var_atts['DELTA_PLUS_VAR'])
+                    has_plus_minus[0] = True
 
                     # Check if a conversion to seconds is required
                     if 'SI_CONVERSION' in delta_plus_var_att:
@@ -199,6 +201,7 @@ class CDF():
                         epoch_var_atts['DELTA_MINUS_VAR'])
                     delta_minus_var_att = cdf_file.varattsget(
                         epoch_var_atts['DELTA_MINUS_VAR'])
+                    has_plus_minus[1] = True
 
                     # Check if a conversion to seconds is required
                     if 'SI_CONVERSION' in delta_minus_var_att:
@@ -212,23 +215,32 @@ class CDF():
                             delta_minus_var.astype(float) \
                             * np.float(si_conv.split('>')[0])
 
-                # Sometimes these are specified as arrays
-                if isinstance(delta_plus_var, np.ndarray) \
-                        and isinstance(delta_minus_var, np.ndarray):
-                    delta_time = (delta_plus_var
-                                  - delta_minus_var) / 2.0
-                else:  # And sometimes constants
-                    if delta_plus_var != 0.0 or delta_minus_var != 0.0:
-                        delta_time = (delta_plus_var
-                                      - delta_minus_var) / 2.0
-
-        if self.get_dependency(x_axis_var) is None:
             if ('CDF_TIME' in data_type_description) or \
                     ('CDF_EPOCH' in data_type_description):
-                xdata = cdflib.cdfepoch.unixtime(xdata)
-                xdata = np.array(xdata) + delta_time
                 if self._datetime:
-                    xdata = pds.to_datetime(xdata, unit='s')
+                    # Convert xdata to datetime
+                    try:
+                        new_xdata = cdflib.cdfepoch.to_datetime(xdata)
+                    except TypeError as terr:
+                        estr = ("Invalid data file(s). Please contact CDAWeb "
+                                "for assistance: {:}".format(str(terr)))
+                        logger.warning(estr)
+                        new_xdata = []
+
+                    # Add delta to time, if both plus and minus are defined
+                    if np.all(has_plus_minus):
+                        # This defines delta_time in seconds supplied
+                        delta_time = np.asarray((delta_plus_var
+                                                 - delta_minus_var) / 2.0)
+
+                        # delta_time may be a single value or an array
+                        xdata = [xx + dt.timedelta(seconds=int(delta_time))
+                                 if delta_time.shape == ()
+                                 else xx + dt.timedelta(seconds=delta_time[i])
+                                 for i, xx in enumerate(new_xdata)]
+                    else:
+                        xdata = new_xdata
+
                 self.set_dependency(x_axis_var, xdata)
 
     def get_index(self, variable_name):
@@ -353,12 +365,12 @@ class CDF():
 
             self.meta[variable_name] = var_atts
 
-    def to_pysat(self, flatten_twod=True, labels={'units': ('Units', str),
-                 'name': ('Long_Name', str), 'notes': ('Var_Notes', str),
-                 'desc': ('CatDesc', str),
-                 'min_val': ('ValidMin', float),
-                 'max_val': ('ValidMax', float),
-                 'fill_val': ('FillVal', float)}):
+    def to_pysat(self, flatten_twod=True,
+                 labels={'units': ('Units', str), 'name': ('Long_Name', str),
+                         'notes': ('Var_Notes', str), 'desc': ('CatDesc', str),
+                         'min_val': ('ValidMin', float),
+                         'max_val': ('ValidMax', float),
+                         'fill_val': ('FillVal', float)}):
         """
         Exports loaded CDF data into data, meta for pysat module
 
@@ -414,12 +426,28 @@ class CDF():
                 cdata['Epoch'] = epoch
 
         data = dict()
+        index = None
         for varname, df in cdata.items():
             if varname not in ('Epoch', 'DATE'):
                 if type(df) == pds.Series:
                     data[varname] = df
 
-        data = pds.DataFrame(data)
+                    # CDF data Series are saved using a mix of Range and
+                    # Datetime Indexes. This requires that the user specify
+                    # the desired index when creating a DataFrame
+                    if type(df.index) == pds.DatetimeIndex and index is None:
+                        index = df.index
+
+        if index is None:
+            raise ValueError(''.join(['cdflib did not load a DatetimeIndex, ',
+                                      'not pysat compatible']))
+
+        try:
+            data = pds.DataFrame(data, index=index)
+        except pds.core.indexes.base.InvalidIndexError as ierr:
+            estr = "Invalid times in data file(s): {:}".format(str(ierr))
+            logger.warning(estr)
+            data = pds.DataFrame(None)
 
         return data, meta
 
@@ -468,8 +496,10 @@ def load(fnames, tag=None, inst_id=None, file_cadence=dt.timedelta(days=1),
         # support load routine
         # use the default CDAWeb method
         load = cdw.load
+
     """
 
+    # Load data from any files provided
     if len(fnames) <= 0:
         return pds.DataFrame(None), None
     else:
@@ -481,25 +511,37 @@ def load(fnames, tag=None, inst_id=None, file_cadence=dt.timedelta(days=1),
             if not general.is_daily_file_cadence(file_cadence):
                 # Parse out date from filename
                 fname = lfname[0:-11]
-
-                # Get date from rest of filename
                 date = dt.datetime.strptime(lfname[-10:], '%Y-%m-%d')
+
                 with CDF(fname) as cdf:
                     # Convert data to pysat format
-                    data, meta = cdf.to_pysat(flatten_twod=flatten_twod)
+                    try:
+                        temp_data, meta = cdf.to_pysat(
+                            flatten_twod=flatten_twod)
 
-                    # Select data from multi-day down to daily
-                    data = data.loc[date:date + dt.timedelta(days=1)
-                                    - dt.timedelta(microseconds=1), :]
-                    ldata.append(data)
+                        # Select data from multi-day down to daily
+                        temp_data = temp_data.loc[
+                            date:date + dt.timedelta(days=1)
+                            - dt.timedelta(microseconds=1), :]
+                        ldata.append(temp_data)
+                    except ValueError as verr:
+                        logger.warn("unable to load {:}: {:}".format(fname,
+                                                                     str(verr)))
             else:
                 # Basic data return
                 with CDF(lfname) as cdf:
-                    temp_data, meta = cdf.to_pysat(flatten_twod=flatten_twod)
-                    ldata.append(temp_data)
+                    try:
+                        temp_data, meta = cdf.to_pysat(
+                            flatten_twod=flatten_twod)
+                        ldata.append(temp_data)
+                    except ValueError as verr:
+                        logger.warn("unable to load {:}: {:}".format(lfname,
+                                                                     str(verr)))
 
         # Combine individual files together
-        data = pds.concat(ldata)
+        if len(ldata) > 0:
+            data = pds.concat(ldata)
+
         return data, meta
 
 
