@@ -102,7 +102,6 @@ list_files = functools.partial(mm_gen.list_files,
 #
 # use the default CDAWeb method
 # no other information needs to be supplied here
-# pysatCDF is used to load data
 load = cdw.load
 
 #
