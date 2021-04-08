@@ -61,6 +61,7 @@ import functools
 import pysat
 from pysat import logger
 from pysat.instruments.methods import general as mm_gen
+from pysatNASA.instruments.methods import cdaweb as cdw
 from pysatNASA.instruments.methods import icon as mm_icon
 
 # ----------------------------------------------------------------------------
@@ -82,10 +83,8 @@ pandas_format = False
 # ----------------------------------------------------------------------------
 # Instrument test attributes
 
-_test_dates = {jj: {kk: dt.datetime(2020, 1, 1) for kk in inst_ids[jj]}
+_test_dates = {jj: {kk: dt.datetime(2020, 1, 2) for kk in inst_ids[jj]}
                for jj in inst_ids.keys()}
-_test_download_travis = {jj: {kk: False for kk in inst_ids[jj]}
-                         for jj in inst_ids.keys()}
 
 # ----------------------------------------------------------------------------
 # Instrument methods
@@ -211,38 +210,37 @@ def clean(self):
 # Use the ICON and pysat methods
 
 # Set the list_files routine
-datestr = '{year:04d}-{month:02d}-{day:02d}_v{version:02d}r{revision:03d}'
-fname1 = 'ICON_L2-1_MIGHTI-{id:s}_LOS-Wind-{color:s}_{date:s}.NC'
-fname2 = 'ICON_L2-2_MIGHTI_Vector-Wind-{color:s}_{date:s}.NC'
-fname3 = 'ICON_L2-3_MIGHTI-{id:s}_Temperature_{date:s}.NC'
-supported_tags = {'': {'vector_wind_green': fname2.format(color='Green',
+datestr = '{year:04d}{month:02d}{day:02d}_v{version:02d}r{revision:03d}'
+fname1 = 'icon_l2-1_mighti-{id:s}_los-wind-{color:s}_{date:s}.nc'
+fname2 = 'icon_l2-2_mighti_vector-wind-{color:s}_{date:s}.nc'
+fname3 = 'icon_l2-3_mighti-{id:s}_temperature_{date:s}.nc'
+supported_tags = {'': {'vector_wind_green': fname2.format(color='green',
                                                           date=datestr),
-                       'vector_wind_red': fname2.format(color='Red',
+                       'vector_wind_red': fname2.format(color='red',
                                                         date=datestr)},
-                  'a': {'los_wind_green': fname1.format(id='A', color='Green',
+                  'a': {'los_wind_green': fname1.format(id='a', color='green',
                                                         date=datestr),
-                        'los_wind_red': fname1.format(id='A', color='Red',
+                        'los_wind_red': fname1.format(id='a', color='red',
                                                       date=datestr),
-                        'temperature': fname3.format(id='A', date=datestr)},
-                  'b': {'los_wind_green': fname1.format(id='B', color='Green',
+                        'temperature': fname3.format(id='a', date=datestr)},
+                  'b': {'los_wind_green': fname1.format(id='b', color='green',
                                                         date=datestr),
-                        'los_wind_red': fname1.format(id='B', color='Red',
+                        'los_wind_red': fname1.format(id='b', color='red',
                                                       date=datestr),
-                        'temperature': fname3.format(id='B', date=datestr)}}
+                        'temperature': fname3.format(id='b', date=datestr)}}
 
 list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags)
 
 # Set the download routine
-dirstr = '/pub/LEVEL.2/MIGHTI'
-zname1 = 'ZIP/ICON_L2-1_MIGHTI-{id:s}_{date:s}.ZIP'
-zname2 = 'ZIP/ICON_L2-2_MIGHTI_{date:s}.ZIP'
-zname3 = 'ZIP/ICON_L2-3_MIGHTI-{id:s}_Temperature_{date:s}.ZIP'
-znames = {'los_wind_green': zname1,
-          'los_wind_red': zname1,
-          'vector_wind_green': zname2,
-          'vector_wind_red': zname2,
-          'temperature': zname3}
+dirstr1 = '/pub/data/icon/l2/l2-1_mighti-{{id:s}}_los-wind-{color:s}/'
+dirstr2 = '/pub/data/icon/l2/l2-2_mighti_vector-wind-{color:s}/'
+dirstr3 = '/pub/data/icon/l2/l2-3_mighti-{id:s}_temperature/'
+dirnames = {'los_wind_green': dirstr1.format(color='green'),
+            'los_wind_red': dirstr1.format(color='red'),
+            'vector_wind_green': dirstr2.format(color='green'),
+            'vector_wind_red': dirstr2.format(color='red'),
+            'temperature': dirstr3}
 
 download_tags = {}
 for inst_id in supported_tags.keys():
@@ -251,14 +249,14 @@ for inst_id in supported_tags.keys():
         fname = supported_tags[inst_id][tag]
 
         download_tags[inst_id][tag] = \
-            {'remote_dir': dirstr,
-             'remote_fname': znames[tag].format(id=inst_id.upper(),
-                                                date=datestr)}
+            {'remote_dir': ''.join((dirnames[tag].format(id=inst_id),
+                                    '{year:04d}/')),
+             'fname': fname}
 
-download = functools.partial(mm_icon.ssl_download, supported_tags=download_tags)
+download = functools.partial(cdw.download, supported_tags=download_tags)
 
 # Set the list_remote_files routine
-list_remote_files = functools.partial(mm_icon.list_remote_files,
+list_remote_files = functools.partial(cdw.list_remote_files,
                                       supported_tags=download_tags)
 
 

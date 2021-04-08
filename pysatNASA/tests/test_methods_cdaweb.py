@@ -3,6 +3,7 @@ import requests
 
 import pytest
 
+import pysat
 import pysatNASA
 from pysatNASA.instruments.methods import cdaweb as cdw
 
@@ -61,3 +62,10 @@ class TestCDAWeb():
                                   tag=self.kwargs['tag'],
                                   inst_id=self.kwargs['inst_id'])
         assert str(excinfo.value).find(err_msg) >= 0
+
+    def test_remote_file_list_all(self):
+        """Test that remote_file_list works if start/stop dates unspecified"""
+        self.module = pysatNASA.instruments.cnofs_plp
+        self.test_inst = pysat.Instrument(inst_module=self.module)
+        files = self.test_inst.remote_file_list()
+        assert len(files) > 0
