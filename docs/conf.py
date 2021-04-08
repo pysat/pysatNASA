@@ -16,6 +16,9 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
+import os
+import sys
+sys.path.insert(0, os.path.abspath('..'))
 
 # -- General configuration ------------------------------------------------
 
@@ -51,9 +54,10 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'pysatNASA'
-copyright = u'2020, Jeffrey Klenzing, Russell Stoneback, Angeline G Burrell'
-author = u'Jeff Klenzing, Russell Stoneback, Jonathon Smith, Angeline G Burrell, Asher Pembroke, Carey Spance'
+project = 'pysatNASA'
+author = ', '.join(['Jeff Klenzing', 'Russell Stoneback', 'Jonathon Smith',
+                    'Angeline G Burrell', 'Asher Pembroke', 'Carey Spance'])
+manual_copyright = ', '.join(['2021', author])
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -166,7 +170,7 @@ texinfo_documents = [
 epub_title = project
 epub_author = author
 epub_publisher = author
-epub_copyright = copyright
+epub_copyright = manual_copyright
 
 # The unique identifier of the text. This can be a ISBN number
 # or the project homepage.
