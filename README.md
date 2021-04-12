@@ -24,7 +24,7 @@ python setup.py install
 
 Note: pre-1.0.0 version
 ------------------
-pysatNASA is currently in an initial development phase.  Much of the API is being built off of pysat 3.0.0 software in order to streamline the usage and test coverage. 
+pysatNASA is currently in an initial development phase and requires pysat 3.0.0.  
 
 # Using with pysat
 

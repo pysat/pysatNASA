@@ -14,7 +14,7 @@ Prerequisites
 
 pysatNASA uses common Python modules, as well as modules developed by
 and for the Space Physics community.  This module officially supports
-Python 3.6+.
+Python 3.7+ and pysat 3.0.0+.
 
  ================ =================
  Common modules   Community modules
