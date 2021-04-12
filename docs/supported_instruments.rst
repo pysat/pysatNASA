@@ -92,12 +92,6 @@ SES14 GOLD
 .. automodule:: pysatNASA.instruments.ses14_gold
    :members:
 
-SPORT IVM
----------
-
-.. automodule:: pysatNASA.instruments.sport_ivm
-   :members:
-
 TIMED/SABER
 -----------
 
