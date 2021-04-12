@@ -15,14 +15,13 @@ pysatNASA
 
 .. code-block:: latex
 
-  @software{jeff_klenzing_2020_3986132,
-    author       = {Jeff Klenzing and
-                    Russell Stoneback and
-                    Angeline Burrell and
-                    Asher Pembroke and
-                    Matthew Depew and
-                    Carey Spence and
-                    Asher Pembroke},
+  @software{pysatNASA,
+    author       = {Klenzing, J. and
+                    Stoneback, R.A. and
+                    Burrell, A.G. and
+                    Pembroke, A. and
+                    Depew, M. and
+                    Spence, C.},
     title        = {pysat/pysatNASA: Initial Release},
     month        = aug,
     year         = 2020,
