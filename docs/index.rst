@@ -2,7 +2,7 @@
    contain the root `toctree` directive.
 
 Welcome to the pysatNASA documentation
-==============================================
+======================================
 
 This documentation describes the pysatNASA module, which contains
 routines to NASA space science data as pysat.Instrument objects through the
