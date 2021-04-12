@@ -19,13 +19,13 @@ Python 3.7+ and pysat 3.0.0+.
  ================ =================
  Common modules   Community modules
  ================ =================
-  netCDF4          cdflib
-  numpy            pysat
+  beautifulsoup4   cdflib
+  lxml             pysat
+  netCDF4
+  numpy
   pandas
   requests
   xarray
-  beautifulsoup4
-  lxml
  ================ =================
 
 

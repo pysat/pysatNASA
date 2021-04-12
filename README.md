@@ -8,6 +8,27 @@
 
 # Installation
 
+The following instructions provide a guide for installing pysatSpaceWeather and give
+some examples on how to use the routines
+
+### Prerequisites
+
+pysatSpaceWeather uses common Python modules, as well as modules developed by
+and for the Space Physics community.  This module officially supports
+Python 3.7+.
+
+| Common modules | Community modules |
+| -------------- | ----------------- |
+| beautifulsoup4 | cdflib            |
+| lxml           | pysat             |
+| netCDF4        |                   |
+| numpy          |                   |
+| pandas         |                   |
+| requests       |                   |
+| xarray         |                   |
+
+## GitHub Installation
+
 Currently, the main way to get pysatNASA is through github.
 
 ```
