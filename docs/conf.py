@@ -38,8 +38,11 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.ifconfig',
               'sphinx.ext.viewcode',
               'sphinx.ext.githubpages',
+              'autoapi.extension',
               'numpydoc',
               'm2r2']
+# Tell autoapi where the package is
+autoapi_dirs = ['../pysatNASA']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['.templates']
@@ -56,7 +59,7 @@ master_doc = 'index'
 # General information about the project.
 project = 'pysatNASA'
 authors = ', '.join(['Jeff Klenzing', 'Russell Stoneback', 'Jonathon Smith',
-                     'Angeline G Burrell', 'Asher Pembroke', 'Carey Spance'])
+                     'Angeline G Burrell', 'Asher Pembroke', 'Carey Spence'])
 manual_copyright = ', '.join(['2021', authors])
 title = 'pysatNASA Documentation'
 description = 'Tools for NASA CDAWeb instruments.'
