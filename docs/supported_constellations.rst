@@ -12,5 +12,7 @@ The Dynamics Explorer 2 spacecraft
 ICON
 ----
 
+The Ionosphere CONnection explorer spacecraft
+
 .. automodule:: pysatNASA.constellations.icon
    :members:
