@@ -15,6 +15,7 @@ CDAWeb interface.
    installation.rst
    citing.rst
    supported_instruments.rst
+   supported_constellations.rst
    examples.rst
    develop_guide.rst
    history.rst
