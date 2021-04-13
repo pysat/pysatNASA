@@ -41,8 +41,10 @@ extensions = ['sphinx.ext.autodoc',
               'autoapi.extension',
               'numpydoc',
               'm2r2']
-# Tell autoapi where the package is
+
+# Configure autoapi
 autoapi_dirs = ['../pysatNASA']
+autoapi_add_toctree_entry = False
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['.templates']

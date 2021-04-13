@@ -6,7 +6,7 @@ DE2
 
 The Dynamics Explorer 2 spacecraft
 
-.. automodule:: pysatNASA.constellations.de2
+.. autoapimodule:: pysatNASA.constellations.de2
    :members:
 
 ICON
@@ -14,5 +14,5 @@ ICON
 
 The Ionosphere CONnection explorer spacecraft
 
-.. automodule:: pysatNASA.constellations.icon
+.. autoapimodule:: pysatNASA.constellations.icon
    :members:
