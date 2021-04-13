@@ -133,19 +133,32 @@ def clean(self):
     idx = ((self.data.driftMeterflag > max_dm_flag)
            & (self.data.RPAflag > max_rpa_flag))
 
-    # Also exclude very large drifts and drifts where 100% O+
+    # Second pass, find bad drifts to replace with NaNs
+    idm = self.data.driftMeterflag > max_dm_flag
+    irpa = self.data.RPAflag > max_rpa_flag
+
+    # Also exclude very large drifts
     if (self.clean_level == 'clean') | (self.clean_level == 'dusty'):
         if 'ionVelmeridional' in self.data.columns:
             # unrealistic velocities
             # This check should be performed at the RPA or IDM velocity level
             idx2 = (np.abs(self.data.ionVelmeridional) >= 10000.0)
-            idx = (idx | idx2)
+            idm = (idm | idx2)
+            irpa = (irpa | idx2)
 
-    if len(idx) > 0:
+    # Replace bad drift meter values with NaNs
+    if len(idm) > 0:
         drift_labels = ['ionVelmeridional', 'ionVelparallel', 'ionVelzonal',
-                        'ionVelocityX', 'ionVelocityY', 'ionVelocityZ']
+                        'ionVelocityY', 'ionVelocityZ']
         for label in drift_labels:
-            self[idx, label] = np.NaN
+            self[idm, label] = np.NaN
+
+    # Replace bad rpa values with NaNs
+    if len(irpa) > 0:
+        drift_labels = ['ionVelmeridional', 'ionVelparallel', 'ionVelzonal',
+                        'ionVelocityX']
+        for label in drift_labels:
+            self[irpa, label] = np.NaN
 
     # Check for bad RPA fits in dusty regime.
     # O+ concentration criteria from Burrell, 2012
