@@ -130,9 +130,6 @@ def clean(self):
         max_rpa_flag = 4
         max_dm_flag = 6
 
-    idx = ((self.data.driftMeterflag > max_dm_flag)
-           & (self.data.RPAflag > max_rpa_flag))
-
     # Second pass, find bad drifts to replace with NaNs
     idm = self.data.driftMeterflag > max_dm_flag
     irpa = self.data.RPAflag > max_rpa_flag
@@ -157,6 +154,16 @@ def clean(self):
     if len(irpa) > 0:
         drift_labels = ['ionVelmeridional', 'ionVelparallel', 'ionVelzonal',
                         'ionVelocityX']
+        for label in drift_labels:
+            self[irpa, label] = np.NaN
+
+    # Third pass, replace densities and temps where fits are bad
+    # This is separate from the drifts as confidence in the densities is higher
+    irpa = self.data.RPAflag > max(max_rpa_flag, 3)
+    if len(irpa) > 0:
+        drift_labels = ['Ni', 'ionDensity', 'ionTemperature',
+                        'ion1fraction', 'ion2fraction', 'ion3fraction',
+                        'ion4fraction', 'ion5fraction']
         for label in drift_labels:
             self[irpa, label] = np.NaN
 
