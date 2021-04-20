@@ -16,7 +16,7 @@ from bs4 import BeautifulSoup
 from pysat import logger
 from pysat.utils import files as futils
 from pysat.instruments.methods import general
-from pysatNASA.instruments.methods._cdf import CDF
+from pysatNASA.instruments.methods import CDF
 
 
 def load(fnames, tag=None, inst_id=None, file_cadence=dt.timedelta(days=1),
