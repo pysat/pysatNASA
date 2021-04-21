@@ -159,7 +159,7 @@ def clean(self):
 
     # Third pass, replace densities and temps where fits are bad
     # This is separate from the drifts as confidence in the densities is higher
-    irpa = self.data.RPAflag > max(max_rpa_flag, 3)
+    irpa = self.data.RPAflag > max(max_rpa_flag, 4)
     if len(irpa) > 0:
         drift_labels = ['Ni', 'ionDensity', 'ionTemperature',
                         'ion1fraction', 'ion2fraction', 'ion3fraction',
