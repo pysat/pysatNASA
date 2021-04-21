@@ -20,25 +20,25 @@ C/NOFS VEFI
    :members:
 
 DE2 LANG
------------
+--------
 
 .. autoapimodule:: pysatNASA.instruments.de2_lang
    :members:
 
 DE2 NACS
------------
+--------
 
 .. autoapimodule:: pysatNASA.instruments.de2_nacs
    :members:
 
 DE2 RPA
------------
+-------
 
 .. autoapimodule:: pysatNASA.instruments.de2_rpa
    :members:
 
 DE2 WATS
------------
+--------
 
 .. autoapimodule:: pysatNASA.instruments.de2_wats
    :members:
