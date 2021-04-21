@@ -157,16 +157,6 @@ def clean(self):
         for label in drift_labels:
             self[irpa, label] = np.NaN
 
-    # Third pass, replace densities and temps where fits are bad
-    # This is separate from the drifts as confidence in the densities is higher
-    irpa = self.data.RPAflag > max(max_rpa_flag, 4)
-    if len(irpa) > 0:
-        drift_labels = ['Ni', 'ionDensity', 'ionTemperature',
-                        'ion1fraction', 'ion2fraction', 'ion3fraction',
-                        'ion4fraction', 'ion5fraction']
-        for label in drift_labels:
-            self[irpa, label] = np.NaN
-
     # Check for bad RPA fits in dusty regime.
     # O+ concentration criteria from Burrell, 2012
     if self.clean_level == 'dusty' or self.clean_level == 'clean':
