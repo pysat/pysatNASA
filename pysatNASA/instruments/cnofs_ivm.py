@@ -130,41 +130,73 @@ def clean(self):
         max_rpa_flag = 4
         max_dm_flag = 6
 
-    # Second pass, find bad drifts to replace with NaNs
+    # Find bad drifts according to quality flags
     idm = self.data.driftMeterflag > max_dm_flag
     irpa = self.data.RPAflag > max_rpa_flag
 
-    # Also exclude very large drifts
+    # Also exclude RPA drifts where the velocity is set to zero
     if (self.clean_level == 'clean') | (self.clean_level == 'dusty'):
-        if 'ionVelmeridional' in self.data.columns:
-            # unrealistic velocities
-            # This check should be performed at the RPA or IDM velocity level
-            idx2 = (np.abs(self.data.ionVelmeridional) >= 10000.0)
-            idm = (idm | idx2)
+        if 'ionVelocityX' in self.data.columns:
+            # unrealistic velocities - value set by fit routine
+            idx2 = (np.abs(self.data.ionVelocityX) == 0.0)
             irpa = (irpa | idx2)
 
     # Replace bad drift meter values with NaNs
     if len(idm) > 0:
-        drift_labels = ['ionVelmeridional', 'ionVelparallel', 'ionVelzonal',
-                        'ionVelocityY', 'ionVelocityZ']
-        for label in drift_labels:
+        data_labels = ['ionVelocityY', 'ionVelocityZ']
+        for label in data_labels:
             self[idm, label] = np.NaN
+        # Only remove field-alligned drifts if DM component is large enough
+        unit_vecs = {'ionVelmeridional': 'meridionalunitvectorY',
+                     'ionVelparallel': 'parallelunitvectorY',
+                     'ionVelzonal': 'zonalunitvectorY'}
+        for label in unit_vecs:
+            idx0 = idm & (np.abs(self[unit_vecs[label]]) >= 0.01)
+            self[idx0, label] = np.NaN
+        unit_vecs = {'ionVelmeridional': 'meridionalunitvectorZ',
+                     'ionVelparallel': 'parallelunitvectorZ',
+                     'ionVelzonal': 'zonalunitvectorZ'}
+        for label in unit_vecs:
+            idx0 = idm & (np.abs(self[unit_vecs[label]]) >= 0.01)
+            self[idx0, label] = np.NaN
 
     # Replace bad rpa values with NaNs
     if len(irpa) > 0:
-        drift_labels = ['ionVelmeridional', 'ionVelparallel', 'ionVelzonal',
-                        'ionVelocityX']
-        for label in drift_labels:
+        data_labels = ['ionVelocityX', 'sensPlanePot', 'sensPlanePotvar']
+        for label in data_labels:
+            self[irpa, label] = np.NaN
+        # Only remove field-alligned drifts if RPA component is large enough
+        unit_vecs = {'ionVelmeridional': 'meridionalunitvectorX',
+                     'ionVelparallel': 'parallelunitvectorX',
+                     'ionVelzonal': 'zonalunitvectorX'}
+        for label in unit_vecs:
+            idx0 = irpa & (np.abs(self[unit_vecs[label]]) >= 0.01)
+            self[idx0, label] = np.NaN
+
+    # Replace densities and temps where fits are bad
+    # This is separate from the drifts as confidence in the densities is higher
+    irpa = self.data.RPAflag > 4
+    if len(irpa) > 0:
+        data_labels = ['Ni', 'ionDensity', 'ionDensityvariance',
+                       'ionTemperature', 'ionTemperaturevariance',
+                       'ion1fraction', 'ion1variance',
+                       'ion2fraction', 'ion2variance',
+                       'ion3fraction', 'ion3variance',
+                       'ion4fraction', 'ion4variance',
+                       'ion5fraction', 'ion5variance']
+        for label in data_labels:
             self[irpa, label] = np.NaN
 
-    # Check for bad RPA fits in dusty regime.
-    # O+ concentration criteria from Burrell, 2012
+    # Additional checks for clean and dusty data
     if self.clean_level == 'dusty' or self.clean_level == 'clean':
-        # Low O+ concentrations for RPA Flag of 3 are suspect and high O+
-        # fractions create a shallow fit region for the ram velocity
+        # Low O+ concentrations for RPA Flag of 3 are suspect
+        # O+ concentration criteria from Burrell, 2012
         nO = self.data.ion1fraction * self.data.Ni
-        idx = (((self.data.RPAflag == 3) & (nO <= 3.0e4))
-               | (self.data.ion1fraction >= 1.0))
+        ind_low_odens = (self.data.RPAflag == 3) & (nO <= 3.0e4)
+        # 100% O+ creates a shallow fit region for the ram velocity
+        ind_shallow_fit = self.data.ion1fraction >= 1.0
+        # Exclude areas where either of these are true
+        idx = ind_low_odens | ind_shallow_fit
 
         # Only remove data if RPA component of drift is greater than 1%
         unit_vecs = {'ionVelmeridional': 'meridionalunitvectorX',
@@ -174,7 +206,7 @@ def clean(self):
             idx0 = idx & (np.abs(self[unit_vecs[label]]) >= 0.01)
             self[idx0, label] = np.NaN
 
-        # The RPA component of the ram velocity is always 100%
+        # The RPA component of the ram velocity
         self[idx, 'ionVelocityX'] = np.NaN
 
         # Check for bad temperature fits (O+ < 15%), replace with NaNs
