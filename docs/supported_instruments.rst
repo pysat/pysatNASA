@@ -61,11 +61,16 @@ FORMOSAT-1 IVM
 .. automodule:: pysatNASA.instruments.formosat1_ivm
   :members:
 
+
+.. _icon_euv:
+
 ICON EUV
 --------
 
 .. automodule:: pysatNASA.instruments.icon_euv
    :members:
+
+.. _icon_fuv:
 
 ICON FUV
 --------
@@ -73,11 +78,15 @@ ICON FUV
 .. automodule:: pysatNASA.instruments.icon_fuv
    :members:
 
+.. _icon_ivm:
+
 ICON IVM
 --------
 
 .. automodule:: pysatNASA.instruments.icon_ivm
    :members:
+
+.. _icon_mighti:
 
 ICON MIGHTI
 -----------
@@ -95,7 +104,7 @@ OMNI_HRO
 --------
 
 .. automodule:: pysatNASA.instruments.omni_hro
-   :members: , calculate_clock_angle, calculate_imf_steadiness, time_shift_to_magnetic_poles
+   :members: calculate_clock_angle, calculate_imf_steadiness, time_shift_to_magnetic_poles
 
 
 SES14 GOLD
