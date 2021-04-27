@@ -1,11 +1,15 @@
 Supported Instruments
 =====================
 
+.. _cnofs_ivm:
+
 C/NOFS IVM
 ----------
 
 .. automodule:: pysatNASA.instruments.cnofs_ivm
    :members:
+
+.. _cnofs_plp:
 
 C/NOFS PLP
 ----------
@@ -19,26 +23,34 @@ C/NOFS VEFI
 .. automodule:: pysatNASA.instruments.cnofs_vefi
    :members:
 
+.. _de2_lang:
+
 DE2 LANG
------------
+--------
 
 .. automodule:: pysatNASA.instruments.de2_lang
    :members:
 
+.. _de2_nacs:
+
 DE2 NACS
------------
+--------
 
 .. automodule:: pysatNASA.instruments.de2_nacs
    :members:
 
+.. _de2_rpa:
+
 DE2 RPA
------------
+-------
 
 .. automodule:: pysatNASA.instruments.de2_rpa
    :members:
 
+.. _de2_wats:
+
 DE2 WATS
------------
+--------
 
 .. automodule:: pysatNASA.instruments.de2_wats
    :members:
