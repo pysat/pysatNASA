@@ -57,7 +57,9 @@ To set up `pysatNASA` for local development:
    Tests for custom functions should be added to the appropriately named file
    in ``pysatNASA/tests``.  For example, custom functions for the OMNI HRO data
    are tested in ``pysatNASA/tests/test_omni_hro.py``.  If no test file exists,
-   then you should create one.  This testing uses pytest, which will run tests on any python file in the test directory that starts with ``test``.  Classes must begin with ``Test``, and methods must begin with ``test`` as well.
+   then you should create one.  This testing uses pytest, which will run tests
+   on any python file in the test directory that starts with ``test``.  Classes
+   must begin with ``Test``, and methods must begin with ``test`` as well.
 
 
 4. When you're done making changes, run all the checks to ensure that nothing
