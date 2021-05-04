@@ -75,13 +75,14 @@ from pysatNASA.instruments.methods import cdaweb as cdw
 
 platform = 'de2'
 name = 'rpa'
-tags = {'': '2 sec cadence RPA data'}  # this is the default cadence
-inst_ids = {'': ['']}
+tags = {'': '2 sec cadence RPA data',  # this is the default cadence
+        'duct': '16ms DUCT plasma density'}
+inst_ids = {'': [tag for tag in tags]}
 
 # ----------------------------------------------------------------------------
 # Instrument test attributes
 
-_test_dates = {'': {'': dt.datetime(1983, 1, 1)}}
+_test_dates = {'': {tag: dt.datetime(1983, 1, 1) for tag in tags}}
 
 # ----------------------------------------------------------------------------
 # Instrument methods
@@ -96,7 +97,7 @@ def init(self):
 
     logger.info(mm_de2.ackn_str)
     self.acknowledgements = mm_de2.ackn_str
-    self.references = mm_de2.refs['lang']
+    self.references = mm_de2.refs['rpa']
     return
 
 
@@ -122,8 +123,12 @@ def clean(self):
 # Use the default CDAWeb and pysat methods
 
 # Set the list_files routine
-fname = 'de2_ion2s_rpa_{year:04d}{month:02d}{day:02d}_v{version:02d}.cdf'
-supported_tags = {'': {'': fname}}
+datestr = '{year:04d}{month:02d}{day:02d}_v{version:02d}'
+dataproduct = {'': 'ion2s',
+               'duct': 'duct16ms'}
+fname = 'de2_{dp:s}_rpa_{datestr:s}.cdf'
+supported_tags = {'': {tag: fname.format(dp=dataproduct[tag], datestr=datestr)
+                       for tag in tags}}
 list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags)
 
@@ -131,10 +136,16 @@ list_files = functools.partial(mm_gen.list_files,
 load = cdw.load
 
 # Set the download routine
-basic_tag = {'remote_dir': ''.join(('/pub/data/de/de2/plasma_rpa',
-                                    '/ion2s_cdaweb/{year:4d}/')),
-             'fname': fname}
-download_tags = {'': {'': basic_tag}}
+download_tags = {'': {'': {'remote_dir': ''.join(('/pub/data/de/de2/plasma_rpa',
+                                                  '/ion2s_cdaweb/{year:4d}/')),
+                           'fname': fname.format(dp=dataproduct[''],
+                                                 datestr=datestr)},
+                      'duct': {'remote_dir': ''.join(('/pub/data/de/de2/',
+                                                      'plasma_rpa/',
+                                                      'rpa16ms_cdaweb/',
+                                                      '{year:4d}/')),
+                               'fname': fname.format(dp=dataproduct['duct'],
+                                                     datestr=datestr)}}}
 download = functools.partial(cdw.download, supported_tags=download_tags)
 
 # Set the list_remote_files routine
