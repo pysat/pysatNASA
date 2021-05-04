@@ -36,7 +36,7 @@ Users of SABER data are asked to respect the following guidelines
 
 Warnings
 --------
-- Note on Temperature Errors: http://saber.gats-inc.com/temp_errors.php
+- Note on Temperature Errors: https://saber.gats-inc.com/temp_errors.php
 - No cleaning routine
 
 
@@ -86,7 +86,7 @@ def init(self):
 
     """
 
-    rules_url = 'http://saber.gats-inc.com/data_services.php'
+    rules_url = 'https://saber.gats-inc.com/data_services.php'
     ackn_str = ' '.join(('Please see the Rules of the Road at', rules_url))
 
     logger.info(ackn_str)
