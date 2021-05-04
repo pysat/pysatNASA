@@ -3,7 +3,8 @@
 
 ackn_str = "The Dynamics Explorer 2 satellite data is provided through CDAWeb"
 
-refs = {'lang': ' '.join(('J. P. Krehbiel, L. H. Brace, R. F. Theis, W. H.',
+refs = {'idm': ' '.join(('TBD')),
+        'lang': ' '.join(('J. P. Krehbiel, L. H. Brace, R. F. Theis, W. H.',
                           'Pinkus, and R. B. Kaplan, The Dynamics Explorer 2',
                           'Langmuir Probe (LANG), Space Sci. Instrum., v. 5,',
                           'n. 4, p. 493, 1981.')),
