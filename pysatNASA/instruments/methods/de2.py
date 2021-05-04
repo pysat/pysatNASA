@@ -19,5 +19,6 @@ refs = {'lang': ' '.join(('J. P. Krehbiel, L. H. Brace, R. F. Theis, W. H.',
         'wats': ' '.join(('N. W. Spencer, L. E. Wharton, H. B. Niemann, A. E.',
                           'Hedin, G. R. Carrignan, J. C. Maurer, The',
                           'Dynamics Explorer Wind and Temperature Spectrometer',
-                          'Space Sci. Instrum., v. 5, n. 4, p. 417, 1981.'))
+                          'Space Sci. Instrum., v. 5, n. 4, p. 417, 1981.')),
+        'vefi': ' '.join(('TBD'))
         }
