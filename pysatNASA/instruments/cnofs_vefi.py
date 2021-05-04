@@ -13,7 +13,7 @@ sec with a range of .. 45,000 nT.  Its primary objective on the CNOFS
 spacecraft is to enable an accurate V x B measurement along the spacecraft
 trajectory.  In order to provide an in-flight calibration of the magnetic field
 data, we compare the most recent POMME model (the POtsdam Magnetic Model of the
-Earth, http://geomag.org/models/pomme5.html) with the actual magnetometer
+Earth, https://geomag.org/models/pomme5.html) with the actual magnetometer
 measurements to help determine a set of calibration parameters for the gains,
 offsets, and non-orthogonality matrix of the sensor axes.  The calibrated
 magnetic field measurements are provided in the data file here. The VEFI
