@@ -1,3 +1,8 @@
+<div align="left">
+        <img height="0" width="0px">
+        <img width="20%" src="https://raw.githubusercontent.com/pysat/pysatSpaceWeather/main/docs/figures/pysatnasa_logo.jpg" alt="pysatNASA" title="pysatNASA" </img>
+</div>
+
 # pysatNASA: pysat support for NASA instruments
 [![PyPI Package latest release](https://img.shields.io/pypi/v/pysatNASA.svg)](https://pypi.python.org/pypi/pysatNASA)
 [![Build Status](https://github.com/github/docs/actions/workflows/main.yml/badge.svg)](https://github.com/github/docs/actions/workflows/main.yml/badge.svg)
