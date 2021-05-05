@@ -1,6 +1,6 @@
 <div align="left">
         <img height="0" width="0px">
-        <img width="20%" src="https://raw.githubusercontent.com/pysat/pysatSpaceWeather/main/docs/figures/pysatnasa_logo.jpg" alt="pysatNASA" title="pysatNASA" </img>
+        <img width="20%" src="https://raw.githubusercontent.com/pysat/pysatNASA/main/docs/figures/pysatnasa_logo.jpg" alt="pysatNASA" title="pysatNASA" </img>
 </div>
 
 # pysatNASA: pysat support for NASA instruments
