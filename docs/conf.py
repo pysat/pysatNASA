@@ -16,6 +16,7 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
+import json
 import os
 import re
 import sys
@@ -54,11 +55,11 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
+zenodo = json.loads(open('../.zenodo.json').read())
 project = 'pysatNASA'
-authors = ', '.join(['Jeff Klenzing', 'Russell Stoneback', 'Jonathon Smith',
-                     'Angeline G Burrell', 'Asher Pembroke', 'Carey Spance'])
-manual_copyright = ', '.join(['2021', authors])
-title = 'pysatNASA Documentation'
+author = ', '.join([x['name'] for x in zenodo['creators']])
+manual_copyright = ', '.join(['2021', author])
+title = '{:s} Documentation'.format(project)
 description = 'Tools for NASA CDAWeb instruments.'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -140,18 +141,18 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'pysatNASA.tex', title,
-     authors, 'manual'),
+    (master_doc, '{:s}.tex'.format(project), title,
+     author, 'manual'),
 ]
 
 
 # -- Options for manual page output ---------------------------------------
 
 # One entry per manual page. List of tuples
-# (source start file, name, description, authors, manual section).
+# (source start file, name, description, author, manual section).
 man_pages = [
-    (master_doc, 'pysatNASA', title,
-     [authors], 1)
+    (master_doc, project, title,
+     [author], 1)
 ]
 
 
@@ -161,8 +162,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'pysatNASA', title,
-     authors, 'pysatNASA', description,
+    (master_doc, project, title,
+     author, project, description,
      'Space Physics'),
 ]
 
@@ -172,8 +173,8 @@ texinfo_documents = [
 
 # Bibliographic Dublin Core info.
 epub_title = project
-epub_author = authors
-epub_publisher = authors
+epub_author = author
+epub_publisher = author
 epub_copyright = manual_copyright
 
 # The unique identifier of the text. This can be a ISBN number
