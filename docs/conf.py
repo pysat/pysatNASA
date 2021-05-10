@@ -115,7 +115,7 @@ html_theme = 'sphinx_rtd_theme'
 # -- Options for HTMLHelp output ------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'pysatNASAdoc'
+htmlhelp_basename = '{:s}doc'.format(project)
 
 
 # -- Options for LaTeX output ---------------------------------------------
