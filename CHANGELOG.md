@@ -1,9 +1,10 @@
 # Change Log
 All notable changes to this project will be documented in this file.
-This project adheres to [Semantic Versioning](http://semver.org/).
+This project adheres to [Semantic Versioning](https://semver.org/).
 
-## [next version] - 2020-09-14
+## [0.0.2] - 2021-01-26
 - Updated Instruments and routines to conform with changes made for pysat 3.0
+- Added documentation
 - New Instruments
   - GOLD Nmax
 - Use GitHub Actions as primary CI test environment

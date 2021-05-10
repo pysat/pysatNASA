@@ -70,7 +70,7 @@ def init(self):
 
     """
 
-    rules_url = 'http://www.timed.jhuapl.edu/WWW/scripts/mdc_rules.pl'
+    rules_url = 'https://www.timed.jhuapl.edu/WWW/scripts/mdc_rules.pl'
     ackn_str = ' '.join(('Please see the Rules of the Road at', rules_url))
     logger.info(ackn_str)
     self.acknowledgements = ackn_str

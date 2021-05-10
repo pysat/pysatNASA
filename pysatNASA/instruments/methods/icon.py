@@ -6,7 +6,7 @@ ackn_str = ''.join(('This is a data product from the NASA Ionospheric ',
                     'at 21:59:45 EDT on October 10, 2019.\n\nGuidelines ',
                     'for the use of this product are described in the ',
                     'ICON Rules of the Road  ',
-                    '(https://http://icon.ssl.berkeley.edu/Data).',
+                    '(https://https://icon.ssl.berkeley.edu/Data).',
                     '\n\nResponsibility for the mission science ',
                     'falls to the Principal Investigator, Dr. ',
                     'Thomas Immel at UC Berkeley:\nImmel, T.J., ',
@@ -60,7 +60,7 @@ ackn_str = ''.join(('This is a data product from the NASA Ionospheric ',
                     'contracts NNG12FA45C and NNG12FA42I".\n\nThese data ',
                     'are openly available as described in the ICON Data ',
                     'Management Plan available on the ICON website ',
-                    '(http://icon.ssl.berkeley.edu/Data).'))
+                    '(https://icon.ssl.berkeley.edu/Data).'))
 
 refs = {'euv': ' '.join(('Stephan, A.W., Meier, R.R., England, S.L. et al.',
                          'Daytime O/N2 Retrieval Algorithm for the Ionospheric',
