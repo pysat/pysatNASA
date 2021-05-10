@@ -18,7 +18,6 @@
 #
 import json
 import os
-import re
 import sys
 sys.path.insert(0, os.path.abspath('..'))
 
@@ -44,6 +43,8 @@ extensions = ['sphinx.ext.autodoc',
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['.templates']
+
+# linkcheck_ignore = [r'http://localhost:\d+/']
 
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
@@ -108,13 +109,13 @@ html_theme = 'sphinx_rtd_theme'
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-#html_static_path = ['.static']
+# html_static_path = ['.static']
 
 
 # -- Options for HTMLHelp output ------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = '{:s}doc'.format(project)
+htmlhelp_basename = 'pysatNASAdoc'
 
 
 # -- Options for LaTeX output ---------------------------------------------
@@ -168,7 +169,6 @@ texinfo_documents = [
 ]
 
 
-
 # -- Options for Epub output ----------------------------------------------
 
 # Bibliographic Dublin Core info.
@@ -188,7 +188,6 @@ epub_copyright = manual_copyright
 
 # A list of files that should not be packed into the epub file.
 epub_exclude_files = ['search.html']
-
 
 
 # Example configuration for intersphinx: refer to the Python standard library.
