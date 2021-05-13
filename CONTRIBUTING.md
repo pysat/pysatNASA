@@ -51,7 +51,7 @@ To set up `pysatNASA` for local development:
    Now you can make your changes locally.
 
    Tests for new instruments are performed automatically.  See discussion
-   `here <https://pysat.readthedocs.io/en/develop-3/new_instrument.html#testing-support>`_
+   `here <https://pysat.readthedocs.io/en/main/new_instrument.html#testing-support>`_
    for more information on triggering these standard tests.
 
    Tests for custom functions should be added to the appropriately named file
