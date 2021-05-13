@@ -132,68 +132,58 @@ def clean(self):
 
     Note
     ----
-        Supports 'clean', 'dusty', 'dirty', 'none'
+        Supports 'clean', 'dusty', 'none'
 
     """
 
-    if self.tag.find('los') >= 0:
-        # dealing with LOS winds
-        wind_flag = 'Wind_Quality'
-        ver_flag = 'VER_Quality'
-        wind_vars = ['Line_of_Sight_Wind', 'Line_of_Sight_Wind_Error']
-        ver_vars = ['Fringe_Amplitude', 'Fringe_Amplitude_Error',
-                    'Relative_VER', 'Relative_VER_Error']
-        if wind_flag not in self.variables:
-            wind_flag = '_'.join(('ICON_L21', wind_flag))
-            ver_flag = '_'.join(('ICON_L21', ver_flag))
-            wind_vars = ['ICON_L21_' + var for var in wind_vars]
-            ver_vars = ['ICON_L21_' + var for var in ver_vars]
-        min_val = {'clean': 1.0,
-                   'dusty': 0.5}
-        if self.clean_level in ['clean', 'dusty']:
+    if self.clean_level in ['clean', 'dusty']:
+        if self.tag.find('los') >= 0:
+            # dealing with LOS winds
+            wind_flag = 'Wind_Quality'
+            ver_flag = 'VER_Quality'
+            wind_vars = ['Line_of_Sight_Wind', 'Line_of_Sight_Wind_Error']
+            ver_vars = ['Fringe_Amplitude', 'Fringe_Amplitude_Error',
+                        'Relative_VER', 'Relative_VER_Error']
+            if wind_flag not in self.variables:
+                wind_flag = '_'.join(('ICON_L21', wind_flag))
+                ver_flag = '_'.join(('ICON_L21', ver_flag))
+                wind_vars = ['ICON_L21_' + var for var in wind_vars]
+                ver_vars = ['ICON_L21_' + var for var in ver_vars]
+            min_val = {'clean': 1.0,
+                       'dusty': 0.5}
             # find location with any of the flags set
-            for var in wind_vars:
-                self[var] = self[var].where(self[wind_flag]
-                                            >= min_val[self.clean_level])
-            for var in ver_vars:
-                self[var] = self[var].where(self[ver_flag]
-                                            >= min_val[self.clean_level])
+            self._clean_vars(wind_vars, wind_flag, min_val[self.clean_level])
+            self._clean_vars(ver_vars, ver_flag, min_val[self.clean_level])
 
-    elif self.tag.find('vector') >= 0:
-        # vector winds area
-        wind_flag = 'Wind_Quality'
-        ver_flag = 'VER_Quality'
-        wind_vars = ['Zonal_Wind', 'Zonal_Wind_Error',
-                     'Meridional_Wind', 'Meridional_Wind_Error']
-        ver_vars = ['Fringe_Amplitude', 'Fringe_Amplitude_Error',
-                    'Relative_VER', 'Relative_VER_Error']
-        if wind_flag not in self.variables:
-            wind_flag = '_'.join(('ICON_L22', wind_flag))
-            ver_flag = '_'.join(('ICON_L22', ver_flag))
-            wind_vars = ['ICON_L22_' + var for var in wind_vars]
-            ver_vars = ['ICON_L22_' + var for var in ver_vars]
-        min_val = {'clean': 1.0,
-                   'dusty': 0.5}
-        if self.clean_level in ['clean', 'dusty']:
+        elif self.tag.find('vector') >= 0:
+            # vector winds area
+            wind_flag = 'Wind_Quality'
+            ver_flag = 'VER_Quality'
+            wind_vars = ['Zonal_Wind', 'Zonal_Wind_Error',
+                         'Meridional_Wind', 'Meridional_Wind_Error']
+            ver_vars = ['Fringe_Amplitude', 'Fringe_Amplitude_Error',
+                        'Relative_VER', 'Relative_VER_Error']
+            if wind_flag not in self.variables:
+                wind_flag = '_'.join(('ICON_L22', wind_flag))
+                ver_flag = '_'.join(('ICON_L22', ver_flag))
+                wind_vars = ['ICON_L22_' + var for var in wind_vars]
+                ver_vars = ['ICON_L22_' + var for var in ver_vars]
+            min_val = {'clean': 1.0,
+                       'dusty': 0.5}
             # find location with any of the flags set
-            for var in wind_vars:
-                self[var] = self[var].where(self[wind_flag]
-                                            >= min_val[self.clean_level])
-            for var in ver_vars:
-                self[var] = self[var].where(self[ver_flag]
-                                            >= min_val[self.clean_level])
+            self._clean_vars(wind_vars, wind_flag, min_val[self.clean_level])
+            self._clean_vars(ver_vars, ver_flag, min_val[self.clean_level])
 
-    elif self.tag.find('temp') >= 0:
-        # neutral temperatures
-        var = 'Temperature'
-        saa_flag = 'Quality_Flag_South_Atlantic_Anomaly'
-        cal_flag = 'Quality_Flag_Bad_Calibration'
-        if saa_flag not in self.variables:
-            id_str = self.inst_id.upper()
-            saa_flag = '_'.join(('ICON_L1_MIGHTI', id_str, saa_flag))
-            cal_flag = '_'.join(('ICON_L1_MIGHTI', id_str, cal_flag))
-            var = '_'.join(('ICON_L23_MIGHTI', id_str, var))
-        if self.clean_level in ['clean', 'dusty']:
+        elif self.tag.find('temp') >= 0:
+            # neutral temperatures
+            var = 'Temperature'
+            saa_flag = 'Quality_Flag_South_Atlantic_Anomaly'
+            cal_flag = 'Quality_Flag_Bad_Calibration'
+            if saa_flag not in self.variables:
+                id_str = self.inst_id.upper()
+                saa_flag = '_'.join(('ICON_L1_MIGHTI', id_str, saa_flag))
+                cal_flag = '_'.join(('ICON_L1_MIGHTI', id_str, cal_flag))
+                var = '_'.join(('ICON_L23_MIGHTI', id_str, var))
             # filter out areas with bad calibration data
             # as well as data marked in the SAA
             self[var] = self[var].where((self[saa_flag] == 0)
@@ -202,6 +192,25 @@ def clean(self):
             self[var] = self[var].where(self[var] > 0)
 
     return
+
+    def _clean_vars(self, var_list, flag, min_level):
+        """Cleans parameters in a list according to standard flags
+
+        Parameters
+        ----------
+        var_list : list of strings
+            List of variables to be cleaned.  Must match variables present in
+            the data set.
+        flag : string
+            The variable name to be used as the quality flag
+        min_level : float
+            The value at or above where we are confident in the data.  For
+            MIGHTI, these are generally 0.5 or 1.0
+
+        """
+        for var in var_list:
+            self[var] = self[var].where(self[flag] >= min_level)
+        return
 
 
 # ----------------------------------------------------------------------------
