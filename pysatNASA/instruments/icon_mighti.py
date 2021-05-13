@@ -193,24 +193,25 @@ def clean(self):
 
     return
 
-    def _clean_vars(self, var_list, flag, min_level):
-        """Cleans parameters in a list according to standard flags
 
-        Parameters
-        ----------
-        var_list : list of strings
-            List of variables to be cleaned.  Must match variables present in
-            the data set.
-        flag : string
-            The variable name to be used as the quality flag
-        min_level : float
-            The value at or above where we are confident in the data.  For
-            MIGHTI, these are generally 0.5 or 1.0
+def _clean_vars(self, var_list, flag, min_level):
+    """Cleans parameters in a list according to standard flags
 
-        """
-        for var in var_list:
-            self[var] = self[var].where(self[flag] >= min_level)
-        return
+    Parameters
+    ----------
+    var_list : list of strings
+        List of variables to be cleaned.  Must match variables present in
+        the data set.
+    flag : string
+        The variable name to be used as the quality flag
+    min_level : float
+        The value at or above where we are confident in the data.  For
+        MIGHTI, these are generally 0.5 or 1.0
+
+    """
+    for var in var_list:
+        self[var] = self[var].where(self[flag] >= min_level)
+    return
 
 
 # ----------------------------------------------------------------------------
