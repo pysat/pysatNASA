@@ -136,6 +136,25 @@ def clean(self):
 
     """
 
+    def _clean_vars(var_list, flag, min_level):
+        """Cleans parameters in a list according to standard flags
+
+        Parameters
+        ----------
+        var_list : list of strings
+            List of variables to be cleaned.  Must match variables present in
+            the data set.
+        flag : string
+            The variable name to be used as the quality flag
+        min_level : float
+            The value at or above where we are confident in the data.  For
+            MIGHTI, these are generally 0.5 or 1.0
+
+        """
+        for var in var_list:
+            self[var] = self[var].where(self[flag] >= min_level)
+        return
+
     if self.clean_level in ['clean', 'dusty']:
         if self.tag.find('los') >= 0:
             # dealing with LOS winds
@@ -152,8 +171,8 @@ def clean(self):
             min_val = {'clean': 1.0,
                        'dusty': 0.5}
             # find location with any of the flags set
-            self._clean_vars(wind_vars, wind_flag, min_val[self.clean_level])
-            self._clean_vars(ver_vars, ver_flag, min_val[self.clean_level])
+            _clean_vars(wind_vars, wind_flag, min_val[self.clean_level])
+            _clean_vars(ver_vars, ver_flag, min_val[self.clean_level])
 
         elif self.tag.find('vector') >= 0:
             # vector winds area
@@ -171,8 +190,8 @@ def clean(self):
             min_val = {'clean': 1.0,
                        'dusty': 0.5}
             # find location with any of the flags set
-            self._clean_vars(wind_vars, wind_flag, min_val[self.clean_level])
-            self._clean_vars(ver_vars, ver_flag, min_val[self.clean_level])
+            _clean_vars(wind_vars, wind_flag, min_val[self.clean_level])
+            _clean_vars(ver_vars, ver_flag, min_val[self.clean_level])
 
         elif self.tag.find('temp') >= 0:
             # neutral temperatures
@@ -191,26 +210,6 @@ def clean(self):
             # filter out negative temperatures
             self[var] = self[var].where(self[var] > 0)
 
-    return
-
-
-def _clean_vars(self, var_list, flag, min_level):
-    """Cleans parameters in a list according to standard flags
-
-    Parameters
-    ----------
-    var_list : list of strings
-        List of variables to be cleaned.  Must match variables present in
-        the data set.
-    flag : string
-        The variable name to be used as the quality flag
-    min_level : float
-        The value at or above where we are confident in the data.  For
-        MIGHTI, these are generally 0.5 or 1.0
-
-    """
-    for var in var_list:
-        self[var] = self[var].where(self[flag] >= min_level)
     return
 
 
