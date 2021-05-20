@@ -4,7 +4,7 @@ Migration from pysat 2
 With the release of pysat 3.0.0, the pysat project now keeps instrument modules
 within distinct packages. Each of these packages acts as an interface between
 the core pysat package and a unique data provider.  pysatNASA fills this role
-for the `Space Physics Data Facility <https://spdf.gsfc.nasa.gov/>`_` at NASA.
+for the `Space Physics Data Facility <https://spdf.gsfc.nasa.gov/>`_ at NASA.
 
 Registering the pysatNASA library
 ---------------------------------
@@ -18,8 +18,9 @@ to register all instruments.
   import pysatNASA
   pysat.utils.registry.register_by_module(pysatNASA.instruments)
 
-This creates a shortcut so that instruments may be loaded using only platform
-and name without having to load the instrument package each time.
+This creates a shortcut so that instruments may be loaded using only
+``platform`` and ``name`` without having to load the instrument package each
+time.
 
 .. code ::
 
