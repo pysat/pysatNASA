@@ -18,6 +18,7 @@ CDAWeb interface.
    supported_constellations.rst
    examples.rst
    develop_guide.rst
+   migration_guide.rst
    history.rst
 
 
