@@ -9,7 +9,6 @@ import datetime as dt
 import os
 import pandas as pds
 import requests
-import sys
 
 from bs4 import BeautifulSoup
 
