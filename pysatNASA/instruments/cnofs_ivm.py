@@ -116,67 +116,68 @@ def clean(self):
 
     """
 
-    # make sure all -999999 values are NaN
-    self.data.replace(-999999., np.nan, inplace=True)
+    # Make sure all -999999 values are NaN
+    self.data = self.data.replace(-999999., np.nan)
 
     # Set maximum flags
     if self.clean_level == 'clean':
         max_rpa_flag = 1
-        max_dm_flag = 0
+        max_idm_flag = 0
     elif self.clean_level == 'dusty':
         max_rpa_flag = 3
-        max_dm_flag = 3
+        max_idm_flag = 3
     else:
         max_rpa_flag = 4
-        max_dm_flag = 6
+        max_idm_flag = 6
 
     # Find bad drifts according to quality flags
-    idm = self.data.driftMeterflag > max_dm_flag
-    irpa = self.data.RPAflag > max_rpa_flag
+    idm_mask = self.data['driftMeterflag'] > max_idm_flag
+    rpa_mask = self.data['RPAflag'] > max_rpa_flag
 
     # Also exclude RPA drifts where the velocity is set to zero
-    if (self.clean_level == 'clean') | (self.clean_level == 'dusty'):
+    if (self.clean_level == 'clean') or (self.clean_level == 'dusty'):
         if 'ionVelocityX' in self.data.columns:
-            # unrealistic velocities - value set by fit routine
-            idx2 = (np.abs(self.data.ionVelocityX) == 0.0)
-            irpa = (irpa | idx2)
+            # Possible unrealistic velocities - value may be set to zero
+            # in fit routine instead of using a flag
+            vel_mask = np.abs(self.data['ionVelocityX']) == 0.0
+            rpa_mask = rpa_mask | vel_mask
 
     # Replace bad drift meter values with NaNs
-    if len(idm) > 0:
+    if idm_mask.any():
         data_labels = ['ionVelocityY', 'ionVelocityZ']
         for label in data_labels:
-            self[idm, label] = np.NaN
-        # Only remove field-alligned drifts if DM component is large enough
-        unit_vecs = {'ionVelmeridional': 'meridionalunitvectorY',
-                     'ionVelparallel': 'parallelunitvectorY',
-                     'ionVelzonal': 'zonalunitvectorY'}
-        for label in unit_vecs:
-            idx0 = idm & (np.abs(self[unit_vecs[label]]) >= 0.01)
-            self[idx0, label] = np.NaN
-        unit_vecs = {'ionVelmeridional': 'meridionalunitvectorZ',
-                     'ionVelparallel': 'parallelunitvectorZ',
-                     'ionVelzonal': 'zonalunitvectorZ'}
-        for label in unit_vecs:
-            idx0 = idm & (np.abs(self[unit_vecs[label]]) >= 0.01)
-            self[idx0, label] = np.NaN
+            self.data[label] = np.where(idm_mask, np.nan, self.data[label])
+
+        # Only remove field-alligned drifts if IDM component is large enough
+        unit_vecs = {'ionVelmeridional': 'meridionalunitvector',
+                     'ionVelparallel': 'parallelunitvector',
+                     'ionVelzonal': 'zonalunitvector'}
+        for label in unit_vecs.keys():
+            for coord in ['Y', 'Z']:
+                coord_label = ''.join([unit_vecs[label], coord])
+                vec_mask = idm_mask & (np.abs(self[coord_label]) >= 0.01)
+                self.data[label] = np.where(vec_mask, np.nan, self.data[label])
 
     # Replace bad rpa values with NaNs
-    if len(irpa) > 0:
+    if rpa_mask.any():
         data_labels = ['ionVelocityX', 'sensPlanePot', 'sensPlanePotvar']
         for label in data_labels:
-            self[irpa, label] = np.NaN
-        # Only remove field-alligned drifts if RPA component is large enough
+            self.data[label] = np.where(rpa_mask, self.data[label], np.nan)
+
+        # Only remove field-aligned drifts if RPA component is large enough
         unit_vecs = {'ionVelmeridional': 'meridionalunitvectorX',
                      'ionVelparallel': 'parallelunitvectorX',
                      'ionVelzonal': 'zonalunitvectorX'}
         for label in unit_vecs:
-            idx0 = irpa & (np.abs(self[unit_vecs[label]]) >= 0.01)
-            self[idx0, label] = np.NaN
+            vec_mask = rpa_mask & (np.abs(self.data[unit_vecs[label]]) >= 0.01)
+            self.data[label] = np.where(vec_mask, np.nan, self.data[label])
 
-    # Replace densities and temps where fits are bad
-    # This is separate from the drifts as confidence in the densities is higher
-    irpa = self.data.RPAflag > 4
-    if len(irpa) > 0:
+    # Replace non-velocity data values where fits are bad. This test is
+    # separate from the drifts, as confidence in the fitted values decreases
+    # as the complexity increases. Densities are the most robust, followed by
+    # composition and temperatures.
+    rpa_mask = self.data['RPAflag'] > 4
+    if rpa_mask.any():
         data_labels = ['Ni', 'ionDensity', 'ionDensityvariance',
                        'ionTemperature', 'ionTemperaturevariance',
                        'ion1fraction', 'ion1variance',
@@ -185,50 +186,55 @@ def clean(self):
                        'ion4fraction', 'ion4variance',
                        'ion5fraction', 'ion5variance']
         for label in data_labels:
-            self[irpa, label] = np.NaN
+            self.data[label] = np.where(rpa_mask, self.data[label], np.nan)
 
     # Additional checks for clean and dusty data
     if self.clean_level == 'dusty' or self.clean_level == 'clean':
-        # Low O+ concentrations for RPA Flag of 3 are suspect
-        # O+ concentration criteria from Burrell, 2012
-        nO = self.data.ion1fraction * self.data.Ni
-        ind_low_odens = (self.data.RPAflag == 3) & (nO <= 3.0e4)
+        # Low O+ concentrations for RPA Flag of 3 are suspect.  Apply the O+
+        # concentration criteria from Burrell, 2012.  Using the ion density
+        # from the RPA fit ('ionDensity') instead of the measurement from the
+        # zero volt current ('Ni').
+        n_oplus = self.data['ion1fraction'] * self.data['ionDensity']
+        low_odens_mask = (self.data['RPAflag'] == 3) & (n_oplus <= 3.0e4)
+
         # 100% O+ creates a shallow fit region for the ram velocity
-        ind_shallow_fit = self.data.ion1fraction >= 1.0
+        shallow_fit_mask = self.data['ion1fraction'] >= 1.0
+
         # Exclude areas where either of these are true
-        idx = ind_low_odens | ind_shallow_fit
+        oplus_mask = low_odens_mask | shallow_fit_mask
 
         # Only remove data if RPA component of drift is greater than 1%
         unit_vecs = {'ionVelmeridional': 'meridionalunitvectorX',
                      'ionVelparallel': 'parallelunitvectorX',
                      'ionVelzonal': 'zonalunitvectorX'}
         for label in unit_vecs:
-            idx0 = idx & (np.abs(self[unit_vecs[label]]) >= 0.01)
-            self[idx0, label] = np.NaN
+            omask = oplus_mask & (np.abs(self.data[unit_vecs[label]]) >= 0.01)
+            self.data[label] = np.where(omask, self.data[label], np.nan)
 
-        # The RPA component of the ram velocity
-        self[idx, 'ionVelocityX'] = np.NaN
+        # Remove the RPA component of the ram velocity regardless of orientation
+        self.data['ionVelocityX'] = np.where(
+            oplus_mask, self.data['ionVelocityX'], np.nan)
 
-        # Check for bad temperature fits (O+ < 15%), replace with NaNs
-        # Criteria from Hairston et al, 2010
-        idx = self.data.ion1fraction < 0.15
-        self[idx, 'ionTemperature'] = np.NaN
+        # Check for bad temperature fits (O+ < 15%), replace with NaNs.
+        # Criteria from Hairston et al, 2010.
+        oplus_mask = self.data['ion1fraction'] < 0.15
+        self.data['ionTemperature'] = np.where(
+            oplus_mask, self.data['ionTemperature'], np.nan)
 
         # The ion fractions should always sum to one and never drop below zero
         ifracs = ['ion{:d}fraction'.format(i) for i in np.arange(1, 6)]
-        ion_sum = np.sum([self[label] for label in ifracs], axis=0)
-        ion_min = np.min([self[label] for label in ifracs], axis=0)
-        idx = ((ion_sum != 1.0) | (ion_min < 0.0))
+        ion_sum = np.sum([self.data[label] for label in ifracs], axis=0)
+        ion_min = np.min([self.data[label] for label in ifracs], axis=0)
+        ion_mask = (ion_sum != 1.0) | (ion_min < 0.0)
         for label in ifracs:
-            self[idx, label] = np.NaN
+            self.data[label] = np.where(ion_mask, self.data[label], np.nan)
 
-    # basic quality check on drifts and don't let UTS go above 86400.
-    idx, = np.where(self.data.time <= 86400.)
-    self.data = self[idx, :]
+    # Ensure the time in seconds of day doesn't go above 86400 and MLT is
+    # between 0 and 24
+    itime, = np.where((self.data.time <= 86400.0) & (self.data['mlt'] >= 0.0)
+                      & (self.data['mlt'] <= 24.0))
+    self.data = self[itime, :]  # Use pysat indexing to retrieve desired data
 
-    # make sure MLT is between 0 and 24
-    idx, = np.where((self.data.mlt >= 0) & (self.data.mlt <= 24.))
-    self.data = self[idx, :]
     return
 
 
