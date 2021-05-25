@@ -173,6 +173,7 @@ def download(date_array, tag=None, inst_id=None, supported_tags=None,
                                      supported_tags=supported_tags,
                                      start=date_array[0],
                                      stop=date_array[-1])
+
     # Download only requested files that exist remotely
     for date, fname in remote_files.iteritems():
         # Format files for specific dates and download location
@@ -182,24 +183,24 @@ def download(date_array, tag=None, inst_id=None, supported_tags=None,
                                                  hour=date.hour,
                                                  min=date.minute,
                                                  sec=date.second)
+        remote_path = '/'.join((remote_url.strip('/'),
+                                formatted_remote_dir.strip('/'),
+                                fname))
+
         saved_local_fname = os.path.join(data_path, fname)
 
         # Perform download
+        logger.info(' '.join(('Attempting to download file for',
+                              date.strftime('%d %B %Y'))))
         try:
-            logger.info(' '.join(('Attempting to download file for',
-                                  date.strftime('%d %B %Y'))))
-            sys.stdout.flush()
-            remote_path = '/'.join((remote_url.strip('/'),
-                                    formatted_remote_dir.strip('/'),
-                                    fname))
-            req = requests.get(remote_path)
-            if req.status_code != 404:
-                with open(saved_local_fname, 'wb') as open_f:
-                    open_f.write(req.content)
-                logger.info('Finished.')
-            else:
-                logger.info(' '.join(('File not available for',
-                                      date.strftime('%d %B %Y'))))
+            with requests.get(remote_path) as req:
+                if req.status_code != 404:
+                    with open(saved_local_fname, 'wb') as open_f:
+                        open_f.write(req.content)
+                    logger.info('Finished.')
+                else:
+                    logger.info(' '.join(('File not available for',
+                                          date.strftime('%d %B %Y'))))
         except requests.exceptions.RequestException as exception:
             logger.info(' '.join((exception, '- File not available for',
                                   date.strftime('%d %B %Y'))))
