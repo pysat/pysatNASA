@@ -139,7 +139,7 @@ def clean(self):
         if 'ionVelocityX' in self.data.columns:
             # Possible unrealistic velocities - value may be set to zero
             # in fit routine instead of using a flag
-            vel_mask = np.abs(self.data['ionVelocityX']) == 0.0
+            vel_mask = self.data['ionVelocityX'] == 0.0
             rpa_mask = rpa_mask | vel_mask
 
     # Replace bad drift meter values with NaNs
@@ -148,21 +148,21 @@ def clean(self):
         for label in data_labels:
             self.data[label] = np.where(idm_mask, np.nan, self.data[label])
 
-        # Only remove field-alligned drifts if IDM component is large enough
+        # Only remove field-aligned drifts if IDM component is large enough
         unit_vecs = {'ionVelmeridional': 'meridionalunitvector',
                      'ionVelparallel': 'parallelunitvector',
                      'ionVelzonal': 'zonalunitvector'}
         for label in unit_vecs.keys():
             for coord in ['Y', 'Z']:
                 coord_label = ''.join([unit_vecs[label], coord])
-                vec_mask = idm_mask & (np.abs(self[coord_label]) >= 0.01)
+                vec_mask = idm_mask & (np.abs(self.data[coord_label]) >= 0.01)
                 self.data[label] = np.where(vec_mask, np.nan, self.data[label])
 
     # Replace bad rpa values with NaNs
     if rpa_mask.any():
         data_labels = ['ionVelocityX', 'sensPlanePot', 'sensPlanePotvar']
         for label in data_labels:
-            self.data[label] = np.where(rpa_mask, self.data[label], np.nan)
+            self.data[label] = np.where(rpa_mask, np.nan, self.data[label])
 
         # Only remove field-aligned drifts if RPA component is large enough
         unit_vecs = {'ionVelmeridional': 'meridionalunitvectorX',
@@ -186,7 +186,7 @@ def clean(self):
                        'ion4fraction', 'ion4variance',
                        'ion5fraction', 'ion5variance']
         for label in data_labels:
-            self.data[label] = np.where(rpa_mask, self.data[label], np.nan)
+            self.data[label] = np.where(rpa_mask, np.nan, self.data[label])
 
     # Additional checks for clean and dusty data
     if self.clean_level == 'dusty' or self.clean_level == 'clean':
@@ -209,17 +209,17 @@ def clean(self):
                      'ionVelzonal': 'zonalunitvectorX'}
         for label in unit_vecs:
             omask = oplus_mask & (np.abs(self.data[unit_vecs[label]]) >= 0.01)
-            self.data[label] = np.where(omask, self.data[label], np.nan)
+            self.data[label] = np.where(omask, np.nan, self.data[label])
 
         # Remove the RPA component of the ram velocity regardless of orientation
-        self.data['ionVelocityX'] = np.where(
-            oplus_mask, self.data['ionVelocityX'], np.nan)
+        self.data['ionVelocityX'] = np.where(oplus_mask, np.nan,
+                                             self.data['ionVelocityX'])
 
         # Check for bad temperature fits (O+ < 15%), replace with NaNs.
         # Criteria from Hairston et al, 2010.
         oplus_mask = self.data['ion1fraction'] < 0.15
-        self.data['ionTemperature'] = np.where(
-            oplus_mask, self.data['ionTemperature'], np.nan)
+        self.data['ionTemperature'] = np.where(oplus_mask, np.nan,
+                                               self.data['ionTemperature'])
 
         # The ion fractions should always sum to one and never drop below zero
         ifracs = ['ion{:d}fraction'.format(i) for i in np.arange(1, 6)]
@@ -227,7 +227,7 @@ def clean(self):
         ion_min = np.min([self.data[label] for label in ifracs], axis=0)
         ion_mask = (ion_sum != 1.0) | (ion_min < 0.0)
         for label in ifracs:
-            self.data[label] = np.where(ion_mask, self.data[label], np.nan)
+            self.data[label] = np.where(ion_mask, np.nan, self.data[label])
 
     # Ensure the time in seconds of day doesn't go above 86400 and MLT is
     # between 0 and 24
