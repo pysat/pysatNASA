@@ -196,7 +196,7 @@ def download(date_array, tag=None, inst_id=None, supported_tags=None,
                 if req.status_code != 404:
                     with open(saved_local_fname, 'wb') as open_f:
                         open_f.write(req.content)
-                    logger.info('Finished.')
+                    logger.info('Successfully downloaded {:}.'.format(saved_local_fname))
                 else:
                     logger.info(' '.join(('File not available for',
                                           date.strftime('%d %B %Y'))))
