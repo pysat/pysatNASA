@@ -41,6 +41,7 @@ import warnings
 from pysat import logger
 from pysat.instruments.methods import general as ps_gen
 from pysat.utils import load_netcdf4
+
 from pysatNASA.instruments.methods import gold as mm_gold
 from pysatNASA.instruments.methods import cdaweb as cdw
 

@@ -6,7 +6,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 * Updated Instruments and routines to conform with changes made for pysat 3.0
 * Added documentation
 * Instrument Changes
-  * preliminary support added for SES-14 GOLD Nmax
+  * Preliminary support added for SES-14 GOLD Nmax
   * Updated cleaning routines for C/NOFS IVM data
   * Migrated remote server for ICON instruments to SPDF from UCB
   * Renamed ROCSAT1 IVM as FORMOSAT1 IVM
@@ -15,8 +15,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 * Improved PEP8 compliance
 * Replaced pysatCDF with cdflib support
 * Bug Fixes
-  * remote_file_list error if start/stop dates unspecified
+  * `remote_file_list` error if start/stop dates unspecified
   * Improved download robustness
 
 ## [0.0.1] - 2020-08-13
-* initial port of existing routines from pysat
+* Initial port of existing routines from pysat
