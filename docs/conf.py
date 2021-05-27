@@ -155,7 +155,8 @@ man_pages = [(master_doc, project, title, [author], 1)]
 # Grouping the document tree into Texinfo files. List of tuples
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
-texinfo_documents = [(master_doc, project, title, author, project, description, 'Space Physics')]
+texinfo_documents = [(master_doc, project, title, author, project, description,
+                      'Space Physics')]
 
 
 # -- Options for Epub output ----------------------------------------------
