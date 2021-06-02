@@ -157,7 +157,7 @@ def clean(self):
 
     if self.clean_level in ['clean', 'dusty']:
         if self.tag.find('los') >= 0:
-            # dealing with LOS winds
+            # Dealing with LOS winds
             wind_flag = 'Wind_Quality'
             ver_flag = 'VER_Quality'
             wind_vars = ['Line_of_Sight_Wind', 'Line_of_Sight_Wind_Error']
@@ -170,12 +170,12 @@ def clean(self):
                 ver_vars = ['ICON_L21_' + var for var in ver_vars]
             min_val = {'clean': 1.0,
                        'dusty': 0.5}
-            # find location with any of the flags set
+            # Find location with any of the flags set
             _clean_vars(wind_vars, wind_flag, min_val[self.clean_level])
             _clean_vars(ver_vars, ver_flag, min_val[self.clean_level])
 
         elif self.tag.find('vector') >= 0:
-            # vector winds area
+            # Vector winds area
             wind_flag = 'Wind_Quality'
             ver_flag = 'VER_Quality'
             wind_vars = ['Zonal_Wind', 'Zonal_Wind_Error',
@@ -189,12 +189,12 @@ def clean(self):
                 ver_vars = ['ICON_L22_' + var for var in ver_vars]
             min_val = {'clean': 1.0,
                        'dusty': 0.5}
-            # find location with any of the flags set
+            # Find location with any of the flags set
             _clean_vars(wind_vars, wind_flag, min_val[self.clean_level])
             _clean_vars(ver_vars, ver_flag, min_val[self.clean_level])
 
         elif self.tag.find('temp') >= 0:
-            # neutral temperatures
+            # Neutral temperatures
             var = 'Temperature'
             saa_flag = 'Quality_Flag_South_Atlantic_Anomaly'
             cal_flag = 'Quality_Flag_Bad_Calibration'
@@ -203,11 +203,11 @@ def clean(self):
                 saa_flag = '_'.join(('ICON_L1_MIGHTI', id_str, saa_flag))
                 cal_flag = '_'.join(('ICON_L1_MIGHTI', id_str, cal_flag))
                 var = '_'.join(('ICON_L23_MIGHTI', id_str, var))
-            # filter out areas with bad calibration data
+            # Filter out areas with bad calibration data
             # as well as data marked in the SAA
             self[var] = self[var].where((self[saa_flag] == 0)
                                         & (self[cal_flag] == 0))
-            # filter out negative temperatures
+            # Filter out negative temperatures
             self[var] = self[var].where(self[var] > 0)
 
     return

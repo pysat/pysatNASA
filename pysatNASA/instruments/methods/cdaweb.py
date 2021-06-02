@@ -374,9 +374,8 @@ def list_remote_files(tag=None, inst_id=None, start=None, stop=None,
     if start is not None:
         mask = (stored_list.index >= start)
         if stop is not None:
-            stop_point = (stop + pds.DateOffset(days=1)
-                          - pds.DateOffset(microseconds=1))
-            mask = mask & (stored_list.index <= stop_point)
+            stop_point = (stop + pds.DateOffset(days=1))
+            mask = mask & (stored_list.index < stop_point)
         stored_list = stored_list[mask]
 
     return stored_list

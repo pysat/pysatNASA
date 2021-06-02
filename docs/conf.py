@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# pysatSpaceWeather documentation build configuration file, created by
+# pysatNASA documentation build configuration file, created by
 # sphinx-quickstart on Wed Jul  5 16:25:26 2017.
 #
 # This file is execfile()d with the current directory set to its
