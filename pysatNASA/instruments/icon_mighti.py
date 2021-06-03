@@ -123,7 +123,7 @@ def preprocess(self, keep_original_names=False):
 
     mm_gen.convert_timestamp_to_datetime(self, sec_mult=1.0e-3)
     if not keep_original_names:
-        remove_preamble(self)
+        mm_icon.remove_preamble(self)
     return
 
 
@@ -324,30 +324,3 @@ def load(fnames, tag=None, inst_id=None, keep_original_names=False):
         data = data.rename_dims(dims_dict={'Altitude': 'Alt'})
 
     return data, meta
-
-
-# ----------------------------------------------------------------------------
-# Local functions
-
-
-def remove_preamble(inst):
-    """Removes preambles in variable names
-
-    Parameters
-    -----------
-    inst : pysat.Instrument
-        ICON MIGHTI Instrument class object
-
-    """
-    id_str = inst.inst_id.upper()
-
-    target = {'los_wind_green': 'ICON_L21_',
-              'los_wind_red': 'ICON_L21_',
-              'vector_wind_green': 'ICON_L22_',
-              'vector_wind_red': 'ICON_L22_',
-              'temperature': ['ICON_L1_MIGHTI_{id:s}_'.format(id=id_str),
-                              'ICON_L23_MIGHTI_{id:s}_'.format(id=id_str),
-                              'ICON_L23_']}
-    mm_gen.remove_leading_text(inst, target=target[inst.tag])
-
-    return
