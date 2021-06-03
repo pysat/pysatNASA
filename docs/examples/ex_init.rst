@@ -5,7 +5,7 @@ pysatNASA uses `pysat <https://github.com/pysat/pysat>`_ to load
 space science instrument data.  As specified in the
 `pysat tutorial <https://pysat.readthedocs.io/en/latest/tutorial.html>`_,
 data may be loaded using the following commands.  Data from the Ion Velocity
-Meter on board the Ionospheric CONnection Explorer `(ICON) <https://www.nasa.gov/icon>`_ used as an example.
+Meter on board the Ionospheric CONnection Explorer `(ICON) <https://www.nasa.gov/icon>`_ is used as an example.
 
 ::
 
