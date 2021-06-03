@@ -257,7 +257,8 @@ def calculate_imf_steadiness(inst, steady_window=15, min_window_frac=0.75,
     """
 
     # We are not going to interpolate through missing values
-    sample_rate = int(inst.tag[0])
+    rates = {'': 1, '1min': 1, '5min': 5}
+    sample_rate = int(rates[inst.tag])
     max_wnum = np.floor(steady_window / sample_rate)
     if max_wnum != steady_window / sample_rate:
         steady_window = max_wnum * sample_rate
