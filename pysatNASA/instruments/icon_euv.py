@@ -47,6 +47,7 @@ import functools
 import pysat
 from pysat import logger
 from pysat.instruments.methods import general as mm_gen
+
 from pysatNASA.instruments.methods import cdaweb as cdw
 from pysatNASA.instruments.methods import icon as mm_icon
 
