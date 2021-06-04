@@ -15,7 +15,7 @@ tag
     'vector_wind_red', 'temperature'.  Note that not every data product
     available for every inst_id
 inst_id
-    '', 'a', or 'b'
+    'vector', 'a', or 'b'
 
 Warnings
 --------
@@ -27,8 +27,8 @@ Example
 ::
 
     import pysat
-    mighti = pysat.Instrument('icon', 'mighti', 'vector_wind_green',
-                              clean_level='clean')
+    mighti = pysat.Instrument('icon', 'mighti', tag='vector_wind_green',
+                              inst_id='vector', clean_level='clean')
     mighti.download(dt.datetime(2020, 1, 30), dt.datetime(2020, 1, 31))
     mighti.load(2020, 2)
 
@@ -37,7 +37,8 @@ ICON_L27_Ion_Density becomes Ion_Density.  To retain the original names, use
 ::
 
     mighti = pysat.Instrument(platform='icon', name='mighti',
-                              tag='vector_wind_green', clean_level='clean',
+                              tag='vector_wind_green', inst_id='vector',
+                              clean_level='clean',
                               keep_original_names=True)
 
 Authors
@@ -75,7 +76,7 @@ tags = {'los_wind_green': 'Line of sight wind data -- Green Line',
         'vector_wind_green': 'Vector wind data -- Green Line',
         'vector_wind_red': 'Vector wind data -- Red Line',
         'temperature': 'Neutral temperature data'}
-inst_ids = {'': ['vector_wind_green', 'vector_wind_red'],
+inst_ids = {'vector': ['vector_wind_green', 'vector_wind_red'],
             'a': ['los_wind_green', 'los_wind_red', 'temperature'],
             'b': ['los_wind_green', 'los_wind_red', 'temperature']}
 
@@ -224,10 +225,10 @@ datestr = '{year:04d}{month:02d}{day:02d}_v{version:02d}r{revision:03d}'
 fname1 = 'icon_l2-1_mighti-{id:s}_los-wind-{color:s}_{date:s}.nc'
 fname2 = 'icon_l2-2_mighti_vector-wind-{color:s}_{date:s}.nc'
 fname3 = 'icon_l2-3_mighti-{id:s}_temperature_{date:s}.nc'
-supported_tags = {'': {'vector_wind_green': fname2.format(color='green',
-                                                          date=datestr),
-                       'vector_wind_red': fname2.format(color='red',
-                                                        date=datestr)},
+supported_tags = {'vector': {'vector_wind_green': fname2.format(color='green',
+                                                                date=datestr),
+                             'vector_wind_red': fname2.format(color='red',
+                                                              date=datestr)},
                   'a': {'los_wind_green': fname1.format(id='a', color='green',
                                                         date=datestr),
                         'los_wind_red': fname1.format(id='a', color='red',
