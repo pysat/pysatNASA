@@ -123,12 +123,12 @@ def clean(self):
         icon_flag = 'ICON_L26_Flag'
         vars = ['ICON_L26_' + x for x in vars]
 
-    min_val = {'clean': 1.0,
+    max_val = {'clean': 1.0,
                'dusty': 2.0}
     if self.clean_level in ['clean', 'dusty']:
         for var in vars:
             self[var] = self[var].where(self[icon_flag]
-                                        <= min_val[self.clean_level])
+                                        <= max_val[self.clean_level])
     return
 
 
