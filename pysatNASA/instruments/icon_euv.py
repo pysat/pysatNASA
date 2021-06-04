@@ -123,8 +123,7 @@ def clean(self):
         icon_flag = 'ICON_L26_Flag'
         vars = ['ICON_L26_' + x for x in vars]
 
-    max_val = {'clean': 1.0,
-               'dusty': 2.0}
+    max_val = {'clean': 1.0, 'dusty': 2.0}
     if self.clean_level in ['clean', 'dusty']:
         for var in vars:
             self[var] = self[var].where(self[icon_flag]
@@ -195,7 +194,7 @@ def load(fnames, tag=None, inst_id=None, keep_original_names=False):
     --------
     ::
 
-        inst = pysat.Instrument('icon', 'euv', inst_id='a', tag='')
+        inst = pysat.Instrument('icon', 'euv', tag='', inst_id='a')
         inst.load(2020, 1)
 
     """
