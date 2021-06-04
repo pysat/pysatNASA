@@ -85,7 +85,7 @@ pandas_format = False
 # ----------------------------------------------------------------------------
 # Instrument test attributes
 
-_test_dates = {jj: {kk: dt.datetime(2020, 1, 2) for kk in inst_ids[jj]}
+_test_dates = {jj: {kk: dt.datetime(2020, 1, 2) for kk in inst_ids[jj].keys()}
                for jj in inst_ids.keys()}
 
 # ----------------------------------------------------------------------------
@@ -170,8 +170,8 @@ def clean(self):
                 ver_flag = '_'.join(('ICON_L21', ver_flag))
                 wind_vars = ['ICON_L21_' + var for var in wind_vars]
                 ver_vars = ['ICON_L21_' + var for var in ver_vars]
-            min_val = {'clean': 1.0,
-                       'dusty': 0.5}
+            min_val = {'clean': 1.0, 'dusty': 0.5}
+
             # Find location with any of the flags set
             _clean_vars(wind_vars, wind_flag, min_val[self.clean_level])
             _clean_vars(ver_vars, ver_flag, min_val[self.clean_level])
@@ -189,8 +189,8 @@ def clean(self):
                 ver_flag = '_'.join(('ICON_L22', ver_flag))
                 wind_vars = ['ICON_L22_' + var for var in wind_vars]
                 ver_vars = ['ICON_L22_' + var for var in ver_vars]
-            min_val = {'clean': 1.0,
-                       'dusty': 0.5}
+            min_val = {'clean': 1.0, 'dusty': 0.5}
+
             # Find location with any of the flags set
             _clean_vars(wind_vars, wind_flag, min_val[self.clean_level])
             _clean_vars(ver_vars, ver_flag, min_val[self.clean_level])
@@ -205,6 +205,7 @@ def clean(self):
                 saa_flag = '_'.join(('ICON_L1_MIGHTI', id_str, saa_flag))
                 cal_flag = '_'.join(('ICON_L1_MIGHTI', id_str, cal_flag))
                 var = '_'.join(('ICON_L23_MIGHTI', id_str, var))
+
             # Filter out areas with bad calibration data
             # as well as data marked in the SAA
             self[var] = self[var].where((self[saa_flag] == 0)
