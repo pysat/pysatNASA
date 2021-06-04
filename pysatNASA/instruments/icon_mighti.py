@@ -259,10 +259,10 @@ for inst_id in supported_tags.keys():
     for tag in supported_tags[inst_id].keys():
         fname = supported_tags[inst_id][tag]
 
-        download_tags[inst_id][tag] = \
-            {'remote_dir': ''.join((dirnames[tag].format(id=inst_id),
-                                    '{year:04d}/')),
-             'fname': fname}
+        download_tags[inst_id][tag] = {
+            'remote_dir': ''.join((dirnames[tag].format(id=inst_id),
+                                   '{year:04d}/')),
+            'fname': fname}
 
 download = functools.partial(cdw.download, supported_tags=download_tags)
 
