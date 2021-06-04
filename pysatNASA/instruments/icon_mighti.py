@@ -85,7 +85,7 @@ pandas_format = False
 # ----------------------------------------------------------------------------
 # Instrument test attributes
 
-_test_dates = {jj: {kk: dt.datetime(2020, 1, 2) for kk in inst_ids[jj].keys()}
+_test_dates = {jj: {kk: dt.datetime(2020, 1, 2) for kk in inst_ids[jj]}
                for jj in inst_ids.keys()}
 
 # ----------------------------------------------------------------------------
