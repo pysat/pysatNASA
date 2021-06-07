@@ -45,6 +45,7 @@ calculate_imf_steadiness
     Calculate the IMF steadiness using clock angle and magnitude in the YZ plane
 calculate_dayside_reconnection
     Calculate the dayside reconnection rate
+
 """
 
 import datetime as dt
