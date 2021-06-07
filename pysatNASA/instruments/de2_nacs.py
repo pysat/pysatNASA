@@ -143,16 +143,16 @@ supported_tags = {'': {'': fname}}
 list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags)
 
-# use the default CDAWeb method
+# Use the default CDAWeb method
 load = cdw.load
 
-# support download routine
+# Support download routine
 basic_tag = {'remote_dir': ''.join(('/pub/data/de/de2/neutral_gas_nacs',
                                     '/neutral1s_nacs_cdaweb/{year:4d}/')),
              'fname': fname}
 download_tags = {'': {'': basic_tag}}
 download = functools.partial(cdw.download, supported_tags=download_tags)
 
-# support listing files currently on CDAWeb
+# Support listing files currently on CDAWeb
 list_remote_files = functools.partial(cdw.list_remote_files,
                                       supported_tags=download_tags)
