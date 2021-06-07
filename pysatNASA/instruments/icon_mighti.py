@@ -15,7 +15,7 @@ tag
     'vector_wind_red', 'temperature'.  Note that not every data product
     available for every inst_id
 inst_id
-    '', 'a', or 'b'
+    'vector', 'a', or 'b'
 
 Warnings
 --------
@@ -27,8 +27,8 @@ Example
 ::
 
     import pysat
-    mighti = pysat.Instrument('icon', 'mighti', 'vector_wind_green',
-                              clean_level='clean')
+    mighti = pysat.Instrument('icon', 'mighti', tag='vector_wind_green',
+                              inst_id='vector', clean_level='clean')
     mighti.download(dt.datetime(2020, 1, 30), dt.datetime(2020, 1, 31))
     mighti.load(2020, 2)
 
@@ -37,7 +37,8 @@ ICON_L27_Ion_Density becomes Ion_Density.  To retain the original names, use
 ::
 
     mighti = pysat.Instrument(platform='icon', name='mighti',
-                              tag='vector_wind_green', clean_level='clean',
+                              tag='vector_wind_green', inst_id='vector',
+                              clean_level='clean',
                               keep_original_names=True)
 
 Authors
@@ -61,6 +62,7 @@ import functools
 import pysat
 from pysat import logger
 from pysat.instruments.methods import general as mm_gen
+
 from pysatNASA.instruments.methods import cdaweb as cdw
 from pysatNASA.instruments.methods import icon as mm_icon
 
@@ -74,7 +76,7 @@ tags = {'los_wind_green': 'Line of sight wind data -- Green Line',
         'vector_wind_green': 'Vector wind data -- Green Line',
         'vector_wind_red': 'Vector wind data -- Red Line',
         'temperature': 'Neutral temperature data'}
-inst_ids = {'': ['vector_wind_green', 'vector_wind_red'],
+inst_ids = {'vector': ['vector_wind_green', 'vector_wind_red'],
             'a': ['los_wind_green', 'los_wind_red', 'temperature'],
             'b': ['los_wind_green', 'los_wind_red', 'temperature']}
 
@@ -123,7 +125,7 @@ def preprocess(self, keep_original_names=False):
 
     mm_gen.convert_timestamp_to_datetime(self, sec_mult=1.0e-3)
     if not keep_original_names:
-        remove_preamble(self)
+        mm_icon.remove_preamble(self)
     return
 
 
@@ -157,7 +159,7 @@ def clean(self):
 
     if self.clean_level in ['clean', 'dusty']:
         if self.tag.find('los') >= 0:
-            # dealing with LOS winds
+            # Dealing with LOS winds
             wind_flag = 'Wind_Quality'
             ver_flag = 'VER_Quality'
             wind_vars = ['Line_of_Sight_Wind', 'Line_of_Sight_Wind_Error']
@@ -168,14 +170,14 @@ def clean(self):
                 ver_flag = '_'.join(('ICON_L21', ver_flag))
                 wind_vars = ['ICON_L21_' + var for var in wind_vars]
                 ver_vars = ['ICON_L21_' + var for var in ver_vars]
-            min_val = {'clean': 1.0,
-                       'dusty': 0.5}
-            # find location with any of the flags set
+            min_val = {'clean': 1.0, 'dusty': 0.5}
+
+            # Find location with any of the flags set
             _clean_vars(wind_vars, wind_flag, min_val[self.clean_level])
             _clean_vars(ver_vars, ver_flag, min_val[self.clean_level])
 
         elif self.tag.find('vector') >= 0:
-            # vector winds area
+            # Vector winds area
             wind_flag = 'Wind_Quality'
             ver_flag = 'VER_Quality'
             wind_vars = ['Zonal_Wind', 'Zonal_Wind_Error',
@@ -187,14 +189,14 @@ def clean(self):
                 ver_flag = '_'.join(('ICON_L22', ver_flag))
                 wind_vars = ['ICON_L22_' + var for var in wind_vars]
                 ver_vars = ['ICON_L22_' + var for var in ver_vars]
-            min_val = {'clean': 1.0,
-                       'dusty': 0.5}
-            # find location with any of the flags set
+            min_val = {'clean': 1.0, 'dusty': 0.5}
+
+            # Find location with any of the flags set
             _clean_vars(wind_vars, wind_flag, min_val[self.clean_level])
             _clean_vars(ver_vars, ver_flag, min_val[self.clean_level])
 
         elif self.tag.find('temp') >= 0:
-            # neutral temperatures
+            # Neutral temperatures
             var = 'Temperature'
             saa_flag = 'Quality_Flag_South_Atlantic_Anomaly'
             cal_flag = 'Quality_Flag_Bad_Calibration'
@@ -203,11 +205,12 @@ def clean(self):
                 saa_flag = '_'.join(('ICON_L1_MIGHTI', id_str, saa_flag))
                 cal_flag = '_'.join(('ICON_L1_MIGHTI', id_str, cal_flag))
                 var = '_'.join(('ICON_L23_MIGHTI', id_str, var))
-            # filter out areas with bad calibration data
+
+            # Filter out areas with bad calibration data
             # as well as data marked in the SAA
             self[var] = self[var].where((self[saa_flag] == 0)
                                         & (self[cal_flag] == 0))
-            # filter out negative temperatures
+            # Filter out negative temperatures
             self[var] = self[var].where(self[var] > 0)
 
     return
@@ -223,10 +226,10 @@ datestr = '{year:04d}{month:02d}{day:02d}_v{version:02d}r{revision:03d}'
 fname1 = 'icon_l2-1_mighti-{id:s}_los-wind-{color:s}_{date:s}.nc'
 fname2 = 'icon_l2-2_mighti_vector-wind-{color:s}_{date:s}.nc'
 fname3 = 'icon_l2-3_mighti-{id:s}_temperature_{date:s}.nc'
-supported_tags = {'': {'vector_wind_green': fname2.format(color='green',
-                                                          date=datestr),
-                       'vector_wind_red': fname2.format(color='red',
-                                                        date=datestr)},
+supported_tags = {'vector': {'vector_wind_green': fname2.format(color='green',
+                                                                date=datestr),
+                             'vector_wind_red': fname2.format(color='red',
+                                                              date=datestr)},
                   'a': {'los_wind_green': fname1.format(id='a', color='green',
                                                         date=datestr),
                         'los_wind_red': fname1.format(id='a', color='red',
@@ -257,10 +260,10 @@ for inst_id in supported_tags.keys():
     for tag in supported_tags[inst_id].keys():
         fname = supported_tags[inst_id][tag]
 
-        download_tags[inst_id][tag] = \
-            {'remote_dir': ''.join((dirnames[tag].format(id=inst_id),
-                                    '{year:04d}/')),
-             'fname': fname}
+        download_tags[inst_id][tag] = {
+            'remote_dir': ''.join((dirnames[tag].format(id=inst_id),
+                                   '{year:04d}/')),
+            'fname': fname}
 
 download = functools.partial(cdw.download, supported_tags=download_tags)
 
@@ -324,30 +327,3 @@ def load(fnames, tag=None, inst_id=None, keep_original_names=False):
         data = data.rename_dims(dims_dict={'Altitude': 'Alt'})
 
     return data, meta
-
-
-# ----------------------------------------------------------------------------
-# Local functions
-
-
-def remove_preamble(inst):
-    """Removes preambles in variable names
-
-    Parameters
-    -----------
-    inst : pysat.Instrument
-        ICON MIGHTI Instrument class object
-
-    """
-    id_str = inst.inst_id.upper()
-
-    target = {'los_wind_green': 'ICON_L21_',
-              'los_wind_red': 'ICON_L21_',
-              'vector_wind_green': 'ICON_L22_',
-              'vector_wind_red': 'ICON_L22_',
-              'temperature': ['ICON_L1_MIGHTI_{id:s}_'.format(id=id_str),
-                              'ICON_L23_MIGHTI_{id:s}_'.format(id=id_str),
-                              'ICON_L23_']}
-    mm_gen.remove_leading_text(inst, target=target[inst.tag])
-
-    return

@@ -3,7 +3,7 @@
         <img width="20%" src="https://raw.githubusercontent.com/pysat/pysatNASA/main/docs/figures/pysatnasa_logo.jpg" alt="pysatNASA" title="pysatNASA" </img>
 </div>
 
-# pysatNASA: pysat support for NASA instruments
+# pysatNASA: pysat support for NASA Space Science instruments
 [![PyPI Package latest release](https://img.shields.io/pypi/v/pysatNASA.svg)](https://pypi.python.org/pypi/pysatNASA)
 [![Build Status](https://github.com/github/docs/actions/workflows/main.yml/badge.svg)](https://github.com/github/docs/actions/workflows/main.yml/badge.svg)
 [![Coverage Status](https://coveralls.io/repos/github/pysat/pysatNASA/badge.svg?branch=main)](https://coveralls.io/github/pysat/pysatNASA?branch=main)
@@ -13,12 +13,12 @@
 
 # Installation
 
-The following instructions provide a guide for installing pysatSpaceWeather and give
+The following instructions provide a guide for installing pysatNASA and give
 some examples on how to use the routines
 
 ### Prerequisites
 
-pysatSpaceWeather uses common Python modules, as well as modules developed by
+pysatNASA uses common Python modules, as well as modules developed by
 and for the Space Physics community.  This module officially supports
 Python 3.7+.
 

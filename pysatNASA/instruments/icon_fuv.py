@@ -48,6 +48,7 @@ import warnings
 
 import pysat
 from pysat.instruments.methods import general as mm_gen
+
 from pysatNASA.instruments.methods import cdaweb as cdw
 from pysatNASA.instruments.methods import icon as mm_icon
 
@@ -106,7 +107,7 @@ def preprocess(self, keep_original_names=False):
 
     mm_gen.convert_timestamp_to_datetime(self, sec_mult=1.0e-3)
     if not keep_original_names:
-        remove_preamble(self)
+        mm_icon.remove_preamble(self)
     return
 
 
@@ -202,21 +203,3 @@ def load(fnames, tag=None, inst_id=None, keep_original_names=False):
                                           pandas_format=pandas_format,
                                           labels=labels)
     return data, meta
-
-# ----------------------------------------------------------------------------
-# Local functions
-
-
-def remove_preamble(inst):
-    """Removes preambles in variable names
-
-    Parameters
-    ----------
-    inst : pysat.Instrument
-        ICON FUV Instrument object
-
-    """
-
-    target = {'day': 'ICON_L24_', 'night': 'ICON_L25_'}
-    mm_gen.remove_leading_text(inst, target=target[inst.tag])
-    return

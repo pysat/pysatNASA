@@ -8,7 +8,6 @@ import pandas as pds
 import re
 
 import cdflib
-
 import pysat
 from pysat import logger
 
@@ -155,8 +154,8 @@ class CDF():
 
         """
 
-        data_type_description \
-            = self._cdf_file.varinq(x_axis_var)['Data_Type_Description']
+        data_type_description = self._cdf_file.varinq(
+            x_axis_var)['Data_Type_Description']
 
         center_measurement = self._center_measurement
         cdf_file = self._cdf_file
@@ -206,8 +205,8 @@ class CDF():
                             delta_minus_var.astype(float) \
                             * np.float(si_conv.split('>')[0])
 
-            if ('CDF_TIME' in data_type_description) or \
-                    ('CDF_EPOCH' in data_type_description):
+            if ('CDF_TIME' in data_type_description) \
+                    or ('CDF_EPOCH' in data_type_description):
                 if self._datetime:
                     # Convert xdata to datetime
                     try:

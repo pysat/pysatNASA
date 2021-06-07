@@ -9,7 +9,7 @@ for the `Space Physics Data Facility <https://spdf.gsfc.nasa.gov/>`_ at NASA.
 Registering the pysatNASA library
 ---------------------------------
 
-While each module can be loaded separately, users of pysat 2 may find it easier
+While each module can be loaded separately, users may find it easier
 to register all instruments.
 
 .. code ::

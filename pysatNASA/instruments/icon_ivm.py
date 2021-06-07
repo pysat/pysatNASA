@@ -43,6 +43,7 @@ import numpy as np
 import pysat
 from pysat import logger
 from pysat.instruments.methods import general as mm_gen
+
 from pysatNASA.instruments.methods import cdaweb as cdw
 from pysatNASA.instruments.methods import icon as mm_icon
 
@@ -226,6 +227,7 @@ def load(fnames, tag=None, inst_id=None, keep_original_names=False):
         inst.load(2020, 1)
 
     """
+
     labels = {'units': ('Units', str), 'name': ('Long_Name', str),
               'notes': ('Var_Notes', str), 'desc': ('CatDesc', str),
               'min_val': ('ValidMin', float),

@@ -17,6 +17,8 @@ C/NOFS PLP
 .. automodule:: pysatNASA.instruments.cnofs_plp
    :members:
 
+.. _cnofs_vefi:
+
 C/NOFS VEFI
 -----------
 
@@ -54,6 +56,8 @@ DE2 WATS
 
 .. automodule:: pysatNASA.instruments.de2_wats
    :members:
+
+.. _formosat1_ivm:
 
 FORMOSAT-1 IVM
 --------------
@@ -94,18 +98,23 @@ ICON MIGHTI
 .. automodule:: pysatNASA.instruments.icon_mighti
    :members:
 
-ISS-FPMU
+.. _iss_fpmu:
+
+ISS FPMU
 --------
 
 .. automodule:: pysatNASA.instruments.iss_fpmu
    :members:
 
-OMNI_HRO
+.. _omni_hro:
+
+OMNI HRO
 --------
 
 .. automodule:: pysatNASA.instruments.omni_hro
    :members: calculate_clock_angle, calculate_imf_steadiness, time_shift_to_magnetic_poles
 
+.. _ses14_gold:
 
 SES14 GOLD
 ----------
@@ -113,13 +122,17 @@ SES14 GOLD
 .. automodule:: pysatNASA.instruments.ses14_gold
    :members:
 
-TIMED/SABER
+.. _timed_saber:
+
+TIMED SABER
 -----------
 
 .. automodule:: pysatNASA.instruments.timed_saber
    :members:
 
-TIMED/SEE
+.. _timed_see:
+
+TIMED SEE
 ---------
 
 .. automodule:: pysatNASA.instruments.timed_see

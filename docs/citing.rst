@@ -9,6 +9,10 @@ reproducibility of your presented results.
 pysatNASA
 ---------
 
+The most recent citation can be found at `Zenodo
+<https://zenodo.org/record/3986131>`_.  The examples here are from the first
+release.
+
 * Klenzing, J., et al. (2020).
   pysat/pysatNASA: Initial Release (Version 0.0.1). Zenodo.
   doi:10.5281/zenodo.3986132
