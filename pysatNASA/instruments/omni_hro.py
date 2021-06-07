@@ -12,7 +12,7 @@ name
     'hro'
 tag
     Select time between samples, one of {'1min', '5min'}
-sat_id
+inst_id
     None supported
 
 Note
@@ -45,6 +45,7 @@ calculate_imf_steadiness
     Calculate the IMF steadiness using clock angle and magnitude in the YZ plane
 calculate_dayside_reconnection
     Calculate the dayside reconnection rate
+
 """
 
 import datetime as dt
@@ -54,50 +55,28 @@ import pandas as pds
 import scipy.stats as stats
 import warnings
 
+from pysat import logger
 from pysat.instruments.methods import general as mm_gen
+
 from pysatNASA.instruments.methods import cdaweb as cdw
 
-import logging
-logger = logging.getLogger(__name__)
+# ----------------------------------------------------------------------------
+# Instrument attributes
 
 platform = 'omni'
 name = 'hro'
 tags = {'1min': '1-minute time averaged data',
         '5min': '5-minute time averaged data'}
-sat_ids = {'': ['5min']}
+inst_ids = {'': [tag for tag in tags.keys()]}
+
+# ----------------------------------------------------------------------------
+# Instrument test attributes
+
 _test_dates = {'': {'1min': dt.datetime(2009, 1, 1),
                     '5min': dt.datetime(2009, 1, 1)}}
 
-# support list files routine
-# use the default CDAWeb method
-fname1 = 'omni_hro_1min_{year:4d}{month:02d}{day:02d}_v01.cdf'
-fname5 = 'omni_hro_5min_{year:4d}{month:02d}{day:02d}_v01.cdf'
-supported_tags = {'': {'1min': fname1,
-                       '5min': fname5}}
-list_files = functools.partial(mm_gen.list_files,
-                               supported_tags=supported_tags,
-                               fake_daily_files_from_monthly=True)
-
-# support load routine
-# use the default CDAWeb method
-load = functools.partial(cdw.load, fake_daily_files_from_monthly=True)
-
-# support download routine
-# use the default CDAWeb method
-basic_tag1 = {'dir': '/pub/data/omni/omni_cdaweb/hro_1min',
-              'remote_fname': '{year:4d}/' + fname1,
-              'local_fname': fname1}
-basic_tag5 = {'dir': '/pub/data/omni/omni_cdaweb/hro_5min',
-              'remote_fname': '{year:4d}/' + fname5,
-              'local_fname': fname5}
-supported_tags = {'': {'1min': basic_tag1,
-                       '5min': basic_tag5}}
-download = functools.partial(cdw.download,
-                             supported_tags,
-                             fake_daily_files_from_monthly=True)
-# support listing files currently on CDAWeb
-list_remote_files = functools.partial(cdw.list_remote_files,
-                                      supported_tags=supported_tags)
+# ----------------------------------------------------------------------------
+# Instrument methods
 
 
 def init(self):
@@ -120,17 +99,68 @@ def init(self):
     return
 
 
-def clean(omni):
-    for fill_attr in ["fillval", "fill"]:
-        # case insensitive check for attribute name
-        if omni.meta.has_attr(fill_attr):
-            # get real name
-            fill_attr = omni.meta.attr_case_name(fill_attr)
-            for key in omni.data.columns:
-                if key != 'Epoch':
-                    idx, = np.where(omni[key] == omni.meta[key, fill_attr])
-                    omni[idx, key] = np.nan
+def clean(self):
+    """ Cleaning function for OMNI data
+
+    Note
+    ----
+    'clean' - Replace default fill values with NaN
+    'dusty' - Same as clean
+    'dirty' - Same as clean
+    'none'  - Preserve original fill values
+
+    """
+    for key in self.data.columns:
+        if key != 'Epoch':
+            fill = self.meta[key, self.meta.labels.fill_val][0]
+            idx, = np.where(self[key] == fill)
+            # Set the fill values to NaN
+            self[idx, key] = np.nan
+
+            # Replace the old fill value with NaN and add this to the notes
+            fill_notes = "".join(["Replaced standard fill value with NaN. ",
+                                  "Standard value was: {:}".format(
+                                      self.meta[key,
+                                                self.meta.labels.fill_val])])
+            notes = '\n'.join([str(self.meta[key, self.meta.labels.notes]),
+                               fill_notes])
+            self.meta[key, self.meta.labels.notes] = notes
+            self.meta[key, self.meta.labels.fill_val] = np.nan
+
     return
+
+
+# ----------------------------------------------------------------------------
+# Instrument functions
+#
+# Use the default CDAWeb and pysat methods
+
+# Set the list_files routine
+fname = ''.join(['omni_hro_{tag:s}_{{year:4d}}{{month:02d}}{{day:02d}}_',
+                 'v{{version:02d}}.cdf'])
+supported_tags = {inst_id: {tag: fname.format(tag=tag) for tag in tags.keys()}
+                  for inst_id in inst_ids.keys()}
+list_files = functools.partial(mm_gen.list_files,
+                               supported_tags=supported_tags,
+                               file_cadence=pds.DateOffset(months=1))
+
+# Set the load routine
+load = functools.partial(cdw.load, file_cadence=pds.DateOffset(months=1))
+
+# Set the download routine
+remote_dir = '/pub/data/omni/omni_cdaweb/hro_{tag:s}/{{year:4d}}/'
+download_tags = {inst_id: {tag: {'remote_dir': remote_dir.format(tag=tag),
+                                 'fname': supported_tags[inst_id][tag]}
+                           for tag in inst_ids[inst_id]}
+                 for inst_id in inst_ids.keys()}
+download = functools.partial(cdw.download, supported_tags=download_tags)
+
+# Set the list_remote_files routine
+list_remote_files = functools.partial(cdw.list_remote_files,
+                                      supported_tags=download_tags)
+
+# ----------------------------------------------------------------------------
+# Local functions
 
 
 def time_shift_to_magnetic_poles(inst):
@@ -138,12 +168,12 @@ def time_shift_to_magnetic_poles(inst):
     to intersections with magnetic pole.
 
     Parameters
-    -----------
+    ----------
     inst : Instrument class object
         Instrument with OMNI HRO data
 
-    Notes
-    ---------
+    Note
+    ----
     Time shift calculated using distance to bow shock nose (BSN)
     and velocity of solar wind along x-direction.
 
@@ -188,6 +218,7 @@ def calculate_clock_angle(inst):
     -----------
     inst : pysat.Instrument
         Instrument with OMNI HRO data
+
     """
 
     # Calculate clock angle in degrees
@@ -210,7 +241,7 @@ def calculate_imf_steadiness(inst, steady_window=15, min_window_frac=0.75,
     the coefficient of variation of the IMF magnitude in the GSM Y-Z plane
 
     Parameters
-    -----------
+    ----------
     inst : pysat.Instrument
         Instrument with OMNI HRO data
     steady_window : int
@@ -227,7 +258,8 @@ def calculate_imf_steadiness(inst, steady_window=15, min_window_frac=0.75,
     """
 
     # We are not going to interpolate through missing values
-    sample_rate = int(inst.tag[0])
+    rates = {'': 1, '1min': 1, '5min': 5}
+    sample_rate = int(rates[inst.tag])
     max_wnum = np.floor(steady_window / sample_rate)
     if max_wnum != steady_window / sample_rate:
         steady_window = max_wnum * sample_rate
@@ -294,12 +326,12 @@ def calculate_dayside_reconnection(inst):
     """ Calculate the dayside reconnection rate (Milan et al. 2014)
 
     Parameters
-    -----------
+    ----------
     inst : pysat.Instrument
         Instrument with OMNI HRO data, requires BYZ_GSM and clock_angle
 
     Note
-    -----
+    ----
     recon_day = 3.8 Re (Vx / 4e5 m/s)^1/3 Vx B_yz (sin(theta/2))^9/2
 
     """

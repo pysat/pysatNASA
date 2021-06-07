@@ -11,8 +11,8 @@ class TestOMNICustom():
     def setup(self):
         """Runs before every method to create a clean testing setup."""
         # Load a test instrument
-        self.testInst = pysat.Instrument('pysat', 'testing', sat_id='12',
-                                         tag='1min', clean_level='clean')
+        self.testInst = pysat.Instrument('pysat', 'testing', tag='',
+                                         num_samples=12, clean_level='clean')
         self.testInst.load(2009, 1)
 
         # Recast time in minutes rather than seconds

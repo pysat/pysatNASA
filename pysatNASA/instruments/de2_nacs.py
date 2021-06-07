@@ -61,10 +61,14 @@ platform
     'de2'
 name
     'nacs'
-sat_id
+inst_id
     None Supported
 tag
     None Supported
+
+Warnings
+--------
+- Currently no cleaning routine.
 
 Authors
 -------
@@ -74,41 +78,29 @@ J. Klenzing
 
 import datetime as dt
 import functools
-import logging
+import warnings
 
+from pysat import logger
 from pysat.instruments.methods import general as mm_gen
+
 from pysatNASA.instruments.methods import de2 as mm_de2
 from pysatNASA.instruments.methods import cdaweb as cdw
 
-logger = logging.getLogger(__name__)
+# ----------------------------------------------------------------------------
+# Instrument attributes
 
 platform = 'de2'
 name = 'nacs'
-
 tags = {'': '1 s cadence Neutral Atmosphere Composition Spectrometer data'}
-sat_ids = {'': ['']}
+inst_ids = {'': ['']}
+
+# ----------------------------------------------------------------------------
+# Instrument test attributes
+
 _test_dates = {'': {'': dt.datetime(1983, 1, 1)}}
 
-fname = 'de2_neutral1s_nacs_{year:04d}{month:02d}{day:02d}_v01.cdf'
-supported_tags = {'': {'': fname}}
-
-# use the CDAWeb methods list files routine
-list_files = functools.partial(mm_gen.list_files,
-                               supported_tags=supported_tags)
-
-# use the default CDAWeb method
-load = cdw.load
-
-# support download routine
-basic_tag = {'dir': '/pub/data/de/de2/neutral_gas_nacs/neutral1s_nacs_cdaweb',
-             'remote_fname': '{year:4d}/' + fname,
-             'local_fname': fname}
-supported_tags = {'': {'': basic_tag}}
-download = functools.partial(cdw.download, supported_tags)
-
-# support listing files currently on CDAWeb
-list_remote_files = functools.partial(cdw.list_remote_files,
-                                      supported_tags=supported_tags)
+# ----------------------------------------------------------------------------
+# Instrument methods
 
 
 def init(self):
@@ -124,28 +116,43 @@ def init(self):
     return
 
 
-def clean(inst):
-    """Routine to return PLATFORM/NAME data cleaned to the specified level
+def clean(self):
+    """Routine to return DE2 NACS data cleaned to the specified level
 
-    Cleaning level is specified in inst.clean_level and pysat
-    will accept user input for several strings. The clean_level is
-    specified at instantiation of the Instrument object.
-
-    'clean' All parameters should be good, suitable for statistical and
-            case studies
-    'dusty' All paramers should generally be good though same may
-            not be great
-    'dirty' There are data areas that have issues, data should be used
-            with caution
+    Note
+    ----
+    'clean' - Not specified
+    'dusty' - Not specified
+    'dirty' - Not specified
     'none'  No cleaning applied, routine not called in this case.
 
-
-    Parameters
-    -----------
-    inst : pysat.Instrument
-        Instrument class object, whose attribute clean_level is used to return
-        the desired level of data selectivity.
-
     """
+    warnings.warn('No cleaning routines available for DE2 NACS')
 
     return
+
+
+# ----------------------------------------------------------------------------
+# Instrument functions
+#
+# Use the default CDAWeb and pysat methods
+
+# Set the list_files routine
+fname = 'de2_neutral1s_nacs_{year:04d}{month:02d}{day:02d}_v{version:02d}.cdf'
+supported_tags = {'': {'': fname}}
+list_files = functools.partial(mm_gen.list_files,
+                               supported_tags=supported_tags)
+
+# Use the default CDAWeb method
+load = cdw.load
+
+# Support download routine
+basic_tag = {'remote_dir': ''.join(('/pub/data/de/de2/neutral_gas_nacs',
+                                    '/neutral1s_nacs_cdaweb/{year:4d}/')),
+             'fname': fname}
+download_tags = {'': {'': basic_tag}}
+download = functools.partial(cdw.download, supported_tags=download_tags)
+
+# Support listing files currently on CDAWeb
+list_remote_files = functools.partial(cdw.list_remote_files,
+                                      supported_tags=download_tags)

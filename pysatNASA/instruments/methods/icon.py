@@ -1,24 +1,15 @@
 # -*- coding: utf-8 -*-
 """Provides non-instrument specific routines for ICON data"""
 
-import fnmatch
-import ftplib
-import logging
-import numpy as np
-import os
+from pysat.instruments.methods import general as mm_gen
 
-import pysat
-from pysat.utils import files as futils
-
-
-logger = logging.getLogger(__name__)
 
 ackn_str = ''.join(('This is a data product from the NASA Ionospheric ',
                     'Connection Explorer mission, an Explorer launched ',
                     'at 21:59:45 EDT on October 10, 2019.\n\nGuidelines ',
                     'for the use of this product are described in the ',
                     'ICON Rules of the Road  ',
-                    '(https://http://icon.ssl.berkeley.edu/Data).',
+                    '(https://icon.ssl.berkeley.edu/Data).',
                     '\n\nResponsibility for the mission science ',
                     'falls to the Principal Investigator, Dr. ',
                     'Thomas Immel at UC Berkeley:\nImmel, T.J., ',
@@ -72,7 +63,7 @@ ackn_str = ''.join(('This is a data product from the NASA Ionospheric ',
                     'contracts NNG12FA45C and NNG12FA42I".\n\nThese data ',
                     'are openly available as described in the ICON Data ',
                     'Management Plan available on the ICON website ',
-                    '(http://icon.ssl.berkeley.edu/Data).'))
+                    '(https://icon.ssl.berkeley.edu/Data).'))
 
 refs = {'euv': ' '.join(('Stephan, A.W., Meier, R.R., England, S.L. et al.',
                          'Daytime O/N2 Retrieval Algorithm for the Ionospheric',
@@ -109,208 +100,26 @@ refs = {'euv': ' '.join(('Stephan, A.W., Meier, R.R., England, S.L. et al.',
                              'https://doi.org/10.1007/s11214-017-0449-2\n'))}
 
 
-def list_remote_files(tag, sat_id, user=None, password=None,
-                      supported_tags=None,
-                      year=None, month=None, day=None,
-                      start=None, stop=None):
-    """Return a Pandas Series of every file for chosen remote data.
-    This routine is intended to be used by pysat instrument modules supporting
-    a particular UC-Berkeley SSL dataset related to ICON.
+def remove_preamble(inst):
+    """Removes preambles in variable names
+
     Parameters
     -----------
-    tag : string or NoneType
-        Denotes type of file to load.  Accepted types are <tag strings>.
-        (default=None)
-    sat_id : string or NoneType
-        Specifies the satellite ID for a constellation.  Not used.
-        (default=None)
-    user : string or NoneType
-        Username to be passed along to resource with relevant data.
-        (default=None)
-    password : string or NoneType
-        User password to be passed along to resource with relevant data.
-        (default=None)
-    start : dt.datetime or NoneType
-        Starting time for file list. A None value will start with the first
-        file found.
-        (default=None)
-    stop : dt.datetime or NoneType
-        Ending time for the file list.  A None value will stop with the last
-        file found.
-        (default=None)
-
-    Returns
-    --------
-    pandas.Series
-        A Series formatted for the Files class (pysat._files.Files)
-        containing filenames and indexed by date and time
+    inst : pysat.Instrument
+        ICON FUV or MIGHTI Instrument class object
 
     """
+    id_str = inst.inst_id.upper()
 
-    if (user is not None) or (password is not None):
-        raise ValueError('User account information must not be provided.')
+    target = {'los_wind_green': 'ICON_L21_',
+              'los_wind_red': 'ICON_L21_',
+              'vector_wind_green': 'ICON_L22_',
+              'vector_wind_red': 'ICON_L22_',
+              'temperature': ['ICON_L1_MIGHTI_{id:s}_'.format(id=id_str),
+                              'ICON_L23_MIGHTI_{id:s}_'.format(id=id_str),
+                              'ICON_L23_'],
+              'day': 'ICON_L24_',
+              'night': 'ICON_L25_'}
+    mm_gen.remove_leading_text(inst, target=target[inst.tag])
 
-    # connect to CDAWeb default port
-    ftp = ftplib.FTP('icon-science.ssl.berkeley.edu')
-    # user anonymous, passwd anonymous@
-    ftp.login()
-
-    try:
-        ftp_dict = supported_tags[sat_id][tag]
-    except KeyError:
-        raise ValueError('sat_id/tag name unknown.')
-
-    # naming scheme for files on the CDAWeb server
-    remote_fname = ftp_dict['remote_fname']
-
-    # will hold paths to remote locations
-    remote_years = []
-    remote_days = []
-    temp_dirs = []
-
-    # values of years and days with data
-    years = []
-    days = []
-    yrdoys = []
-
-    # path to highest directory, below which is custom structure
-    # and files
-    # change directory
-    ftp.cwd(ftp_dict['dir'])
-    # get directory contents
-    ftp.dir(temp_dirs.append)
-    # need to parse output to obtain list of paths to years
-    for item in temp_dirs:
-        # parse raw string
-        parsed = item.split(' ')
-        # print(parsed[-1])
-        remote_years.append(ftp_dict['dir'] + '/' + parsed[-1])
-        years.append(parsed[-1])
-
-    # get files under each year, first identify day directories
-    for year, year_int in zip(remote_years, years):
-        ftp.cwd(year)
-        # get list of days
-        temp_dirs = []
-        ftp.dir(temp_dirs.append)
-        for item in temp_dirs:
-            # parse raw string
-            parsed = item.split(' ')
-            # print(parsed[-1])
-            remote_days.append(year + '/' + parsed[-1])
-            days.append(parsed[-1])
-            yrdoys.append(int(year_int) * 1000 + int(parsed[-1]))
-
-    # potentially filter here for years and days that are out of bounds
-    yrdoys = np.array(yrdoys)
-
-    # use user supplied date limits or use min and max from observed files
-    if start is None:
-        syrdoy = np.min(yrdoys)
-    else:
-        syr, sdoy = pysat.utils.time.getyrdoy(start)
-        syrdoy = syr * 1000 + sdoy
-
-    if stop is None:
-        eyrdoy = np.max(yrdoys)
-    else:
-        eyr, edoy = pysat.utils.time.getyrdoy(stop)
-        eyrdoy = eyr * 1000 + edoy
-    # apply date filter
-    idx, = np.where((yrdoys >= syrdoy) & (yrdoys <= eyrdoy))
-    remote_days = np.array(remote_days)[idx].tolist()
-
-    # leading path, get any directory elements between the year/doy
-    # and the start of actual files on SSL server
-    leading_dirs = remote_fname.split('/')
-    leading_dirs = leading_dirs[:-1]
-    leading_dirs = '/'.join(leading_dirs)
-    if leading_dirs != '':
-        leading_dirs += '/'
-
-    # get a list of files now that all leading portions determined
-    day_file_list = []
-    for remote_day in remote_days:
-        temp_dirs = []
-        ftp.cwd(remote_day + '/' + leading_dirs)
-        ftp.dir(temp_dirs.append)
-        for item in temp_dirs:
-            # parse raw string
-            parsed = item.split(' ')
-            day_file_list.append(remote_day + '/' + leading_dirs + parsed[-1])
-
-    # we now have a list of all files in the instrument data directories
-    # need to whittle list down to the versions and revisions most appropriate
-    search_dict = futils.construct_searchstring_from_format(remote_fname)
-    search_str = '*/' + search_dict['search_string']
-    remote_files = fnmatch.filter(day_file_list, search_str)
-
-    # pull out date information from the files
-    stored = futils.parse_fixed_width_filenames(remote_files, remote_fname)
-    output = futils.process_parsed_filenames(stored)
-    # return information, limited to start and stop dates
-    return output[start:stop]
-
-
-def ssl_download(date_array, tag, sat_id, data_path=None,
-                 user=None, password=None, supported_tags=None):
-    """Download ICON data from public area of SSL ftp server
-
-    Parameters
-    ----------
-    date_array : array-like
-        list of datetimes to download data for. The sequence of dates need not
-        be contiguous.
-    tag : string
-        Tag identifier used for particular dataset. This input is provided by
-        pysat. (default='')
-    sat_id : string
-        Satellite ID string identifier used for particular dataset. This input
-        is provided by pysat. (default='')
-    data_path : string
-        Path to directory to download data to. (default=None)
-    user : string
-        User string input used for download. Provided by user and passed via
-        pysat. If an account is required for downloads this routine here must
-        error if user not supplied. (default=None)
-    password : string
-        Password for data download. (default=None)
-    **kwargs : dict
-        Additional keywords supplied by user when invoking the download
-        routine attached to a pysat.Instrument object are passed to this
-        routine via kwargs.
-
-    """
-
-    # get a list of remote files
-    remote_files = list_remote_files(tag, sat_id, supported_tags=supported_tags,
-                                     start=date_array[0], stop=date_array[-1])
-
-    # connect to CDAWeb default port
-    ftp = ftplib.FTP('icon-science.ssl.berkeley.edu')
-
-    # user anonymous, passwd anonymous@
-    ftp.login()
-    for date in date_array:
-        if date in remote_files:
-            fname = remote_files[date]
-            # format files for specific dates and download location
-            # yr, doy = pysat.utils.time.getyrdoy(date)
-            saved_local_fname = os.path.join(data_path, fname.split('/')[-1])
-
-            # perform download
-            try:
-                logger.info(' '.join(('Attempting to download file for',
-                                      date.strftime('%x'))))
-                logger.info(fname)
-                ftp.retrbinary('RETR ' + fname,
-                               open(saved_local_fname, 'wb').write)
-                logger.info('Finished.')
-            except ftplib.error_perm as exception:
-                if str(exception.args[0]).split(" ", 1)[0] != '550':
-                    raise
-                else:
-                    os.remove(saved_local_fname)
-                    logger.info('File not available for ' + date.strftime('%x'))
-    ftp.close()
     return

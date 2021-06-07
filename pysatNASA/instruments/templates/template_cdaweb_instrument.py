@@ -15,8 +15,8 @@ platform
     *List platform string here*
 name
     *List name string here*
-sat_id
-    *List supported sat_ids here*
+inst_id
+    *List supported inst_ids here*
 tag
     *List supported tag strings here*
 
@@ -43,9 +43,6 @@ Author name and institution
 
 """
 
-from __future__ import print_function
-from __future__ import absolute_import
-
 import datetime as dt
 import functools
 
@@ -69,12 +66,12 @@ tags = {'': 'description 1',  # this is the default
 # by these routines
 # define a dictionary keyed by satellite ID, each with a list of
 # corresponding tags
-# sat_ids = {'a':['L1', 'L0'], 'b':['L1', 'L2'], 'c':['L1', 'L3']}
-sat_ids = {'': ['']}
+# inst_ids = {'a':['L1', 'L0'], 'b':['L1', 'L2'], 'c':['L1', 'L3']}
+inst_ids = {'': ['']}
 
 # Define good days to download data for when pysat undergoes testing.
-# format is outer dictionary has sat_id as the key
-# each sat_id has a dictionary of test dates keyed by tag string
+# format is outer dictionary has inst_id as the key
+# each inst_id has a dictionary of test dates keyed by tag string
 # _test_dates = {'a':{'L0':dt.datetime(2019,1,1),
 #                     'L1':dt.datetime(2019,1,2)},
 #                'b':{'L1':dt.datetime(2019,3,1),
@@ -84,7 +81,7 @@ _test_dates = {'': {'': dt.datetime(2019, 1, 1)}}
 # Additional information needs to be defined
 # to support the CDAWeb list files routine
 # We need to define a filename format string for every
-# supported combination of sat_id and tag string
+# supported combination of inst_id and tag string
 # fname1 = 'cnofs_vefi_bfield_1sec_{year:04d}{month:02d}{day:02d}_v05.cdf'
 # fname2 = 'cnofs_vefi_acfield_1sec_{year:04d}{month:02d}{day:02d}_v05.cdf'
 # supported_tags = {'sat1':{'tag1':fname1},
@@ -105,7 +102,6 @@ list_files = functools.partial(mm_gen.list_files,
 #
 # use the default CDAWeb method
 # no other information needs to be supplied here
-# pysatCDF is used to load data
 load = cdw.load
 
 #
@@ -116,14 +112,14 @@ load = cdw.load
 # directory location on CDAWeb ftp server
 # formatting template for filenames on CDAWeb
 # formatting template for files saved to the local disk
-# a dictionary needs to be created for each sat_id and tag
+# a dictionary needs to be created for each inst_id and tag
 # combination along with the file format template
-# outer dict keyed by sat_id, inner dict keyed by tag
-basic_tag = {'dir': '/pub/data/cnofs/vefi/bfield_1sec',
+# outer dict keyed by inst_id, inner dict keyed by tag
+basic_tag = {'remote_dir': '/pub/data/cnofs/vefi/bfield_1sec',
              'remote_fname': '{year:4d}/' + fname,
-             'local_fname': fname}
+             'fname': fname}
 supported_tags = {'': {'': basic_tag}}
-download = functools.partial(cdw.download, supported_tags)
+download = functools.partial(cdw.download, supported_tags=supported_tags)
 
 # support listing files currently on CDAWeb
 list_remote_files = functools.partial(cdw.list_remote_files,

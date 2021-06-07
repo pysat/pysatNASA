@@ -6,51 +6,50 @@ intervention.
 """
 
 import datetime as dt
-import logging
 import os
+import pandas as pds
 import requests
-import sys
 
 from bs4 import BeautifulSoup
-import pandas as pds
 
+from pysat import logger
 from pysat.utils import files as futils
+from pysat.instruments.methods import general
+from pysatNASA.instruments.methods import CDF
 
-logger = logging.getLogger(__name__)
 
-
-def load(fnames, tag=None, sat_id=None,
-         fake_daily_files_from_monthly=False,
+def load(fnames, tag=None, inst_id=None, file_cadence=dt.timedelta(days=1),
          flatten_twod=True):
     """Load NASA CDAWeb CDF files.
 
-    This routine is intended to be used by pysat instrument modules supporting
-    a particular NASA CDAWeb dataset.
-
     Parameters
-    ------------
+    ----------
     fnames : pandas.Series
         Series of filenames
     tag : str or NoneType
         tag or None (default=None)
-    sat_id : str or NoneType
+    inst_id : str or NoneType
         satellite id or None (default=None)
-    fake_daily_files_from_monthly : bool
-        Some CDAWeb instrument data files are stored by month, interfering
-        with pysat's functionality of loading by day. This flag, when true,
-        parses of daily dates to monthly files that were added internally
-        by the list_files routine, when flagged. These dates are
-        used here to provide data by day.
+    file_cadence : dt.timedelta or pds.DateOffset
+        pysat assumes a daily file cadence, but some instrument data files
+        contain longer periods of time.  This parameter allows the specification
+        of regular file cadences greater than or equal to a day (e.g., weekly,
+        monthly, or yearly). (default=dt.timedelta(days=1))
     flatted_twod : bool
         Flattens 2D data into different columns of root DataFrame rather
-        than produce a Series of DataFrames
+        than produce a Series of DataFrames. (default=True)
 
     Returns
-    ---------
+    -------
     data : pandas.DataFrame
         Object containing satellite data
     meta : pysat.Meta
         Object containing metadata such as column names and units
+
+    Note
+    ----
+    This routine is intended to be used by pysat instrument modules supporting
+    a particular NASA CDAWeb dataset.
 
     Examples
     --------
@@ -64,88 +63,90 @@ def load(fnames, tag=None, sat_id=None,
         # use the default CDAWeb method
         load = cdw.load
 
-
     """
 
-    import pysatCDF
-
+    # Load data from any files provided
     if len(fnames) <= 0:
         return pds.DataFrame(None), None
     else:
-        # going to use pysatCDF to load the CDF and format
-        # data and metadata for pysat using some assumptions.
-        # Depending upon your needs the resulting pandas DataFrame may
-        # need modification
-        # currently only loads one file, which handles more situations via
-        # pysat than you may initially think
+        # Using cdflib wrapper to load the CDF and format data and
+        # metadata for pysat using some assumptions. Depending upon your needs
+        # the resulting pandas DataFrame may need modification
+        ldata = []
+        for lfname in fnames:
+            if not general.is_daily_file_cadence(file_cadence):
+                # Parse out date from filename
+                fname = lfname[0:-11]
+                date = dt.datetime.strptime(lfname[-10:], '%Y-%m-%d')
 
-        if fake_daily_files_from_monthly:
-            # parse out date from filename
-            fname = fnames[0][0:-11]
-            date = dt.datetime.strptime(fnames[0][-10:], '%Y-%m-%d')
-            with pysatCDF.CDF(fname) as cdf:
-                # convert data to pysat format
-                data, meta = cdf.to_pysat(flatten_twod=flatten_twod)
-                # select data from monthly
-                data = data.loc[date:date + pds.DateOffset(days=1)
-                                - pds.DateOffset(microseconds=1), :]
-                return data, meta
-        else:
-            # basic data return
-            with pysatCDF.CDF(fnames[0]) as cdf:
-                return cdf.to_pysat(flatten_twod=flatten_twod)
+                with CDF(fname) as cdf:
+                    # Convert data to pysat format
+                    try:
+                        temp_data, meta = cdf.to_pysat(
+                            flatten_twod=flatten_twod)
+
+                        # Select data from multi-day down to daily
+                        temp_data = temp_data.loc[
+                            date:date + dt.timedelta(days=1)
+                            - dt.timedelta(microseconds=1), :]
+                        ldata.append(temp_data)
+                    except ValueError as verr:
+                        logger.warn("unable to load {:}: {:}".format(fname,
+                                                                     str(verr)))
+            else:
+                # Basic data return
+                with CDF(lfname) as cdf:
+                    try:
+                        temp_data, meta = cdf.to_pysat(
+                            flatten_twod=flatten_twod)
+                        ldata.append(temp_data)
+                    except ValueError as verr:
+                        logger.warn("unable to load {:}: {:}".format(lfname,
+                                                                     str(verr)))
+
+        # Combine individual files together
+        if len(ldata) > 0:
+            data = pds.concat(ldata)
+
+        return data, meta
 
 
-def download(supported_tags, date_array, tag, sat_id,
-             remote_site='https://cdaweb.gsfc.nasa.gov',
-             data_path=None, user=None, password=None,
-             fake_daily_files_from_monthly=False,
-             multi_file_day=False):
+def download(date_array, tag=None, inst_id=None, supported_tags=None,
+             remote_url='https://cdaweb.gsfc.nasa.gov', data_path=None):
     """Routine to download NASA CDAWeb CDF data.
 
     This routine is intended to be used by pysat instrument modules supporting
     a particular NASA CDAWeb dataset.
 
     Parameters
-    -----------
-    supported_tags : dict
-        dict of dicts. Keys are supported tag names for download. Value is
-        a dict with 'dir', 'remote_fname', 'local_fname'. Inteded to be
-        pre-set with functools.partial then assigned to new instrument code.
+    ----------
     date_array : array_like
         Array of datetimes to download data for. Provided by pysat.
     tag : str or NoneType
         tag or None (default=None)
-    sat_id : (str or NoneType)
+    inst_id : str or NoneType
         satellite id or None (default=None)
-    remote_site : string or NoneType
+    supported_tags : dict
+        dict of dicts. Keys are supported tag names for download. Value is
+        a dict with 'remote_dir', 'fname'. Inteded to be pre-set with
+        functools.partial then assigned to new instrument code.
+        (default=None)
+    remote_url : string or NoneType
         Remote site to download data from
         (default='https://cdaweb.gsfc.nasa.gov')
     data_path : string or NoneType
         Path to data directory.  If None is specified, the value previously
         set in Instrument.files.data_path is used.  (default=None)
-    user : string or NoneType
-        Username to be passed along to resource with relevant data.
-        (default=None)
-    password : string or NoneType
-        User password to be passed along to resource with relevant data.
-        (default=None)
-    fake_daily_files_from_monthly : bool
-        Some CDAWeb instrument data files are stored by month. This flag,
-        when true, accomodates this reality with user feedback on a monthly
-        time frame.
 
     Examples
     --------
     ::
 
         # download support added to cnofs_vefi.py using code below
-        rn = '{year:4d}/cnofs_vefi_bfield_1sec_{year:4d}{month:02d}{day:02d}'+
-            '_v05.cdf'
-        ln = 'cnofs_vefi_bfield_1sec_{year:4d}{month:02d}{day:02d}_v05.cdf'
-        dc_b_tag = {'dir':'/pub/data/cnofs/vefi/bfield_1sec',
-                    'remote_fname': rn,
-                    'local_fname': ln}
+        fn = 'cnofs_vefi_bfield_1sec_{year:4d}{month:02d}{day:02d}_v05.cdf'
+        dc_b_tag = {'remote_dir': ''.join(('/pub/data/cnofs/vefi/bfield_1sec',
+                                            '/{year:4d}/')),
+                    'fname': fn}
         supported_tags = {'dc_b': dc_b_tag}
 
         download = functools.partial(nasa_cdaweb.download,
@@ -153,147 +154,75 @@ def download(supported_tags, date_array, tag, sat_id,
 
     """
 
+    if tag is None:
+        tag = ''
+    if inst_id is None:
+        inst_id = ''
     try:
-        inst_dict = supported_tags[sat_id][tag]
+        inst_dict = supported_tags[inst_id][tag]
     except KeyError:
-        raise ValueError('sat_id / tag combo unknown.')
+        raise ValueError('inst_id / tag combo unknown.')
 
-    # path to relevant file on CDAWeb
-    remote_url = remote_site + inst_dict['dir']
+    # Naming scheme for files on the CDAWeb server
+    remote_dir = inst_dict['remote_dir']
 
-    # naming scheme for files on the CDAWeb server
-    remote_fname = inst_dict['remote_fname']
+    # Get list of files from server
+    remote_files = list_remote_files(tag=tag, inst_id=inst_id,
+                                     remote_url=remote_url,
+                                     supported_tags=supported_tags,
+                                     start=date_array[0],
+                                     stop=date_array[-1])
 
-    # naming scheme for local files, should be closely related
-    # to CDAWeb scheme, though directory structures may be reduced
-    # if desired
-    local_fname = inst_dict['local_fname']
+    # Download only requested files that exist remotely
+    for date, fname in remote_files.iteritems():
+        # Format files for specific dates and download location
+        formatted_remote_dir = remote_dir.format(year=date.year,
+                                                 month=date.month,
+                                                 day=date.day,
+                                                 hour=date.hour,
+                                                 min=date.minute,
+                                                 sec=date.second)
+        remote_path = '/'.join((remote_url.strip('/'),
+                                formatted_remote_dir.strip('/'),
+                                fname))
 
-    if not multi_file_day:
-        # Get list of files from server
-        remote_files = list_remote_files(tag=tag, sat_id=sat_id,
-                                         remote_site=remote_site,
-                                         supported_tags=supported_tags,
-                                         start=date_array[0],
-                                         stop=date_array[-1])
-        # Find only requested files that exist remotely
-        date_array = pds.DatetimeIndex(list(set(remote_files.index)
-                                            & set(date_array))).sort_values()
+        saved_local_fname = os.path.join(data_path, fname)
 
-    for date in date_array:
-        # format files for specific dates and download location
-        formatted_remote_fname = remote_fname.format(year=date.year,
-                                                     month=date.month,
-                                                     day=date.day,
-                                                     hour=date.hour,
-                                                     min=date.minute,
-                                                     sec=date.second)
-        formatted_local_fname = local_fname.format(year=date.year,
-                                                   month=date.month,
-                                                   day=date.day,
-                                                   hour=date.hour,
-                                                   min=date.minute,
-                                                   sec=date.second)
-        saved_local_fname = os.path.join(data_path, formatted_local_fname)
-
-        # perform download
-        if not multi_file_day:
-            # standard download
-            try:
-                logger.info(' '.join(('Attempting to download file for',
-                                      date.strftime('%d %B %Y'))))
-                sys.stdout.flush()
-                remote_path = '/'.join((remote_url.strip('/'),
-                                        formatted_remote_fname))
-                req = requests.get(remote_path)
+        # Perform download
+        logger.info(' '.join(('Attempting to download file for',
+                              date.strftime('%d %B %Y'))))
+        try:
+            with requests.get(remote_path) as req:
                 if req.status_code != 404:
-                    open(saved_local_fname, 'wb').write(req.content)
-                    logger.info('Finished.')
+                    with open(saved_local_fname, 'wb') as open_f:
+                        open_f.write(req.content)
+                    logger.info('Successfully downloaded {:}.'.format(
+                        saved_local_fname))
                 else:
                     logger.info(' '.join(('File not available for',
                                           date.strftime('%d %B %Y'))))
-            except requests.exceptions.RequestException as exception:
-                logger.info(' '.join((exception, '- File not available for',
-                                      date.strftime('%d %B %Y'))))
-
-        else:
-            try:
-                logger.info(' '.join(('Attempting to download files for',
-                                      date.strftime('%d %B %Y'))))
-                sys.stdout.flush()
-                remote_files = list_remote_files(tag=tag, sat_id=sat_id,
-                                                 remote_site=remote_site,
-                                                 supported_tags=supported_tags,
-                                                 start=date,
-                                                 stop=date)
-
-                # Get the files
-                i = 0
-                n = len(remote_files.values)
-                for remote_file in remote_files.values:
-                    remote_dir = os.path.split(formatted_remote_fname)[0]
-                    remote_file_path = '/'.join((remote_url.strip('/'),
-                                                 remote_dir.strip('/'),
-                                                 remote_file))
-                    saved_local_fname = os.path.join(data_path, remote_file)
-                    req = requests.get(remote_file_path)
-                    if req.status_code != 404:
-                        open(saved_local_fname, 'wb').write(req.content)
-                        i += 1
-                    else:
-                        logger.info(' '.join(('File not available for',
-                                              date.strftime('%d %B %Y'))))
-                logger.info('Downloaded {i:} of {n:} files.'.format(i=i, n=n))
-            except requests.exceptions.RequestException as exception:
-                logger.info(' '.join((exception, '- Files not available for',
-                                      date.strftime('%d %B %Y'))))
+        except requests.exceptions.RequestException as exception:
+            logger.info(' '.join((exception, '- File not available for',
+                                  date.strftime('%d %B %Y'))))
+    return
 
 
-def list_remote_files(tag, sat_id,
-                      remote_site='https://cdaweb.gsfc.nasa.gov',
-                      supported_tags=None,
-                      user=None, password=None,
-                      fake_daily_files_from_monthly=False,
-                      two_digit_year_break=None, delimiter=None,
-                      start=None, stop=None):
+def list_remote_files(tag=None, inst_id=None, start=None, stop=None,
+                      remote_url='https://cdaweb.gsfc.nasa.gov',
+                      supported_tags=None, two_digit_year_break=None,
+                      delimiter=None):
     """Return a Pandas Series of every file for chosen remote data.
 
     This routine is intended to be used by pysat instrument modules supporting
     a particular NASA CDAWeb dataset.
 
     Parameters
-    -----------
+    ----------
     tag : string or NoneType
         Denotes type of file to load.  Accepted types are <tag strings>.
         (default=None)
-    sat_id : string or NoneType
+    inst_id : string or NoneType
         Specifies the satellite ID for a constellation.
-        (default=None)
-    remote_site : string or NoneType
-        Remote site to download data from
-        (default='https://cdaweb.gsfc.nasa.gov')
-    supported_tags : dict
-        dict of dicts. Keys are supported tag names for download. Value is
-        a dict with 'dir', 'remote_fname', 'local_fname'. Inteded to be
-        pre-set with functools.partial then assigned to new instrument code.
-    user : string or NoneType
-        Username to be passed along to resource with relevant data.
-        (default=None)
-    password : string or NoneType
-        User password to be passed along to resource with relevant data.
-        (default=None)
-    fake_daily_files_from_monthly : bool
-        Some CDAWeb instrument data files are stored by month. This flag,
-        when true, accomodates this reality with user feedback on a monthly
-        time frame.
-        (default=False)
-    two_digit_year_break : int or NoneType
-        If filenames only store two digits for the year, then
-        '1900' will be added for years >= two_digit_year_break
-        and '2000' will be added for years < two_digit_year_break.
-        (default=None)
-    delimiter : string or NoneType
-        If filename is delimited, then provide delimiter alone e.g. '_'
         (default=None)
     start : dt.datetime or NoneType
         Starting time for file list. A None value will start with the first
@@ -303,9 +232,25 @@ def list_remote_files(tag, sat_id,
         Ending time for the file list.  A None value will stop with the last
         file found.
         (default=None)
+    remote_url : string or NoneType
+        Remote site to download data from
+        (default='https://cdaweb.gsfc.nasa.gov')
+    supported_tags : dict
+        dict of dicts. Keys are supported tag names for download. Value is
+        a dict with 'remote_dir', 'fname'. Inteded to be
+        pre-set with functools.partial then assigned to new instrument code.
+        (default=None)
+    two_digit_year_break : int or NoneType
+        If filenames only store two digits for the year, then
+        '1900' will be added for years >= two_digit_year_break
+        and '2000' will be added for years < two_digit_year_break.
+        (default=None)
+    delimiter : string or NoneType
+        If filename is delimited, then provide delimiter alone e.g. '_'
+        (default=None)
 
     Returns
-    --------
+    -------
     pysat.Files.from_os : (pysat._files.Files)
         A class containing the verified available files
 
@@ -329,18 +274,16 @@ def list_remote_files(tag, sat_id,
 
     if tag is None:
         tag = ''
-    if sat_id is None:
-        sat_id = ''
+    if inst_id is None:
+        inst_id = ''
     try:
-        inst_dict = supported_tags[sat_id][tag]
+        inst_dict = supported_tags[inst_id][tag]
     except KeyError:
-        raise ValueError('sat_id / tag combo unknown.')
+        raise ValueError('inst_id / tag combo unknown.')
 
-    # path to relevant file on CDAWeb
-    remote_url = remote_site + inst_dict['dir']
-
-    # naming scheme for files on the CDAWeb server
-    format_str = inst_dict['remote_fname']
+    # Naming scheme for files on the CDAWeb server
+    format_str = '/'.join((inst_dict['remote_dir'].strip('/'),
+                           inst_dict['fname']))
 
     # Break string format into path and filename
     dir_split = os.path.split(format_str)
@@ -350,11 +293,20 @@ def list_remote_files(tag, sat_id,
     search_dir = futils.construct_searchstring_from_format(format_dir)
     n_layers = len(search_dir['keys'])
 
-    # only keep file portion of format
+    # Only keep file portion of format
     format_str = dir_split[-1]
     # Generate list of targets to identify files
     search_dict = futils.construct_searchstring_from_format(format_str)
     targets = [x.strip('?') for x in search_dict['string_blocks'] if len(x) > 0]
+
+    # Remove any additional '?' characters that the user may have supplied
+    new_targets = []
+    for target in targets:
+        tstrs = target.split('?')
+        for tstr in tstrs:
+            if tstr != '':
+                new_targets.append(tstr)
+    targets = new_targets
 
     remote_dirs = []
     for level in range(n_layers + 1):
@@ -365,7 +317,9 @@ def list_remote_files(tag, sat_id,
     full_files = []
 
     if start is None and stop is None:
-        url_list = [remote_url]
+        # Use the topmost directory without variables
+        url_list = ['/'.join((remote_url,
+                              search_dir['string_blocks'][0]))]
     elif start is not None:
         stop = dt.datetime.now() if (stop is None) else stop
 
@@ -407,20 +361,21 @@ def list_remote_files(tag, sat_id,
                                    'exceeds the server limit. Please try',
                                    'again using a smaller data range.')))
 
-    # parse remote filenames to get date information
+    # Parse remote filenames to get date information
     if delimiter is None:
         stored = futils.parse_fixed_width_filenames(full_files, format_str)
     else:
         stored = futils.parse_delimited_filenames(full_files, format_str,
                                                   delimiter)
-
-    # process the parsed filenames and return a properly formatted Series
+    # Process the parsed filenames and return a properly formatted Series
     stored_list = futils.process_parsed_filenames(stored, two_digit_year_break)
+
     # Downselect to user-specified dates, if needed
     if start is not None:
         mask = (stored_list.index >= start)
         if stop is not None:
-            mask = mask & (stored_list.index <= stop)
+            stop_point = (stop + pds.DateOffset(days=1))
+            mask = mask & (stored_list.index < stop_point)
         stored_list = stored_list[mask]
 
     return stored_list

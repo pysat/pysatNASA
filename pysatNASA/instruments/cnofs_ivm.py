@@ -40,7 +40,7 @@ name
     'ivm'
 tag
     None supported
-sat_id
+inst_id
     None supported
 
 Warnings
@@ -54,44 +54,30 @@ Warnings
 
 import datetime as dt
 import functools
-import logging
 
 import numpy as np
 
+from pysat import logger
 from pysat.instruments.methods import general as mm_gen
+
 from pysatNASA.instruments.methods import cnofs as mm_cnofs
 from pysatNASA.instruments.methods import cdaweb as cdw
 
-logger = logging.getLogger(__name__)
+# ----------------------------------------------------------------------------
+# Instrument attributes
 
 platform = 'cnofs'
 name = 'ivm'
 tags = {'': ''}
-sat_ids = {'': ['']}
+inst_ids = {'': ['']}
+
+# ----------------------------------------------------------------------------
+# Instrument test attributes
+
 _test_dates = {'': {'': dt.datetime(2009, 1, 1)}}
 
-
-# support list files routine
-# use the default CDAWeb method
-fname = 'cnofs_cindi_ivm_500ms_{year:4d}{month:02d}{day:02d}_v01.cdf'
-supported_tags = {'': {'': fname}}
-list_files = functools.partial(mm_gen.list_files,
-                               supported_tags=supported_tags)
-
-# support load routine
-# use the default CDAWeb method
-load = cdw.load
-
-# support download routine
-# use the default CDAWeb method
-basic_tag = {'dir': '/pub/data/cnofs/cindi/ivm_500ms_cdf',
-             'remote_fname': '{year:4d}/' + fname,
-             'local_fname': fname}
-supported_tags = {'': {'': basic_tag}}
-download = functools.partial(cdw.download, supported_tags)
-# support listing files currently on CDAWeb
-list_remote_files = functools.partial(cdw.list_remote_files,
-                                      supported_tags=supported_tags)
+# ----------------------------------------------------------------------------
+# Instrument methods
 
 
 def init(self):
@@ -108,30 +94,22 @@ def init(self):
     return
 
 
-def default(ivm):
+def preprocess(self):
     """Apply C/NOFS IVM default attributes
 
+    Note
+    ----
     The sample rate for loaded data is attached at inst.sample_rate
     before any attached custom methods are executed.
 
-    Parameters
-    ----------
-    ivm : pysat.Instrument
-        C/NOFS IVM Instrument object
-
     """
 
-    ivm.sample_rate = 1.0 if ivm.date >= dt.datetime(2010, 7, 29) else 2.0
+    self.sample_rate = 1.0 if self.date >= dt.datetime(2010, 7, 29) else 2.0
+    return
 
 
-def clean(inst):
+def clean(self):
     """Routine to return C/NOFS IVM data cleaned to the specified level
-
-    Parameters
-    -----------
-    inst : pysat.Instrument
-        Instrument class object, whose attribute clean_level is used to return
-        the desired level of data selectivity.
 
     Note
     ----
@@ -139,79 +117,148 @@ def clean(inst):
 
     """
 
-    # make sure all -999999 values are NaN
-    inst.data.replace(-999999., np.nan, inplace=True)
+    # Make sure all -999999 values are NaN
+    self.data = self.data.replace(-999999., np.nan)
 
     # Set maximum flags
-    if inst.clean_level == 'clean':
+    if self.clean_level == 'clean':
         max_rpa_flag = 1
-        max_dm_flag = 0
-    elif inst.clean_level == 'dusty':
+        max_idm_flag = 0
+    elif self.clean_level == 'dusty':
         max_rpa_flag = 3
-        max_dm_flag = 3
+        max_idm_flag = 3
     else:
         max_rpa_flag = 4
-        max_dm_flag = 6
+        max_idm_flag = 6
 
-    # First pass, keep good RPA fits
-    idx, = np.where(inst.data.RPAflag <= max_rpa_flag)
-    inst.data = inst[idx, :]
+    # Find bad drifts according to quality flags
+    idm_mask = self.data['driftMeterflag'] > max_idm_flag
+    rpa_mask = self.data['RPAflag'] > max_rpa_flag
 
-    # Second pass, find bad drifts, replace with NaNs
-    idx = (inst.data.driftMeterflag > max_dm_flag)
+    # Also exclude RPA drifts where the velocity is set to zero
+    if (self.clean_level == 'clean') or (self.clean_level == 'dusty'):
+        if 'ionVelocityX' in self.data.columns:
+            # Possible unrealistic velocities - value may be set to zero
+            # in fit routine instead of using a flag
+            vel_mask = self.data['ionVelocityX'] == 0.0
+            rpa_mask = rpa_mask | vel_mask
 
-    # Also exclude very large drifts and drifts where 100% O+
-    if (inst.clean_level == 'clean') | (inst.clean_level == 'dusty'):
-        if 'ionVelmeridional' in inst.data.columns:
-            # unrealistic velocities
-            # This check should be performed at the RPA or IDM velocity level
-            idx2 = (np.abs(inst.data.ionVelmeridional) >= 10000.0)
-            idx = (idx | idx2)
+    # Replace bad drift meter values with NaNs
+    if idm_mask.any():
+        data_labels = ['ionVelocityY', 'ionVelocityZ']
+        for label in data_labels:
+            self.data[label] = np.where(idm_mask, np.nan, self.data[label])
 
-    if len(idx) > 0:
-        drift_labels = ['ionVelmeridional', 'ionVelparallel', 'ionVelzonal',
-                        'ionVelocityX', 'ionVelocityY', 'ionVelocityZ']
-        for label in drift_labels:
-            inst[idx, label] = np.NaN
+        # Only remove field-aligned drifts if IDM component is large enough
+        unit_vecs = {'ionVelmeridional': 'meridionalunitvector',
+                     'ionVelparallel': 'parallelunitvector',
+                     'ionVelzonal': 'zonalunitvector'}
+        for label in unit_vecs.keys():
+            for coord in ['Y', 'Z']:
+                coord_label = ''.join([unit_vecs[label], coord])
+                vec_mask = idm_mask & (np.abs(self.data[coord_label]) >= 0.01)
+                self.data[label] = np.where(vec_mask, np.nan, self.data[label])
 
-    # Check for bad RPA fits in dusty regime.
-    # O+ concentration criteria from Burrell, 2012
-    if inst.clean_level == 'dusty' or inst.clean_level == 'clean':
-        # Low O+ concentrations for RPA Flag of 3 are suspect and high O+
-        # fractions create a shallow fit region for the ram velocity
-        nO = inst.data.ion1fraction * inst.data.Ni
-        idx = (((inst.data.RPAflag == 3) & (nO <= 3.0e4))
-               | (inst.data.ion1fraction >= 1.0))
+    # Replace bad rpa values with NaNs
+    if rpa_mask.any():
+        data_labels = ['ionVelocityX', 'sensPlanePot', 'sensPlanePotvar']
+        for label in data_labels:
+            self.data[label] = np.where(rpa_mask, np.nan, self.data[label])
+
+        # Only remove field-aligned drifts if RPA component is large enough
+        unit_vecs = {'ionVelmeridional': 'meridionalunitvectorX',
+                     'ionVelparallel': 'parallelunitvectorX',
+                     'ionVelzonal': 'zonalunitvectorX'}
+        for label in unit_vecs:
+            vec_mask = rpa_mask & (np.abs(self.data[unit_vecs[label]]) >= 0.01)
+            self.data[label] = np.where(vec_mask, np.nan, self.data[label])
+
+    # Replace non-velocity data values where fits are bad. This test is
+    # separate from the drifts, as confidence in the fitted values decreases
+    # as the complexity increases. Densities are the most robust, followed by
+    # composition and temperatures.
+    rpa_mask = self.data['RPAflag'] > 4
+    if rpa_mask.any():
+        data_labels = ['Ni', 'ionDensity', 'ionDensityvariance',
+                       'ionTemperature', 'ionTemperaturevariance',
+                       'ion1fraction', 'ion1variance',
+                       'ion2fraction', 'ion2variance',
+                       'ion3fraction', 'ion3variance',
+                       'ion4fraction', 'ion4variance',
+                       'ion5fraction', 'ion5variance']
+        for label in data_labels:
+            self.data[label] = np.where(rpa_mask, np.nan, self.data[label])
+
+    # Additional checks for clean and dusty data
+    if self.clean_level == 'dusty' or self.clean_level == 'clean':
+        # Low O+ concentrations for RPA Flag of 3 are suspect.  Apply the O+
+        # concentration criteria from Burrell, 2012.  Using the ion density
+        # from the RPA fit ('ionDensity') instead of the measurement from the
+        # zero volt current ('Ni').
+        n_oplus = self.data['ion1fraction'] * self.data['ionDensity']
+        low_odens_mask = (self.data['RPAflag'] == 3) & (n_oplus <= 3.0e4)
+
+        # 100% O+ creates a shallow fit region for the ram velocity
+        shallow_fit_mask = self.data['ion1fraction'] >= 1.0
+
+        # Exclude areas where either of these are true
+        oplus_mask = low_odens_mask | shallow_fit_mask
 
         # Only remove data if RPA component of drift is greater than 1%
         unit_vecs = {'ionVelmeridional': 'meridionalunitvectorX',
                      'ionVelparallel': 'parallelunitvectorX',
                      'ionVelzonal': 'zonalunitvectorX'}
         for label in unit_vecs:
-            idx0 = idx & (np.abs(inst[unit_vecs[label]]) >= 0.01)
-            inst[idx0, label] = np.NaN
+            omask = oplus_mask & (np.abs(self.data[unit_vecs[label]]) >= 0.01)
+            self.data[label] = np.where(omask, np.nan, self.data[label])
 
-        # The RPA component of the ram velocity is always 100%
-        inst[idx, 'ionVelocityX'] = np.NaN
+        # Remove the RPA component of the ram velocity regardless of orientation
+        self.data['ionVelocityX'] = np.where(oplus_mask, np.nan,
+                                             self.data['ionVelocityX'])
 
-        # Check for bad temperature fits (O+ < 15%), replace with NaNs
-        # Criteria from Hairston et al, 2010
-        idx = inst.data.ion1fraction < 0.15
-        inst[idx, 'ionTemperature'] = np.NaN
+        # Check for bad temperature fits (O+ < 15%), replace with NaNs.
+        # Criteria from Hairston et al, 2010.
+        oplus_mask = self.data['ion1fraction'] < 0.15
+        self.data['ionTemperature'] = np.where(oplus_mask, np.nan,
+                                               self.data['ionTemperature'])
 
         # The ion fractions should always sum to one and never drop below zero
         ifracs = ['ion{:d}fraction'.format(i) for i in np.arange(1, 6)]
-        ion_sum = np.sum([inst[label] for label in ifracs], axis=0)
-        ion_min = np.min([inst[label] for label in ifracs], axis=0)
-        idx = ((ion_sum != 1.0) | (ion_min < 0.0))
+        ion_sum = np.sum([self.data[label] for label in ifracs], axis=0)
+        ion_min = np.min([self.data[label] for label in ifracs], axis=0)
+        ion_mask = (ion_sum != 1.0) | (ion_min < 0.0)
         for label in ifracs:
-            inst[idx, label] = np.NaN
+            self.data[label] = np.where(ion_mask, np.nan, self.data[label])
 
-    # basic quality check on drifts and don't let UTS go above 86400.
-    idx, = np.where(inst.data.time <= 86400.)
-    inst.data = inst[idx, :]
+    # Ensure the time in seconds of day doesn't go above 86400 and MLT is
+    # between 0 and 24
+    itime, = np.where((self.data.time <= 86400.0) & (self.data['mlt'] >= 0.0)
+                      & (self.data['mlt'] <= 24.0))
+    self.data = self[itime, :]  # Use pysat indexing to retrieve desired data
 
-    # make sure MLT is between 0 and 24
-    idx, = np.where((inst.data.mlt >= 0) & (inst.data.mlt <= 24.))
-    inst.data = inst[idx, :]
     return
+
+
+# ----------------------------------------------------------------------------
+# Instrument functions
+#
+# Use the default CDAWeb and pysat methods
+
+# Set the list_files routine
+fname = 'cnofs_cindi_ivm_500ms_{year:4d}{month:02d}{day:02d}_v{version:02d}.cdf'
+supported_tags = {'': {'': fname}}
+list_files = functools.partial(mm_gen.list_files,
+                               supported_tags=supported_tags)
+
+# Set the load routine
+load = cdw.load
+
+# Set the download routine
+basic_tag = {'remote_dir': '/pub/data/cnofs/cindi/ivm_500ms_cdf/{year:4d}/',
+             'fname': fname}
+download_tags = {'': {'': basic_tag}}
+download = functools.partial(cdw.download, supported_tags=download_tags)
+
+# Set the list_remote_files routine
+list_remote_files = functools.partial(cdw.list_remote_files,
+                                      supported_tags=download_tags)

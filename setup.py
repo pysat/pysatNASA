@@ -6,6 +6,7 @@
 
 from setuptools import setup
 
+# Package metadata stored in setup.cfg
 
 # Run setup
 setup()

@@ -42,7 +42,7 @@ name
     'plp'
 tag
     None supported
-sat_id
+inst_id
     None supported
 
 
@@ -56,42 +56,29 @@ Warnings
 
 import datetime as dt
 import functools
-import logging
 import numpy as np
 
+from pysat import logger
 from pysat.instruments.methods import general as mm_gen
+
 from pysatNASA.instruments.methods import cnofs as mm_cnofs
 from pysatNASA.instruments.methods import cdaweb as cdw
 
-logger = logging.getLogger(__name__)
+# ----------------------------------------------------------------------------
+# Instrument attributes
 
 platform = 'cnofs'
 name = 'plp'
 tags = {'': ''}
-sat_ids = {'': ['']}
+inst_ids = {'': ['']}
+
+# ----------------------------------------------------------------------------
+# Instrument test attributes
+
 _test_dates = {'': {'': dt.datetime(2009, 1, 1)}}
 
-
-# support list files routine
-# use the default CDAWeb method
-fname = 'cnofs_plp_plasma_1sec_{year:04d}{month:02d}{day:02d}_v01.cdf'
-supported_tags = {'': {'': fname}}
-list_files = functools.partial(mm_gen.list_files,
-                               supported_tags=supported_tags)
-# support load routine
-# use the default CDAWeb method
-load = cdw.load
-
-# support download routine
-# use the default CDAWeb method
-basic_tag = {'dir': '/pub/data/cnofs/plp/plasma_1sec',
-             'remote_fname': '{year:4d}/' + fname,
-             'local_fname': fname}
-supported_tags = {'': {'': basic_tag}}
-download = functools.partial(cdw.download, supported_tags)
-# support listing files currently on CDAWeb
-list_remote_files = functools.partial(cdw.list_remote_files,
-                                      supported_tags=supported_tags)
+# ----------------------------------------------------------------------------
+# Instrument methods
 
 
 def init(self):
@@ -108,14 +95,8 @@ def init(self):
     return
 
 
-def clean(inst):
+def clean(self):
     """Routine to return C/NOFS PLP data cleaned to the specified level
-
-    Parameters
-    -----------
-    inst : pysat.Instrument
-        Instrument class object, whose attribute clean_level is used to return
-        the desired level of data selectivity.
 
     Note
     ----
@@ -123,7 +104,35 @@ def clean(inst):
 
     """
 
-    for key in inst.data.columns:
+    for key in self.data.columns:
         if key != 'Epoch':
-            idx, = np.where(inst[key] == inst.meta[key, inst.fill_label])
-            inst[idx, key] = np.nan
+            fill = self.meta[key, self.meta.labels.fill_val][0]
+            idx, = np.where(self[key] == fill)
+            self[idx, key] = np.nan
+    return
+
+
+# ----------------------------------------------------------------------------
+# Instrument functions
+#
+# Use the default CDAWeb and pysat methods
+
+# Set the list_files routine
+fname = ''.join(('cnofs_plp_plasma_1sec_{year:04d}{month:02d}{day:02d}',
+                 '_v{version:02d}.cdf'))
+supported_tags = {'': {'': fname}}
+list_files = functools.partial(mm_gen.list_files,
+                               supported_tags=supported_tags)
+
+# Set the load routine
+load = cdw.load
+
+# Set the download routine
+basic_tag = {'remote_dir': '/pub/data/cnofs/plp/plasma_1sec/{year:4d}/',
+             'fname': fname}
+download_tags = {'': {'': basic_tag}}
+download = functools.partial(cdw.download, supported_tags=download_tags)
+
+# Set the list_remote_files routine
+list_remote_files = functools.partial(cdw.list_remote_files,
+                                      supported_tags=download_tags)

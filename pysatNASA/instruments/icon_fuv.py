@@ -34,7 +34,7 @@ ICON_L27_Ion_Density becomes Ion_Density.  To retain the original names, use
                            keep_original_names=True)
 
 Authors
----------
+-------
 Originated from EUV support.
 Jeff Klenzing, Mar 17, 2018, Goddard Space Flight Center
 Russell Stoneback, Mar 23, 2018, University of Texas at Dallas
@@ -44,50 +44,34 @@ Conversion to FUV, Oct 8th, 2028, University of Texas at Dallas
 
 import datetime as dt
 import functools
-import logging
 import warnings
 
 import pysat
 from pysat.instruments.methods import general as mm_gen
+
+from pysatNASA.instruments.methods import cdaweb as cdw
 from pysatNASA.instruments.methods import icon as mm_icon
 
+logger = pysat.logger
 
-logger = logging.getLogger(__name__)
+# ----------------------------------------------------------------------------
+# Instrument attributes
 
 platform = 'icon'
 name = 'fuv'
 tags = {'day': 'Level 2 daytime O/N2',
         'night': 'Level 2 nighttime O profile'}
-sat_ids = {'': ['day', 'night']}
-_test_dates = {'': {kk: dt.datetime(2020, 1, 1) for kk in tags.keys()}}
-_test_download_travis = {'': {kk: False for kk in tags.keys()}}
+inst_ids = {'': ['day', 'night']}
+
 pandas_format = False
 
-fname24 = ''.join(('ICON_L2-4_FUV_Day_{year:04d}-{month:02d}-{day:02d}_',
-                   'v{version:02d}r{revision:03d}.NC'))
-fname25 = ''.join(('ICON_L2-5_FUV_Night_{year:04d}-{month:02d}-{day:02d}_',
-                   'v{version:02d}r{revision:03d}.NC'))
-supported_tags = {'': {'day': fname24,
-                       'night': fname25}}
+# ----------------------------------------------------------------------------
+# Instrument test attributes
 
-# use the standard methods list files routine
-list_files = functools.partial(mm_gen.list_files,
-                               supported_tags=supported_tags)
+_test_dates = {'': {kk: dt.datetime(2020, 1, 1) for kk in tags.keys()}}
 
-# support download routine
-basic_tag24 = {'dir': '/pub/LEVEL.2/FUV',
-               'remote_fname': fname24}
-basic_tag25 = {'dir': '/pub/LEVEL.2/FUV',
-               'remote_fname': fname25}
-
-download_tags = {'': {'day': basic_tag24,
-                      'night': basic_tag25}}
-
-download = functools.partial(mm_icon.ssl_download, supported_tags=download_tags)
-
-# support listing files on SSL
-list_remote_files = functools.partial(mm_icon.list_remote_files,
-                                      supported_tags=download_tags)
+# ----------------------------------------------------------------------------
+# Instrument methods
 
 
 def init(self):
@@ -110,31 +94,66 @@ def init(self):
     return
 
 
-def default(inst):
-    """Default routine to be applied when loading data. Adjusts epoch timestamps
-    to datetimes and removes variable preambles.
+def preprocess(self, keep_original_names=False):
+    """Adjusts epoch timestamps to datetimes and removes variable preambles.
 
     Parameters
-    -----------
-    inst : pysat.Instrument
-        Instrument class object
+    ----------
+    keep_original_names : boolean
+        if True then the names as given in the netCDF ICON file
+        will be used as is. If False, a preamble is removed. (default=False)
 
     """
 
-    mm_gen.convert_timestamp_to_datetime(inst, sec_mult=1.0e-3)
-    if not inst.kwargs['keep_original_names']:
-        remove_preamble(inst)
+    mm_gen.convert_timestamp_to_datetime(self, sec_mult=1.0e-3)
+    if not keep_original_names:
+        mm_icon.remove_preamble(self)
+    return
 
 
-def remove_preamble(inst):
-    """Removes preambles in variable names"""
+def clean(self):
+    """Provides data cleaning based upon clean_level.
 
-    target = {'day': 'ICON_L24_',
-              'night': 'ICON_L25_'}
-    mm_gen.remove_leading_text(inst, target=target[inst.tag])
+    Note
+    ----
+        Supports 'clean', 'dusty', 'dirty', 'none'
+
+    """
+
+    warnings.warn("Cleaning actions for ICON FUV are not yet defined.")
+    return
 
 
-def load(fnames, tag=None, sat_id=None, keep_original_names=False):
+# ----------------------------------------------------------------------------
+# Instrument functions
+#
+# Use the ICON and pysat methods
+
+# Set the list_files routine
+fname24 = ''.join(('icon_l2-4_fuv_day_{year:04d}{month:02d}{day:02d}_',
+                   'v{version:02d}r{revision:03d}.nc'))
+fname25 = ''.join(('icon_l2-5_fuv_night_{year:04d}{month:02d}{day:02d}_',
+                   'v{version:02d}r{revision:03d}.nc'))
+supported_tags = {'': {'day': fname24, 'night': fname25}}
+
+list_files = functools.partial(mm_gen.list_files,
+                               supported_tags=supported_tags)
+
+# Set the download routine
+basic_tag24 = {'remote_dir': '/pub/data/icon/l2/l2-4_fuv_day/{year:04d}/',
+               'fname': fname24}
+basic_tag25 = {'remote_dir': '/pub/data/icon/l2/l2-5_fuv_night/{year:04d}/',
+               'fname': fname25}
+download_tags = {'': {'day': basic_tag24, 'night': basic_tag25}}
+
+download = functools.partial(cdw.download, supported_tags=download_tags)
+
+# Set the list_remote_files routine
+list_remote_files = functools.partial(cdw.list_remote_files,
+                                      supported_tags=download_tags)
+
+
+def load(fnames, tag=None, inst_id=None, keep_original_names=False):
     """Loads ICON FUV data using pysat into pandas.
 
     This routine is called as needed by pysat. It is not intended
@@ -148,7 +167,7 @@ def load(fnames, tag=None, sat_id=None, keep_original_names=False):
     tag : string
         tag name used to identify particular data set to be loaded.
         This input is nominally provided by pysat itself.
-    sat_id : string
+    inst_id : string
         Satellite ID used to identify particular data set to be loaded.
         This input is nominally provided by pysat itself.
     keep_original_names : boolean
@@ -157,9 +176,10 @@ def load(fnames, tag=None, sat_id=None, keep_original_names=False):
 
     Returns
     -------
-    data, metadata
-        Data and Metadata are formatted for pysat. Data is a pandas
-        DataFrame while metadata is a pysat.Meta instance.
+    data : xr.Dataset
+        An xarray Dataset with data prepared for the pysat.Instrument
+    meta : pysat.Meta
+        Metadata formatted for a pysat.Instrument object.
 
     Note
     ----
@@ -174,37 +194,12 @@ def load(fnames, tag=None, sat_id=None, keep_original_names=False):
         inst.load(2020, 1)
 
     """
+    labels = {'units': ('Units', str), 'name': ('Long_Name', str),
+              'notes': ('Var_Notes', str), 'desc': ('CatDesc', str),
+              'min_val': ('ValidMin', float),
+              'max_val': ('ValidMax', float), 'fill_val': ('FillVal', float)}
 
-    return pysat.utils.load_netcdf4(fnames, epoch_name='Epoch',
-                                    units_label='Units',
-                                    name_label='Long_Name',
-                                    notes_label='Var_Notes',
-                                    desc_label='CatDesc',
-                                    plot_label='FieldNam',
-                                    axis_label='LablAxis',
-                                    scale_label='ScaleTyp',
-                                    min_label='ValidMin',
-                                    max_label='ValidMax',
-                                    fill_label='FillVal',
-                                    pandas_format=pandas_format)
-
-
-def clean(inst):
-    """Provides data cleaning based upon clean_level.
-
-    Routine is called by pysat, and not by the end user directly.
-
-    Parameters
-    -----------
-    inst : pysat.Instrument
-        Instrument class object, whose attribute clean_level is used to return
-        the desired level of data selectivity.
-
-    Note
-    ----
-        Supports 'clean', 'dusty', 'dirty', 'none'
-
-    """
-
-    warnings.warn("Cleaning actions for ICON FUV are not yet defined.")
-    return
+    data, meta = pysat.utils.load_netcdf4(fnames, epoch_name='Epoch',
+                                          pandas_format=pandas_format,
+                                          labels=labels)
+    return data, meta

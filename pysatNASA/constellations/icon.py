@@ -1,19 +1,17 @@
+"""
+Creates a constellation from NASA the ICON satellite platform
+"""
+
 import pysat
-"""
-Creates a constellation from NASA ICON instrumentation
-"""
 
-# FIXME: syntax has changed since this was written.  Not imported
-ivm = pysat.Instrument('icon', 'ivm', sat_id='a', tag='level_2',
-                       clean_level='clean', update_files=True)
-euv = pysat.Instrument('icon', 'euv', sat_id='', tag='level_2',
-                       clean_level='clean', update_files=True)
-fuv = pysat.Instrument('icon', 'fuv', sat_id='', tag='level_2',
-                       clean_level='clean', update_files=True)
-mighti_green = pysat.Instrument('icon', 'mighti', sat_id='green',
-                                tag='level_2', clean_level='clean',
-                                update_files=True)
-mighti_red = pysat.Instrument('icon', 'mighti', sat_id='red', tag='level_2',
-                              clean_level='clean', update_files=True)
+from pysatNASA.instruments import icon_ivm, icon_euv, icon_fuv, icon_mighti
 
-instruments = [ivm, euv, fuv, mighti_green, mighti_red]
+instruments = list()
+
+for inst_mod in [icon_ivm, icon_euv, icon_fuv, icon_mighti]:
+    for inst_id in inst_mod.inst_ids.keys():
+        for tag in inst_mod.inst_ids[inst_id]:
+            # Skip over line of sight winds
+            if tag.find('los') == -1:
+                instruments.append(pysat.Instrument(inst_module=inst_mod,
+                                                    tag=tag, inst_id=inst_id))
