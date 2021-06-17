@@ -6,4 +6,3 @@ cdflib<0.3.20
 numpy
 pandas
 xarray
-pysat>=3.0.0
