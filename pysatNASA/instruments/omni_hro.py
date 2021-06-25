@@ -45,6 +45,7 @@ calculate_imf_steadiness
     Calculate the IMF steadiness using clock angle and magnitude in the YZ plane
 calculate_dayside_reconnection
     Calculate the dayside reconnection rate
+
 """
 
 import datetime as dt
@@ -56,6 +57,7 @@ import warnings
 
 from pysat import logger
 from pysat.instruments.methods import general as mm_gen
+
 from pysatNASA.instruments.methods import cdaweb as cdw
 
 # ----------------------------------------------------------------------------
@@ -256,7 +258,8 @@ def calculate_imf_steadiness(inst, steady_window=15, min_window_frac=0.75,
     """
 
     # We are not going to interpolate through missing values
-    sample_rate = int(inst.tag[0])
+    rates = {'': 1, '1min': 1, '5min': 5}
+    sample_rate = int(rates[inst.tag])
     max_wnum = np.floor(steady_window / sample_rate)
     if max_wnum != steady_window / sample_rate:
         steady_window = max_wnum * sample_rate
