@@ -5,5 +5,5 @@ lxml
 cdflib<0.3.20
 numpy
 pandas
-pysat
+pysat>=3.0.0
 xarray
