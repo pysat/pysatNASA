@@ -31,7 +31,7 @@ jobs:
     - name: Set up pysat
       run: |
         mkdir pysatData
-        python -c "import pysat; pysat.params['data_dirs'] = './pysatData'"
+        python -c "import pysat; pysat.params['data_dirs'] = 'pysatData'"
 
     - name: Check documentation build
       run: sphinx-build -E -b html docs dist/docs

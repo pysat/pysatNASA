@@ -2,7 +2,8 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
-## [] - xxxx-xx-xx
+## [0.0.3] - 2021-06-17
+* Include Windows tests in Github Actions
 * Bug Fixes
   * Expanded cleaning of ICON IVM ion drifts to more variables
 
