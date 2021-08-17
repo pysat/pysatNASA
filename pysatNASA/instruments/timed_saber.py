@@ -53,6 +53,7 @@ import warnings
 # CDAWeb methods prewritten for pysat
 from pysat import logger
 from pysat.instruments.methods import general as mm_gen
+
 from pysatNASA.instruments.methods import cdaweb as cdw
 
 # ----------------------------------------------------------------------------
@@ -86,7 +87,7 @@ def init(self):
 
     """
 
-    rules_url = 'http://saber.gats-inc.com/data_services.php'
+    rules_url = 'https://saber.gats-inc.com/data_services.php'
     ackn_str = ' '.join(('Please see the Rules of the Road at', rules_url))
 
     logger.info(ackn_str)
