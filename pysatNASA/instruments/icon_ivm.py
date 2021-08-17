@@ -43,6 +43,7 @@ import numpy as np
 import pysat
 from pysat import logger
 from pysat.instruments.methods import general as mm_gen
+
 from pysatNASA.instruments.methods import cdaweb as cdw
 from pysatNASA.instruments.methods import icon as mm_icon
 
@@ -122,11 +123,40 @@ def clean(self):
     # IVM variable groupings
     drift_variables = ['Ion_Velocity_X', 'Ion_Velocity_Zonal',
                        'Ion_Velocity_Meridional',
-                       'Ion_Velocity_Field_Aligned']
+                       'Ion_Velocity_Field_Aligned',
+                       'Equator_Ion_Velocity_Meridional',
+                       'Equator_Ion_Velocity_Zonal',
+                       'Footpoint_Zonal_Ion_Velocity_North',
+                       'Footpoint_Zonal_Ion_Velocity_South',
+                       'Footpoint_Meridional_Ion_Velocity_North',
+                       'Footpoint_Meridional_Ion_Velocity_South',
+                       'Ion_Velocity_East', 'Ion_Velocity_North',
+                       'Ion_Velocity_Up',
+                       'Footpoint_East_Ion_Velocity_North',
+                       'Footpoint_East_Ion_Velocity_South',
+                       'Footpoint_North_Ion_Velocity_North',
+                       'Footpoint_North_Ion_Velocity_South',
+                       'Footpoint_Up_Ion_Velocity_North',
+                       'Footpoint_Up_Ion_Velocity_South']
+
     cross_drift_variables = ['Ion_Velocity_Z', 'Ion_Velocity_Y',
                              'Ion_Velocity_Zonal',
                              'Ion_Velocity_Meridional',
-                             'Ion_Velocity_Field_Aligned']
+                             'Ion_Velocity_Field_Aligned',
+                             'Equator_Ion_Velocity_Meridional',
+                             'Equator_Ion_Velocity_Zonal',
+                             'Footpoint_Zonal_Ion_Velocity_North',
+                             'Footpoint_Zonal_Ion_Velocity_South',
+                             'Footpoint_Meridional_Ion_Velocity_North',
+                             'Footpoint_Meridional_Ion_Velocity_South',
+                             'Ion_Velocity_East', 'Ion_Velocity_North',
+                             'Ion_Velocity_Up',
+                             'Footpoint_East_Ion_Velocity_North',
+                             'Footpoint_East_Ion_Velocity_South',
+                             'Footpoint_North_Ion_Velocity_North',
+                             'Footpoint_North_Ion_Velocity_South',
+                             'Footpoint_Up_Ion_Velocity_North',
+                             'Footpoint_Up_Ion_Velocity_South']
     rpa_variables = ['Ion_Temperature', 'Ion_Density',
                      'Fractional_Ion_Density_H',
                      'Fractional_Ion_Density_O']
@@ -226,6 +256,7 @@ def load(fnames, tag=None, inst_id=None, keep_original_names=False):
         inst.load(2020, 1)
 
     """
+
     labels = {'units': ('Units', str), 'name': ('Long_Name', str),
               'notes': ('Var_Notes', str), 'desc': ('CatDesc', str),
               'min_val': ('ValidMin', float),
