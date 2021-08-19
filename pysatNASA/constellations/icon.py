@@ -1,6 +1,4 @@
-"""
-Creates a constellation from NASA the ICON satellite platform
-"""
+"""Creates a constellation from NASA the ICON satellite platform."""
 
 import pysat
 

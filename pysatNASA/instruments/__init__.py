@@ -1,3 +1,10 @@
+# -*- coding: utf-8 -*-
+"""Collection of instruments for the pysatNASA library.
+
+Each instrument is contained within a subpackage of this set.
+
+"""
+
 __all__ = ['cnofs_ivm', 'cnofs_plp', 'cnofs_vefi',
            'de2_lang', 'de2_nacs', 'de2_rpa', 'de2_wats',
            'formosat1_ivm',
