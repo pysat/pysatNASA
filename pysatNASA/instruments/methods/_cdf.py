@@ -37,8 +37,8 @@ def convert_ndimensional(data, index=None, columns=None):
                          columns=columns, index=index)
 
 
-class CDF():
-    """cdflib wrapper for loading time series data
+class CDF(object):
+    """Wraps cdflib for loading time series data.
 
     Loading routines borrow heavily from pyspedas's cdf_to_tplot function
 
