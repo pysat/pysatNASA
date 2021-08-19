@@ -1,3 +1,5 @@
+"""Unit tests for OMNI HRO special functions."""
+
 import datetime as dt
 import numpy as np
 
@@ -7,9 +9,12 @@ import pysat
 from pysatNASA.instruments import omni_hro
 
 
-class TestOMNICustom():
+class TestOMNICustom(object):
+    """Unit tests for `pysat.instrument.methods.cdaweb`."""
+
     def setup(self):
-        """Runs before every method to create a clean testing setup."""
+        """Set up the unit test environment for each method."""
+
         # Load a test instrument
         self.testInst = pysat.Instrument('pysat', 'testing', tag='',
                                          num_samples=12, clean_level='clean')
@@ -51,19 +56,16 @@ class TestOMNICustom():
                         412.581021, 440.641671,
                         287.780562, 58.539121],
                        index=self.testInst.data.index)
+        return
 
     def teardown(self):
-        """Runs after every method to clean up previous testing."""
-        del self.testInst
+        """Clean up the unit test environment after each method."""
 
-    # def test_time_shift_to_magnetic_poles(self):
-    #     """Test time shift of OMNI data"""
-    #     pysat.instruments.omni_hro.time_shift_to_magnetic_poles(self.testInst)
-    #
-    #     assert True
+        del self.testInst
+        return
 
     def test_clock_angle(self):
-        """ Test clock angle."""
+        """Test results of calculate_clock_angle."""
 
         # Run the clock angle routine
         omni_hro.calculate_clock_angle(self.testInst)
@@ -77,9 +79,10 @@ class TestOMNICustom():
         # Test the difference.  There may be a 2 pi integer ambiguity
         test_diff = abs(test_angle - self.testInst['clock_angle'])
         assert np.all(test_diff < 1.0e-8)
+        return
 
     def test_yz_plane_mag(self):
-        """ Test the Byz plane magnitude calculation."""
+        """Test the Byz plane magnitude calculation."""
 
         # Run the clock angle routine
         omni_hro.calculate_clock_angle(self.testInst)
@@ -92,9 +95,10 @@ class TestOMNICustom():
         # Test the difference
         test_diff = abs(test_mag - self.testInst['BYZ_GSM'])
         assert np.all(test_diff < 1.0e-8)
+        return
 
     def test_yz_plane_cv(self):
-        """ Test the IMF steadiness CV calculation."""
+        """Test the IMF steadiness CV calculation."""
 
         # Run the clock angle and steadiness routines
         omni_hro.calculate_clock_angle(self.testInst)
@@ -112,9 +116,10 @@ class TestOMNICustom():
         assert test_diff[np.isnan(test_diff)].shape[0] == 2
         assert np.all(test_diff[~np.isnan(test_diff)] < 1.0e-6)
         assert np.all(np.isnan(self.testInst['BYZ_CV']) == np.isnan(byz_cv))
+        return
 
     def test_clock_angle_std(self):
-        """ Test the IMF steadiness standard deviation calculation."""
+        """Test the IMF steadiness standard deviation calculation."""
 
         # Run the clock angle and steadiness routines
         omni_hro.calculate_clock_angle(self.testInst)
@@ -133,9 +138,10 @@ class TestOMNICustom():
         assert np.all(test_diff[~np.isnan(test_diff)] < 1.0e-6)
         assert np.all(np.isnan(self.testInst['clock_angle_std'])
                       == np.isnan(ca_std))
+        return
 
     def test_dayside_recon(self):
-        """ Test the IMF steadiness standard deviation calculation."""
+        """Test the IMF steadiness standard deviation calculation."""
 
         # Run the clock angle and steadiness routines
         omni_hro.calculate_clock_angle(self.testInst)
@@ -151,3 +157,4 @@ class TestOMNICustom():
 
         assert test_diff.shape[0] == 12
         assert np.all(test_diff < 1.0e-6)
+        return
