@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
-"""Supports the Langmuir Probe (LANG) instrument on
-Dynamics Explorer 2 (DE2).
+"""Module for the DE2 LANG instrument.
+
+Supports the Langmuir Probe (LANG) instrument on Dynamics Explorer 2 (DE2).
 
 From CDAWeb:
 
@@ -81,7 +82,7 @@ _test_dates = {'': {'': dt.datetime(1983, 1, 1)}}
 
 
 def init(self):
-    """Initializes the Instrument object with instrument specific values.
+    """Initialize the Instrument object with instrument specific values.
 
     Runs once upon instantiation.
 
@@ -94,7 +95,7 @@ def init(self):
 
 
 def clean(self):
-    """Routine to return DE2 LANG data cleaned to the specified level
+    """Clean DE2 LANG data to the specified level.
 
     Note
     ----

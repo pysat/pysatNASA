@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
-"""Supports the Far Ultraviolet (FUV) imager onboard the Ionospheric
+"""Module for the ICON FUV instrument.
+
+Supports the Far Ultraviolet (FUV) imager onboard the Ionospheric
 CONnection Explorer (ICON) satellite.  Accesses local data in
 netCDF format.
 
@@ -75,7 +77,7 @@ _test_dates = {'': {kk: dt.datetime(2020, 1, 1) for kk in tags.keys()}}
 
 
 def init(self):
-    """Initializes the Instrument object with instrument specific values.
+    """Initialize the Instrument object with instrument specific values.
 
     Runs once upon instantiation.
 
@@ -95,7 +97,7 @@ def init(self):
 
 
 def preprocess(self, keep_original_names=False):
-    """Adjusts epoch timestamps to datetimes and removes variable preambles.
+    """Adjust epoch timestamps to datetimes and remove variable preambles.
 
     Parameters
     ----------
@@ -112,7 +114,7 @@ def preprocess(self, keep_original_names=False):
 
 
 def clean(self):
-    """Provides data cleaning based upon clean_level.
+    """Clean ICON FUV data to the specified level.
 
     Note
     ----
@@ -154,7 +156,7 @@ list_remote_files = functools.partial(cdw.list_remote_files,
 
 
 def load(fnames, tag=None, inst_id=None, keep_original_names=False):
-    """Loads ICON FUV data using pysat into pandas.
+    """Load ICON FUV data using pysat into xarray.
 
     This routine is called as needed by pysat. It is not intended
     for direct user interaction.

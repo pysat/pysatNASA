@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
-"""Supports the Floating Potential Measurement Unit
+"""Module for the ISS FPMU instrument.
+
+Supports the Floating Potential Measurement Unit
 (FPMU) instrument onboard the International Space
 Station (ISS). Downloads data from the NASA
 Coordinated Data Analysis Web (CDAWeb).
@@ -49,7 +51,7 @@ _test_dates = {'': {'': dt.datetime(2017, 10, 1)}}
 
 
 def init(self):
-    """Initializes the Instrument object with instrument specific values.
+    """Initialize the Instrument object with instrument specific values.
 
     Runs once upon instantiation.
 
@@ -78,7 +80,7 @@ def init(self):
 
 
 def clean(self):
-    """Return FPMU data cleaned to the specified level.
+    """Clean ISS FPMU data to the specified level.
 
     Note
     ----

@@ -1,4 +1,6 @@
-"""Supports the Nmax data product from the Global Observations of the Limb and
+"""Module for the SES14 GOLD instrument.
+
+Supports the Nmax data product from the Global Observations of the Limb and
 Disk (GOLD) satellite.  Accesses data in netCDF format.
 
 Properties
@@ -65,7 +67,7 @@ _test_dates = {'': {'nmax': dt.datetime(2020, 1, 1)}}
 
 
 def init(self):
-    """Initializes the Instrument object with instrument specific values.
+    """Initialize the Instrument object with instrument specific values.
 
     Runs once upon instantiation.
 
@@ -89,7 +91,7 @@ def init(self):
 
 
 def clean(self):
-    """Provides data cleaning based upon clean_level.
+    """Clean SES14 GOLD data to the specified level.
 
     Routine is called by pysat, and not by the end user directly.
 
@@ -136,7 +138,7 @@ list_remote_files = functools.partial(cdw.list_remote_files,
 
 
 def load(fnames, tag=None, inst_id=None):
-    """Loads GOLD NMAX data using pysat into xarray
+    """Load GOLD NMAX data using pysat into xarray.
 
     This routine is called as needed by pysat. It is not intended
     for direct user interaction.

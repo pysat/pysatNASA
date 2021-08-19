@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
-"""Supports the Ion Velocity Meter (IVM) onboard the Formosat-1 (formerly
+"""Module for the ICON EUV instrument.
+
+Supports the Ion Velocity Meter (IVM) onboard the Formosat-1 (formerly
 ROCSAT-1) mission. Downloads data from the NASA Coordinated Data Analysis
 Web (CDAWeb).
 
@@ -47,7 +49,7 @@ _test_dates = {'': {'': dt.datetime(2002, 1, 1)}}
 
 
 def init(self):
-    """Initializes the Instrument object with instrument specific values.
+    """Initialize the Instrument object with instrument specific values.
 
     Runs once upon instantiation.
 
@@ -73,7 +75,7 @@ def init(self):
 
 
 def clean(self):
-    """Routine to return FORMOSAT-1 IVM data cleaned to the specified level
+    """Clean FORMOSAT-1 IVM data to the specified level.
 
     Note
     ----

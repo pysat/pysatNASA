@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
-"""Supports the Ion Velocity Meter (IVM) onboard the Communication
+"""Module for the C/NOFS IVM instrument.
+
+Supports the Ion Velocity Meter (IVM) onboard the Communication
 and Navigation Outage Forecasting System (C/NOFS) satellite, part
 of the Coupled Ion Netural Dynamics Investigation (CINDI). Downloads
 data from the NASA Coordinated Data Analysis Web (CDAWeb) in CDF
@@ -81,7 +83,7 @@ _test_dates = {'': {'': dt.datetime(2009, 1, 1)}}
 
 
 def init(self):
-    """Initializes the Instrument object with instrument specific values.
+    """Initialize the Instrument object with instrument specific values.
 
     Runs once upon instantiation.
 
@@ -95,7 +97,7 @@ def init(self):
 
 
 def preprocess(self):
-    """Apply C/NOFS IVM default attributes
+    """Apply C/NOFS IVM default attributes.
 
     Note
     ----
@@ -109,7 +111,7 @@ def preprocess(self):
 
 
 def clean(self):
-    """Routine to return C/NOFS IVM data cleaned to the specified level
+    """Clean C/NOFS IVM data to the specified level.
 
     Note
     ----

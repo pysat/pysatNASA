@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
-"""Supports OMNI Combined, Definitive, IMF and Plasma Data, and Energetic
+"""Module for the OMNI HRO instrument.
+
+Supports OMNI Combined, Definitive, IMF and Plasma Data, and Energetic
 Proton Fluxes, Time-Shifted to the Nose of the Earth's Bow Shock, plus Solar
 and Magnetic Indices. Downloads data from the NASA Coordinated Data Analysis
 Web (CDAWeb). Supports both 5 and 1 minute files.
@@ -80,7 +82,7 @@ _test_dates = {'': {'1min': dt.datetime(2009, 1, 1),
 
 
 def init(self):
-    """Initializes the Instrument object with instrument specific values.
+    """Initialize the Instrument object with instrument specific values.
 
     Runs once upon instantiation.
 
@@ -100,7 +102,7 @@ def init(self):
 
 
 def clean(self):
-    """ Cleaning function for OMNI data
+    """Clean OMNI HRO data to the specified level.
 
     Note
     ----
@@ -164,8 +166,7 @@ list_remote_files = functools.partial(cdw.list_remote_files,
 
 
 def time_shift_to_magnetic_poles(inst):
-    """ OMNI data is time-shifted to bow shock. Time shifted again
-    to intersections with magnetic pole.
+    """Shift OMNI times to intersection with the magnetic pole.
 
     Parameters
     ----------
@@ -174,8 +175,10 @@ def time_shift_to_magnetic_poles(inst):
 
     Note
     ----
-    Time shift calculated using distance to bow shock nose (BSN)
-    and velocity of solar wind along x-direction.
+    - Time shift calculated using distance to bow shock nose (BSN)
+      and velocity of solar wind along x-direction.
+    - OMNI data is time-shifted to bow shock. Time shifted again
+      to intersections with magnetic pole.
 
     Warnings
     --------
@@ -212,7 +215,7 @@ def time_shift_to_magnetic_poles(inst):
 
 
 def calculate_clock_angle(inst):
-    """ Calculate IMF clock angle and magnitude of IMF in GSM Y-Z plane
+    """Calculate IMF clock angle and magnitude of IMF in GSM Y-Z plane.
 
     Parameters
     -----------
@@ -237,8 +240,7 @@ def calculate_clock_angle(inst):
 def calculate_imf_steadiness(inst, steady_window=15, min_window_frac=0.75,
                              max_clock_angle_std=(90.0 / np.pi),
                              max_bmag_cv=0.5):
-    """ Calculate IMF steadiness using clock angle standard deviation and
-    the coefficient of variation of the IMF magnitude in the GSM Y-Z plane
+    """Calculate IMF steadiness and add parameters to instrument data.
 
     Parameters
     ----------
@@ -254,6 +256,11 @@ def calculate_imf_steadiness(inst, steady_window=15, min_window_frac=0.75,
     max_bmag_cv : float
         Maximum coefficient of variation of the IMF magnitude in the GSM
         Y-Z plane (default=0.5)
+
+    Note
+    ----
+    Uses clock angle standard deviation and the coefficient of variation of
+    the IMF magnitude in the GSM Y-Z plane
 
     """
 
@@ -323,7 +330,7 @@ def calculate_imf_steadiness(inst, steady_window=15, min_window_frac=0.75,
 
 
 def calculate_dayside_reconnection(inst):
-    """ Calculate the dayside reconnection rate (Milan et al. 2014)
+    """Calculate the dayside reconnection rate (Milan et al. 2014).
 
     Parameters
     ----------
