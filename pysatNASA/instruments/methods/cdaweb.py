@@ -12,9 +12,9 @@ import requests
 
 from bs4 import BeautifulSoup
 
+from pysat.instruments.methods import general
 from pysat import logger
 from pysat.utils import files as futils
-from pysat.instruments.methods import general
 from pysatNASA.instruments.methods import CDF
 
 

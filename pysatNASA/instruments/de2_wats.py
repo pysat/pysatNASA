@@ -76,11 +76,11 @@ import datetime as dt
 import functools
 import warnings
 
-from pysat import logger
 from pysat.instruments.methods import general as mm_gen
+from pysat import logger
 
-from pysatNASA.instruments.methods import de2 as mm_de2
 from pysatNASA.instruments.methods import cdaweb as cdw
+from pysatNASA.instruments.methods import de2 as mm_de2
 
 # ----------------------------------------------------------------------------
 # Instrument attributes
