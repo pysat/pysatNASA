@@ -51,8 +51,8 @@ import functools
 import warnings
 
 # CDAWeb methods prewritten for pysat
-from pysat import logger
 from pysat.instruments.methods import general as mm_gen
+from pysat import logger
 
 from pysatNASA.instruments.methods import cdaweb as cdw
 

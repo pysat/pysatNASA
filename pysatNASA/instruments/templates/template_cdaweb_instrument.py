@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-"""This is a template for a pysat.Instrument support file that
-utilizes CDAWeb methods. Copy and modify this file as needed when adding a
-new Instrument to pysat.
+"""Template for a pysat.Instrument support file that utilizes CDAWeb methods.
+
+Copy and modify this file as needed when adding a new Instrument to pysat.
 
 This is a good area to introduce the instrument, provide background
 on the mission, operations, instrumenation, and measurements.
@@ -47,8 +47,8 @@ import datetime as dt
 import functools
 
 # CDAWeb methods prewritten for pysat
-from pysat.instruments.methods import nasa_cdaweb as cdw
 from pysat.instruments.methods import general as mm_gen
+from pysatNASA.instruments.methods import cdaweb as cdw
 
 # the platform and name strings associated with this instrument
 # need to be defined at the top level
@@ -127,8 +127,8 @@ list_remote_files = functools.partial(cdw.list_remote_files,
 
 
 # code should be defined below as needed
-def default(self):
-    """Default customization function.
+def preprocess(self):
+    """Perform standard preprocessing.
 
     This routine is automatically applied to the Instrument object
     on every load by the pysat nanokernel (first in queue).
@@ -145,7 +145,7 @@ def default(self):
 
 # code should be defined below as needed
 def clean(inst):
-    """Routine to return PLATFORM/NAME data cleaned to the specified level
+    """Return `platform_name` data to the specified level..
 
     Cleaning level is specified in inst.clean_level and pysat
     will accept user input for several strings. The clean_level is

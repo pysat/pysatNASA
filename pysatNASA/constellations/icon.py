@@ -1,10 +1,11 @@
-"""
-Creates a constellation from NASA the ICON satellite platform
-"""
+"""Creates a constellation from NASA the ICON satellite platform."""
 
 import pysat
 
-from pysatNASA.instruments import icon_ivm, icon_euv, icon_fuv, icon_mighti
+from pysatNASA.instruments import icon_euv
+from pysatNASA.instruments import icon_fuv
+from pysatNASA.instruments import icon_ivm
+from pysatNASA.instruments import icon_mighti
 
 instruments = list()
 

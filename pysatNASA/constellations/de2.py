@@ -1,9 +1,8 @@
+"""Creates a constellation from the NASA DE2 satellite platform."""
+
 import pysat
 
 from pysatNASA import instruments
-"""
-Creates a constellation from the NASA DE2 satellite platform
-"""
 
 
 lang = pysat.Instrument(inst_module=instruments.de2_lang)
