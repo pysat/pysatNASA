@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Module for the C/NOFS PLP innstrument.
+"""Module for the C/NOFS PLP instrument.
 
 Supports the Planar Langmuir Probe (PLP) onboard the Communication
 and Navigation Outage Forecasting System (C/NOFS) satellite. Downloads
