@@ -275,7 +275,7 @@ list_remote_files = functools.partial(cdw.list_remote_files,
 
 
 def load(fnames, tag=None, inst_id=None, keep_original_names=False):
-    """Load ICON FUV data into xarray.Dataset and pysat.Meta objects.
+    """Load ICON MIGHTI data into `xarray.Dataset` and `pysat.Meta` objects.
 
     This routine is called as needed by pysat. It is not intended
     for direct user interaction.
