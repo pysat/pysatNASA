@@ -65,7 +65,7 @@ _test_dates = {'': {'': dt.datetime(2009, 1, 1)}}
 
 
 def init(self):
-    """Initializes the Instrument object with instrument specific values.
+    """Initialize the Instrument object with instrument specific values.
 
     Runs once upon instantiation.
 
@@ -88,7 +88,7 @@ def init(self):
 
 
 def clean(self):
-    """Routine to return TIMED SEE data cleaned to the specified level
+    """Clean TIMED SEE data to the specified level.
 
     Note
     ----

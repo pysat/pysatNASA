@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
-"""Supports the Planar Langmuir Probe (PLP) onboard the Communication
+"""Module for the C/NOFS PLP instrument.
+
+Supports the Planar Langmuir Probe (PLP) onboard the Communication
 and Navigation Outage Forecasting System (C/NOFS) satellite. Downloads
 data from the NASA Coordinated Data Analysis Web (CDAWeb).
 
@@ -82,7 +84,7 @@ _test_dates = {'': {'': dt.datetime(2009, 1, 1)}}
 
 
 def init(self):
-    """Initializes the Instrument object with instrument specific values.
+    """Initialize the Instrument object with instrument specific values.
 
     Runs once upon instantiation.
 
@@ -96,7 +98,7 @@ def init(self):
 
 
 def clean(self):
-    """Routine to return C/NOFS PLP data cleaned to the specified level
+    """Clean C/NOFS PLP data to the specified level.
 
     Note
     ----

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Provides non-instrument specific routines for DE2 data"""
+"""Provides non-instrument specific routines for DE2 data."""
 
 ackn_str = "The Dynamics Explorer 2 satellite data is provided through CDAWeb"
 

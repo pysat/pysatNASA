@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
+"""Module for the ICON IVM instrument.
 
-"""Supports the Ion Velocity Meter (IVM)
-onboard the Ionospheric Connections (ICON) Explorer.
+Supports the Ion Velocity Meter (IVM) onboard the Ionospheric Connections
+(ICON) Explorer.
 
 Properties
 ----------
@@ -76,7 +77,7 @@ _password_req = {'b': {kk: True for kk in tags.keys()}}
 
 
 def init(self):
-    """Initializes the Instrument object with instrument specific values.
+    """Initialize the Instrument object with instrument specific values.
 
     Runs once upon instantiation.
 
@@ -96,7 +97,7 @@ def init(self):
 
 
 def preprocess(self, keep_original_names=False):
-    """Removes variable preambles.
+    """Remove variable preambles.
 
     Parameters
     ----------
@@ -112,7 +113,7 @@ def preprocess(self, keep_original_names=False):
 
 
 def clean(self):
-    """Provides data cleaning based upon clean_level.
+    """Clean ICON IVM data to the specified level.
 
     Note
     ----
@@ -216,7 +217,7 @@ list_remote_files = functools.partial(cdw.list_remote_files,
 
 
 def load(fnames, tag=None, inst_id=None, keep_original_names=False):
-    """Loads ICON IVM data using pysat into pandas.
+    """Load ICON IVM data into `pandas.DataFrame` and `pysat.Meta` objects.
 
     This routine is called as needed by pysat. It is not intended
     for direct user interaction.

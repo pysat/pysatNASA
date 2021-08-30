@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
-"""Provides default routines for integrating NASA CDAWeb instruments into
-pysat. Adding new CDAWeb datasets should only require mininal user
-intervention.
+"""Provides default routines for NASA CDAWeb instruments into pysat.
+
+Note
+----
+Adding new CDAWeb datasets should only require mininal user intervention.
 
 """
 
@@ -113,7 +115,7 @@ def load(fnames, tag=None, inst_id=None, file_cadence=dt.timedelta(days=1),
 
 def download(date_array, tag=None, inst_id=None, supported_tags=None,
              remote_url='https://cdaweb.gsfc.nasa.gov', data_path=None):
-    """Routine to download NASA CDAWeb CDF data.
+    """Download NASA CDAWeb CDF data.
 
     This routine is intended to be used by pysat instrument modules supporting
     a particular NASA CDAWeb dataset.

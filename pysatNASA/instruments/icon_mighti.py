@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
-"""Supports the Michelson Interferometer for Global High-resolution
+"""Module for the ICON MIGHTI instrument.
+
+Supports the Michelson Interferometer for Global High-resolution
 Thermospheric Imaging (MIGHTI) instrument onboard the Ionospheric
 CONnection Explorer (ICON) satellite.  Accesses local data in
 netCDF format.
@@ -93,7 +95,7 @@ _test_dates = {jj: {kk: dt.datetime(2020, 1, 2) for kk in inst_ids[jj]}
 
 
 def init(self):
-    """Initializes the Instrument object with instrument specific values.
+    """Initialize the Instrument object with instrument specific values.
 
     Runs once upon instantiation.
 
@@ -113,7 +115,7 @@ def init(self):
 
 
 def preprocess(self, keep_original_names=False):
-    """Adjusts epoch timestamps to datetimes and removes variable preambles.
+    """Adjust epoch timestamps to datetimes and remove variable preambles.
 
     Parameters
     ----------
@@ -130,7 +132,7 @@ def preprocess(self, keep_original_names=False):
 
 
 def clean(self):
-    """Provides data cleaning based upon clean_level.
+    """Clean ICON MIGHTI data to the specified level.
 
     Note
     ----
@@ -139,7 +141,7 @@ def clean(self):
     """
 
     def _clean_vars(var_list, flag, min_level):
-        """Cleans parameters in a list according to standard flags
+        """Clean parameters in a list according to standard flags.
 
         Parameters
         ----------
@@ -273,7 +275,7 @@ list_remote_files = functools.partial(cdw.list_remote_files,
 
 
 def load(fnames, tag=None, inst_id=None, keep_original_names=False):
-    """Loads ICON FUV data using pysat into pandas.
+    """Load ICON MIGHTI data into `xarray.Dataset` and `pysat.Meta` objects.
 
     This routine is called as needed by pysat. It is not intended
     for direct user interaction.
