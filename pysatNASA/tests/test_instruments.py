@@ -13,8 +13,8 @@ import pysatNASA
 from pysat.tests.instrument_test_class import InstTestClass
 
 # Tell the standard tests which instruments to run each test on.
-InstTestClass.apply_marks_to_tests(InstTestClass,
-                                   inst_loc=pysatNASA.instruments)
+InstTestClass.initialize_test_package(InstTestClass,
+                                      inst_loc=pysatNASA.instruments)
 
 
 class TestInstruments(InstTestClass):
