@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [0.0.4] - 2021-XX-XX
 * Include flake8 linting of docstrings and style in Github Actions
+* Maintenance
+  * Removed dummy vars after importing instruments and constellations
 
 ## [0.0.3] - 2021-06-17
 * Include Windows tests in Github Actions
