@@ -4,6 +4,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [0.0.4] - 2021-XX-XX
 * Include flake8 linting of docstrings and style in Github Actions
+* Fixed a bug in loading ICON IVM data (added multi_file_day = True)
 * Maintenance
   * Removed dummy vars after importing instruments and constellations
 
