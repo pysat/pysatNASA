@@ -10,14 +10,14 @@ Imports test methods from pysat.tests.instrument_test_class
 import pysatNASA
 
 # Import the test classes from pysat
-from pysat.tests.instrument_test_class import InstTestClass
+from pysat.tests.classes.cls_instrument_library import InstLibTests
 
 # Tell the standard tests which instruments to run each test on.
-InstTestClass.initialize_test_package(InstTestClass,
-                                      inst_loc=pysatNASA.instruments)
+InstLibTests.initialize_test_package(InstLibTests,
+                                     inst_loc=pysatNASA.instruments)
 
 
-class TestInstruments(InstTestClass):
+class TestInstruments(InstLibTests):
     """Main class for instrument tests.
 
     Note
