@@ -89,6 +89,8 @@ pandas_format = False
 
 _test_dates = {jj: {kk: dt.datetime(2020, 1, 2) for kk in inst_ids[jj]}
                for jj in inst_ids.keys()}
+_test_load_opt = {jj: {kk: {'keep_original_names': True} for kk in inst_ids[jj]}
+                  for jj in inst_ids.keys()}
 
 # ----------------------------------------------------------------------------
 # Instrument methods

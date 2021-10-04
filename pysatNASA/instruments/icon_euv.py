@@ -67,6 +67,7 @@ pandas_format = False
 # Instrument test attributes
 
 _test_dates = {'': {'': dt.datetime(2020, 1, 1)}}
+_test_load_opt = {'': {'': {'keep_original_names': True}}}
 
 # ----------------------------------------------------------------------------
 # Instrument methods

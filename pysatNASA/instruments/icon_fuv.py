@@ -71,6 +71,7 @@ pandas_format = False
 # Instrument test attributes
 
 _test_dates = {'': {kk: dt.datetime(2020, 1, 1) for kk in tags.keys()}}
+_test_load_opt = {'': {kk: {'keep_original_names': True} for kk in tags.keys()}}
 
 # ----------------------------------------------------------------------------
 # Instrument methods
