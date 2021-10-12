@@ -14,3 +14,6 @@ __all__ = ['cnofs_ivm', 'cnofs_plp', 'cnofs_vefi',
 
 for inst in __all__:
     exec("from pysatNASA.instruments import {x}".format(x=inst))
+
+# Remove dummy variable
+del inst

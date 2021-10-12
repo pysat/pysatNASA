@@ -62,7 +62,7 @@ tags = {'': 'Level 2 public geophysical data'}
 # is not available as of Jun 26 2020, as this mode has not yet been engaged.
 # Bypassing tests and warning checks via the password_req flag
 inst_ids = {'a': [''], 'b': ['']}
-
+multi_file_day = True
 
 # ----------------------------------------------------------------------------
 # Instrument test attributes
