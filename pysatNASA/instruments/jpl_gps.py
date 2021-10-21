@@ -41,7 +41,7 @@ pandas_format = False
 # ----------------------------------------------------------------------------
 # Instrument test attributes
 
-_test_dates = {'': {'': dt.datetime(2013, 1, 1)}}
+_test_dates = {'': {'roti': dt.datetime(2013, 1, 1)}}
 
 # ----------------------------------------------------------------------------
 # Instrument methods
