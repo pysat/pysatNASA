@@ -215,6 +215,25 @@ download = functools.partial(cdw.download, supported_tags=download_tags)
 list_remote_files = functools.partial(cdw.list_remote_files,
                                       supported_tags=download_tags)
 
+def filter_metadata(meta_dict):
+    """Filter IVM metadata to remove warnings during loading.
+
+    Parameters
+    ----------
+    meta_dict : dict
+        Dictionary of metadata from file.
+
+    Returns
+    -------
+    dict
+        Filtered IVM metadata.
+
+    """
+
+    meta_dict['ICON_L27_UTC_Time']['ValidMax'] = np.inf
+    meta_dict['ICON_L27_UTC_Time']['ValidMin'] = 0
+
+    return meta_dict
 
 def load(fnames, tag=None, inst_id=None, keep_original_names=False):
     """Load ICON IVM data into `pandas.DataFrame` and `pysat.Meta` objects.
@@ -263,7 +282,10 @@ def load(fnames, tag=None, inst_id=None, keep_original_names=False):
               'min_val': ('ValidMin', float),
               'max_val': ('ValidMax', float), 'fill_val': ('FillVal', float)}
 
-    data, meta = pysat.utils.load_netcdf4(fnames, epoch_name='Epoch',
-                                          labels=labels)
+    data, meta = pysat.utils.io.load_netcdf(fnames, epoch_name='Epoch',
+                                            labels=labels,
+                                            meta_processor=filter_metadata,
+                                            drop_meta_labels=['Valid_Max',
+                                                              'Valid_Min'])
 
     return data, meta
