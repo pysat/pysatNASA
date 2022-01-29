@@ -46,6 +46,7 @@ Conversion to FUV, Oct 8th, 2028, University of Texas at Dallas
 
 import datetime as dt
 import functools
+import numpy as np
 import warnings
 
 import pysat
@@ -122,7 +123,7 @@ def clean(self):
 
     """
 
-    warnings.warn("Cleaning actions for ICON FUV are not yet defined.")
+    logger.warning("Cleaning actions for ICON FUV are not yet defined.")
     return
 
 
@@ -153,6 +154,36 @@ download = functools.partial(cdw.download, supported_tags=download_tags)
 # Set the list_remote_files routine
 list_remote_files = functools.partial(cdw.list_remote_files,
                                       supported_tags=download_tags)
+
+
+def filter_metadata(meta_dict):
+    """Filter FUV metadata to remove warnings during loading.
+
+    Parameters
+    ----------
+    meta_dict : dict
+        Dictionary of metadata from file.
+
+    Returns
+    -------
+    dict
+        Filtered FUV metadata.
+
+    """
+
+    vars = ['ICON_L24_UTC_Time', 'ICON_L25_Inversion_Method']
+    for var in vars:
+        if var in meta_dict:
+            meta_dict[var]['FillVal'] = np.nan
+
+    vars = ['ICON_L25_Start_Times', 'ICON_L25_Stop_Times', 'ICON_L25_UTC_Time']
+    for var in vars:
+        if var in meta_dict:
+            meta_dict[var]['FillVal'] = np.nan
+            meta_dict[var]['ValidMin'] = np.nan
+            meta_dict[var]['ValidMax'] = np.nan
+
+    return meta_dict
 
 
 def load(fnames, tag=None, inst_id=None, keep_original_names=False):
@@ -201,7 +232,12 @@ def load(fnames, tag=None, inst_id=None, keep_original_names=False):
               'min_val': ('ValidMin', float),
               'max_val': ('ValidMax', float), 'fill_val': ('FillVal', float)}
 
-    data, meta = pysat.utils.load_netcdf4(fnames, epoch_name='Epoch',
-                                          pandas_format=pandas_format,
-                                          labels=labels)
+    data, meta = pysat.utils.io.load_netcdf(fnames, epoch_name='Epoch',
+                                            pandas_format=pandas_format,
+                                            labels=labels,
+                                            meta_processor=filter_metadata,
+                                            drop_meta_labels=['Valid_Max',
+                                                              'Valid_Min',
+                                                              'Valid_Range0',
+                                                              'Valid_Range1'])
     return data, meta

@@ -60,6 +60,7 @@ transfered to SPDF.
 
 import datetime as dt
 import functools
+import numpy as np
 
 import pysat
 from pysat.instruments.methods import general as mm_gen
@@ -274,6 +275,30 @@ list_remote_files = functools.partial(cdw.list_remote_files,
                                       supported_tags=download_tags)
 
 
+def filter_metadata(meta_dict):
+    """Filter FUV metadata to remove warnings during loading.
+
+    Parameters
+    ----------
+    meta_dict : dict
+        Dictionary of metadata from file.
+
+    Returns
+    -------
+    dict
+        Filtered FUV metadata.
+
+    """
+
+    vars = ['ICON_L22_UTC_Time', 'ICON_L21_Top_Layer_Model',
+            'ICON_L21_UTC_Time']
+    for var in vars:
+        if var in meta_dict:
+            meta_dict[var]['FillVal'] = np.nan
+
+    return meta_dict
+
+
 def load(fnames, tag=None, inst_id=None, keep_original_names=False):
     """Load ICON MIGHTI data into `xarray.Dataset` and `pysat.Meta` objects.
 
@@ -320,9 +345,13 @@ def load(fnames, tag=None, inst_id=None, keep_original_names=False):
               'min_val': ('ValidMin', float),
               'max_val': ('ValidMax', float), 'fill_val': ('FillVal', float)}
 
-    data, meta = pysat.utils.load_netcdf4(fnames, epoch_name='Epoch',
-                                          pandas_format=pandas_format,
-                                          labels=labels)
+    data, meta = pysat.utils.io.load_netcdf(fnames, epoch_name='Epoch',
+                                            pandas_format=pandas_format,
+                                            labels=labels,
+                                            meta_processor=filter_metadata,
+                                            drop_meta_labels=['Valid_Max',
+                                                              'Valid_Min',
+                                                              'ValidRange'])
 
     # xarray can't merge if variable and dim names are the same
     if 'Altitude' in data.dims:

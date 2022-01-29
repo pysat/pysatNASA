@@ -229,9 +229,9 @@ def filter_metadata(meta_dict):
         Filtered IVM metadata.
 
     """
-
-    meta_dict['ICON_L27_UTC_Time']['ValidMax'] = np.inf
-    meta_dict['ICON_L27_UTC_Time']['ValidMin'] = 0
+    if 'ICON_L27_UTC_Time' in meta_dict:
+        meta_dict['ICON_L27_UTC_Time']['ValidMax'] = np.inf
+        meta_dict['ICON_L27_UTC_Time']['ValidMin'] = 0
 
     return meta_dict
 

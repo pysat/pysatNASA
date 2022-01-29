@@ -6,7 +6,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 * Include flake8 linting of docstrings and style in Github Actions
 * Fixed a bug in loading ICON IVM data (added multi_file_day = True)
 * Fixed a bug where OMNI meta data float values are loaded as arrays
-* Fixed metadata type issues when loading ICON IVM data.
+* Fixed metadata type issues when loading ICON instrument data.
 * Maintenance
   * Removed dummy vars after importing instruments and constellations
 
