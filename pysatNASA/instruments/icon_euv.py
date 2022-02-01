@@ -180,6 +180,12 @@ def filter_metadata(meta_dict):
         if var in meta_dict:
             meta_dict[var]['FillVal'] = np.nan
 
+    # Deal with string arrays
+    for var in meta_dict.keys():
+        if 'Var_Notes' in meta_dict[var]:
+            meta_dict[var]['Var_Notes'] = ' '.join(pysat.utils.listify(
+                meta_dict[var]['Var_Notes']))
+
     return meta_dict
 
 
@@ -232,12 +238,16 @@ def load(fnames, tag=None, inst_id=None, keep_original_names=False):
               'min_val': ('ValidMin', float),
               'max_val': ('ValidMax', float), 'fill_val': ('FillVal', float)}
 
+    meta_translation = {'FieldNam': 'plot'}
+
     data, meta = pysat.utils.io.load_netcdf(fnames, epoch_name='Epoch',
                                             pandas_format=pandas_format,
                                             labels=labels,
                                             meta_processor=filter_metadata,
+                                            meta_translation=meta_translation,
                                             drop_meta_labels=['Valid_Max',
-                                                              'Valid_Min'])
+                                                              'Valid_Min',
+                                                              '_FillValue'])
 
     # xarray can't merge if variable and dim names are the same
     if 'Altitude' in data.dims:
