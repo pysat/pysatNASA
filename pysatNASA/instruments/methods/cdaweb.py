@@ -17,15 +17,16 @@ from bs4 import BeautifulSoup
 from pysat.instruments.methods import general
 from pysat import logger
 from pysat.utils import files as futils
+from pysatNASA.instruments.methods import CDF as libCDF
 try:
     import pysatCDF
     CDF = pysatCDF.CDF
 except ImportError:
-    from pysatNASA.instruments.methods import CDF
+    pass
 
 
 def load(fnames, tag=None, inst_id=None, file_cadence=dt.timedelta(days=1),
-         flatten_twod=True):
+         flatten_twod=True, use_cdflib=None):
     """Load NASA CDAWeb CDF files.
 
     Parameters
@@ -44,6 +45,10 @@ def load(fnames, tag=None, inst_id=None, file_cadence=dt.timedelta(days=1),
     flatted_twod : bool
         Flattens 2D data into different columns of root DataFrame rather
         than produce a Series of DataFrames. (default=True)
+    use_cdflib : bool or NoneType
+        If True, force use of cdflib for loading. If False, prevent use of
+        cdflib for loading. If None, will use pysatCDF if available with
+        cdflib as fallback.
 
     Returns
     -------
@@ -75,9 +80,16 @@ def load(fnames, tag=None, inst_id=None, file_cadence=dt.timedelta(days=1),
     if len(fnames) <= 0:
         return pds.DataFrame(None), None
     else:
-        # Using cdflib wrapper to load the CDF and format data and
-        # metadata for pysat using some assumptions. Depending upon your needs
-        # the resulting pandas DataFrame may need modification
+        if use_cdflib is not None:
+            if use_cdflib:
+                # Using cdflib wrapper to load the CDF and format data and
+                # metadata for pysat using some assumptions.
+                CDF = libCDF
+            else:
+                # Using pysatCDF to load the CDF and format data and
+                # metadata for pysat using some assumptions.
+                CDF = pysatCDF.CDF
+
         ldata = []
         for lfname in fnames:
             if not general.is_daily_file_cadence(file_cadence):
@@ -86,16 +98,17 @@ def load(fnames, tag=None, inst_id=None, file_cadence=dt.timedelta(days=1),
                 date = dt.datetime.strptime(lfname[-10:], '%Y-%m-%d')
 
                 with CDF(fname) as cdf:
-                    # Convert data to pysat format
+                    # Convert data to pysat format. Depending upon
+                    # your needs the resulting pandas DataFrame may need
+                    # modification.
                     try:
-                        temp_data, meta = cdf.to_pysat(
-                            flatten_twod=flatten_twod)
+                        tdata, meta = cdf.to_pysat(flatten_twod=flatten_twod)
 
                         # Select data from multi-day down to daily
-                        temp_data = temp_data.loc[
-                            date:date + dt.timedelta(days=1)
-                            - dt.timedelta(microseconds=1), :]
-                        ldata.append(temp_data)
+                        date2 = date + dt.timedelta(days=1)
+                        date2 -= dt.timedelta(microseconds=1)
+                        tdata = tdata.loc[date:date2, :]
+                        ldata.append(tdata)
                     except ValueError as verr:
                         logger.warn("unable to load {:}: {:}".format(fname,
                                                                      str(verr)))
