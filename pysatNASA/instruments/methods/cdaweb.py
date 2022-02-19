@@ -20,9 +20,9 @@ from pysat.utils import files as futils
 from pysatNASA.instruments.methods import CDF as libCDF
 try:
     import pysatCDF
-    top_CDF = pysatCDF.CDF
+    auto_CDF = pysatCDF.CDF
 except ImportError:
-    top_CDF = libCDF
+    auto_CDF = libCDF
 
 
 def load(fnames, tag=None, inst_id=None, file_cadence=dt.timedelta(days=1),
@@ -90,7 +90,7 @@ def load(fnames, tag=None, inst_id=None, file_cadence=dt.timedelta(days=1),
                 # metadata for pysat using some assumptions.
                 CDF = pysatCDF.CDF
         else:
-            CDF = top_CDF
+            CDF = auto_CDF
 
         ldata = []
         for lfname in fnames:
