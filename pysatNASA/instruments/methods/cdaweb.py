@@ -22,7 +22,7 @@ try:
     import pysatCDF
     CDF = pysatCDF.CDF
 except ImportError:
-    pass
+    from pysatNASA.instruments.methods import CDF
 
 
 def load(fnames, tag=None, inst_id=None, file_cadence=dt.timedelta(days=1),
