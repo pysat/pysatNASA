@@ -151,7 +151,7 @@ def init(self):
                         "'How it all works: A Simplified Tutorial',",
                         "Journal of Some Repute"))
 
-    # Send the acknowledgments to the logger.  These will print ot the screen if
+    # Send the acknowledgments to the logger.  These will print to the screen if
     # user settings include logging.INFO
     logger.info(ackn_str)
 
