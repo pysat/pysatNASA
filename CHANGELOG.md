@@ -10,6 +10,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   * Removed dummy vars after importing instruments and constellations
   * Updated NEP29 compliance in Github Actions
   * Limit versions of hacking for improved pip compliance
+  * Update instrument template standards
 
 ## [0.0.3] - 2021-06-17
 * Include Windows tests in Github Actions
