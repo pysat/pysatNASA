@@ -73,7 +73,7 @@ tags = {'': 'description 1',  # A blank string is the default data set
 inst_ids = {'': ['']}
 
 # Define good days to download data for pysat testing. The dict
-# format is that outer dictionary uses `inst_id` values as keys, while the inner dict
+# format is that outer dictionary uses `inst_id` values as keys, while the inner
 # dict uses `tag` values as keys with a datetime object as the data value.
 # _test_dates = {'a':{'L0':dt.datetime(2019,1,1),
 #                     'L1':dt.datetime(2019,1,2)},
@@ -82,8 +82,8 @@ inst_ids = {'': ['']}
 _test_dates = {'': {'': dt.datetime(2019, 1, 1)}}
 
 # Additional information needs to be defined to support the CDAWeb list files
-# routine. We need to define a filename format string for every supported combination
-# of inst_id and tag string.
+# routine. We need to define a filename format string for every supported
+# combination of inst_id and tag string.
 #
 # fname1 = 'cnofs_vefi_bfield_1sec_{year:04d}{month:02d}{day:02d}_v05.cdf'
 # fname2 = 'cnofs_vefi_acfield_1sec_{year:04d}{month:02d}{day:02d}_v05.cdf'
