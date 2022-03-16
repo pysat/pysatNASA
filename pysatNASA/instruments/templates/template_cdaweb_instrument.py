@@ -138,7 +138,7 @@ def init(self):
     ----
     - Acknowledgements and References for this dataset may be defined here or
       in a custom module for a given spacecraft.
-      e.g., `pysatNASA.instruments.methods.cnofs.py`
+      e.g., `pysatNASA.instruments.methods.cnofs`
     - By default, pysat will warn a user if these properties are not attached to
       the instrument object.
 
