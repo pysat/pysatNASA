@@ -63,7 +63,7 @@ platform = ''
 name = ''
 
 # Dictionary of data 'tags' and corresponding description
-tags = {'': 'description 1',  # A blank string is the default dataset
+tags = {'': 'description 1',  # A blank string is the default data set
         'tag_string': 'description 2'}  # 'tag_string' is another option
 
 # Let pysat know if there are multiple satellite platforms supported
@@ -72,9 +72,9 @@ tags = {'': 'description 1',  # A blank string is the default dataset
 # inst_ids = {'a':['L1', 'L0'], 'b':['L1', 'L2'], 'c':['L1', 'L3']}
 inst_ids = {'': ['']}
 
-# Define good days to download data for when pysat undergoes testing.
-# Format is outer dictionary uses inst_id as the key, inner dictionary uses
-# tag as the key with a datetime object as the data.
+# Define good days to download data for pysat testing. The dict
+# format is that outer dictionary uses `inst_id` values as keys, while the inner dict
+# dict uses `tag` values as keys with a datetime object as the data value.
 # _test_dates = {'a':{'L0':dt.datetime(2019,1,1),
 #                     'L1':dt.datetime(2019,1,2)},
 #                'b':{'L1':dt.datetime(2019,3,1),
@@ -82,8 +82,7 @@ inst_ids = {'': ['']}
 _test_dates = {'': {'': dt.datetime(2019, 1, 1)}}
 
 # Additional information needs to be defined to support the CDAWeb list files
-# routine.
-# We need to define a filename format string for every supported combination
+# routine. We need to define a filename format string for every supported combination
 # of inst_id and tag string.
 #
 # fname1 = 'cnofs_vefi_bfield_1sec_{year:04d}{month:02d}{day:02d}_v05.cdf'
@@ -91,13 +90,12 @@ _test_dates = {'': {'': dt.datetime(2019, 1, 1)}}
 # supported_tags = {'sat1':{'tag1':fname1},
 #                   'sat2':{'tag2':fname2}}
 # You can use format keywords year, month, day, hour, min, sec,
-# version and revision
-# See code docstring for latest
+# version and revision. See the code docstring for latest standards.
 fname = ''.join(('cnofs_vefi_bfield_1sec_{year:04d}{month:02d}{day:02d}',
                  '_v{version:02d}.cdf'))
 supported_tags = {'': {'': fname}}
-# use the CDAWeb methods list files routine
-# the command below presets some of the methods inputs, leaving
+# Use the CDAWeb methods list files routine. The command
+# below presets some of the methods inputs, leaving
 # those provided by pysat available when invoked
 list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags)
@@ -164,7 +162,7 @@ def init(self):
     return
 
 
-# code should be defined below as needed
+# Code should be defined below as needed
 def preprocess(self):
     """Perform standard preprocessing.
 
