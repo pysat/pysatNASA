@@ -70,7 +70,7 @@ tags = {'': 'description 1',  # A blank string is the default data set
 # by these routines. Define a dictionary keyed by satellite ID, each with a list
 # of corresponding tags:
 # inst_ids = {'a':['L1', 'L0'], 'b':['L1', 'L2'], 'c':['L1', 'L3']}
-inst_ids = {'': ['']}
+inst_ids = {'': ['', 'tag_string']}
 
 # Define good days to download data for pysat testing. The dict
 # format is that outer dictionary uses `inst_id` values as keys, while the inner
@@ -79,7 +79,8 @@ inst_ids = {'': ['']}
 #                     'L1':dt.datetime(2019,1,2)},
 #                'b':{'L1':dt.datetime(2019,3,1),
 #                     'L2':dt.datetime(2019,11,23),}}
-_test_dates = {'': {'': dt.datetime(2019, 1, 1)}}
+_test_dates = {'': {'': dt.datetime(2019, 1, 1),
+                    'tag_string': dt.datetime(2019, 3, 14)}}
 
 # Additional information needs to be defined to support the CDAWeb list files
 # routine. We need to define a filename format string for every supported
@@ -93,7 +94,7 @@ _test_dates = {'': {'': dt.datetime(2019, 1, 1)}}
 # version and revision. See the code docstring for latest standards.
 fname = ''.join(('cnofs_vefi_bfield_1sec_{year:04d}{month:02d}{day:02d}',
                  '_v{version:02d}.cdf'))
-supported_tags = {'': {'': fname}}
+supported_tags = {'': {'': fname, 'tag_string': fname}}
 # Use the CDAWeb methods list files routine. The command
 # below presets some of the methods inputs, leaving
 # those provided by pysat available when invoked
@@ -121,7 +122,10 @@ load = cdw.load
 basic_tag = {'remote_dir': '/pub/data/cnofs/vefi/bfield_1sec',
              'remote_fname': '{year:4d}/' + fname,
              'fname': fname}
-supported_tags = {'': {'': basic_tag}}
+basic_tag2 = {'remote_dir': '/pub/data/cnofs/other/bfield_1sec',
+              'remote_fname': '{year:4d}/' + fname,
+              'fname': fname}
+supported_tags = {'': {'': basic_tag, 'tag_string': basic_tag2}}
 download = functools.partial(cdw.download, supported_tags=supported_tags)
 
 # support listing files currently on CDAWeb
@@ -145,7 +149,7 @@ def init(self):
     """
 
     ackn_str = "Acknowledgements can be added here."
-    ref_str = ' '.join(("A. Genius et al (2099),"
+    ref_str = ' '.join(("A. Genius et al., (2099),"
                         "'How it all works: A Simplified Tutorial',",
                         "Journal of Some Repute"))
 
