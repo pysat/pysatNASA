@@ -92,6 +92,7 @@ def init(self):
                                 'Optical spectroscopic techniques and instrumentation for atmospheric',
                                 'and space research III. Vol. 3756. International Society for Optics',
                                 'and Photonics, 1999.'))
+    self.pandas_format=False
 
     return
 
@@ -123,7 +124,7 @@ list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags,)
 
 # Set the download routine
-basic_tag = {'remote_dir': ''.join(('/pub/data/timed/guvi/levels_v13/level1c/imaging/',
+basic_tag = {'remote_dir': ''.join(('/pub/data/timed/guvi/levels_v13/level1c/imaging',
                                     '/{year:4d}/{day:03d}/')),
              'fname': fname}
 download_tags = {'': {'': basic_tag}}
@@ -133,14 +134,12 @@ download = functools.partial(cdw.download, supported_tags=download_tags)
 list_remote_files = functools.partial(cdw.list_remote_files, supported_tags=download_tags)
 
 # Set the load routine
-# load = cdw.load
-# load = functools.partial(cdw.load, flatten_twod=False,file_cadence=dt.timedelta(hours=1))
 def load(fnames, tag=None, inst_id=None):
-    """Load ICON IVM data into `pandas.DataFrame` and `pysat.Meta` objects.
-
+    """Load TIMED GUVI data into `pandas.DataFrame` and `pysat.Meta` objects.
+ 
     This routine is called as needed by pysat. It is not intended
     for direct user interaction.
-
+ 
     Parameters
     ----------
     fnames : array-like
@@ -155,35 +154,43 @@ def load(fnames, tag=None, inst_id=None):
     keep_original_names : boolean
         if True then the names as given in the netCDF ICON file
         will be used as is. If False, a preamble is removed.
-
+ 
     Returns
     -------
     data : pds.DataFrame
         A pandas DataFrame with data prepared for the pysat.Instrument
     meta : pysat.Meta
         Metadata formatted for a pysat.Instrument object.
-
+ 
     Note
     ----
     Any additional keyword arguments passed to pysat.Instrument
     upon instantiation are passed along to this routine.
-
+ 
     Examples
     --------
     ::
-
-        inst = pysat.Instrument('icon', 'ivm', inst_id='a', tag='')
-        inst.load(2020, 1)
-
+ 
+        inst = pysat.Instrument('timed', 'guvi')
+        inst.load(2005, 171)
+ 
     """
-
-    labels = {'units': ('Units', str), 'name': ('Long_Name', str),
-              'notes': ('Var_Notes', str), 'desc': ('CatDesc', str),
-              'min_val': ('ValidMin', float),
-              'max_val': ('ValidMax', float), 'fill_val': ('FillVal', float)}
-
-    data, meta = pysat.utils.load_netcdf4(fnames, epoch_name='Epoch',file_format='netcdf4',
-                                          labels=labels)
+    import numpy as np
+    labels = {  'units': ('units', str), 'name': ('long_name', str),
+                'notes': ('notes', str), 'desc': ('desc', str),
+                'plot': ('plot_label', str), 'axis': ('axis', str),
+                'scale': ('scale', str),
+                'min_val': ('value_min', np.float64),
+                'max_val': ('value_max', np.float64),
+                'fill_val': ('fill', np.float64)}
+    
+    data,meta = pysat.utils.io.load_netcdf(fnames, strict_meta=False, file_format='NETCDF4',
+                epoch_name='time_epoch_night', epoch_unit='ms', epoch_origin='unix',
+                pandas_format=False, decode_timedelta=True,
+                labels=labels)
 
     return data, meta
+
+
+
 
