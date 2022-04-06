@@ -179,18 +179,17 @@ def download(date_array, tag=None, inst_id=None, supported_tags=None,
     for date, fname in remote_files.iteritems():
 
         # Format files for specific dates and download location
-        # year and month found in remote_dir
-        if 'month' in remote_dir:
+        # year and day found in remote_dir. day is assumed to be day of year
+        if 'day' in remote_dir and 'month' not in remote_dir:
             formatted_remote_dir = remote_dir.format(year=date.year,
-                                                     month=date.month,
-                                                     day=date.day,
+                                                     day=date.timetuple().tm_yday,
                                                      hour=date.hour,
                                                      min=date.minute,
                                                      sec=date.second)
-        # year and day found in remote_dir. day is assumed to be day of year
-        elif 'day' in remote_dir:
+        else:
             formatted_remote_dir = remote_dir.format(year=date.year,
-                                                     day=date.timetuple().tm_yday,
+                                                     month=date.month,
+                                                     day=date.day,
                                                      hour=date.hour,
                                                      min=date.minute,
                                                      sec=date.second)
