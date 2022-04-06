@@ -192,7 +192,7 @@ def load(fnames, tag=None, inst_id=None):
         auroralkeys = list(filter(lambda k: "_AURORAL" in k[-8:], dataset.keys()))
         nightkeys=list(filter(lambda k:"_NIGHT" in k,dataset.keys()))
         daykeys=list(filter(lambda k:"_DAY" in k and "_AURORAL" not in k,dataset.keys()))
-        otherkeys=list( filter( lambda k:k not in (daykeys+nightkeys+auroralkeys),dataset.keys() ) )
+        otherkeys=list( filter( lambda k:k not in (daykeys + nightkeys + auroralkeys), dataset.keys() ) )
         
         ith_daysubset=dataset.drop_vars(auroralkeys+nightkeys)
         ith_nightsubset=dataset.drop_vars(auroralkeys+daykeys+otherkeys)
