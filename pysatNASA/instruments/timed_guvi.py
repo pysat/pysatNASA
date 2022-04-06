@@ -188,7 +188,7 @@ def load(fnames, tag=None, inst_id=None):
     for path in fnames:
         dataset=xr.load_dataset(path)
         
-        #separate into auroral, night and day datasets
+        # Separate into auroral, night and day datasets.
         auroralkeys=list(filter(lambda k:"_AURORAL" in k[-8:],dataset.keys()))
         nightkeys=list(filter(lambda k:"_NIGHT" in k,dataset.keys()))
         daykeys=list(filter(lambda k:"_DAY" in k and "_AURORAL" not in k,dataset.keys()))
