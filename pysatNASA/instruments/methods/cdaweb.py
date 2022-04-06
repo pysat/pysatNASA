@@ -392,7 +392,6 @@ def list_remote_files(tag=None, inst_id=None, start=None, stop=None,
         stored = futils.parse_delimited_filenames(full_files, format_str, delimiter)
     # Process the parsed filenames and return a properly formatted Series
     stored_list = futils.process_parsed_filenames(stored, two_digit_year_break)
-    #print(stored_list[10])
     # Downselect to user-specified dates, if needed
     if start is not None:
         mask = (stored_list.index >= start)
