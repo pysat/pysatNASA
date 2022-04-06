@@ -184,7 +184,7 @@ def load(fnames, tag=None, inst_id=None):
                 'fill_val': ('fill', float)}
     meta = pysat.Meta(labels=labels)
 
-    daysubset,nightsubset,auroralsubset=None,None,None
+    daysubset, nightsubset, auroralsubset = None, None, None
     for path in fnames:
         dataset=xr.load_dataset(path)
         
