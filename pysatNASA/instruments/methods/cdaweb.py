@@ -390,7 +390,6 @@ def list_remote_files(tag=None, inst_id=None, start=None, stop=None,
         stored = futils.parse_fixed_width_filenames(full_files, format_str)
     else:
         stored = futils.parse_delimited_filenames(full_files, format_str, delimiter)
-    #print(stored)
     # Process the parsed filenames and return a properly formatted Series
     stored_list = futils.process_parsed_filenames(stored, two_digit_year_break)
     #print(stored_list[10])
