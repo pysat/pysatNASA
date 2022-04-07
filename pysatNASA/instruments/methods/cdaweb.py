@@ -182,10 +182,10 @@ def download(date_array, tag=None, inst_id=None, supported_tags=None,
         # year and day found in remote_dir. day is assumed to be day of year
         if 'day' in remote_dir and 'month' not in remote_dir:
             formatted_remote_dir = remote_dir.format(year=date.year,
-                                                     day=date.timetuple().tm_yday,
-                                                     hour=date.hour,
-                                                     min=date.minute,
-                                                     sec=date.second)
+                                                   day=date.timetuple().tm_yday,
+                                                   hour=date.hour,
+                                                   min=date.minute,
+                                                   sec=date.second)
         else:
             formatted_remote_dir = remote_dir.format(year=date.year,
                                                      month=date.month,
@@ -356,7 +356,8 @@ def list_remote_files(tag=None, inst_id=None, start=None, stop=None,
                 if 'month' in search_dir['keys']:
                     subdir = format_dir.format(year=time.year, month=time.month)
                 elif 'day' in search_dir['keys']:
-                    subdir = format_dir.format(year=time.year, day=time.timetuple().tm_yday)
+                    subdir = format_dir.format(year=time.year,
+                                               day=time.timetuple().tm_yday)
                 else:
                     subdir = format_dir.format(year=time.year)
                 url_list.append('/'.join((remote_url, subdir)))
@@ -389,7 +390,8 @@ def list_remote_files(tag=None, inst_id=None, start=None, stop=None,
     if delimiter is None:
         stored = futils.parse_fixed_width_filenames(full_files, format_str)
     else:
-        stored = futils.parse_delimited_filenames(full_files, format_str, delimiter)
+        stored = futils.parse_delimited_filenames(full_files, format_str,
+                                                  delimiter)
     # Process the parsed filenames and return a properly formatted Series
     stored_list = futils.process_parsed_filenames(stored, two_digit_year_break)
     # Downselect to user-specified dates, if needed
