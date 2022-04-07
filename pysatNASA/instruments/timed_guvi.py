@@ -34,7 +34,7 @@ Example
     import pysat
     guvi = pysat.Instrument(platform='timed', name='guvi')
     guvi.download(dt.datetime(2005, 6, 20), dt.datetime(2005, 6, 21))
-    guvi.load(yr=2005,doy=171)
+    guvi.load(yr=2005, doy=171)
 
 Author
 ------
