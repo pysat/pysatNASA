@@ -252,14 +252,14 @@ def load(fnames, tag='', inst_id=''):
     # It will be renamed as 'time' to follow pysat standards.
     if np.all(np.equal(day_dts, night_dts)):
         data = data.swap_dims({"nAlongDay": "time",
-                               "nAlongNight": "time", })
+                               "nAlongNight": "time"})
     else:
-        data = data.swap_dims({"nAlongDay": "time", })
+        data = data.swap_dims({"nAlongDay": "time"})
 
         warnings.warn(' '.join('time dimension for night and day should',
                                'be the same. nAlongDay will be used as time.',
                                ))
-    data = data.swap_dims({"nAlongDayAur": "timeDayAur", })
+    data = data.swap_dims({"nAlongDayAur": "timeDayAur"})
 
     # Updating time variables
     data = data.assign(time=day_dts)
