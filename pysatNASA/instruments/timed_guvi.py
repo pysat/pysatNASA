@@ -46,9 +46,10 @@ import datetime as dt
 import functools
 import pandas as pds
 import xarray as xr
+import numpy as np
 import warnings
 import pysat
-from datetime import datetime,timedelta
+from datetime import datetime, timedelta
 
 from pysat import logger
 from pysat.instruments.methods import general as mm_gen
@@ -84,18 +85,23 @@ def init(self):
     ackn_str = ' '.join(('Please see the Rules of the Road at', rules_url))
     logger.info(ackn_str)
     self.acknowledgements = ackn_str
-    self.references = ' '.join(('Paxton,L. J., Christensen, A. B., Humm, D. C., Ogorzalek,',
-                                'B. S., Pardoe, C. T., Monison, D., Weiss, M. B., Cram, W.,',
-                                'Lew, P. H., Mabry, D. J., Goldstena, J. O., Gary, A.,', 
-                                'Persons, D. F., Harold, M. J., Alvarez, E. B., ErcoF, C. J.,',
+    self.references = ' '.join(('Paxton,L. J., Christensen, A. B., Humm,',
+                                'D. C., Ogorzalek, B. S., Pardoe, C. T.,',
+                                'Monison, D., Weiss, M. B., Cram, W.,',
+                                'Lew, P. H., Mabry, D. J., Goldstena,',
+                                'J. O., Gary, A., Persons, D. F., Harold,',
+                                'M. J., Alvarez, E. B., ErcoF, C. J.,',
                                 'Strickland, D. J., Meng, C.-I.',
-                                'Global ultraviolet imager (GUVI): Measuring composition and',
-                                'energy inputs for the NASA Thermosphere Ionosphere Mesosphere',
-                                'Energetics and Dynamics (TIMED) mission.',
-                                'Optical spectroscopic techniques and instrumentation for atmospheric',
-                                'and space research III. Vol. 3756. International Society for Optics',
+                                'Global ultraviolet imager (GUVI): Measuring',
+                                'composition and energy inputs for the NASA',
+                                'Thermosphere Ionosphere Mesosphere Energetics',
+                                'and Dynamics (TIMED) mission.',
+                                'Optical spectroscopic techniques and',
+                                'instrumentation for atmospheric and',
+                                'space research III. Vol. 3756.',
+                                'International Society for Optics',
                                 'and Photonics, 1999.'))
-    self.pandas_format=False
+    self.pandas_format = False
 
     return
 
@@ -127,22 +133,25 @@ list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags,)
 
 # Set the download routine
-basic_tag = {'remote_dir': ''.join(('/pub/data/timed/guvi/levels_v13/level1c/imaging',
-                                    '/{year:4d}/{day:03d}/')),
+basic_tag = {'remote_dir': ''.join(('/pub/data/timed/guvi/levels_v13/level1c/',
+                                    'imaging/{year:4d}/{day:03d}/')),
              'fname': fname}
 download_tags = {'': {'': basic_tag}}
 download = functools.partial(cdw.download, supported_tags=download_tags)
 
 # Set the list_remote_files routine
-list_remote_files = functools.partial(cdw.list_remote_files, supported_tags=download_tags)
+list_remote_files = functools.partial(
+    cdw.list_remote_files, supported_tags=download_tags)
 
 # Set the load routine
+
+
 def load(fnames, tag=None, inst_id=None):
     """Load TIMED GUVI data into `xarray.DataSet` and `pysat.Meta` objects.
- 
+
     This routine is called as needed by pysat. It is not intended
     for direct user interaction.
- 
+
     Parameters
     ----------
     fnames : array-like
@@ -154,80 +163,136 @@ def load(fnames, tag=None, inst_id=None):
     inst_id : string
         Satellite ID used to identify particular data set to be loaded.
         This input is nominally provided by pysat itself.
-    
+
     Returns
     -------
     data : xr.DataSet
         A xarray DataSet with data prepared for the pysat.Instrument
     meta : pysat.Meta
         Metadata formatted for a pysat.Instrument object.
- 
+
     Note
     ----
     Any additional keyword arguments passed to pysat.Instrument
     upon instantiation are passed along to this routine.
- 
+
     Examples
     --------
     ::
- 
+
         inst = pysat.Instrument('timed', 'guvi')
         inst.load(2005, 171)
- 
+
     """
-    labels = {  'units': ('units', str), 'name': ('long_name', str),
-                'notes': ('notes', str), 'desc': ('desc', str),
-                'plot': ('plot_label', str), 'axis': ('axis', str),
-                'scale': ('scale', str),
-                'min_val': ('value_min', float),
-                'max_val': ('value_max', float),
-                'fill_val': ('fill', float)}
+    labels = {'units': ('units', str), 'name': ('long_name', str),
+              'notes': ('notes', str), 'desc': ('desc', str),
+              'plot': ('plot_label', str), 'axis': ('axis', str),
+              'scale': ('scale', str),
+              'min_val': ('value_min', float),
+              'max_val': ('value_max', float),
+              'fill_val': ('fill', float)}
     meta = pysat.Meta(labels=labels)
 
-    daysubset, nightsubset, auroralsubset = None, None, None
+    dayset, nightset, aurset = None, None, None
     for path in fnames:
-        dataset=xr.load_dataset(path)
-        
-        # Separate into auroral, night and day datasets.
-        auroralkeys = list(filter(lambda k: "_AURORAL" in k[-8:], dataset.keys()))
-        nightkeys=list(filter(lambda k:"_NIGHT" in k,dataset.keys()))
-        daykeys=list(filter(lambda k:"_DAY" in k and "_AURORAL" not in k,dataset.keys()))
-        otherkeys=list( filter( lambda k:k not in (daykeys + nightkeys + auroralkeys), dataset.keys() ) )
-        
-        ith_daysubset=dataset.drop_vars(auroralkeys+nightkeys)
-        ith_nightsubset=dataset.drop_vars(auroralkeys+daykeys+otherkeys)
-        ith_auroralsubset=dataset.drop_vars(daykeys+nightkeys+otherkeys)
-        
-        #Updating epoch time variables, and dropping redundant time variables year, doy, day
-        dts=[datetime(year,1,1)+timedelta(days=float(ith_daysubset.DOY_DAY.data[i]-1),seconds=ith_daysubset.TIME_DAY.data[i]) for i,year in enumerate(ith_daysubset.YEAR_DAY.data)]
-        ith_daysubset=ith_daysubset.drop_vars(["YEAR_DAY","DOY_DAY","TIME_DAY","TIME_EPOCH_DAY"])
-        ith_daysubset=ith_daysubset.assign( { 'TIME_EPOCH_DAY': xr.DataArray(data=dts,dims=('nAlongDay')) } )
-        
-        dts=[datetime(year,1,1)+timedelta(days=float(ith_nightsubset.DOY_NIGHT.data[i]-1),seconds=ith_nightsubset.TIME_NIGHT.data[i]) for i,year in enumerate(ith_nightsubset.YEAR_NIGHT.data)]
-        ith_nightsubset=ith_nightsubset.drop_vars(["YEAR_NIGHT","DOY_NIGHT","TIME_NIGHT",'TIME_EPOCH_NIGHT'])
-        ith_nightsubset=ith_nightsubset.assign( { 'TIME_EPOCH_NIGHT': xr.DataArray(data=dts,dims=('nAlongNight')) } )
-        
-        dts=[datetime(year,1,1)+timedelta(days=float(ith_auroralsubset.DOY_DAY_AURORAL.data[i]-1),seconds=ith_auroralsubset.TIME_DAY_AURORAL.data[i]) for i,year in enumerate(ith_auroralsubset.YEAR_DAY_AURORAL.data)]
-        ith_auroralsubset=ith_auroralsubset.drop_vars(["YEAR_DAY_AURORAL","DOY_DAY_AURORAL","TIME_DAY_AURORAL","TIME_EPOCH_DAY_AURORAL"])
-        ith_auroralsubset=ith_auroralsubset.assign( { 'TIME_EPOCH_DAY_AURORAL': xr.DataArray(data=dts,dims=('nAlongDayAur')) } )
-        
-        #concatenate along corresponding dimension
-        if daysubset is None:
-            daysubset=ith_daysubset
-            nightsubset=ith_nightsubset
-            auroralsubset=ith_auroralsubset
+        dataset = xr.load_dataset(path)
+
+        # Separate into day, night and auroral datasets
+        auroralkeys, nightkeys, daykeys, otherkeys = [], [], [], []
+        for key in dataset.keys():
+            if "_NIGHT" in key:
+                nightkeys.append(key)
+            elif "_AURORAL" in key:
+                auroralkeys.append(key)
+            elif "_DAY" in key:
+                daykeys.append(key)
+            else:
+                otherkeys.append(key)
+
+        i_dayset = dataset.drop_vars(auroralkeys + nightkeys)
+        i_nightset = dataset.drop_vars(auroralkeys + daykeys + otherkeys)
+        i_auroralset = dataset.drop_vars(daykeys + nightkeys + otherkeys)
+
+        # concatenate along corresponding dimension
+        if dayset is None:
+            dayset = i_dayset
+            nightset = i_nightset
+            aurset = i_auroralset
         else:
-            daysubset=xr.concat([daysubset,ith_daysubset],dim='nAlongDay')
-            nightsubset=xr.concat([nightsubset,ith_nightsubset],dim='nAlongNight')
-            auroralsubset=xr.concat([auroralsubset,ith_auroralsubset],dim='nAlongDayAur')
-    
-    #merge all datasets
-    data=daysubset
-    data=data.merge(nightsubset)
-    data=data.merge(auroralsubset)
+            dayset = xr.concat([dayset, i_dayset], dim='nAlongDay')
+            nightset = xr.concat([nightset, i_nightset], dim='nAlongNight')
+            aurset = xr.concat([aurset, i_auroralset], dim='nAlongDayAur')
+
+    data = dayset
+    data = data.merge(nightset)
+    data = data.merge(aurset)
+
+    def get_dt_objects(dataset, tag):
+        dts = []
+        for i, year in enumerate(dataset['YEAR_%s' % tag].data):
+            idt = datetime(year, 1, 1) + \
+                timedelta(days=float(dataset['DOY_%s' % tag].data[i] - 1)) + \
+                timedelta(seconds=float(dataset['TIME_%s' % tag].data[i]))
+            dts.append(idt)
+        return dts
+
+    # nCross dimension is the same regardless of day, night or auroral
+    data = data.swap_dims({"nCrossDay": "nCross",
+                           "nCrossNight": "nCross",
+                           "nCrossDayAur": "nCross", })
+
+    # Collecting datetime objects
+    day_dts = np.array(get_dt_objects(data, "DAY"))
+    night_dts = np.array(get_dt_objects(data, "NIGHT"))
+    aur_dts = get_dt_objects(data, "DAY_AURORAL")
+
+    # Drop redundant time variables
+    data = data.drop_vars(["YEAR_DAY", "DOY_DAY",
+                           "TIME_DAY", "TIME_EPOCH_DAY",
+                           "YEAR_NIGHT", "DOY_NIGHT",
+                           "TIME_NIGHT", "TIME_EPOCH_NIGHT",
+                           "YEAR_DAY_AURORAL", "DOY_DAY_AURORAL",
+                           "TIME_DAY_AURORAL",
+                           "TIME_EPOCH_DAY_AURORAL",
+                           ])
+
+    # nAlong dimension should be the same for day and night,
+    # It will be renamed as time to follow pysat standards.
+    if np.all(np.equal(day_dts, night_dts)):
+        data = data.swap_dims({"nAlongDay": "time",
+                               "nAlongNight": "time", })
+    else:
+        data = data.swap_dims({"nAlongDay": "time", })
+
+        warnings.warn(' '.join('time dimension for night and day should',
+                               'be the same. nAlongDay will be used as time.',
+                               ))
+    data = data.swap_dims({"nAlongDayAur": "timeDayAur", })
+
+    # Updating time variables
+    data = data.assign(time=day_dts)
+    if 'nAlongNight' in data.dims:
+        data = data.assign(timeNight=night_dts)
+    data = data.assign(timeDayAur=aur_dts)
+
+    # Setting up coordinates
+    coords = ['PIERCEPOINT_NIGHT_LATITUDE',
+              'PIERCEPOINT_NIGHT_LONGITUDE',
+              'PIERCEPOINT_NIGHT_ALTITUDE',
+              'PIERCEPOINT_NIGHT_SZA',
+              'PIERCEPOINT_DAY_LATITUDE',
+              'PIERCEPOINT_DAY_LONGITUDE',
+              'PIERCEPOINT_DAY_ALTITUDE',
+              'PIERCEPOINT_DAY_SZA',
+              'PIERCEPOINT_DAY_LATITUDE_AURORAL',
+              'PIERCEPOINT_DAY_LONGITUDE_AURORAL',
+              'PIERCEPOINT_DAY_ALTITUDE_AURORAL',
+              'PIERCEPOINT_DAY_SZA_AURORAL']
+    data = data.set_coords(coords)
+
+    # nchan as coordinate
+    coords = {"nchan": ["121.6nm", "130.4nm", "135.6nm", "LBHshort", "LBHlong"],
+              "nCross": range(13)}
+    data = data.assign_coords(coords=coords)
 
     return data, meta
-
-
-
-
