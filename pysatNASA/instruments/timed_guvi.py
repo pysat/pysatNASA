@@ -255,7 +255,7 @@ def load(fnames, tag=None, inst_id=None):
                            "TIME_EPOCH_DAY_AURORAL"])
 
     # nAlong dimension should be the same for day and night,
-    # It will be renamed as time to follow pysat standards.
+    # it will be renamed as 'time' to follow pysat standards.
     if np.all(np.equal(day_dts, night_dts)):
         data = data.swap_dims({"nAlongDay": "time",
                                "nAlongNight": "time", })
