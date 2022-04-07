@@ -74,11 +74,7 @@ _test_dates = {'': {'': dt.datetime(2005, 6, 20)}}
 
 
 def init(self):
-    """Initializes the Instrument object with instrument specific values.
-
-    Runs once upon instantiation.
-
-    """
+    """Initialize the Instrument object with references and acknowledgements."""
 
     rules_url = 'http://guvitimed.jhuapl.edu/home_guvi-datausage'
     ackn_str = ' '.join(('Please see the Rules of the Road at', rules_url))
