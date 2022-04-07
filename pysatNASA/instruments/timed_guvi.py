@@ -143,9 +143,8 @@ download = functools.partial(cdw.download, supported_tags=download_tags)
 list_remote_files = functools.partial(
     cdw.list_remote_files, supported_tags=download_tags)
 
+
 # Set the load routine
-
-
 def load(fnames, tag=None, inst_id=None):
     """Load TIMED GUVI data into `xarray.DataSet` and `pysat.Meta` objects.
 
