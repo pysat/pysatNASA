@@ -252,8 +252,7 @@ def load(fnames, tag=None, inst_id=None):
                            "TIME_NIGHT", "TIME_EPOCH_NIGHT",
                            "YEAR_DAY_AURORAL", "DOY_DAY_AURORAL",
                            "TIME_DAY_AURORAL",
-                           "TIME_EPOCH_DAY_AURORAL",
-                           ])
+                           "TIME_EPOCH_DAY_AURORAL"])
 
     # nAlong dimension should be the same for day and night,
     # It will be renamed as time to follow pysat standards.
