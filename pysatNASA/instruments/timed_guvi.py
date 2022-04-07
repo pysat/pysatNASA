@@ -24,7 +24,7 @@ No `tag` or `inst_id` required.
 
 Warnings
 --------
-- Currently no cleaning routine.
+Currently no cleaning routine.
 
 
 Example
