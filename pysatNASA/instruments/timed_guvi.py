@@ -45,7 +45,6 @@ L. A. Navarro (luis.navarro@colorado.edu)
 import datetime as dt
 import functools
 import numpy as np
-import pandas as pds
 import warnings
 import xarray as xr
 
@@ -229,8 +228,8 @@ def load(fnames, tag='', inst_id=''):
         dts = []
         for i, year in enumerate(dataset['YEAR_%s' % tag].data):
             idt = dt.datetime(year, 1, 1) + dt.timedelta(
-                days = float(dataset['DOY_%s' % tag].data[i] - 1),
-                seconds = float(dataset['TIME_%s' % tag].data[i]))
+                days=float(dataset['DOY_%s' % tag].data[i] - 1),
+                seconds=float(dataset['TIME_%s' % tag].data[i]))
             dts.append(idt)
         return dts
 

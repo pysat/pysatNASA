@@ -181,18 +181,19 @@ def download(date_array, tag=None, inst_id=None, supported_tags=None,
         # Format files for specific dates and download location
         # Year and day found in remote_dir: day is assumed to be day of year
         if 'day' in remote_dir and 'month' not in remote_dir:
-            formatted_remote_dir = remote_dir.format(year = date.year,
-                                                day = date.timetuple().tm_yday,
-                                                hour = date.hour,
-                                                min = date.minute,
-                                                sec = date.second)
+            doy = date.timetuple().tm_yday
+            formatted_remote_dir = remote_dir.format(year=date.year,
+                                                     day=doy,
+                                                     hour=date.hour,
+                                                     min=date.minute,
+                                                     sec=date.second)
         else:
-            formatted_remote_dir = remote_dir.format(year = date.year,
-                                                     month = date.month,
-                                                     day = date.day,
-                                                     hour = date.hour,
-                                                     min = date.minute,
-                                                     sec = date.second)
+            formatted_remote_dir = remote_dir.format(year=date.year,
+                                                     month=date.month,
+                                                     day=date.day,
+                                                     hour=date.hour,
+                                                     min=date.minute,
+                                                     sec=date.second)
         remote_path = '/'.join((remote_url.strip('/'),
                                 formatted_remote_dir.strip('/'),
                                 fname))
@@ -339,17 +340,17 @@ def list_remote_files(tag=None, inst_id=None, start=None, stop=None,
             if 'month' in search_dir['keys']:
                 search_times = pds.date_range(start,
                                               stop + pds.DateOffset(months=1),
-                                              freq = 'M')
+                                              freq='M')
             # Year, day found: assume daily cadence of directory format
             elif 'day' in search_dir['keys']:
                 search_times = pds.date_range(start,
                                               stop + pds.DateOffset(days=1),
-                                              freq = 'D')
+                                              freq='D')
             # Year found alone: assume yearly cadence of directory format
             else:
                 search_times = pds.date_range(start,
                                               stop + pds.DateOffset(years=1),
-                                              freq = 'Y')
+                                              freq='Y')
 
             url_list = []
             for time in search_times:
