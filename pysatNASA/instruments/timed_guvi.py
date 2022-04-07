@@ -20,7 +20,7 @@ inst_id
 
 Note
 ----
-- no tag required
+No `tag` or `inst_id` required.
 
 Warnings
 --------
