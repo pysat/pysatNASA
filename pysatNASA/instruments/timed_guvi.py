@@ -107,7 +107,7 @@ def init(self):
 
 
 def clean(self):
-    """Routine to return TIMED GUVI data cleaned to the specified level
+    """Routine to return TIMED GUVI data cleaned to the specified level.
 
     Note
     ----
