@@ -44,18 +44,16 @@ L. A. Navarro (luis.navarro@colorado.edu)
 
 import datetime as dt
 import functools
-import pandas as pds
-import xarray as xr
 import numpy as np
+import pandas as pds
 import warnings
-import pysat
-from datetime import datetime, timedelta
+import xarray as xr
 
-from pysat import logger
+import pysat
 from pysat.instruments.methods import general as mm_gen
+from pysat import logger
 
 from pysatNASA.instruments.methods import cdaweb as cdw
-from h5py._hl import dataset
 
 # ----------------------------------------------------------------------------
 # Instrument attributes
@@ -64,6 +62,8 @@ platform = 'timed'
 name = 'guvi'
 tags = {'': ''}
 inst_ids = {'': [tag for tag in tags.keys()]}
+
+pandas_format = False
 
 # ----------------------------------------------------------------------------
 # Instrument test attributes
@@ -101,7 +101,6 @@ def init(self):
                                 'space research III. Vol. 3756.',
                                 'International Society for Optics',
                                 'and Photonics, 1999.'))
-    self.pandas_format = False
 
     return
 
@@ -212,7 +211,7 @@ def load(fnames, tag='', inst_id=''):
         i_nightset = dataset.drop_vars(auroralkeys + daykeys + otherkeys)
         i_auroralset = dataset.drop_vars(daykeys + nightkeys + otherkeys)
 
-        # concatenate along corresponding dimension
+        # Concatenate along corresponding dimension
         if dayset is None:
             dayset = i_dayset
             nightset = i_nightset
@@ -229,13 +228,13 @@ def load(fnames, tag='', inst_id=''):
     def get_dt_objects(dataset, tag):
         dts = []
         for i, year in enumerate(dataset['YEAR_%s' % tag].data):
-            idt = datetime(year, 1, 1) + \
-                timedelta(days=float(dataset['DOY_%s' % tag].data[i] - 1)) + \
-                timedelta(seconds=float(dataset['TIME_%s' % tag].data[i]))
+            idt = dt.datetime(year, 1, 1) + dt.timedelta(
+                days = float(dataset['DOY_%s' % tag].data[i] - 1),
+                seconds = float(dataset['TIME_%s' % tag].data[i]))
             dts.append(idt)
         return dts
 
-    # nCross dimension is the same regardless of day, night or auroral
+    # Dimension 'nCross' is the same regardless of day, night or auroral
     data = data.swap_dims({"nCrossDay": "nCross",
                            "nCrossNight": "nCross",
                            "nCrossDayAur": "nCross", })
@@ -254,8 +253,8 @@ def load(fnames, tag='', inst_id=''):
                            "TIME_DAY_AURORAL",
                            "TIME_EPOCH_DAY_AURORAL"])
 
-    # nAlong dimension should be the same for day and night,
-    # it will be renamed as 'time' to follow pysat standards.
+    # Dimension 'nAlong' should be the same for day and night.
+    # It will be renamed as 'time' to follow pysat standards.
     if np.all(np.equal(day_dts, night_dts)):
         data = data.swap_dims({"nAlongDay": "time",
                                "nAlongNight": "time", })
@@ -288,7 +287,7 @@ def load(fnames, tag='', inst_id=''):
               'PIERCEPOINT_DAY_SZA_AURORAL']
     data = data.set_coords(coords)
 
-    # nchan as coordinate
+    # Set 'nchan' as coordinate
     coords = {"nchan": ["121.6nm", "130.4nm", "135.6nm", "LBHshort", "LBHlong"],
               "nCross": range(13)}
     data = data.assign_coords(coords=coords)
