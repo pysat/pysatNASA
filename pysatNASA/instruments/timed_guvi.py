@@ -145,7 +145,7 @@ list_remote_files = functools.partial(
 
 
 # Set the load routine
-def load(fnames, tag=None, inst_id=None):
+def load(fnames, tag='', inst_id=''):
     """Load TIMED GUVI data into `xarray.DataSet` and `pysat.Meta` objects.
 
     This routine is called as needed by pysat. It is not intended
