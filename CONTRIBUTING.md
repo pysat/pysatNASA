@@ -95,10 +95,10 @@ For merging, you should:
    flake8) and Coveralls) [1]_
 
 .. [1] If you don't have all the necessary Python versions available locally or
-      have trouble building all the testing environments, you can rely on
-      Travis to run the tests for each change you add in the pull request.
-      Because testing here will delay tests by other developers, please ensure
-      that the code passes all tests on your local system first.
+       have trouble building all the testing environments, you can rely on
+       Travis to run the tests for each change you add in the pull request.
+       Because testing here will delay tests by other developers, please ensure
+       that the code passes all tests on your local system first.
 
  Project Style Guidelines
  ------------------------
