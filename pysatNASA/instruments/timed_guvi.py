@@ -14,13 +14,16 @@ platform
 name
     'guvi'
 tag
-    None
+    'img_low'
+    'img_high'
+    'spect_low'
+    'spect_high'
 inst_id
     None supported
 
 Note
 ----
-No `tag` or `inst_id` required.
+No `inst_id` required.
 
 Warnings
 --------
@@ -32,8 +35,8 @@ Example
 ::
 
     import pysat
-    guvi = pysat.Instrument(platform='timed', name='guvi')
-    guvi.download(dt.datetime(2005, 6, 20), dt.datetime(2005, 6, 21))
+    guvi = pysat.Instrument(platform='timed', name='guvi', tag='img_low')
+    guvi.download(dt.datetime(2005, 6, 28), dt.datetime(2005, 6, 29))
     guvi.load(yr=2005, doy=171)
 
 Author
@@ -59,10 +62,10 @@ from pysatNASA.instruments.methods import cdaweb as cdw
 
 platform = 'timed'
 name = 'guvi'
-tags = {'l1c_img': 'Level 1C imaging disk high resolution data',
-        'l1c2_img': 'Level 1C imaging disk low resolution data',
-        'l1c_spect': 'Level 1C spectrograh disk high resolution data',
-        'l1c2_spect': 'Level 1C spectrograph disk low resolution data'}
+tags = {'img_high': 'Level 1C imaging disk high resolution data',
+        'img_low': 'Level 1C imaging disk low resolution data',
+        'spect_high': 'Level 1C spectrograh disk high resolution data',
+        'spect_low': 'Level 1C spectrograph disk low resolution data'}
 inst_ids = {'': [tag for tag in tags.keys()]}
 
 pandas_format = False
@@ -70,7 +73,7 @@ pandas_format = False
 # ----------------------------------------------------------------------------
 # Instrument test attributes
 
-_test_dates = {'': {tag: dt.datetime(2005, 6, 28) for tag in tags}}
+_test_dates = {'': {tag: dt.datetime(2005, 6, 28) for tag in tags.keys()}}
 
 # ----------------------------------------------------------------------------
 # Instrument methods
@@ -120,14 +123,14 @@ def clean(self):
 #
 # Use the default CDAWeb and pysat methods
 # Set the list_files routine
-fname = ''.join(('TIMED_GUVI_{res:s}-disk-{mode:s}_{{year:04d}}{{day:03d}}',
+fname = ''.join(('TIMED_GUVI_L1C{res:s}-disk-{mode:s}_{{year:04d}}{{day:03d}}',
                  '{{hour:02d}}{{minute:02d}}{{second:02d}}',
                  '-?????????????_REV??????_',
                  'Av{{version:02d}}-??r{{revision:03d}}.nc'))
 
-tags_fmt = { tag: fname.format(res=tag.split('_')[0].replace("2","-2").upper(),
-                               mode=tag[4:].replace("_","").upper())
-                               for tag in tags}
+tags_fmt = {tag: fname.format(res= "-2" if 'low' in tag.split('_')[1] else "",
+                               mode=tag.split("_")[0].upper())
+                               for tag in tags.keys()}
 supported_tags = {"": tags_fmt}
 
 list_files = functools.partial(mm_gen.list_files,
@@ -137,8 +140,8 @@ list_files = functools.partial(mm_gen.list_files,
 url = ''.join(('/pub/data/timed/guvi/levels_v13/level1c/{mode:s}/',
                '{{year:4d}}/{{day:03d}}/'))
 
-tags_url = { tag: url.format(mode='imaging') if 'img' in tag else 
-            url.format(mode='spectrograph') for tag in tags}
+tags_url = {tag: url.format(mode='imaging') if 'img' in tag else
+             url.format(mode='spectrograph') for tag in tags.keys()}
 supported_urls = {"": tags_url}
 
 download_tags = {inst_id:
@@ -188,8 +191,8 @@ def load(fnames, tag='', inst_id=''):
     --------
     ::
 
-        inst = pysat.Instrument('timed', 'guvi', tag='l1c2_img')
-        inst.load(2005, 171)
+        inst = pysat.Instrument('timed', 'guvi', tag='img_high')
+        inst.load(2005, 179)
 
     """
     labels = {'units': ('units', str), 'name': ('long_name', str),
@@ -202,35 +205,39 @@ def load(fnames, tag='', inst_id=''):
     meta = pysat.Meta(labels=labels)
 
     # Dimensions for time variables
+    dims = ['nAlongDay', 'nAlongNight']
     if 'img' in tag:
-        dims = ['nAlongDay', 'nAlongNight', 'nAlongDayAur', 'single_var']
-    elif 'spect' in tag:
-        dims = ['nAlongDay', 'nAlongNight', 'nAlongGAIMDay', 'nAlongGAIMNight',
-                'single_var']
+        dims = dims + ['nAlongDayAur']
+    elif 'spect_low' in tag:
+        dims = dims + ['nAlongGAIMDay', 'nAlongGAIMNight']
 
     # Separate and concatenate into datasets
     inners = {dim: None for dim in dims}
 
     for path in fnames:
         dataset = xr.load_dataset(path)
-        print(path)
 
         # Separate into inner datasets
-        _keys = {dim: [] for dim in dims}
+        inner_keys = {dim: [] for dim in dims}
 
         for dim in dims:
             for key in dataset.keys():
                 if dim in dataset[key].dims:
-                    _keys[dim].append(key)
+                    inner_keys[dim].append(key)
 
-        jnners = {dim: dataset.get(_keys[dim]) for dim in dims}
+        jnners = {dim: dataset.get(inner_keys[dim]) for dim in dims}
+
+        # Add 'single_var's into 'nAlongNight' dataset to keep track
+        sv_keys = [v.name for v in dataset.values() if 'single_var' in v.dims]
+        singlevar_set = dataset.get(sv_keys)
+        jnners['nAlongNight'] = xr.merge([jnners['nAlongNight'], singlevar_set])
 
         # Concatenate along corresponding dimension
         if inners['nAlongDay'] is None:
             inners = jnners
         else:
-            inners = { dim : xr.concat([inners[dim], jnners[dim]], dim=dim)
-                       for dim in dims }
+            inners = {dim : xr.concat([inners[dim], jnners[dim]], dim=dim)
+                      for dim in dims }
 
     data = xr.merge([inners[dim] for dim in dims])
 
@@ -248,7 +255,7 @@ def load(fnames, tag='', inst_id=''):
     night_dts = np.array(get_dt_objects(data, "NIGHT"))
     if 'img' in tag:
         aur_dts = get_dt_objects(data, "DAY_AURORAL")
-    elif 'spect' in tag:
+    elif 'spect_low' in tag:
         gaimday_dts = get_dt_objects(data, "GAIM_DAY")
         gaimnight_dts = get_dt_objects(data, "GAIM_NIGHT")
 
@@ -259,7 +266,7 @@ def load(fnames, tag='', inst_id=''):
     if 'img' in tag:
         data = data.drop_vars(["YEAR_DAY_AURORAL", "DOY_DAY_AURORAL",
                                "TIME_DAY_AURORAL", "TIME_EPOCH_DAY_AURORAL"])
-    elif 'spect' in tag:
+    elif 'spect_low' in tag:
         data = data.drop_vars(["YEAR_GAIM_DAY", "DOY_GAIM_DAY", 
                                "TIME_GAIM_DAY", "TIME_GAIM_NIGHT",
                                "YEAR_GAIM_NIGHT", "DOY_GAIM_NIGHT"])
@@ -274,7 +281,7 @@ def load(fnames, tag='', inst_id=''):
     if 'img' in tag:
         dt_aur=xr.DataArray(aur_dts, dims=('nAlongDayAur'))
         data = data.assign(time_auroral=dt_aur)
-    elif 'spect' in tag:
+    elif 'spect_low' in tag:
         day_gaim = xr.DataArray(gaimday_dts, dims=('nAlongGAIMDay'))
         night_gaim = xr.DataArray(gaimnight_dts, dims=('nAlongGAIMNight'))
         data = data.assign(time_gaim_day=day_gaim, time_gaim_night=night_gaim)
@@ -308,12 +315,12 @@ def load(fnames, tag='', inst_id=''):
                             "LBHshort", "LBHlong"],
                   "nchanAur": ["121.6nm", "130.4nm", "135.6nm",
                                "LBHshort", "LBHlong"],
-                  "nCrossDay": range(13),
-                  "nCrossNight": range(13),
-                  "nCrossDayAur": range(13)}
+                  "nCrossDay": data.nCrossDay.data,
+                  "nCrossNight": data.nCrossNight.data,
+                  "nCrossDayAur": data.nCrossDayAur.data}
     elif 'spect' in tag:
         coords = {"nchan": ["121.6nm", "130.4nm", "135.6nm",
-                            "LBHshort", "LBHlong","extra"]}
+                            "LBHshort", "LBHlong","?"]}
     data = data.assign_coords(coords=coords)
 
     # Sort
