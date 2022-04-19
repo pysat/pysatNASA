@@ -91,14 +91,14 @@ For merging, you should:
 1. Include an example for use
 2. Add a note to ``CHANGELOG.md`` about the changes
 3. Update the author list in ``zenodo.json`` if applicable
-4. Ensure that all checks passed (current checks include Travis-CI (pytest and
-   flake8) and Coveralls) [1]_
+4. Ensure that all checks passed (current checks include Github Actions and Coveralls) [1]_
 
 .. [1] If you don't have all the necessary Python versions available locally or
        have trouble building all the testing environments, you can rely on
        GitHub Actions to run the tests for each change you add in the pull
        request. Because testing here will delay tests by other developers,
        please ensure that the code passes all tests on your local system first.
+
 
  Project Style Guidelines
  ------------------------
