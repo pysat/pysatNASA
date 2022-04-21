@@ -13,29 +13,34 @@ are generally held fortnightly.
 Short version
 -------------
 
-* Submit bug reports and feature requests at `GitHub <https://github.com/pysat/pysatNASA/issues>`_
+* Submit bug reports and feature requests at [GitHub](https://github.com/pysat/pysatNASA/issues)
+
 * Make pull requests to the ``develop`` branch
 
 Bug reports
 -----------
 
-When `reporting a bug <https://github.com/pysat/pysatNASA/issues>`_ please
+When [reporting a bug](https://github.com/pysat/pysatNASA/issues) please
 include:
 
 * Your operating system name and version
+
 * Any details about your local setup that might be helpful in troubleshooting
+
 * Detailed steps to reproduce the bug
 
 Feature requests and feedback
 -----------------------------
 
 The best way to send feedback is to file an issue at
-`GitHub <https://github.com/pysat/pysatNASA/issues>`_.
+[GitHub](https://github.com/pysat/pysatNASA/issues).
 
 If you are proposing a feature:
 
 * Explain in detail how it would work.
+
 * Keep the scope as narrow as possible, to make it easier to implement.
+
 * Remember that this is a volunteer-driven project, and that code contributions
   are welcome :)
 
@@ -44,19 +49,24 @@ Development
 
 To set up `pysatNASA` for local development:
 
-1. `Fork pysatNASA on GitHub <https://github.com/pysat/pysatNASA/fork>`_.
-2. Clone your fork locally::
+1. [Fork pysatNASA on GitHub](https://github.com/pysat/pysatNASA/fork).
 
+2. Clone your fork locally:
+
+  ```
     git clone git@github.com:your_name_here/pysatNASA.git
+  ```
 
-3. Create a branch for local development::
+3. Create a branch for local development:
 
+  ```
     git checkout -b name-of-your-bugfix-or-feature
+  ```
 
    Now you can make your changes locally.
 
    Tests for new instruments are performed automatically.  See discussion
-   `here <https://pysat.readthedocs.io/en/main/new_instrument.html#testing-support>`_
+   [here](https://pysat.readthedocs.io/en/main/new_instrument.html#testing-support)
    for more information on triggering these standard tests.
 
    Tests for custom functions should be added to the appropriately named file
@@ -68,19 +78,23 @@ To set up `pysatNASA` for local development:
 
 
 4. When you're done making changes, run all the checks to ensure that nothing
-   is broken on your local system, as well as check for flake8 compliance::
+   is broken on your local system, as well as check for flake8 compliance:
 
+   ```
     pytest -vs --flake8 pysatNASA
+   ```
 
 5. Update/add documentation (in ``docs``), if relevant
 
 6. Add your name to the .zenodo.json file as an author
 
-7. Commit your changes and push your branch to GitHub::
+7. Commit your changes and push your branch to GitHub:
 
+  ```
     git add .
     git commit -m "Brief description of your changes"
     git push origin name-of-your-bugfix-or-feature
+  ```
 
 8. Submit a pull request through the GitHub website. Pull requests should be
    made to the ``develop`` branch.
@@ -96,13 +110,13 @@ For merging, you should:
 1. Include an example for use
 2. Add a note to ``CHANGELOG.md`` about the changes
 3. Update the author list in ``zenodo.json`` if applicable
-4. Ensure that all checks passed (current checks include Github Actions and Coveralls) [1]_
+4. Ensure that all checks passed (current checks include Github Actions and Coveralls)
 
-.. [1] If you don't have all the necessary Python versions available locally or
-       have trouble building all the testing environments, you can rely on
-       GitHub Actions to run the tests for each change you add in the pull
-       request. Because testing here will delay tests by other developers,
-       please ensure that the code passes all tests on your local system first.
+If you don't have all the necessary Python versions available locally or
+have trouble building all the testing environments, you can rely on
+GitHub Actions to run the tests for each change you add in the pull
+request. Because testing here will delay tests by other developers,
+please ensure that the code passes all tests on your local system first.
 
 
 Project Style Guidelines
@@ -122,7 +136,7 @@ These include:
   `platform`, `name`, `tag`, and `inst_id`
 * The pysat logger is imported into each sub-module and provides status updates
   at the info and warning levels (as appropriate)
-* Several dependent packages have common nicknames, including::
+* Several dependent packages have common nicknames, including:
   * `import datetime as dt`
   * `import numpy as np`
   * `import pandas as pds`
