@@ -188,11 +188,17 @@ def load(fnames, tag=None, inst_id=None):
         data['time'] = ('nscans',
                         [dt.datetime.strptime(str(val), "b'%Y-%m-%dT%H:%M:%SZ'")
                          for val in data['scan_start_time'].values])
+        meta['time'] = meta['scan_start_time']
         data = data.swap_dims({'nscans': 'time'})
+
+        # Update coordinates with dimensional data
         data = data.assign_coords({'nlats': data['nlats'],
                                    'nlons': data['nlons'],
                                    'nmask': data['nmask'],
                                    'channel': data['channel'],
                                    'hemisphere': data['hemisphere']})
+        meta['nlats'] = {'notes': 'Index for latitude values'}
+        meta['nlons'] = {'notes': 'Index for longitude values'}
+        meta['nmask'] = {'notes': 'Index for mask values'}
 
     return data, meta
