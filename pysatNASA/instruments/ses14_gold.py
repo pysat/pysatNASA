@@ -188,8 +188,10 @@ def load(fnames, tag=None, inst_id=None):
         data['time'] = ('nscans',
                         [dt.datetime.strptime(str(val), "b'%Y-%m-%dT%H:%M:%SZ'")
                          for val in data['scan_start_time'].values])
-        meta['time'] = meta['scan_start_time']
         data = data.swap_dims({'nscans': 'time'})
+        meta['time'] = meta['scan_start_time']
+        meta['time']['long_name'] = 'time'
+        meta['time']['notes'] = 'Converted to datetime from scan_start_time'
 
         # Update coordinates with dimensional data
         data = data.assign_coords({'nlats': data['nlats'],
