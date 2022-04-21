@@ -37,10 +37,6 @@ Examples
     Example code can go here
 
 
-Authors
--------
-Author name and institution
-
 """
 
 import datetime as dt

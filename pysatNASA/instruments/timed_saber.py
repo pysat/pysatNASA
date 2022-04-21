@@ -42,10 +42,6 @@ Warnings
 - No cleaning routine
 
 
-Authors
--------
-J. Klenzing, 4 March 2019
-
 """
 
 import datetime as dt

@@ -57,10 +57,6 @@ Warnings
 --------
 - Currently no cleaning routine.
 
-Authors
--------
-J. Klenzing
-
 """
 
 import datetime as dt

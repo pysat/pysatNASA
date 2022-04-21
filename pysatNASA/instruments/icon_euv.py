@@ -36,12 +36,6 @@ ICON_L27_Ion_Density becomes Ion_Density.  To retain the original names, use
     euv = pysat.Instrument(platform='icon', name='euv',
                            keep_original_names=True)
 
-Authors
----------
-Jeff Klenzing, Mar 17, 2018, Goddard Space Flight Center
-
-Russell Stoneback, Mar 23, 2018, University of Texas at Dallas
-
 """
 
 import datetime as dt
