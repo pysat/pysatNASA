@@ -13,7 +13,7 @@ Meter on board the Ionospheric CONnection Explorer `(ICON) <https://www.nasa.gov
    import datetime as dt
    import pysat
    import pysatNASA as py_nasa
-pysat.utils.registry.register_by_module(py_nasa.instruments)
+   pysat.utils.registry.register_by_module(py_nasa.instruments)
 
    old_time = dt.datetime(2020, 1, 1)
    ivm = pysat.Instrument(platform='icon', name='ivm',
