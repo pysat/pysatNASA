@@ -14,6 +14,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   * Updated NEP29 compliance in Github Actions
   * Limit versions of hacking for improved pip compliance
   * Update instrument template standards
+  * Updated documentation style
 
 
 ## [0.0.2] - 2021-06-07
