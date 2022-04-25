@@ -177,7 +177,7 @@ def load(fnames, tag=None, inst_id=None):
     --------
     ::
 
-        inst = pysat.Instrument('gold', 'nmax')
+        inst = pysat.Instrument('ses14', 'gold', tag='nmax')
         inst.load(2019, 1)
 
     """
@@ -199,8 +199,8 @@ def load(fnames, tag=None, inst_id=None):
                                    'nmask': data['nmask'],
                                    'channel': data['channel'],
                                    'hemisphere': data['hemisphere']})
-        meta['nlats'] = {'notes': 'Index for latitude values'}
-        meta['nlons'] = {'notes': 'Index for longitude values'}
-        meta['nmask'] = {'notes': 'Index for mask values'}
+        meta['nlats'] = {meta.labels.notes: 'Index for latitude values'}
+        meta['nlons'] = {meta.labels.notes: 'Index for longitude values'}
+        meta['nmask'] = {meta.labels.notes: 'Index for mask values'}
 
     return data, meta
