@@ -36,7 +36,6 @@ Examples
 
     Example code can go here
 
-
 """
 
 import datetime as dt

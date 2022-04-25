@@ -41,7 +41,6 @@ Warnings
 - Note on Temperature Errors: http://saber.gats-inc.com/temp_errors.php
 - No cleaning routine
 
-
 """
 
 import datetime as dt

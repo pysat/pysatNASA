@@ -29,7 +29,6 @@ Examples
     nmax.download(dt.datetime(2020, 1, 1), dt.datetime(2020, 1, 31))
     nmax.load(2020, 1)
 
-
 """
 
 import datetime as dt
