@@ -38,7 +38,9 @@ Jeff Klenzing, Oct 06, 2020, Goddard Space Flight Center
 
 import datetime as dt
 import functools
+import pysat
 import warnings
+import xarray as xr
 
 from pysat.instruments.methods import general as ps_gen
 from pysat import logger
@@ -181,18 +183,35 @@ def load(fnames, tag=None, inst_id=None):
         inst.load(2019, 1)
 
     """
+    labels = {'units': ('units', str), 'name': ('long_name', str),
+              'notes': ('notes', str), 'desc': ('desc', str),
+              'plot': ('plot_label', str), 'axis': ('axis', str),
+              'scale': ('scale', str),
+              'min_val': ('value_min', float),
+              'max_val': ('value_max', float),
+              'fill_val': ('fill', float)}
+    meta = pysat.Meta(labels=labels)
 
-    data, meta = load_netcdf4(fnames, pandas_format=pandas_format)
-    if tag == 'nmax':
-        # Add time coordinate from scan_start_time
-        data['time'] = ('nscans',
-                        [dt.datetime.strptime(str(val), "b'%Y-%m-%dT%H:%M:%SZ'")
-                         for val in data['scan_start_time'].values])
-        data = data.swap_dims({'nscans': 'time'})
-        data = data.assign_coords({'nlats': data['nlats'],
-                                   'nlons': data['nlons'],
-                                   'nmask': data['nmask'],
-                                   'channel': data['channel'],
-                                   'hemisphere': data['hemisphere']})
+    data = []
+
+    for path in fnames:
+
+        idata = xr.load_dataset(path)
+
+        if tag == 'nmax':
+            # Add time coordinate from scan_start_time
+            idata['time'] = ('nscans',
+                            [dt.datetime.strptime(str(val), "b'%Y-%m-%dT%H:%M:%SZ'")
+                             for val in idata['scan_start_time'].values])
+            idata = idata.swap_dims({'nscans': 'time'})
+            idata = idata.assign_coords({'nlats': idata['nlats'],
+                                       'nlons': idata['nlons'],
+                                       'nmask': idata['nmask'],
+                                       'channel': idata['channel'],
+                                       'hemisphere': idata['hemisphere']})
+
+            data.append(idata)
+
+    data = xr.concat(data, dim='time')
 
     return data, meta
