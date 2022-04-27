@@ -182,17 +182,12 @@ def load(fnames, tag=None, inst_id=None):
 
     """
 
-    data, meta = load_netcdf4(fnames, pandas_format=pandas_format)
+    data, meta = load_netcdf4(fnames, pandas_format=pandas_format,
+                              epoch_name='nscans')
     if tag == 'nmax':
         # Add time coordinate from scan_start_time
-        data['time'] = ('nscans',
-                        [dt.datetime.strptime(str(val), "b'%Y-%m-%dT%H:%M:%SZ'")
-                         for val in data['scan_start_time'].values])
-        data = data.swap_dims({'nscans': 'time'})
-        meta['time'] = meta['scan_start_time']
-        meta['time']['long_name'] = 'time'
-        meta['time']['notes'] = 'Converted to datetime from scan_start_time'
-
+        data['time'] = [dt.datetime.strptime(str(val), "b'%Y-%m-%dT%H:%M:%SZ'")
+                        for val in data['scan_start_time'].values]
         # Update coordinates with dimensional data
         data = data.assign_coords({'nlats': data['nlats'],
                                    'nlons': data['nlons'],
