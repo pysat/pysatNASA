@@ -15,6 +15,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   * Limit versions of hacking for improved pip compliance
   * Update instrument template standards
   * Updated documentation style
+  * Removed cap on cdflib
 
 
 ## [0.0.2] - 2021-06-07
