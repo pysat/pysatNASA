@@ -193,12 +193,6 @@ def load(fnames, tag=None, inst_id=None, file_cadence=pds.DateOffset(months=1),
     data, meta = cdw.load(fnames, tag=tag, inst_id=inst_id,
                           file_cadence=file_cadence, flatten_twod=flatten_twod)
 
-    # Update the metadata, as float values may be stored as arrays
-    for dval in meta.keys():
-        for label in meta[dval].keys():
-            if hasattr(meta[dval][label], 'shape'):
-                meta[dval] = {label: meta[dval][label][0]}
-
     return data, meta
 
 
