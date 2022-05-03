@@ -197,6 +197,7 @@ def load(fnames, tag=None, inst_id=None):
                                    'nmask': data['nmask'],
                                    'channel': data['channel'],
                                    'hemisphere': data['hemisphere']})
+        meta['time'] = {meta.labels.notes: 'Converted from scan_start_time'}
         meta['nlats'] = {meta.labels.notes: 'Index for latitude values'}
         meta['nlons'] = {meta.labels.notes: 'Index for longitude values'}
         meta['nmask'] = {meta.labels.notes: 'Index for mask values'}
