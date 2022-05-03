@@ -18,6 +18,7 @@ from pysat.instruments.methods import general
 from pysat import logger
 from pysat.utils import files as futils
 from pysatNASA.instruments.methods import CDF as libCDF
+
 try:
     import pysatCDF
     auto_CDF = pysatCDF.CDF
