@@ -88,15 +88,22 @@ To set up `pysatNASA` for local development:
 
 6. Add your name to the .zenodo.json file as an author
 
-7. Commit your changes and push your branch to GitHub:
+7. Commit your changes:
+   ```
+   git add .
+   git commit -m "AAA: Brief description of your changes"
+   ```
+   Where AAA is a standard shorthand for the type of change (eg, BUG or DOC).
+   `pysat` follows the [numpy development workflow](https://numpy.org/doc/stable/dev/development_workflow.html),
+   see the discussion there for a full list of this shorthand notation.  
 
-  ```
-    git add .
-    git commit -m "Brief description of your changes"
-    git push origin name-of-your-bugfix-or-feature
-  ```
+8. Once you are happy with the local changes, push to Github:
+   ```
+   git push origin name-of-your-bugfix-or-feature
+   ```
+   Note that each push will trigger the Continuous Integration workflow.
 
-8. Submit a pull request through the GitHub website. Pull requests should be
+9. Submit a pull request through the GitHub website. Pull requests should be
    made to the ``develop`` branch.
 
 Pull Request Guidelines
