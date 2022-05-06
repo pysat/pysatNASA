@@ -208,10 +208,8 @@ def load(fnames, tag=None, inst_id=None):
 
     if tag == 'nmax':
         # Add time coordinate from scan_start_time
-        data['time'] = ('nscans',
-                        [dt.datetime.strptime(str(val), "b'%Y-%m-%dT%H:%M:%SZ'")
-                         for val in data['scan_start_time'].values])
-        data = data.swap_dims({'nscans': 'time'})
+        data['time'] = [dt.datetime.strptime(str(val), "b'%Y-%m-%dT%H:%M:%SZ'")
+                        for val in data['scan_start_time'].values]
 
         # Update coordinates with dimensional data
         data = data.assign_coords({'nlats': data['nlats'],
