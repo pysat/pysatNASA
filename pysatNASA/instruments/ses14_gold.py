@@ -182,8 +182,28 @@ def load(fnames, tag=None, inst_id=None):
 
     """
 
-    data, meta = load_netcdf4(fnames, pandas_format=pandas_format,
-                              epoch_name='nscans')
+    labels = {'units': ('Units', str), 'name': ('Long_Name', str),
+              'notes': ('Var_Notes', str), 'desc': ('CatDesc', str),
+              'plot': ('plot', str), 'axis': ('axis', str),
+              'scale': ('scale', str),
+              'min_val': ('Valid_Min', np.float64),
+              'max_val': ('Valid_Max', np.float64),
+              'fill_val': ('fill', np.float64)}
+
+    # Generate custom meta translation table. When left unspecified the default
+    # table handles the multiple values for fill. We must recreate that
+    # functionality in our table. The targets for meta_translation should
+    # map to values in `labels` above.
+    meta_translation = {'FIELDNAM': 'plot', 'LABLAXIS': 'axis',
+                        'ScaleTyp': 'scale', 'VALIDMIN': 'Valid_Min',
+                        'Valid_Min': 'Valid_Min', 'VALIDMAX': 'Valid_Max',
+                        'Valid_Max': 'Valid_Max', '_FillValue': 'fill',
+                        'FillVal': 'fill', 'TIME_BASE': 'time_base'}
+
+    data, meta = load_netcdf(fnames, pandas_format=pandas_format,
+                             epoch_name='nscans', labels=labels,
+                             meta_translation=meta_translation,
+                             drop_meta_labels='FILLVAL')
     if tag == 'nmax':
         # Add time coordinate from scan_start_time
         data['time'] = ('nscans',
