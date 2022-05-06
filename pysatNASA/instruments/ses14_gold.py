@@ -38,11 +38,12 @@ Jeff Klenzing, Oct 06, 2020, Goddard Space Flight Center
 
 import datetime as dt
 import functools
+import numpy as np
 import warnings
 
 from pysat.instruments.methods import general as ps_gen
 from pysat import logger
-from pysat.utils import load_netcdf4
+from pysat.utils.io import load_netcdf
 
 from pysatNASA.instruments.methods import cdaweb as cdw
 from pysatNASA.instruments.methods import gold as mm_gold
@@ -204,6 +205,7 @@ def load(fnames, tag=None, inst_id=None):
                              epoch_name='nscans', labels=labels,
                              meta_translation=meta_translation,
                              drop_meta_labels='FILLVAL')
+
     if tag == 'nmax':
         # Add time coordinate from scan_start_time
         data['time'] = ('nscans',
