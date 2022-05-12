@@ -29,11 +29,6 @@ Examples
     nmax.download(dt.datetime(2020, 1, 1), dt.datetime(2020, 1, 31))
     nmax.load(2020, 1)
 
-
-Authors
----------
-Jeff Klenzing, Oct 06, 2020, Goddard Space Flight Center
-
 """
 
 import datetime as dt
