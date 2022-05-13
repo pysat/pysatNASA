@@ -29,6 +29,7 @@ jobs:
 
     - name: Install standard dependencies
       run: |
+        pip install --upgrade pip
         pip install -r requirements.txt
         pip install -r test_requirements.txt
 
