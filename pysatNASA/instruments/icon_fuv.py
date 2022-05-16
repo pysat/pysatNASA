@@ -35,13 +35,6 @@ ICON_L27_Ion_Density becomes Ion_Density.  To retain the original names, use
     fuv = pysat.Instrument(platform='icon', name='fuv', tag=day',
                            keep_original_names=True)
 
-Authors
--------
-Originated from EUV support.
-Jeff Klenzing, Mar 17, 2018, Goddard Space Flight Center
-Russell Stoneback, Mar 23, 2018, University of Texas at Dallas
-Conversion to FUV, Oct 8th, 2028, University of Texas at Dallas
-
 """
 
 import datetime as dt
