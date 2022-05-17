@@ -90,6 +90,7 @@ _test_dates = {'': {'': dt.datetime(2019, 1, 1),
 fname = ''.join(('cnofs_vefi_bfield_1sec_{year:04d}{month:02d}{day:02d}',
                  '_v{version:02d}.cdf'))
 supported_tags = {'': {'': fname, 'tag_string': fname}}
+
 # Use the CDAWeb methods list files routine. The command
 # below presets some of the methods inputs, leaving
 # those provided by pysat available when invoked
@@ -123,7 +124,7 @@ basic_tag2 = {'remote_dir': '/pub/data/cnofs/other/bfield_1sec',
 supported_tags = {'': {'': basic_tag, 'tag_string': basic_tag2}}
 download = functools.partial(cdw.download, supported_tags=supported_tags)
 
-# support listing files currently on CDAWeb
+# Support listing files currently on CDAWeb
 list_remote_files = functools.partial(cdw.list_remote_files,
                                       supported_tags=supported_tags)
 
@@ -161,7 +162,6 @@ def init(self):
     return
 
 
-# Code should be defined below as needed
 def preprocess(self):
     """Perform standard preprocessing.
 
