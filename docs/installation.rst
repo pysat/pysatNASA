@@ -55,3 +55,27 @@ Installation Options
 
 
         python setup.py develop --user
+
+.. _post-install:
+
+Post Installation
+-----------------
+
+After installation, you may register the :py:mod:`pysatNASA`
+:py:class:`Instrument` sub-modules with pysat.  If this is your first time using
+pysat, check out the `quickstart guide
+<https://pysat.readthedocs.io/en/latest/quickstart.html>`_ for pysat. Once pysat
+is set up, you may choose to register the the :py:mod:`pysatNASA`
+:py:class:`Instruments` sub-modules by:
+
+.. code:: python
+
+
+   import pysat
+   import pysatNASA
+
+   pysat.utils.registry.register_by_module(pysatNASA.instruments)
+
+You may then use the pysat :py:attr:`platform` and :py:attr:`name` keywords to
+initialize the model :py:class:`Instrument` instead of the
+:py:attr:`inst_module` keyword argument.
