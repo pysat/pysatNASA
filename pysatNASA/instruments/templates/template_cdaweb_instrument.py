@@ -98,23 +98,22 @@ list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags)
 
 #
-# support load routine
+# Support load routine
 #
-# use the default CDAWeb method
-# no other information needs to be supplied here
+# Use the default CDAWeb method
+# No other information needs to be supplied here
 load = cdw.load
 
 #
-# support download routine
+# Support download routine
 #
-# to use the default CDAWeb method
-# we need to provide additional information
-# directory location on CDAWeb ftp server
-# formatting template for filenames on CDAWeb
-# formatting template for files saved to the local disk
-# a dictionary needs to be created for each inst_id and tag
-# combination along with the file format template
-# outer dict keyed by inst_id, inner dict keyed by tag
+# To use the default CDAWeb method we need to provide additional information.
+# - directory location on CDAWeb remote server
+# - formatting template for filenames on CDAWeb
+# - formatting template for files saved to the local disk
+# - a dictionary needs to be created for each inst_id and tag
+# - combination along with the file format template
+# - outer dict keyed by inst_id, inner dict keyed by tag
 basic_tag = {'remote_dir': '/pub/data/cnofs/vefi/bfield_1sec',
              'remote_fname': '{year:4d}/' + fname,
              'fname': fname}
@@ -162,6 +161,7 @@ def init(self):
     return
 
 
+# Code should be defined below as needed.
 def preprocess(self):
     """Perform standard preprocessing.
 
@@ -178,7 +178,7 @@ def preprocess(self):
     return
 
 
-# code should be defined below as needed
+# Code should be defined below as needed.
 def clean(inst):
     """Return `platform_name` data to the specified level..
 
