@@ -28,8 +28,8 @@ or correct the inflight processed data. Time resolution was 0.5 seconds.
 References
 ----------
 J. P. Krehbiel, L. H. Brace, R. F. Theis, W. H. Pinkus, and R. B. Kaplan,
-The Dynamics Explorer 2 Langmuir Probe (LANG), Space Sci. Instrum., v. 5, n. 4,
-p. 493, 1981.
+"The Dynamics Explorer 2 Langmuir Probe (LANG)", Space Sci. Instrum., 5,
+493-502, 1981.
 
 Properties
 ----------

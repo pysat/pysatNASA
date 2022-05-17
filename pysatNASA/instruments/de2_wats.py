@@ -50,8 +50,8 @@ about the processing done at NSSDC is given in WATS_NSSDC_PRO_DE.DOC.
 References
 ----------
 N. W. Spencer, L. E. Wharton, H. B. Niemann, A. E. Hedin, G. R. Carrignan,
-J. C. Maurer, The Dynamics Explorer Wind and Temperature Spectrometer
-Space Sci. Instrum., v. 5, n. 4, p. 417, 1981.
+J. C. Maurer, "The Dynamics Explorer Wind and Temperature Spectrometer",
+Space Sci. Instrum., 5, 417-428, 1981.
 
 Properties
 ----------
