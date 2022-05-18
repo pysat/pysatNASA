@@ -53,9 +53,8 @@ were lost between 12 March 1982 and 31 March 1982 when the counter overflowed.
 References
 ----------
 G. R. Carrignan, B. P. Block, J. C. Maurer,  A. E. Hedin, C. A. Reber,
-N. W. Spencer
-The neutral mass spectrometer on Dynamics Explorer B
-Space Sci. Instrum., v. 5, n. 4, p. 429, 1981.
+N. W. Spencer, "The neutral mass spectrometer on Dynamics Explorer B",
+Space Sci. Instrum., 5, 429-441, 1981.
 
 Properties
 ----------
