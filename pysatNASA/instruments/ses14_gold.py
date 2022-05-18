@@ -39,8 +39,8 @@ from pysat import logger
 from pysat.utils import load_netcdf4
 
 from pysatNASA.instruments.methods import cdaweb as cdw
-from pysatNASA.instruments.methods import gold as mm_gold
 from pysatNASA.instruments.methods import general as mm_nasa
+from pysatNASA.instruments.methods import gold as mm_gold
 
 # ----------------------------------------------------------------------------
 # Instrument attributes
