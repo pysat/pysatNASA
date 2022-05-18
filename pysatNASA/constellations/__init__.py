@@ -4,11 +4,22 @@ Each instrument is contained within a subpackage of the pysatNASA.instruments
 package.
 """
 
+import logging
+
+import pysat
 
 __all__ = ['de2', 'icon']
 
+# Save current level and turn off before constellation import
+user_level = pysat.logger.level
+pysat.logger.setLevel(logging.WARNING)
+
+# Import contellation objects
 for const in __all__:
     exec("from pysatNASA.constellations import {:}".format(const))
 
+# Restore user level
+pysat.logger.setLevel(user_level)
+
 # Remove dummy variable
-del const
+del const, user_level
