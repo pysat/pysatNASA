@@ -10,6 +10,7 @@ import pysat
 
 __all__ = ['de2', 'icon']
 
+# TODO(#89): reevaluate logger suppression if fixes implemented in pysat
 # Save current level and turn off before constellation import
 user_level = pysat.logger.level
 pysat.logger.setLevel(logging.WARNING)
