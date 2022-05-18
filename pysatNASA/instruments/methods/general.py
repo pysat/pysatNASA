@@ -31,3 +31,20 @@ def init(self, module, name):
         self.references = refs[name]
 
     return
+
+
+def clean_warn(self):
+    """Warn user that cleaning not yet available for this dataset.
+
+    Note
+    ----
+    'clean' - Not specified
+    'dusty' - Not specified
+    'dirty' - Not specified
+    'none'  No cleaning applied, routine not called in this case.
+
+    """
+    warnings.warn(' '.join(('No cleaning routines available for',
+                            self.platform, self.name)))
+
+    return

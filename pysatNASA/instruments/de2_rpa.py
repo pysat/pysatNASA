@@ -61,7 +61,6 @@ Warnings
 
 import datetime as dt
 import functools
-import warnings
 
 from pysat.instruments.methods import general as mm_gen
 
@@ -89,22 +88,8 @@ _test_dates = {'': {'': dt.datetime(1983, 1, 1)}}
 # Use standard init routine
 init = functools.partial(mm_nasa.init, module=mm_de2, name=name)
 
-
-def clean(self):
-    """Clean DE2 RPA data to the specified level.
-
-    Note
-    ----
-    'clean' - Not specified
-    'dusty' - Not specified
-    'dirty' - Not specified
-    'none'  No cleaning applied, routine not called in this case.
-
-    """
-    warnings.warn('No cleaning routines available for DE2 RPA')
-
-    return
-
+# No cleaning, use standard warning function instead
+clean = mm_nasa.clean_warn
 
 # ----------------------------------------------------------------------------
 # Instrument functions
