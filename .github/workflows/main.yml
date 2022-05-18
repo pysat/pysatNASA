@@ -30,6 +30,7 @@ jobs:
     - name: Install standard dependencies
       run: |
         pip install -r requirements.txt
+        pip install pysatCDF
         pip install -r test_requirements.txt
 
     - name: Install NEP29 dependencies

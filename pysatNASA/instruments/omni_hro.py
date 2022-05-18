@@ -161,7 +161,7 @@ list_remote_files = functools.partial(cdw.list_remote_files,
 
 # Set the load routine
 def load(fnames, tag=None, inst_id=None, file_cadence=pds.DateOffset(months=1),
-         flatten_twod=True):
+         flatten_twod=True, use_cdflib=None):
     """Load data and fix meta data.
 
     Parameters
@@ -180,6 +180,10 @@ def load(fnames, tag=None, inst_id=None, file_cadence=pds.DateOffset(months=1),
     flatted_twod : bool
         Flattens 2D data into different columns of root DataFrame rather
         than produce a Series of DataFrames. (default=True)
+    use_cdflib : bool or NoneType
+        If True, force use of cdflib for loading. If False, prevent use of
+        cdflib for loading. If None, will use pysatCDF if available with
+        cdflib as fallback. (default=None)
 
     Returns
     -------
@@ -191,7 +195,8 @@ def load(fnames, tag=None, inst_id=None, file_cadence=pds.DateOffset(months=1),
     """
 
     data, meta = cdw.load(fnames, tag=tag, inst_id=inst_id,
-                          file_cadence=file_cadence, flatten_twod=flatten_twod)
+                          file_cadence=file_cadence, flatten_twod=flatten_twod,
+                          use_cdflib=use_cdflib)
 
     return data, meta
 

@@ -18,6 +18,7 @@ from pysat.instruments.methods import general
 from pysat import logger
 from pysat.utils import files as futils
 from pysatNASA.instruments.methods import CDF as libCDF
+
 try:
     import pysatCDF
     auto_CDF = pysatCDF.CDF
@@ -48,7 +49,7 @@ def load(fnames, tag=None, inst_id=None, file_cadence=dt.timedelta(days=1),
     use_cdflib : bool or NoneType
         If True, force use of cdflib for loading. If False, prevent use of
         cdflib for loading. If None, will use pysatCDF if available with
-        cdflib as fallback.
+        cdflib as fallback. (default=None)
 
     Returns
     -------
