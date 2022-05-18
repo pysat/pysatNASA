@@ -84,7 +84,7 @@ list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags)
 
 # Set the load routine
-load = cdw.load
+load = functools.partial(cdw.load, pandas_format=pandas_format)
 
 # Set the download routine
 basic_tag = {'remote_dir': '/pub/data/gps/roti15min_jpl/{year:4d}/',
