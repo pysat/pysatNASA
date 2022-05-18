@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
-"""Supports the Michelson Interferometer for Global High-resolution
+"""Module for the ICON MIGHTI instrument.
+
+Supports the Michelson Interferometer for Global High-resolution
 Thermospheric Imaging (MIGHTI) instrument onboard the Ionospheric
 CONnection Explorer (ICON) satellite.  Accesses local data in
 netCDF format.
@@ -41,13 +43,6 @@ ICON_L27_Ion_Density becomes Ion_Density.  To retain the original names, use
                               clean_level='clean',
                               keep_original_names=True)
 
-Authors
--------
-Originated from EUV support.
-Jeff Klenzing, Mar 17, 2018, Goddard Space Flight Center
-Russell Stoneback, Mar 23, 2018, University of Texas at Dallas
-Conversion to MIGHTI, Oct 8th, 2018, University of Texas at Dallas
-
 Note
 ----
 Currently red and green data products are bundled together in zip files on the
@@ -60,8 +55,8 @@ import datetime as dt
 import functools
 
 import pysat
-from pysat import logger
 from pysat.instruments.methods import general as mm_gen
+from pysat import logger
 
 from pysatNASA.instruments.methods import cdaweb as cdw
 from pysatNASA.instruments.methods import icon as mm_icon
@@ -93,7 +88,7 @@ _test_dates = {jj: {kk: dt.datetime(2020, 1, 2) for kk in inst_ids[jj]}
 
 
 def init(self):
-    """Initializes the Instrument object with instrument specific values.
+    """Initialize the Instrument object with instrument specific values.
 
     Runs once upon instantiation.
 
@@ -113,7 +108,7 @@ def init(self):
 
 
 def preprocess(self, keep_original_names=False):
-    """Adjusts epoch timestamps to datetimes and removes variable preambles.
+    """Adjust epoch timestamps to datetimes and remove variable preambles.
 
     Parameters
     ----------
@@ -130,7 +125,7 @@ def preprocess(self, keep_original_names=False):
 
 
 def clean(self):
-    """Provides data cleaning based upon clean_level.
+    """Clean ICON MIGHTI data to the specified level.
 
     Note
     ----
@@ -139,7 +134,7 @@ def clean(self):
     """
 
     def _clean_vars(var_list, flag, min_level):
-        """Cleans parameters in a list according to standard flags
+        """Clean parameters in a list according to standard flags.
 
         Parameters
         ----------
@@ -273,7 +268,7 @@ list_remote_files = functools.partial(cdw.list_remote_files,
 
 
 def load(fnames, tag=None, inst_id=None, keep_original_names=False):
-    """Loads ICON FUV data using pysat into pandas.
+    """Load ICON MIGHTI data into `xarray.Dataset` and `pysat.Meta` objects.
 
     This routine is called as needed by pysat. It is not intended
     for direct user interaction.

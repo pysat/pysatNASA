@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
-"""Supports the Sounding of the Atmosphere using Broadband Emission Radiometry
+"""The TIMED SABER instrument.
+
+Supports the Sounding of the Atmosphere using Broadband Emission Radiometry
 (SABER) instrument on the Thermosphere Ionosphere Mesosphere Energetics
 Dynamics (TIMED) satellite.
 
@@ -39,11 +41,6 @@ Warnings
 - Note on Temperature Errors: http://saber.gats-inc.com/temp_errors.php
 - No cleaning routine
 
-
-Authors
--------
-J. Klenzing, 4 March 2019
-
 """
 
 import datetime as dt
@@ -51,8 +48,8 @@ import functools
 import warnings
 
 # CDAWeb methods prewritten for pysat
-from pysat import logger
 from pysat.instruments.methods import general as mm_gen
+from pysat import logger
 
 from pysatNASA.instruments.methods import cdaweb as cdw
 
@@ -81,7 +78,7 @@ _test_dates = {'': {'': dt.datetime(2019, 1, 1)}}
 
 
 def init(self):
-    """Initializes the Instrument object with instrument specific values.
+    """Initialize the Instrument object with instrument specific values.
 
     Runs once upon instantiation.
 
@@ -98,7 +95,7 @@ def init(self):
 
 
 def clean(self):
-    """Routine to return TIMED SABER data cleaned to the specified level
+    """Clean TIMED SABER data to the specified level.
 
     Note
     ----

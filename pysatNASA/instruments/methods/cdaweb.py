@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
-"""Provides default routines for integrating NASA CDAWeb instruments into
-pysat. Adding new CDAWeb datasets should only require mininal user
-intervention.
+"""Provides default routines for NASA CDAWeb instruments into pysat.
+
+Note
+----
+Adding new CDAWeb datasets should only require mininal user intervention.
 
 """
 
@@ -12,9 +14,9 @@ import requests
 
 from bs4 import BeautifulSoup
 
+from pysat.instruments.methods import general
 from pysat import logger
 from pysat.utils import files as futils
-from pysat.instruments.methods import general
 from pysatNASA.instruments.methods import CDF
 
 
@@ -113,14 +115,14 @@ def load(fnames, tag=None, inst_id=None, file_cadence=dt.timedelta(days=1),
 
 def download(date_array, tag=None, inst_id=None, supported_tags=None,
              remote_url='https://cdaweb.gsfc.nasa.gov', data_path=None):
-    """Routine to download NASA CDAWeb CDF data.
+    """Download NASA CDAWeb CDF data.
 
     This routine is intended to be used by pysat instrument modules supporting
     a particular NASA CDAWeb dataset.
 
     Parameters
     ----------
-    date_array : array_like
+    date_array : array-like
         Array of datetimes to download data for. Provided by pysat.
     tag : str or NoneType
         tag or None (default=None)
@@ -131,10 +133,10 @@ def download(date_array, tag=None, inst_id=None, supported_tags=None,
         a dict with 'remote_dir', 'fname'. Inteded to be pre-set with
         functools.partial then assigned to new instrument code.
         (default=None)
-    remote_url : string or NoneType
+    remote_url : str or NoneType
         Remote site to download data from
         (default='https://cdaweb.gsfc.nasa.gov')
-    data_path : string or NoneType
+    data_path : str or NoneType
         Path to data directory.  If None is specified, the value previously
         set in Instrument.files.data_path is used.  (default=None)
 
@@ -218,10 +220,10 @@ def list_remote_files(tag=None, inst_id=None, start=None, stop=None,
 
     Parameters
     ----------
-    tag : string or NoneType
+    tag : str or NoneType
         Denotes type of file to load.  Accepted types are <tag strings>.
         (default=None)
-    inst_id : string or NoneType
+    inst_id : str or NoneType
         Specifies the satellite ID for a constellation.
         (default=None)
     start : dt.datetime or NoneType
@@ -232,7 +234,7 @@ def list_remote_files(tag=None, inst_id=None, start=None, stop=None,
         Ending time for the file list.  A None value will stop with the last
         file found.
         (default=None)
-    remote_url : string or NoneType
+    remote_url : str or NoneType
         Remote site to download data from
         (default='https://cdaweb.gsfc.nasa.gov')
     supported_tags : dict
@@ -245,7 +247,7 @@ def list_remote_files(tag=None, inst_id=None, start=None, stop=None,
         '1900' will be added for years >= two_digit_year_break
         and '2000' will be added for years < two_digit_year_break.
         (default=None)
-    delimiter : string or NoneType
+    delimiter : str or NoneType
         If filename is delimited, then provide delimiter alone e.g. '_'
         (default=None)
 

@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
-"""Supports OMNI Combined, Definitive, IMF and Plasma Data, and Energetic
+"""Module for the OMNI HRO instrument.
+
+Supports OMNI Combined, Definitive, IMF and Plasma Data, and Energetic
 Proton Fluxes, Time-Shifted to the Nose of the Earth's Bow Shock, plus Solar
 and Magnetic Indices. Downloads data from the NASA Coordinated Data Analysis
 Web (CDAWeb). Supports both 5 and 1 minute files.
@@ -55,8 +57,8 @@ import pandas as pds
 import scipy.stats as stats
 import warnings
 
-from pysat import logger
 from pysat.instruments.methods import general as mm_gen
+from pysat import logger
 
 from pysatNASA.instruments.methods import cdaweb as cdw
 
@@ -80,7 +82,7 @@ _test_dates = {'': {'1min': dt.datetime(2009, 1, 1),
 
 
 def init(self):
-    """Initializes the Instrument object with instrument specific values.
+    """Initialize the Instrument object with instrument specific values.
 
     Runs once upon instantiation.
 
@@ -100,7 +102,7 @@ def init(self):
 
 
 def clean(self):
-    """ Cleaning function for OMNI data
+    """Clean OMNI HRO data to the specified level.
 
     Note
     ----
@@ -112,7 +114,7 @@ def clean(self):
     """
     for key in self.data.columns:
         if key != 'Epoch':
-            fill = self.meta[key, self.meta.labels.fill_val][0]
+            fill = self.meta[key, self.meta.labels.fill_val]
             idx, = np.where(self[key] == fill)
             # Set the fill values to NaN
             self[idx, key] = np.nan
@@ -144,9 +146,6 @@ list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags,
                                file_cadence=pds.DateOffset(months=1))
 
-# Set the load routine
-load = functools.partial(cdw.load, file_cadence=pds.DateOffset(months=1))
-
 # Set the download routine
 remote_dir = '/pub/data/omni/omni_cdaweb/hro_{tag:s}/{{year:4d}}/'
 download_tags = {inst_id: {tag: {'remote_dir': remote_dir.format(tag=tag),
@@ -159,13 +158,50 @@ download = functools.partial(cdw.download, supported_tags=download_tags)
 list_remote_files = functools.partial(cdw.list_remote_files,
                                       supported_tags=download_tags)
 
+
+# Set the load routine
+def load(fnames, tag=None, inst_id=None, file_cadence=pds.DateOffset(months=1),
+         flatten_twod=True):
+    """Load data and fix meta data.
+
+    Parameters
+    ----------
+    fnames : pandas.Series
+        Series of filenames
+    tag : str or NoneType
+        tag or None (default=None)
+    inst_id : str or NoneType
+        satellite id or None (default=None)
+    file_cadence : dt.timedelta or pds.DateOffset
+        pysat assumes a daily file cadence, but some instrument data files
+        contain longer periods of time.  This parameter allows the specification
+        of regular file cadences greater than or equal to a day (e.g., weekly,
+        monthly, or yearly). (default=dt.timedelta(days=1))
+    flatted_twod : bool
+        Flattens 2D data into different columns of root DataFrame rather
+        than produce a Series of DataFrames. (default=True)
+
+    Returns
+    -------
+    data : pandas.DataFrame
+        Object containing satellite data
+    meta : pysat.Meta
+        Object containing metadata such as column names and units
+
+    """
+
+    data, meta = cdw.load(fnames, tag=tag, inst_id=inst_id,
+                          file_cadence=file_cadence, flatten_twod=flatten_twod)
+
+    return data, meta
+
+
 # ----------------------------------------------------------------------------
 # Local functions
 
 
 def time_shift_to_magnetic_poles(inst):
-    """ OMNI data is time-shifted to bow shock. Time shifted again
-    to intersections with magnetic pole.
+    """Shift OMNI times to intersection with the magnetic pole.
 
     Parameters
     ----------
@@ -174,8 +210,10 @@ def time_shift_to_magnetic_poles(inst):
 
     Note
     ----
-    Time shift calculated using distance to bow shock nose (BSN)
-    and velocity of solar wind along x-direction.
+    - Time shift calculated using distance to bow shock nose (BSN)
+      and velocity of solar wind along x-direction.
+    - OMNI data is time-shifted to bow shock. Time shifted again
+      to intersections with magnetic pole.
 
     Warnings
     --------
@@ -183,7 +221,7 @@ def time_shift_to_magnetic_poles(inst):
 
     """
 
-    # need to fill in Vx to get an estimate of what is going on
+    # Need to fill in Vx to get an estimate of what is going on.
     inst['Vx'] = inst['Vx'].interpolate('nearest')
     inst['Vx'] = inst['Vx'].fillna(method='backfill')
     inst['Vx'] = inst['Vx'].fillna(method='pad')
@@ -192,7 +230,7 @@ def time_shift_to_magnetic_poles(inst):
     inst['BSN_x'] = inst['BSN_x'].fillna(method='backfill')
     inst['BSN_x'] = inst['BSN_x'].fillna(method='pad')
 
-    # make sure there are no gaps larger than a minute
+    # Make sure there are no gaps larger than a minute.
     inst.data = inst.data.resample('1T').interpolate('time')
 
     time_x = inst['BSN_x'] * 6371.2 / -inst['Vx']
@@ -212,7 +250,7 @@ def time_shift_to_magnetic_poles(inst):
 
 
 def calculate_clock_angle(inst):
-    """ Calculate IMF clock angle and magnitude of IMF in GSM Y-Z plane
+    """Calculate IMF clock angle and magnitude of IMF in GSM Y-Z plane.
 
     Parameters
     -----------
@@ -237,8 +275,7 @@ def calculate_clock_angle(inst):
 def calculate_imf_steadiness(inst, steady_window=15, min_window_frac=0.75,
                              max_clock_angle_std=(90.0 / np.pi),
                              max_bmag_cv=0.5):
-    """ Calculate IMF steadiness using clock angle standard deviation and
-    the coefficient of variation of the IMF magnitude in the GSM Y-Z plane
+    """Calculate IMF steadiness and add parameters to instrument data.
 
     Parameters
     ----------
@@ -254,6 +291,11 @@ def calculate_imf_steadiness(inst, steady_window=15, min_window_frac=0.75,
     max_bmag_cv : float
         Maximum coefficient of variation of the IMF magnitude in the GSM
         Y-Z plane (default=0.5)
+
+    Note
+    ----
+    Uses clock angle standard deviation and the coefficient of variation of
+    the IMF magnitude in the GSM Y-Z plane
 
     """
 
@@ -323,7 +365,7 @@ def calculate_imf_steadiness(inst, steady_window=15, min_window_frac=0.75,
 
 
 def calculate_dayside_reconnection(inst):
-    """ Calculate the dayside reconnection rate (Milan et al. 2014)
+    """Calculate the dayside reconnection rate (Milan et al. 2014).
 
     Parameters
     ----------

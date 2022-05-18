@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
-"""Supports the Vector Electric Field Instrument (VEFI)
+"""Module for the C/NOFS VEFI instrument.
+
+Supports the Vector Electric Field Instrument (VEFI)
 onboard the Communication and Navigation Outage Forecasting
 System (C/NOFS) satellite. Downloads data from the
 NASA Coordinated Data Analysis Web (CDAWeb).
@@ -60,11 +62,11 @@ import datetime as dt
 import functools
 import numpy as np
 
-from pysat import logger
 from pysat.instruments.methods import general as mm_gen
+from pysat import logger
 
-from pysatNASA.instruments.methods import cnofs as mm_cnofs
 from pysatNASA.instruments.methods import cdaweb as cdw
+from pysatNASA.instruments.methods import cnofs as mm_cnofs
 
 # ----------------------------------------------------------------------------
 # Instrument attributes
@@ -84,7 +86,7 @@ _test_dates = {'': {'dc_b': dt.datetime(2009, 1, 1)}}
 
 
 def init(self):
-    """Initializes the Instrument object with instrument specific values.
+    """Initialize the Instrument object with instrument specific values.
 
     Runs once upon instantiation.
 
@@ -98,7 +100,7 @@ def init(self):
 
 
 def clean(self):
-    """Routine to return VEFI data cleaned to the specified level
+    """Clean VEFI data to the specified level.
 
     Note
     ----

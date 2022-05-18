@@ -1,3 +1,5 @@
+"""Methods for pysatNASA instruments."""
+
 from pysatNASA.instruments.methods._cdf import CDF  # noqa F401
 from pysatNASA.instruments.methods import cdaweb  # noqa F401
 from pysatNASA.instruments.methods import cnofs  # noqa F401

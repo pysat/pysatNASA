@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
-"""Supports the Retarding Potential Analyzer (RPA) instrument on
-Dynamics Explorer 2 (DE2).
+"""Module for the DE2 RPA instrument.
+
+Supports the Retarding Potential Analyzer (RPA) instrument on Dynamics
+Explorer 2 (DE2).
 
 From CDAWeb:
 
@@ -55,21 +57,17 @@ Warnings
 --------
 - Currently no cleaning routine.
 
-Authors
--------
-J. Klenzing
-
 """
 
 import datetime as dt
 import functools
 import warnings
 
-from pysat import logger
 from pysat.instruments.methods import general as mm_gen
+from pysat import logger
 
-from pysatNASA.instruments.methods import de2 as mm_de2
 from pysatNASA.instruments.methods import cdaweb as cdw
+from pysatNASA.instruments.methods import de2 as mm_de2
 
 # ----------------------------------------------------------------------------
 # Instrument attributes
@@ -89,7 +87,7 @@ _test_dates = {'': {'': dt.datetime(1983, 1, 1)}}
 
 
 def init(self):
-    """Initializes the Instrument object with instrument specific values.
+    """Initialize the Instrument object with instrument specific values.
 
     Runs once upon instantiation.
 
@@ -102,7 +100,7 @@ def init(self):
 
 
 def clean(self):
-    """Routine to return DE2 RPA data cleaned to the specified level
+    """Clean DE2 RPA data to the specified level.
 
     Note
     ----

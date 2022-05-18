@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Provides non-instrument specific routines for ICON data"""
+"""Provides non-instrument specific routines for ICON data."""
 
 from pysat.instruments.methods import general as mm_gen
 
@@ -101,7 +101,7 @@ refs = {'euv': ' '.join(('Stephan, A.W., Meier, R.R., England, S.L. et al.',
 
 
 def remove_preamble(inst):
-    """Removes preambles in variable names
+    """Remove preambles in variable names.
 
     Parameters
     -----------
