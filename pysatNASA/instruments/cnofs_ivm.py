@@ -60,10 +60,10 @@ import functools
 import numpy as np
 
 from pysat.instruments.methods import general as mm_gen
-from pysat import logger
 
 from pysatNASA.instruments.methods import cdaweb as cdw
 from pysatNASA.instruments.methods import cnofs as mm_cnofs
+from pysatNASA.instruments.methods import general as mm_nasa
 
 # ----------------------------------------------------------------------------
 # Instrument attributes
@@ -82,18 +82,8 @@ _test_dates = {'': {'': dt.datetime(2009, 1, 1)}}
 # Instrument methods
 
 
-def init(self):
-    """Initialize the Instrument object with instrument specific values.
-
-    Runs once upon instantiation.
-
-    """
-    logger.info(mm_cnofs.ackn_str)
-    self.acknowledgements = mm_cnofs.ackn_str
-    self.references = '\n'.join((mm_cnofs.refs['mission'],
-                                 mm_cnofs.refs['ivm']))
-
-    return
+# Use standard init routine
+init = functools.partial(mm_nasa.init, module=mm_cnofs, name=name)
 
 
 def preprocess(self):
