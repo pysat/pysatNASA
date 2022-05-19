@@ -421,7 +421,7 @@ def download(date_array, tag=None, inst_id=None, supported_tags=None,
                     logger.info(' '.join(('File not available for',
                                           date.strftime('%d %B %Y'))))
         except requests.exceptions.RequestException as exception:
-            logger.info(' '.join((exception, '- File not available for',
+            logger.info(' '.join((str(exception), '- File not available for',
                                   date.strftime('%d %B %Y'))))
     return
 

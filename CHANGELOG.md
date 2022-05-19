@@ -9,6 +9,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   * Expanded cleaning of ICON IVM ion drifts to more variables
   * Fixed a bug in loading ICON IVM data (added multi_file_day = True)
   * Fixed a bug where OMNI meta data float values are loaded as arrays
+  * Fixed a bug in metadata when loading GOLD Nmax data.
+  * Fixed a bug in user feedback for `methods.cdaweb.download`
 * Maintenance
   * Removed dummy vars after importing instruments and constellations
   * Updated NEP29 compliance in Github Actions
