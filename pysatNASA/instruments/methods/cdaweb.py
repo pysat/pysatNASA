@@ -26,7 +26,7 @@ from pysatNASA.instruments.methods import CDF
 
 def load(fnames, tag=None, inst_id=None, file_cadence=dt.timedelta(days=1),
          flatten_twod=True, pandas_format=True, epoch_name='Epoch',
-         meta_processor=None, meta_translation=None, drop_meta_labels=None):
+         meta_processor=None, meta_translation={}, drop_meta_labels=None):
     """Load NASA CDAWeb CDF files.
 
     Parameters
@@ -48,6 +48,28 @@ def load(fnames, tag=None, inst_id=None, file_cadence=dt.timedelta(days=1),
     pandas_format : bool
         Flag specifying if data is stored in a pandas DataFrame (True) or
         xarray Dataset (False). (default=True)
+    epoch_name : str or NoneType                                                
+        Data key for epoch variable.  The epoch variable is expected to be an   
+        array of integer or float values denoting time elapsed from an origin   
+        specified by `epoch_origin` with units specified by `epoch_unit`. This  
+        epoch variable will be converted to a `DatetimeIndex` for consistency   
+        across pysat instruments.  (default='time')  
+    meta_processor : function or NoneType
+        If not None, a dict containing all of the loaded metadata will be
+        passed to `meta_processor` which should return a filtered version
+        of the input dict. The returned dict is loaded into a pysat.Meta
+        instance and returned as `meta`. (default=None)
+    meta_translation : dict or NoneType
+        Translation table used to map metadata labels in the file to
+        those used by the returned `meta`. Keys are labels from file
+        and values are labels in `meta`. Redundant file labels may be
+        mapped to a single pysat label. If None, will use
+        `default_from_netcdf_translation_table`. This feature
+        is maintained for compatibility. To disable all translation,
+        input an empty dict. (default={})
+    drop_meta_labels : list or NoneType
+        List of variable metadata labels that should be dropped. Applied
+        to metadata as loaded from the file. (default=None)
 
     Returns
     -------
