@@ -25,7 +25,8 @@ from pysatNASA.instruments.methods import CDF
 
 
 def load(fnames, tag=None, inst_id=None, file_cadence=dt.timedelta(days=1),
-         flatten_twod=True, pandas_format=True):
+         flatten_twod=True, pandas_format=True, epoch_name='Epoch',
+         meta_processor=None, meta_translation=None, drop_meta_labels=None):
     """Load NASA CDAWeb CDF files.
 
     Parameters
@@ -69,13 +70,13 @@ def load(fnames, tag=None, inst_id=None, file_cadence=dt.timedelta(days=1),
     else:
 
         data, meta = load_xarray(fnames, tag=tag, inst_id=inst_id,
-                                 file_cadence=file_cadence,
-                                 flatten_twod=flatten_twod)
+                                 epoch_name='Epoch', meta_processor=None,
+                                 meta_translation=None, drop_meta_labels=None)
     return data, meta
 
 def load_pandas(fnames, tag=None, inst_id=None, file_cadence=dt.timedelta(days=1),
          flatten_twod=True):
-    """Load NASA CDAWeb CDF files in pandas format.
+    """Load NASA CDAWeb CDF files into a pandas DataFrame.
 
     Parameters
     ----------
@@ -167,7 +168,6 @@ def load_pandas(fnames, tag=None, inst_id=None, file_cadence=dt.timedelta(days=1
 
 
 def load_xarray(fnames, tag=None, inst_id=None,
-                file_cadence=dt.timedelta(days=1), flatten_twod=True,
                 labels={'units': ('units', str), 'name': ('long_name', str),
                 'notes': ('notes', str), 'desc': ('desc', str),
                 'plot': ('plot_label', str), 'axis': ('axis', str),
@@ -175,9 +175,9 @@ def load_xarray(fnames, tag=None, inst_id=None,
                 'min_val': ('value_min', float),
                 'max_val': ('value_max', float),
                 'fill_val': ('fill', float)}, epoch_name='Epoch',
-                drop_meta_labels=None, meta_translation=None,
-                meta_processor=None):
-    """Load NASA CDAWeb CDF files in pandas format.
+                meta_processor=None, meta_translation={},
+                drop_meta_labels=None):
+    """Load NASA CDAWeb CDF files into an xarray Dataset.
 
     Parameters
     ----------
@@ -187,11 +187,6 @@ def load_xarray(fnames, tag=None, inst_id=None,
         tag or None (default=None)
     inst_id : str or NoneType
         satellite id or None (default=None)
-    file_cadence : dt.timedelta or pds.DateOffset
-        pysat assumes a daily file cadence, but some instrument data files
-        contain longer periods of time.  This parameter allows the specification
-        of regular file cadences greater than or equal to a day (e.g., weekly,
-        monthly, or yearly). (default=dt.timedelta(days=1))
     labels : dict
         Dict where keys are the label attribute names and the values are tuples
         that have the label values and value types in that order.
@@ -206,11 +201,28 @@ def load_xarray(fnames, tag=None, inst_id=None,
         specified by `epoch_origin` with units specified by `epoch_unit`. This  
         epoch variable will be converted to a `DatetimeIndex` for consistency   
         across pysat instruments.  (default='time')  
+    meta_processor : function or NoneType
+        If not None, a dict containing all of the loaded metadata will be
+        passed to `meta_processor` which should return a filtered version
+        of the input dict. The returned dict is loaded into a pysat.Meta
+        instance and returned as `meta`. (default=None)
+    meta_translation : dict or NoneType
+        Translation table used to map metadata labels in the file to
+        those used by the returned `meta`. Keys are labels from file
+        and values are labels in `meta`. Redundant file labels may be
+        mapped to a single pysat label. If None, will use
+        `default_from_netcdf_translation_table`. This feature
+        is maintained for compatibility. To disable all translation,
+        input an empty dict. (default={})
+    drop_meta_labels : list or NoneType
+        List of variable metadata labels that should be dropped. Applied
+        to metadata as loaded from the file. (default=None)
+
 
     Returns
     -------
-    data : pandas.DataFrame
-        Object containing satellite data
+    data : xarray.Dataset
+        Class holding file data
     meta : pysat.Meta
         Object containing metadata such as column names and units
 
@@ -229,7 +241,7 @@ def load_xarray(fnames, tag=None, inst_id=None,
 
         # support load routine
         # use the default CDAWeb method
-        load = cdw.load
+        load = functools.partial(cdw.load, pandas_format=False)
 
     """
 
