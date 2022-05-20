@@ -48,12 +48,12 @@ def load(fnames, tag=None, inst_id=None, file_cadence=dt.timedelta(days=1),
     pandas_format : bool
         Flag specifying if data is stored in a pandas DataFrame (True) or
         xarray Dataset (False). (default=True)
-    epoch_name : str or NoneType                                                
-        Data key for epoch variable.  The epoch variable is expected to be an   
-        array of integer or float values denoting time elapsed from an origin   
-        specified by `epoch_origin` with units specified by `epoch_unit`. This  
-        epoch variable will be converted to a `DatetimeIndex` for consistency   
-        across pysat instruments.  (default='time')  
+    epoch_name : str or NoneType
+        Data key for epoch variable.  The epoch variable is expected to be an
+        array of integer or float values denoting time elapsed from an origin
+        specified by `epoch_origin` with units specified by `epoch_unit`. This
+        epoch variable will be converted to a `DatetimeIndex` for consistency
+        across pysat instruments.  (default='time')
     meta_processor : function or NoneType
         If not None, a dict containing all of the loaded metadata will be
         passed to `meta_processor` which should return a filtered version
@@ -96,8 +96,9 @@ def load(fnames, tag=None, inst_id=None, file_cadence=dt.timedelta(days=1),
                                  meta_translation=None, drop_meta_labels=None)
     return data, meta
 
-def load_pandas(fnames, tag=None, inst_id=None, file_cadence=dt.timedelta(days=1),
-         flatten_twod=True):
+
+def load_pandas(fnames, tag=None, inst_id=None,
+                file_cadence=dt.timedelta(days=1), flatten_twod=True):
     """Load NASA CDAWeb CDF files into a pandas DataFrame.
 
     Parameters
@@ -191,14 +192,14 @@ def load_pandas(fnames, tag=None, inst_id=None, file_cadence=dt.timedelta(days=1
 
 def load_xarray(fnames, tag=None, inst_id=None,
                 labels={'units': ('units', str), 'name': ('long_name', str),
-                'notes': ('notes', str), 'desc': ('desc', str),
-                'plot': ('plot_label', str), 'axis': ('axis', str),
-                'scale': ('scale', str),
-                'min_val': ('value_min', float),
-                'max_val': ('value_max', float),
-                'fill_val': ('fill', float)}, epoch_name='Epoch',
-                meta_processor=None, meta_translation={},
-                drop_meta_labels=None):
+                        'notes': ('notes', str), 'desc': ('desc', str),
+                        'plot': ('plot_label', str), 'axis': ('axis', str),
+                        'scale': ('scale', str),
+                        'min_val': ('value_min', float),
+                        'max_val': ('value_max', float),
+                        'fill_val': ('fill', float)},
+                epoch_name='Epoch', meta_processor=None,
+                meta_translation={}, drop_meta_labels=None):
     """Load NASA CDAWeb CDF files into an xarray Dataset.
 
     Parameters
@@ -217,12 +218,12 @@ def load_xarray(fnames, tag=None, inst_id=None,
         'min_val': ('value_min', np.float64),
         'max_val': ('value_max', np.float64),
         'fill_val': ('fill', np.float64)})
-    epoch_name : str or NoneType                                                
-        Data key for epoch variable.  The epoch variable is expected to be an   
-        array of integer or float values denoting time elapsed from an origin   
-        specified by `epoch_origin` with units specified by `epoch_unit`. This  
-        epoch variable will be converted to a `DatetimeIndex` for consistency   
-        across pysat instruments.  (default='time')  
+    epoch_name : str or NoneType
+        Data key for epoch variable.  The epoch variable is expected to be an
+        array of integer or float values denoting time elapsed from an origin
+        specified by `epoch_origin` with units specified by `epoch_unit`. This
+        epoch variable will be converted to a `DatetimeIndex` for consistency
+        across pysat instruments.  (default='time')
     meta_processor : function or NoneType
         If not None, a dict containing all of the loaded metadata will be
         passed to `meta_processor` which should return a filtered version
@@ -284,29 +285,29 @@ def load_xarray(fnames, tag=None, inst_id=None,
 
     all_vars = io.xarray_all_vars(data)
 
-    if epoch_name != 'time':                                                    
-        if 'time' not in all_vars:                                              
-            if epoch_name in data.dims:                                         
-                data = data.rename({epoch_name: 'time'})                        
-            elif epoch_name in all_vars:                                        
-                data = data.rename({epoch_name: 'time'})                        
-                wstr = ''.join(['Epoch label: "', epoch_name, '"',              
-                                ' is not a dimension.'])                        
-                pysat.logger.warning(wstr)                                      
-            else:                                                               
-                estr = ''.join(['Epoch label: "', epoch_name, '"',              
-                                ' not found in loaded data, ',                  
-                                repr(all_vars)])                                
-                raise ValueError(estr)                                          
-        else:                                                                   
-            estr = ''.join(["'time' already present in file. Can't rename ",    
-                            epoch_name, " to 'time'. To load this file ",       
-                            "it may be necessary to set `decode_times=True`."]) 
+    if epoch_name != 'time':
+        if 'time' not in all_vars:
+            if epoch_name in data.dims:
+                data = data.rename({epoch_name: 'time'})
+            elif epoch_name in all_vars:
+                data = data.rename({epoch_name: 'time'})
+                wstr = ''.join(['Epoch label: "', epoch_name, '"',
+                                ' is not a dimension.'])
+                pysat.logger.warning(wstr)
+            else:
+                estr = ''.join(['Epoch label: "', epoch_name, '"',
+                                ' not found in loaded data, ',
+                                repr(all_vars)])
+                raise ValueError(estr)
+        else:
+            estr = ''.join(["'time' already present in file. Can't rename ",
+                            epoch_name, " to 'time'. To load this file ",
+                            "it may be necessary to set `decode_times=True`."])
             raise ValueError(estr)
-    
+
     all_vars = io.xarray_all_vars(data)
-    
-    meta = pysat.Meta(labels=labels)                                            
+
+    meta = pysat.Meta(labels=labels)
 
     full_mdict = {}
 
@@ -319,7 +320,7 @@ def load_xarray(fnames, tag=None, inst_id=None,
         drop_meta_labels = []
     else:
         drop_meta_labels = pysat.utils.listify(drop_meta_labels)
-    
+
     for key in all_vars:
         meta_dict = {}
         for nc_key in data[key].attrs.keys():
@@ -338,11 +339,12 @@ def load_xarray(fnames, tag=None, inst_id=None,
 
     # Second, remove some items pysat added for netcdf compatibility.
     filt_mdict = io.remove_netcdf4_standards_from_meta(full_mdict, epoch_name,
-                                                    meta.labels)
+                                                       meta.labels)
 
     # Translate labels from file to pysat compatible labels using
     # `meta_translation`
-    filt_mdict = io.apply_table_translation_from_file(meta_translation, filt_mdict)
+    filt_mdict = io.apply_table_translation_from_file(meta_translation,
+                                                      filt_mdict)
 
     # Next, allow processing by developers so they can deal with
     # issues with specific files
@@ -359,7 +361,6 @@ def load_xarray(fnames, tag=None, inst_id=None,
 
     # Remove attributes from the data object
     data.attrs = {}
-
 
     return data, meta
 

@@ -4,7 +4,7 @@
 Supports ROTI data produced at JPL from International
 GNSS Service Total Electron Content (TEC)
 
-The rate of TEC index (ROTI) characterizes TEC fluctuations observed along 
+The rate of TEC index (ROTI) characterizes TEC fluctuations observed along
 receiver-to-satellite line of sight links over a 5-minute interval.
 The measurement is obtained by processing GNSS dual-frequency phase data and
 computing the standard deviation of the rate of TEC change over that interval

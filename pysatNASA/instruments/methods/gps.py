@@ -7,9 +7,10 @@ ackn_str = ' '.join(("The GPS Total Electron Content (TEC) data",
                      "Group is provided through CDAWeb"))
 
 refs = {'mission': ' '.join(('Feltens J, Schaer S (1998) IGS Products for the',
-                   'Ionosphere, IGS Posi- tion Paper. In: Proceedings of the',
-                   'IGS analysis centers workshop, ESOC, Darmstadt, Germany,',
-                   'pp 225–232, 9–11 February')),
+                             'Ionosphere, IGS Posi- tion Paper. In:',
+                             'Proceedings of the IGS analysis centers',
+                             'workshop, ESOC, Darmstadt, Germany,',
+                             'pp 225–232, 9–11 February')),
         'roti15min_jpl': ' '.join(('1.	Pi, X., A. J. Mannucci, U. J.',
                                    'Lindqwister, and C. M. Ho, Monitoring of',
                                    'global ionospheric irregularities using',
