@@ -195,7 +195,7 @@ def load(fnames, tag=None, inst_id=None):
     data = []
 
     for path in fnames:
-
+        print(path)
         idata = xr.load_dataset(path)
 
         if tag == 'nmax':
