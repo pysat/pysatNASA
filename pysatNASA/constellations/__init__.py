@@ -15,7 +15,7 @@ __all__ = ['de2', 'icon']
 user_level = pysat.logger.level
 pysat.logger.setLevel(logging.WARNING)
 
-# Import contellation objects
+# Import constellation objects
 for const in __all__:
     exec("from pysatNASA.constellations import {:}".format(const))
 
