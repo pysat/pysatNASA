@@ -10,11 +10,13 @@ def init(self, module, name):
 
     Parameters
     -----------
-    module : python module
+    module : module
         module from general methods, eg, icon, de2, cnofs, etc
     name : str
         name of instrument of interest, eg, 'ivm'
 
+    Note
+    ----
     Runs once upon instantiation.
 
     """
@@ -34,7 +36,7 @@ def init(self, module, name):
 
 
 def clean_warn(self):
-    """Warn user that cleaning not yet available for this dataset.
+    """Warn user that cleaning not yet available for this data set.
 
     Note
     ----
