@@ -236,7 +236,7 @@ def load_xarray(fnames, tag=None, inst_id=None,
         mapped to a single pysat label. If None, will use
         `default_from_netcdf_translation_table`. This feature
         is maintained for compatibility. To disable all translation,
-        input an empty dict. (default={})
+        input an empty dict. (default=None)
     drop_meta_labels : list or NoneType
         List of variable metadata labels that should be dropped. Applied
         to metadata as loaded from the file. (default=None)
