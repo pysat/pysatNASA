@@ -24,19 +24,19 @@ from pysat.utils import io
 from pysatNASA.instruments.methods import CDF
 
 
-def load(fnames, tag=None, inst_id=None, file_cadence=dt.timedelta(days=1),
+def load(fnames, tag='', inst_id='', file_cadence=dt.timedelta(days=1),
          flatten_twod=True, pandas_format=True, epoch_name='Epoch',
-         meta_processor=None, meta_translation={}, drop_meta_labels=None):
+         meta_processor=None, meta_translation=None, drop_meta_labels=None):
     """Load NASA CDAWeb CDF files.
 
     Parameters
     ----------
     fnames : pandas.Series
         Series of filenames
-    tag : str or NoneType
-        tag or None (default=None)
-    inst_id : str or NoneType
-        satellite id or None (default=None)
+    tag : str
+        tag or None (default='')
+    inst_id : str
+        satellite id or None (default='')
     file_cadence : dt.timedelta or pds.DateOffset
         pysat assumes a daily file cadence, but some instrument data files
         contain longer periods of time.  This parameter allows the specification
@@ -92,12 +92,14 @@ def load(fnames, tag=None, inst_id=None, file_cadence=dt.timedelta(days=1),
     else:
 
         data, meta = load_xarray(fnames, tag=tag, inst_id=inst_id,
-                                 epoch_name=epoch_name, meta_processor=None,
-                                 meta_translation=None, drop_meta_labels=None)
+                                 epoch_name=epoch_name, 
+                                 meta_processor=meta_processor,
+                                 meta_translation=meta_translation,
+                                 drop_meta_labels=drop_meta_labels)
     return data, meta
 
 
-def load_pandas(fnames, tag=None, inst_id=None,
+def load_pandas(fnames, tag='', inst_id='',
                 file_cadence=dt.timedelta(days=1), flatten_twod=True):
     """Load NASA CDAWeb CDF files into a pandas DataFrame.
 
@@ -105,10 +107,10 @@ def load_pandas(fnames, tag=None, inst_id=None,
     ----------
     fnames : pandas.Series
         Series of filenames
-    tag : str or NoneType
-        tag or None (default=None)
-    inst_id : str or NoneType
-        satellite id or None (default=None)
+    tag : str
+        tag or None (default='')
+    inst_id : str
+        satellite id or None (default='')
     file_cadence : dt.timedelta or pds.DateOffset
         pysat assumes a daily file cadence, but some instrument data files
         contain longer periods of time.  This parameter allows the specification
@@ -190,7 +192,7 @@ def load_pandas(fnames, tag=None, inst_id=None,
         return data, meta
 
 
-def load_xarray(fnames, tag=None, inst_id=None,
+def load_xarray(fnames, tag='', inst_id='',
                 labels={'units': ('units', str), 'name': ('long_name', str),
                         'notes': ('notes', str), 'desc': ('desc', str),
                         'plot': ('plot_label', str), 'axis': ('axis', str),
@@ -199,17 +201,17 @@ def load_xarray(fnames, tag=None, inst_id=None,
                         'max_val': ('value_max', float),
                         'fill_val': ('fill', float)},
                 epoch_name='Epoch', meta_processor=None,
-                meta_translation={}, drop_meta_labels=None):
+                meta_translation=None, drop_meta_labels=None):
     """Load NASA CDAWeb CDF files into an xarray Dataset.
 
     Parameters
     ----------
     fnames : pandas.Series
         Series of filenames
-    tag : str or NoneType
-        tag or None (default=None)
-    inst_id : str or NoneType
-        satellite id or None (default=None)
+    tag : str
+        tag or (default='')
+    inst_id : str
+        satellite id (default='')
     labels : dict
         Dict where keys are the label attribute names and the values are tuples
         that have the label values and value types in that order.
@@ -218,7 +220,7 @@ def load_xarray(fnames, tag=None, inst_id=None,
         'min_val': ('value_min', np.float64),
         'max_val': ('value_max', np.float64),
         'fill_val': ('fill', np.float64)})
-    epoch_name : str or NoneType
+    epoch_name : str
         Data key for epoch variable.  The epoch variable is expected to be an
         array of integer or float values denoting time elapsed from an origin
         specified by `epoch_origin` with units specified by `epoch_unit`. This
@@ -314,7 +316,7 @@ def load_xarray(fnames, tag=None, inst_id=None,
 
     if meta_translation is None:
         # Assign default translation using `meta`
-        meta_translation = io.default_from_netcdf_translation_table(meta)
+        meta_translation = {}
 
     # Drop metadata labels initialization
     if drop_meta_labels is None:
@@ -366,7 +368,7 @@ def load_xarray(fnames, tag=None, inst_id=None,
     return data, meta
 
 
-def download(date_array, tag=None, inst_id=None, supported_tags=None,
+def download(date_array, tag='', inst_id='', supported_tags=None,
              remote_url='https://cdaweb.gsfc.nasa.gov', data_path=None):
     """Download NASA CDAWeb CDF data.
 
@@ -377,16 +379,16 @@ def download(date_array, tag=None, inst_id=None, supported_tags=None,
     ----------
     date_array : array-like
         Array of datetimes to download data for. Provided by pysat.
-    tag : str or NoneType
-        tag or None (default=None)
-    inst_id : str or NoneType
-        satellite id or None (default=None)
+    tag : str
+        tag or None (default='')
+    inst_id : str
+        satellite id or None (default='')
     supported_tags : dict
         dict of dicts. Keys are supported tag names for download. Value is
         a dict with 'remote_dir', 'fname'. Inteded to be pre-set with
         functools.partial then assigned to new instrument code.
         (default=None)
-    remote_url : str or NoneType
+    remote_url : str
         Remote site to download data from
         (default='https://cdaweb.gsfc.nasa.gov')
     data_path : str or NoneType
@@ -409,10 +411,6 @@ def download(date_array, tag=None, inst_id=None, supported_tags=None,
 
     """
 
-    if tag is None:
-        tag = ''
-    if inst_id is None:
-        inst_id = ''
     try:
         inst_dict = supported_tags[inst_id][tag]
     except KeyError:
@@ -473,12 +471,12 @@ def list_remote_files(tag=None, inst_id=None, start=None, stop=None,
 
     Parameters
     ----------
-    tag : str or NoneType
+    tag : str
         Denotes type of file to load.  Accepted types are <tag strings>.
-        (default=None)
-    inst_id : str or NoneType
+        (default='')
+    inst_id : str
         Specifies the satellite ID for a constellation.
-        (default=None)
+        (default='')
     start : dt.datetime or NoneType
         Starting time for file list. A None value will start with the first
         file found.
@@ -487,7 +485,7 @@ def list_remote_files(tag=None, inst_id=None, start=None, stop=None,
         Ending time for the file list.  A None value will stop with the last
         file found.
         (default=None)
-    remote_url : str or NoneType
+    remote_url : str
         Remote site to download data from
         (default='https://cdaweb.gsfc.nasa.gov')
     supported_tags : dict
@@ -527,10 +525,6 @@ def list_remote_files(tag=None, inst_id=None, start=None, stop=None,
 
     """
 
-    if tag is None:
-        tag = ''
-    if inst_id is None:
-        inst_id = ''
     try:
         inst_dict = supported_tags[inst_id][tag]
     except KeyError:
