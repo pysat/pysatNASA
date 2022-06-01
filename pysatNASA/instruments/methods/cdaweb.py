@@ -92,7 +92,7 @@ def load(fnames, tag='', inst_id='', file_cadence=dt.timedelta(days=1),
     else:
 
         data, meta = load_xarray(fnames, tag=tag, inst_id=inst_id,
-                                 epoch_name=epoch_name, 
+                                 epoch_name=epoch_name,
                                  meta_processor=meta_processor,
                                  meta_translation=meta_translation,
                                  drop_meta_labels=drop_meta_labels)
@@ -243,7 +243,6 @@ def load_xarray(fnames, tag='', inst_id='',
         List of variable metadata labels that should be dropped. Applied
         to metadata as loaded from the file. (default=None)
 
-
     Returns
     -------
     data : xarray.Dataset
@@ -302,11 +301,6 @@ def load_xarray(fnames, tag='', inst_id='',
                                 ' not found in loaded data, ',
                                 repr(all_vars)])
                 raise ValueError(estr)
-        else:
-            estr = ''.join(["'time' already present in file. Can't rename ",
-                            epoch_name, " to 'time'. To load this file ",
-                            "it may be necessary to set `decode_times=True`."])
-            raise ValueError(estr)
 
     all_vars = io.xarray_all_vars(data)
 
