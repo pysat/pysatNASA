@@ -53,7 +53,7 @@ def load(fnames, tag=None, inst_id=None, file_cadence=dt.timedelta(days=1),
         array of integer or float values denoting time elapsed from an origin
         specified by `epoch_origin` with units specified by `epoch_unit`. This
         epoch variable will be converted to a `DatetimeIndex` for consistency
-        across pysat instruments.  (default='time')
+        across pysat instruments.  (default='Epoch')
     meta_processor : function or NoneType
         If not None, a dict containing all of the loaded metadata will be
         passed to `meta_processor` which should return a filtered version
@@ -92,7 +92,7 @@ def load(fnames, tag=None, inst_id=None, file_cadence=dt.timedelta(days=1),
     else:
 
         data, meta = load_xarray(fnames, tag=tag, inst_id=inst_id,
-                                 epoch_name='Epoch', meta_processor=None,
+                                 epoch_name=epoch_name, meta_processor=None,
                                  meta_translation=None, drop_meta_labels=None)
     return data, meta
 
@@ -223,7 +223,7 @@ def load_xarray(fnames, tag=None, inst_id=None,
         array of integer or float values denoting time elapsed from an origin
         specified by `epoch_origin` with units specified by `epoch_unit`. This
         epoch variable will be converted to a `DatetimeIndex` for consistency
-        across pysat instruments.  (default='time')
+        across pysat instruments.  (default='Epoch')
     meta_processor : function or NoneType
         If not None, a dict containing all of the loaded metadata will be
         passed to `meta_processor` which should return a filtered version
@@ -277,7 +277,7 @@ def load_xarray(fnames, tag=None, inst_id=None,
         # the resulting pandas DataFrame may need modification
         ldata = []
         for lfname in fnames:
-            temp_data = cdflib.cdf_to_xarray(lfname)
+            temp_data = cdflib.cdf_to_xarray(lfname, to_datetime=True)
             ldata.append(temp_data)
         # Combine individual files together
         if len(ldata) > 0:
@@ -285,6 +285,7 @@ def load_xarray(fnames, tag=None, inst_id=None,
 
     all_vars = io.xarray_all_vars(data)
 
+    # Convert output epoch name to 'time' for pysat consistency
     if epoch_name != 'time':
         if 'time' not in all_vars:
             if epoch_name in data.dims:

@@ -7,7 +7,7 @@ ackn_str = ' '.join(("The GPS Total Electron Content (TEC) data",
                      "Group is provided through CDAWeb"))
 
 refs = {'mission': ' '.join(('Feltens J, Schaer S (1998) IGS Products for the',
-                             'Ionosphere, IGS Posi- tion Paper. In:',
+                             'Ionosphere, IGS Position Paper. In:',
                              'Proceedings of the IGS analysis centers',
                              'workshop, ESOC, Darmstadt, Germany,',
                              'pp 225–232, 9–11 February')),
