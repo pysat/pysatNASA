@@ -11,6 +11,8 @@ name
     'gold'
 tag
     'nmax'
+    'tlimb'
+    'tdisk'
 
 Warnings
 --------
@@ -33,6 +35,7 @@ Examples
 Authors
 ---------
 Jeff Klenzing, Oct 06, 2020, Goddard Space Flight Center
+Luis Navarro, June 10, 2022, SWx-TREC CU Boulder
 
 """
 
@@ -54,15 +57,19 @@ from pysatNASA.instruments.methods import gold as mm_gold
 
 platform = 'ses14'
 name = 'gold'
-tags = {'nmax': 'Level 2 Nmax data for the GOLD instrument'}
-inst_ids = {'': ['nmax']}
+tags = {'nmax': 'Level 2 Nmax data for the GOLD instrument',
+        'tlimb': 'Level 2 Tlimb data for the GOLD instrument',
+        'tdisk': 'Level 2 Tdisk data for the GOLD instrument'}
+inst_ids = {'': ['nmax','tlimb','tdisk']}
 
 pandas_format = False
 
 # ----------------------------------------------------------------------------
 # Instrument test attributes
 
-_test_dates = {'': {'nmax': dt.datetime(2020, 1, 1)}}
+_test_dates = {'': {'nmax': dt.datetime(2020, 1, 1),
+                    'tlimb': dt.datetime(2020, 1, 1),
+                    'tdisk': dt.datetime(2020, 1, 1)}}
 
 # ----------------------------------------------------------------------------
 # Instrument methods
@@ -109,7 +116,7 @@ def clean(self):
 
     """
 
-    warnings.warn("Cleaning actions for GOLD Nmax are not yet implemented.")
+    warnings.warn("Cleaning actions for GOLD are not yet implemented.")
     return
 
 
@@ -198,7 +205,7 @@ def load(fnames, tag=None, inst_id=None):
         print(path)
         idata = xr.load_dataset(path)
 
-        if tag == 'nmax':
+        if tag in ['nmax', 'tlimb', 'tdisk']:
             # Add time coordinate from scan_start_time
             idata['time'] = ('nscans',
                             [dt.datetime.strptime(str(val), "b'%Y-%m-%dT%H:%M:%SZ'")
