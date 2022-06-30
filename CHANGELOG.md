@@ -3,8 +3,11 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [0.0.4] - 2022-XX-XX
+* Bug Fixes
+  * Allow for array-like OMNI HRO meta data
 * Maintenance
   * Reduce duplication of code in instrument modules
+  * Move OMNI HRO custom functions to an instrument module
 
 ## [0.0.3] - 2022-05-18
 * Include flake8 linting of docstrings and style in Github Actions
