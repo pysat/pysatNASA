@@ -6,11 +6,11 @@ import numpy as np
 import pandas as pds
 
 import pysat
-from pysatNASA.instruments import omni_hro
+from pysatNASA.instruments.methods import omni
 
 
 class TestOMNICustom(object):
-    """Unit tests for `pysat.instrument.methods.cdaweb`."""
+    """Unit tests for `pysat.instrument.methods.omni`."""
 
     def setup(self):
         """Set up the unit test environment for each method."""
@@ -68,7 +68,7 @@ class TestOMNICustom(object):
         """Test results of calculate_clock_angle."""
 
         # Run the clock angle routine
-        omni_hro.calculate_clock_angle(self.testInst)
+        omni.calculate_clock_angle(self.testInst)
 
         # Set test clock angle
         test_angle = np.array([44.93710732, 24.04132437, 13.90673288,
@@ -85,7 +85,7 @@ class TestOMNICustom(object):
         """Test the Byz plane magnitude calculation."""
 
         # Run the clock angle routine
-        omni_hro.calculate_clock_angle(self.testInst)
+        omni.calculate_clock_angle(self.testInst)
 
         # Calculate plane magnitude
         test_mag = np.array([5.57149172, 6.14467489, 4.15098040, 5.57747612,
@@ -101,8 +101,8 @@ class TestOMNICustom(object):
         """Test the IMF steadiness CV calculation."""
 
         # Run the clock angle and steadiness routines
-        omni_hro.calculate_clock_angle(self.testInst)
-        omni_hro.calculate_imf_steadiness(self.testInst, steady_window=5,
+        omni.calculate_clock_angle(self.testInst)
+        omni.calculate_imf_steadiness(self.testInst, steady_window=5,
                                           min_window_frac=0.8)
 
         # Ensure the BYZ coefficient of variation is calculated correctly
@@ -122,8 +122,8 @@ class TestOMNICustom(object):
         """Test the IMF steadiness standard deviation calculation."""
 
         # Run the clock angle and steadiness routines
-        omni_hro.calculate_clock_angle(self.testInst)
-        omni_hro.calculate_imf_steadiness(self.testInst, steady_window=5,
+        omni.calculate_clock_angle(self.testInst)
+        omni.calculate_imf_steadiness(self.testInst, steady_window=5,
                                           min_window_frac=0.8)
 
         # Ensure the BYZ coefficient of variation is calculated correctly
@@ -144,8 +144,8 @@ class TestOMNICustom(object):
         """Test the IMF steadiness standard deviation calculation."""
 
         # Run the clock angle and steadiness routines
-        omni_hro.calculate_clock_angle(self.testInst)
-        omni_hro.calculate_dayside_reconnection(self.testInst)
+        omni.calculate_clock_angle(self.testInst)
+        omni.calculate_dayside_reconnection(self.testInst)
 
         # Ensure the BYZ coefficient of variation is calculated correctly
         rcon = np.array([698.297487, 80.233896, 3.033586, 2.216075,
