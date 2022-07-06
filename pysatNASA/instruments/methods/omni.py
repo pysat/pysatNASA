@@ -2,6 +2,14 @@
 """Module for the OMNI HRO supporting functions."""
 
 
+import numpy as np
+import pandas as pds
+from scipy import stats
+import warnings
+
+from pysat import logger
+
+
 def time_shift_to_magnetic_poles(inst):
     """Shift OMNI times to intersection with the magnetic pole.
 

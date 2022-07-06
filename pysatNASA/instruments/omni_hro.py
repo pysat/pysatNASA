@@ -42,8 +42,6 @@ import datetime as dt
 import functools
 import numpy as np
 import pandas as pds
-import scipy.stats as stats
-import warnings
 
 from pysat.instruments.methods import general as mm_gen
 from pysat import logger
@@ -103,7 +101,7 @@ def clean(self):
     for key in self.data.columns:
         if key != 'Epoch':
             fill = self.meta[key, self.meta.labels.fill_val]
-            if np.asarray(fill).shape == (): 
+            if np.asarray(fill).shape == ():
                 idx, = np.where(self[key] == fill)
             else:
                 idx, = np.where(self[key] == fill[0])
