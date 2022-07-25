@@ -36,11 +36,6 @@ Examples
 
     Example code can go here
 
-
-Authors
--------
-Author name and institution
-
 """
 
 import datetime as dt
@@ -95,6 +90,7 @@ _test_dates = {'': {'': dt.datetime(2019, 1, 1),
 fname = ''.join(('cnofs_vefi_bfield_1sec_{year:04d}{month:02d}{day:02d}',
                  '_v{version:02d}.cdf'))
 supported_tags = {'': {'': fname, 'tag_string': fname}}
+
 # Use the CDAWeb methods list files routine. The command
 # below presets some of the methods inputs, leaving
 # those provided by pysat available when invoked
@@ -102,23 +98,22 @@ list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags)
 
 #
-# support load routine
+# Support load routine
 #
-# use the default CDAWeb method
-# no other information needs to be supplied here
+# Use the default CDAWeb method
+# No other information needs to be supplied here
 load = cdw.load
 
 #
-# support download routine
+# Support download routine
 #
-# to use the default CDAWeb method
-# we need to provide additional information
-# directory location on CDAWeb ftp server
-# formatting template for filenames on CDAWeb
-# formatting template for files saved to the local disk
-# a dictionary needs to be created for each inst_id and tag
-# combination along with the file format template
-# outer dict keyed by inst_id, inner dict keyed by tag
+# To use the default CDAWeb method we need to provide additional information.
+# - directory location on CDAWeb remote server
+# - formatting template for filenames on CDAWeb
+# - formatting template for files saved to the local disk
+# - a dictionary needs to be created for each inst_id and tag
+# - combination along with the file format template
+# - outer dict keyed by inst_id, inner dict keyed by tag
 basic_tag = {'remote_dir': '/pub/data/cnofs/vefi/bfield_1sec',
              'remote_fname': '{year:4d}/' + fname,
              'fname': fname}
@@ -128,7 +123,7 @@ basic_tag2 = {'remote_dir': '/pub/data/cnofs/other/bfield_1sec',
 supported_tags = {'': {'': basic_tag, 'tag_string': basic_tag2}}
 download = functools.partial(cdw.download, supported_tags=supported_tags)
 
-# support listing files currently on CDAWeb
+# Support listing files currently on CDAWeb
 list_remote_files = functools.partial(cdw.list_remote_files,
                                       supported_tags=supported_tags)
 
@@ -166,7 +161,7 @@ def init(self):
     return
 
 
-# Code should be defined below as needed
+# Code should be defined below as needed.
 def preprocess(self):
     """Perform standard preprocessing.
 
@@ -183,7 +178,7 @@ def preprocess(self):
     return
 
 
-# code should be defined below as needed
+# Code should be defined below as needed.
 def clean(inst):
     """Return `platform_name` data to the specified level..
 

@@ -41,22 +41,17 @@ Warnings
 - Note on Temperature Errors: http://saber.gats-inc.com/temp_errors.php
 - No cleaning routine
 
-
-Authors
--------
-J. Klenzing, 4 March 2019
-
 """
 
 import datetime as dt
 import functools
-import warnings
 
 # CDAWeb methods prewritten for pysat
 from pysat.instruments.methods import general as mm_gen
 from pysat import logger
 
 from pysatNASA.instruments.methods import cdaweb as cdw
+from pysatNASA.instruments.methods import general as mm_nasa
 
 # ----------------------------------------------------------------------------
 # Instrument attributes
@@ -99,23 +94,8 @@ def init(self):
     return
 
 
-def clean(self):
-    """Clean TIMED SABER data to the specified level.
-
-    Note
-    ----
-    'clean' All parameters should be good, suitable for statistical and
-            case studies
-    'dusty' All paramers should generally be good though same may
-            not be great
-    'dirty' There are data areas that have issues, data should be used
-            with caution
-    'none'  No cleaning applied, routine not called in this case.
-
-    """
-    warnings.warn('no cleaning routine available for TIMED SABER')
-
-    return
+# No cleaning, use standard warning function instead
+clean = mm_nasa.clean_warn
 
 
 # ----------------------------------------------------------------------------
