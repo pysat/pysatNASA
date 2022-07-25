@@ -114,7 +114,7 @@ def clean(self):
     """
     for key in self.data.columns:
         if key != 'Epoch':
-            fill = self.meta[key, self.meta.labels.fill_val][0]
+            fill = self.meta[key, self.meta.labels.fill_val]
             idx, = np.where(self[key] == fill)
             # Set the fill values to NaN
             self[idx, key] = np.nan
@@ -146,9 +146,6 @@ list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags,
                                file_cadence=pds.DateOffset(months=1))
 
-# Set the load routine
-load = functools.partial(cdw.load, file_cadence=pds.DateOffset(months=1))
-
 # Set the download routine
 remote_dir = '/pub/data/omni/omni_cdaweb/hro_{tag:s}/{{year:4d}}/'
 download_tags = {inst_id: {tag: {'remote_dir': remote_dir.format(tag=tag),
@@ -160,6 +157,44 @@ download = functools.partial(cdw.download, supported_tags=download_tags)
 # Set the list_remote_files routine
 list_remote_files = functools.partial(cdw.list_remote_files,
                                       supported_tags=download_tags)
+
+
+# Set the load routine
+def load(fnames, tag=None, inst_id=None, file_cadence=pds.DateOffset(months=1),
+         flatten_twod=True):
+    """Load data and fix meta data.
+
+    Parameters
+    ----------
+    fnames : pandas.Series
+        Series of filenames
+    tag : str or NoneType
+        tag or None (default=None)
+    inst_id : str or NoneType
+        satellite id or None (default=None)
+    file_cadence : dt.timedelta or pds.DateOffset
+        pysat assumes a daily file cadence, but some instrument data files
+        contain longer periods of time.  This parameter allows the specification
+        of regular file cadences greater than or equal to a day (e.g., weekly,
+        monthly, or yearly). (default=dt.timedelta(days=1))
+    flatted_twod : bool
+        Flattens 2D data into different columns of root DataFrame rather
+        than produce a Series of DataFrames. (default=True)
+
+    Returns
+    -------
+    data : pandas.DataFrame
+        Object containing satellite data
+    meta : pysat.Meta
+        Object containing metadata such as column names and units
+
+    """
+
+    data, meta = cdw.load(fnames, tag=tag, inst_id=inst_id,
+                          file_cadence=file_cadence, flatten_twod=flatten_twod)
+
+    return data, meta
+
 
 # ----------------------------------------------------------------------------
 # Local functions
@@ -186,7 +221,7 @@ def time_shift_to_magnetic_poles(inst):
 
     """
 
-    # need to fill in Vx to get an estimate of what is going on
+    # Need to fill in Vx to get an estimate of what is going on.
     inst['Vx'] = inst['Vx'].interpolate('nearest')
     inst['Vx'] = inst['Vx'].fillna(method='backfill')
     inst['Vx'] = inst['Vx'].fillna(method='pad')
@@ -195,7 +230,7 @@ def time_shift_to_magnetic_poles(inst):
     inst['BSN_x'] = inst['BSN_x'].fillna(method='backfill')
     inst['BSN_x'] = inst['BSN_x'].fillna(method='pad')
 
-    # make sure there are no gaps larger than a minute
+    # Make sure there are no gaps larger than a minute.
     inst.data = inst.data.resample('1T').interpolate('time')
 
     time_x = inst['BSN_x'] * 6371.2 / -inst['Vx']
