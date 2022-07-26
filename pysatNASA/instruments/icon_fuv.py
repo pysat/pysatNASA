@@ -47,7 +47,6 @@ from pysat.instruments.methods import general as mm_gen
 from pysatNASA.instruments.methods import cdaweb as cdw
 from pysatNASA.instruments.methods import icon as mm_icon
 
-logger = pysat.logger
 
 # ----------------------------------------------------------------------------
 # Instrument attributes
@@ -81,7 +80,7 @@ def init(self):
 
     """
 
-    logger.info(mm_icon.ackn_str)
+    pysat.logger.info(mm_icon.ackn_str)
     self.acknowledgements = mm_icon.ackn_str
     self.references = ''.join((mm_icon.refs['mission'],
                                mm_icon.refs['fuv']))
@@ -115,7 +114,7 @@ def clean(self):
 
     """
 
-    logger.warning("Cleaning actions for ICON FUV are not yet defined.")
+    pysat.logger.warning("Cleaning actions for ICON FUV are not yet defined.")
     return
 
 
