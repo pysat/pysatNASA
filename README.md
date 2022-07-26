@@ -25,7 +25,7 @@ Python 3.7+.
 | Common modules | Community modules |
 | -------------- | ----------------- |
 | beautifulsoup4 | cdflib            |
-| lxml           | pysat             |
+| lxml           | pysat>=3.0.2      |
 | netCDF4        |                   |
 | numpy          |                   |
 | pandas         |                   |

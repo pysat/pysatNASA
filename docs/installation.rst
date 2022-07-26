@@ -20,7 +20,7 @@ Python 3.7+ and pysat 3.0.0+.
  Common modules   Community modules
  ================ =================
   beautifulsoup4   cdflib>=0.4.4
-  lxml             pysat>=3.0.0
+  lxml             pysat>=3.0.2
   netCDF4
   numpy
   pandas

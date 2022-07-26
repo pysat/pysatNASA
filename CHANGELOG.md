@@ -2,12 +2,15 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
-## [0.0.4] - 2021-XX-XX
-* Include flake8 linting of docstrings and style in Github Actions
+## [0.0.4] - 2022-XX-XX
 * Update instrument tests with new test class
-* Fixed a bug in loading ICON IVM data (added multi_file_day = True)
+* Bug Fixes
+  * Fixed a bug in metadata when loading GOLD Nmax data.
+  * Fixed a bug in user feedback for `methods.cdaweb.download`
+  * Fixed a bug in loading ICON IVM data (added multi_file_day = True)
 * Maintenance
   * Reduce duplication of code in instrument modules
+  * Include flake8 linting of docstrings and style in Github Actions
 
 ## [0.0.3] - 2022-05-18
 * Include flake8 linting of docstrings and style in Github Actions
