@@ -3,6 +3,9 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [0.0.4] - 2022-XX-XX
+* Bug Fixes
+  * Fixed a bug in metadata when loading GOLD Nmax data.
+  * Fixed a bug in user feedback for `methods.cdaweb.download`
 * Maintenance
   * Reduce duplication of code in instrument modules
 
