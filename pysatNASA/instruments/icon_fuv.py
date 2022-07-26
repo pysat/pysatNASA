@@ -40,7 +40,6 @@ ICON_L27_Ion_Density becomes Ion_Density.  To retain the original names, use
 import datetime as dt
 import functools
 import numpy as np
-import warnings
 
 import pysat
 from pysat.instruments.methods import general as mm_gen

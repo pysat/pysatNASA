@@ -215,6 +215,7 @@ download = functools.partial(cdw.download, supported_tags=download_tags)
 list_remote_files = functools.partial(cdw.list_remote_files,
                                       supported_tags=download_tags)
 
+
 def filter_metadata(meta_dict):
     """Filter IVM metadata to remove warnings during loading.
 
@@ -240,6 +241,7 @@ def filter_metadata(meta_dict):
                 meta_dict[var]['Var_Notes']))
 
     return meta_dict
+
 
 def load(fnames, tag=None, inst_id=None, keep_original_names=False):
     """Load ICON IVM data into `pandas.DataFrame` and `pysat.Meta` objects.
