@@ -33,13 +33,13 @@ Examples
 
 import datetime as dt
 import functools
-import warnings
 
 from pysat.instruments.methods import general as ps_gen
 from pysat import logger
 from pysat.utils import load_netcdf4
 
 from pysatNASA.instruments.methods import cdaweb as cdw
+from pysatNASA.instruments.methods import general as mm_nasa
 from pysatNASA.instruments.methods import gold as mm_gold
 
 # ----------------------------------------------------------------------------
@@ -85,25 +85,8 @@ def init(self):
     return
 
 
-def clean(self):
-    """Clean SES14 GOLD data to the specified level.
-
-    Routine is called by pysat, and not by the end user directly.
-
-    Parameters
-    -----------
-    self : pysat.Instrument
-        Instrument class object, whose attribute clean_level is used to return
-        the desired level of data selectivity.
-
-    Note
-    ----
-        Supports 'clean', 'dusty', 'dirty', 'none'
-
-    """
-
-    warnings.warn("Cleaning actions for GOLD Nmax are not yet implemented.")
-    return
+# No cleaning, use standard warning function instead
+clean = mm_nasa.clean_warn
 
 
 # ----------------------------------------------------------------------------

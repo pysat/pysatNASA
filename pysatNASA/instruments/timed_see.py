@@ -40,12 +40,12 @@ Warnings
 import datetime as dt
 import functools
 import pandas as pds
-import warnings
 
 from pysat.instruments.methods import general as mm_gen
 from pysat import logger
 
 from pysatNASA.instruments.methods import cdaweb as cdw
+from pysatNASA.instruments.methods import general as mm_nasa
 
 # ----------------------------------------------------------------------------
 # Instrument attributes
@@ -87,17 +87,8 @@ def init(self):
     return
 
 
-def clean(self):
-    """Clean TIMED SEE data to the specified level.
-
-    Note
-    ----
-    No cleaning currently available.
-
-    """
-    warnings.warn('no cleaning routines available for TIMED SEE data')
-
-    return
+# No cleaning, use standard warning function instead
+clean = mm_nasa.clean_warn
 
 
 # ----------------------------------------------------------------------------
