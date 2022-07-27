@@ -139,12 +139,12 @@ def filter_metadata(meta_dict):
     Parameters
     ----------
     meta_dict : dict
-        Dictionary of metadata from file.
+        Dictionary of metadata from file
 
     Returns
     -------
     dict
-        Filtered FUV metadata.
+        Filtered FUV metadata
 
     """
 

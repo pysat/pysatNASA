@@ -208,12 +208,12 @@ def filter_metadata(meta_dict):
     Parameters
     ----------
     meta_dict : dict
-        Dictionary of metadata from file.
+        Dictionary of metadata from file
 
     Returns
     -------
     dict
-        Filtered IVM metadata.
+        Filtered IVM metadata
 
     """
     if 'ICON_L27_UTC_Time' in meta_dict:

@@ -144,12 +144,12 @@ def filter_metadata(meta_dict):
     Parameters
     ----------
     meta_dict : dict
-        Dictionary of metadata from file.
+        Dictionary of metadata from file
 
     Returns
     -------
     dict
-        Filtered EUV metadata.
+        Filtered EUV metadata
 
     """
     vars = ['ICON_L26_Ancillary_Filename', 'ICON_L26_Flag_Details',
