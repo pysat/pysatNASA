@@ -91,8 +91,11 @@ def clean(self):
 
     """
 
-    self.data.replace(-999., np.nan, inplace=True)  # Te
-    self.data.replace(-9.9999998e+30, np.nan, inplace=True)  # Ni
+    # Replace Te data fill
+    self.data.replace(-999., np.nan, inplace=True)
+
+    # Replace Ne data fill
+    self.data.replace(-9.9999998e+30, np.nan, inplace=True)
 
     return
 

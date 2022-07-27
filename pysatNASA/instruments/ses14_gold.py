@@ -33,13 +33,14 @@ Examples
 
 import datetime as dt
 import functools
-import warnings
+import numpy as np
 
 from pysat.instruments.methods import general as ps_gen
 from pysat import logger
-from pysat.utils import load_netcdf4
+from pysat.utils.io import load_netcdf
 
 from pysatNASA.instruments.methods import cdaweb as cdw
+from pysatNASA.instruments.methods import general as mm_nasa
 from pysatNASA.instruments.methods import gold as mm_gold
 
 # ----------------------------------------------------------------------------
@@ -85,25 +86,8 @@ def init(self):
     return
 
 
-def clean(self):
-    """Clean SES14 GOLD data to the specified level.
-
-    Routine is called by pysat, and not by the end user directly.
-
-    Parameters
-    -----------
-    self : pysat.Instrument
-        Instrument class object, whose attribute clean_level is used to return
-        the desired level of data selectivity.
-
-    Note
-    ----
-        Supports 'clean', 'dusty', 'dirty', 'none'
-
-    """
-
-    warnings.warn("Cleaning actions for GOLD Nmax are not yet implemented.")
-    return
+# No cleaning, use standard warning function instead
+clean = mm_nasa.clean_warn
 
 
 # ----------------------------------------------------------------------------
@@ -172,22 +156,48 @@ def load(fnames, tag=None, inst_id=None):
     --------
     ::
 
-        inst = pysat.Instrument('gold', 'nmax')
+        inst = pysat.Instrument('ses14', 'gold', tag='nmax')
         inst.load(2019, 1)
 
     """
 
-    data, meta = load_netcdf4(fnames, pandas_format=pandas_format)
+    labels = {'units': ('Units', str), 'name': ('Long_Name', str),
+              'notes': ('Var_Notes', str), 'desc': ('CatDesc', str),
+              'plot': ('plot', str), 'axis': ('axis', str),
+              'scale': ('scale', str),
+              'min_val': ('Valid_Min', np.float64),
+              'max_val': ('Valid_Max', np.float64),
+              'fill_val': ('fill', np.float64)}
+
+    # Generate custom meta translation table. When left unspecified the default
+    # table handles the multiple values for fill. We must recreate that
+    # functionality in our table. The targets for meta_translation should
+    # map to values in `labels` above.
+    meta_translation = {'FIELDNAM': 'plot', 'LABLAXIS': 'axis',
+                        'ScaleTyp': 'scale', 'VALIDMIN': 'Valid_Min',
+                        'Valid_Min': 'Valid_Min', 'VALIDMAX': 'Valid_Max',
+                        'Valid_Max': 'Valid_Max', '_FillValue': 'fill',
+                        'FillVal': 'fill', 'TIME_BASE': 'time_base'}
+
+    data, meta = load_netcdf(fnames, pandas_format=pandas_format,
+                             epoch_name='nscans', labels=labels,
+                             meta_translation=meta_translation,
+                             drop_meta_labels='FILLVAL')
+
     if tag == 'nmax':
         # Add time coordinate from scan_start_time
-        data['time'] = ('nscans',
-                        [dt.datetime.strptime(str(val), "b'%Y-%m-%dT%H:%M:%SZ'")
-                         for val in data['scan_start_time'].values])
-        data = data.swap_dims({'nscans': 'time'})
+        data['time'] = [dt.datetime.strptime(str(val), "b'%Y-%m-%dT%H:%M:%SZ'")
+                        for val in data['scan_start_time'].values]
+
+        # Update coordinates with dimensional data
         data = data.assign_coords({'nlats': data['nlats'],
                                    'nlons': data['nlons'],
                                    'nmask': data['nmask'],
                                    'channel': data['channel'],
                                    'hemisphere': data['hemisphere']})
+        meta['time'] = {meta.labels.notes: 'Converted from scan_start_time'}
+        meta['nlats'] = {meta.labels.notes: 'Index for latitude values'}
+        meta['nlons'] = {meta.labels.notes: 'Index for longitude values'}
+        meta['nmask'] = {meta.labels.notes: 'Index for mask values'}
 
     return data, meta

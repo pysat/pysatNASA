@@ -43,9 +43,9 @@ class CDF(object):
 
     Parameters
     ----------
-    filename : string
+    filename : str
         full filename to location of .cdf
-    varformat : string
+    varformat : str
         format of variables for regex parsing. (default='*')
     var_types : list of strings
         list of the different variable types in cdf
@@ -127,7 +127,7 @@ class CDF(object):
 
         Parameter
         ---------
-        x_axis_var : string
+        x_axis_var : str
             name of variable
         """
 
