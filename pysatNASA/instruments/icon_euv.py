@@ -40,6 +40,7 @@ ICON_L27_Ion_Density becomes Ion_Density.  To retain the original names, use
 
 import datetime as dt
 import functools
+import numpy as np
 
 import pysat
 from pysat.instruments.methods import general as mm_gen
@@ -137,6 +138,37 @@ list_remote_files = functools.partial(cdw.list_remote_files,
                                       supported_tags=download_tags)
 
 
+def filter_metadata(meta_dict):
+    """Filter EUV metadata to remove warnings during loading.
+
+    Parameters
+    ----------
+    meta_dict : dict
+        Dictionary of metadata from file
+
+    Returns
+    -------
+    dict
+        Filtered EUV metadata
+
+    """
+    vars = ['ICON_L26_Ancillary_Filename', 'ICON_L26_Flag_Details',
+            'ICON_L26_Input_Filename', 'ICON_L26_Processing_Date',
+            'ICON_L26_UTC_Time']
+
+    for var in vars:
+        if var in meta_dict:
+            meta_dict[var]['FillVal'] = np.nan
+
+    # Deal with string arrays
+    for var in meta_dict.keys():
+        if 'Var_Notes' in meta_dict[var]:
+            meta_dict[var]['Var_Notes'] = ' '.join(pysat.utils.listify(
+                meta_dict[var]['Var_Notes']))
+
+    return meta_dict
+
+
 def load(fnames, tag=None, inst_id=None, keep_original_names=False):
     """Load ICON EUV data into `xarray.Dataset` object and `pysat.Meta` objects.
 
@@ -186,9 +218,16 @@ def load(fnames, tag=None, inst_id=None, keep_original_names=False):
               'min_val': ('ValidMin', float),
               'max_val': ('ValidMax', float), 'fill_val': ('FillVal', float)}
 
-    data, meta = pysat.utils.load_netcdf4(fnames, epoch_name='Epoch',
-                                          pandas_format=pandas_format,
-                                          labels=labels)
+    meta_translation = {'FieldNam': 'plot'}
+
+    data, meta = pysat.utils.io.load_netcdf(fnames, epoch_name='Epoch',
+                                            pandas_format=pandas_format,
+                                            labels=labels,
+                                            meta_processor=filter_metadata,
+                                            meta_translation=meta_translation,
+                                            drop_meta_labels=['Valid_Max',
+                                                              'Valid_Min',
+                                                              '_FillValue'])
 
     # xarray can't merge if variable and dim names are the same
     if 'Altitude' in data.dims:
