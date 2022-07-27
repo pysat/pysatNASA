@@ -2,6 +2,16 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.0.4] - 2022-XX-XX
+* Update instrument tests with new test class
+* Bug Fixes
+  * Fixed a bug in metadata when loading GOLD Nmax data.
+  * Fixed a bug in user feedback for `methods.cdaweb.download`
+  * Fixed a bug in loading ICON IVM data (added multi_file_day = True)
+* Maintenance
+  * Reduce duplication of code in instrument modules
+  * Include flake8 linting of docstrings and style in Github Actions
+
 ## [0.0.3] - 2022-05-18
 * Include flake8 linting of docstrings and style in Github Actions
 * Include Windows tests in Github Actions
@@ -9,8 +19,6 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   * Expanded cleaning of ICON IVM ion drifts to more variables
   * Fixed a bug in loading ICON IVM data (added multi_file_day = True)
   * Fixed a bug where OMNI meta data float values are loaded as arrays
-  * Fixed a bug in metadata when loading GOLD Nmax data.
-  * Fixed a bug in user feedback for `methods.cdaweb.download`
 * Maintenance
   * Removed dummy vars after importing instruments and constellations
   * Updated NEP29 compliance in Github Actions
