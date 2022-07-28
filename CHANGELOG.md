@@ -4,6 +4,9 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [0.0.4] - 2022-XX-XX
 * Update instrument tests with new test class
+* Support xarray datasets through cdflib
+* New Instruments
+  * JPL GPS ROTI
 * Bug Fixes
   * Fixed a bug in metadata when loading GOLD Nmax data.
   * Fixed a bug in user feedback for `methods.cdaweb.download`
