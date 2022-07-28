@@ -20,4 +20,5 @@ refs = {'mission': ' '.join(('Feltens J, Schaer S (1998) IGS Products for the',
                                    'Freeman, R. G. Caton, and C. T. Bridgwood,',
                                    'Impact of ionospheric scintillation on',
                                    'Spaceborne SAR observations studied using',
-                                   'GNSS, Proc. ION-GNSS, pp.1998-2006, 2012.'))}
+                                   'GNSS, Proc. ION-GNSS, pp.1998-2006,',
+                                   '2012.'))}

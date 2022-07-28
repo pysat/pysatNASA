@@ -11,16 +11,16 @@ computing the standard deviation of the rate of TEC change over that interval
 after removing its background variation trend.
 
 ROTI data are provided as global maps using a 2.5 x 5 degree (geographic
-latitude x longitude) grid. The median ROTI value is calculated in each bin. GNSS
-data contributing to the ROTI computation are primarily collected from the global
-network of International GNSS Service and the regional network of Continuous
-Operating Reference Station (CORS).
+latitude x longitude) grid. The median ROTI value is calculated in each bin.
+GNSS data contributing to the ROTI computation are primarily collected from
+the global network of International GNSS Service and the regional network of
+Continuous Operating Reference Station (CORS).
 
 References
 ----------
 Pi, X., A. J. Mannucci, U. J. Lindqwister, and C. M. Ho, Monitoring of global
-ionospheric irregularities using the worldwide GPS network, Geophys. Res. Lett.,
-24, 2283, 1997.
+ionospheric irregularities using the worldwide GPS network, Geophys. Res.
+Lett., 24, 2283, 1997.
 
 Pi, X., F. J. Meyer, K. Chotoo, Anthony Freeman, R. G. Caton, and C. T.
 Bridgwood, Impact of ionospheric scintillation on Spaceborne SAR observations
