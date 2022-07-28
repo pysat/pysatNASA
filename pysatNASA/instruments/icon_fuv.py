@@ -45,9 +45,9 @@ import pysat
 from pysat.instruments.methods import general as mm_gen
 
 from pysatNASA.instruments.methods import cdaweb as cdw
+from pysatNASA.instruments.methods import general as mm_nasa
 from pysatNASA.instruments.methods import icon as mm_icon
 
-logger = pysat.logger
 
 # ----------------------------------------------------------------------------
 # Instrument attributes
@@ -64,29 +64,14 @@ pandas_format = False
 # Instrument test attributes
 
 _test_dates = {'': {kk: dt.datetime(2020, 1, 1) for kk in tags.keys()}}
+_test_load_opt = {'': {kk: {'keep_original_names': True} for kk in tags.keys()}}
 
 # ----------------------------------------------------------------------------
 # Instrument methods
 
 
-def init(self):
-    """Initialize the Instrument object with instrument specific values.
-
-    Runs once upon instantiation.
-
-    Parameters
-    -----------
-    inst : pysat.Instrument
-        Instrument class object
-
-    """
-
-    logger.info(mm_icon.ackn_str)
-    self.acknowledgements = mm_icon.ackn_str
-    self.references = ''.join((mm_icon.refs['mission'],
-                               mm_icon.refs['fuv']))
-
-    return
+# Use standard init routine
+init = functools.partial(mm_nasa.init, module=mm_icon, name=name)
 
 
 def preprocess(self, keep_original_names=False):

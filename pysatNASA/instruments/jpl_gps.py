@@ -1,6 +1,15 @@
 # -*- coding: utf-8 -*-
 """Module for the JPL GPS data products.
 
+Supports ROTI data produced at JPL from International
+GNSS Service Total Electron Content (TEC)
+
+The rate of TEC index (ROTI) characterizes TEC fluctuations observed along
+receiver-to-satellite line of sight links over a 5-minute interval.
+The measurement is obtained by processing GNSS dual-frequency phase data and
+computing the standard deviation of the rate of TEC change over that interval
+after removing its background variation trend.
+
 References
 ----------
 TBC
@@ -29,6 +38,7 @@ from pysat.instruments.methods import general as mm_gen
 from pysat import logger
 
 from pysatNASA.instruments.methods import cdaweb as cdw
+from pysatNASA.instruments.methods import gps as mm_gps
 
 # ----------------------------------------------------------------------------
 # Instrument attributes
@@ -54,8 +64,9 @@ def init(self):
 
     """
     logger.info('')
-    self.acknowledgements = 'add acknowledgement'
-    self.references = 'Add refs'
+    self.acknowledgements = mm_gps.ackn_str
+    self.references = '\n'.join((mm_gps.refs['mission'],
+                                 mm_gps.refs['roti15min_jpl']))
 
     return
 
@@ -84,7 +95,7 @@ list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags)
 
 # Set the load routine
-load = cdw.load
+load = functools.partial(cdw.load, pandas_format=pandas_format)
 
 # Set the download routine
 basic_tag = {'remote_dir': '/pub/data/gps/roti15min_jpl/{year:4d}/',

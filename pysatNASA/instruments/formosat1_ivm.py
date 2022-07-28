@@ -24,12 +24,12 @@ Warnings
 
 import datetime as dt
 import functools
-import warnings
 
 from pysat.instruments.methods import general as mm_gen
 from pysat import logger
 
 from pysatNASA.instruments.methods import cdaweb as cdw
+from pysatNASA.instruments.methods import general as mm_nasa
 
 # ----------------------------------------------------------------------------
 # Instrument attributes
@@ -74,19 +74,8 @@ def init(self):
     return
 
 
-def clean(self):
-    """Clean FORMOSAT-1 IVM data to the specified level.
-
-    Note
-    ----
-    No cleaning currently available for FORMOSAT-1 IVM.
-
-    """
-
-    warnings.warn("No cleaning currently available for FORMOSAT-1")
-
-    return
-
+# No cleaning, use standard warning function instead
+clean = mm_nasa.clean_warn
 
 # ----------------------------------------------------------------------------
 # Instrument functions
