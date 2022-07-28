@@ -10,9 +10,22 @@ The measurement is obtained by processing GNSS dual-frequency phase data and
 computing the standard deviation of the rate of TEC change over that interval
 after removing its background variation trend.
 
+ROTI data are provided as global maps using a 2.5 x 5 degree (geographic
+latitude x longitude) grid. The median ROTI value is calculated in each bin. GNSS
+data contributing to the ROTI computation are primarily collected from the global
+network of International GNSS Service and the regional network of Continuous
+Operating Reference Station (CORS).
+
 References
 ----------
-TBC
+Pi, X., A. J. Mannucci, U. J. Lindqwister, and C. M. Ho, Monitoring of global
+ionospheric irregularities using the worldwide GPS network, Geophys. Res. Lett.,
+24, 2283, 1997.
+
+Pi, X., F. J. Meyer, K. Chotoo, Anthony Freeman, R. G. Caton, and C. T.
+Bridgwood, Impact of ionospheric scintillation on Spaceborne SAR observations
+studied using GNSS, Proc. ION-GNSS, pp.1998-2006, 2012.
+
 
 Properties
 ----------
@@ -34,8 +47,8 @@ Warnings
 import datetime as dt
 import functools
 
+import pysat
 from pysat.instruments.methods import general as mm_gen
-from pysat import logger
 
 from pysatNASA.instruments.methods import cdaweb as cdw
 from pysatNASA.instruments.methods import gps as mm_gps
@@ -63,7 +76,8 @@ def init(self):
     Runs once upon instantiation.
 
     """
-    logger.info('')
+
+    pysat.logger.info('')
     self.acknowledgements = mm_gps.ackn_str
     self.references = '\n'.join((mm_gps.refs['mission'],
                                  mm_gps.refs['roti15min_jpl']))
@@ -71,17 +85,8 @@ def init(self):
     return
 
 
-def clean(self):
-    """Clean JPL GPS data to the specified level.
-
-    Note
-    ----
-    Supports 'clean', 'dusty', 'dirty'
-
-    """
-
-    return
-
+# No cleaning, use standard warning function instead
+clean = mm_nasa.clean_warn
 
 # ----------------------------------------------------------------------------
 # Instrument functions
