@@ -50,8 +50,8 @@ about the processing done at NSSDC is given in WATS_NSSDC_PRO_DE.DOC.
 References
 ----------
 N. W. Spencer, L. E. Wharton, H. B. Niemann, A. E. Hedin, G. R. Carrignan,
-J. C. Maurer, The Dynamics Explorer Wind and Temperature Spectrometer
-Space Sci. Instrum., v. 5, n. 4, p. 417, 1981.
+J. C. Maurer, "The Dynamics Explorer Wind and Temperature Spectrometer",
+Space Sci. Instrum., 5, 417-428, 1981.
 
 Properties
 ----------
@@ -68,21 +68,16 @@ Warnings
 --------
 - Currently no cleaning routine.
 
-Authors
--------
-J. Klenzing
-
 """
 
 import datetime as dt
 import functools
-import warnings
 
 from pysat.instruments.methods import general as mm_gen
-from pysat import logger
 
 from pysatNASA.instruments.methods import cdaweb as cdw
 from pysatNASA.instruments.methods import de2 as mm_de2
+from pysatNASA.instruments.methods import general as mm_nasa
 
 # ----------------------------------------------------------------------------
 # Instrument attributes
@@ -101,34 +96,11 @@ _test_dates = {'': {'': dt.datetime(1983, 1, 1)}}
 # Instrument methods
 
 
-def init(self):
-    """Initialize the Instrument object with instrument specific values.
+# Use standard init routine
+init = functools.partial(mm_nasa.init, module=mm_de2, name=name)
 
-    Runs once upon instantiation.
-
-    """
-
-    logger.info(mm_de2.ackn_str)
-    self.acknowledgements = mm_de2.ackn_str
-    self.references = mm_de2.refs['lang']
-    return
-
-
-def clean(self):
-    """Clean DE2 LANG data to the specified level.
-
-    Note
-    ----
-    'clean' - Not specified
-    'dusty' - Not specified
-    'dirty' - Not specified
-    'none'  No cleaning applied, routine not called in this case.
-
-    """
-    warnings.warn('No cleaning routines available for DE2 WATS')
-
-    return
-
+# No cleaning, use standard warning function instead
+clean = mm_nasa.clean_warn
 
 # ----------------------------------------------------------------------------
 # Instrument functions
