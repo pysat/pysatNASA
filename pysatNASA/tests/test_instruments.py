@@ -63,7 +63,7 @@ class TestInstruments(InstLibTests):
             target = 'Fake Data to be cleared'
             test_inst.data = [target]
             try:
-                test_inst.load(date=date, use_header=True, use_cdflib=True)
+                test_inst.load(date=date, use_header=True, use_cdflib=False)
             except ValueError as verr:
                 # Check if instrument is failing due to strict time flag
                 if str(verr).find('Loaded data') > 0:
