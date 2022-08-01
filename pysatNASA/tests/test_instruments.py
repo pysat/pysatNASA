@@ -37,10 +37,6 @@ class TestInstruments(InstLibTests):
     """
 
     @pytest.mark.second
-    # Need to maintain download mark for backwards compatibility.
-    # Can remove once pysat 3.1.0 is released and libraries are updated.
-    @pytest.mark.load_options
-    @pytest.mark.download
     @pytest.mark.parametrize("clean_level", ['none', 'dirty', 'dusty', 'clean'])
     @pytest.mark.parametrize("inst_dict", instruments['download'])
     def test_load_cdflib(self, clean_level, inst_dict):
