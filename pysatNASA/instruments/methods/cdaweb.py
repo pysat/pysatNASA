@@ -81,7 +81,7 @@ def load(fnames, tag='', inst_id='', file_cadence=dt.timedelta(days=1),
     Note
     ----
     This routine is intended to be used by pysat instrument modules supporting
-    a particular NASA CDAWeb dataset.
+    a particular NASA CDAWeb dataset
 
     """
 
@@ -253,15 +253,15 @@ def load_xarray(fnames, tag='', inst_id='',
     Note
     ----
     This routine is intended to be used by pysat instrument modules supporting
-    a particular NASA CDAWeb dataset.
+    a particular NASA CDAWeb dataset
 
     Examples
     --------
     ::
 
-        # within the new instrument module, at the top level define
-        # a new variable named load, and set it equal to this load method
-        # code below taken from cnofs_ivm.py.
+        # Within the new instrument module, at the top level define
+        # a new variable named load, and set it equal to this load method.
+        # Code below taken from cnofs_ivm.py.
 
         # support load routine
         # use the default CDAWeb method
@@ -275,11 +275,12 @@ def load_xarray(fnames, tag='', inst_id='',
     else:
         # Using cdflib wrapper to load the CDF and format data and
         # metadata for pysat using some assumptions. Depending upon your needs
-        # the resulting pandas DataFrame may need modification
+        # the resulting pandas DataFrame may need modification.
         ldata = []
         for lfname in fnames:
             temp_data = cdflib.cdf_to_xarray(lfname, to_datetime=True)
             ldata.append(temp_data)
+
         # Combine individual files together
         if len(ldata) > 0:
             data = xr.combine_by_coords(ldata)
@@ -336,7 +337,7 @@ def load_xarray(fnames, tag='', inst_id='',
             if label in full_mdict[var]:
                 full_mdict[var].pop(label)
 
-    # Second, remove some items pysat added for netcdf compatibility.
+    # Second, remove some items pysat added for netcdf compatibility
     filt_mdict = io.remove_netcdf4_standards_from_meta(full_mdict, epoch_name,
                                                        meta.labels)
 
@@ -351,7 +352,7 @@ def load_xarray(fnames, tag='', inst_id='',
         filt_mdict = meta_processor(filt_mdict)
 
     # Meta cannot take array data, if present save it as seperate meta data
-    # labels.
+    # labels
     filt_mdict = io.meta_array_expander(filt_mdict)
 
     # Assign filtered metadata to pysat.Meta instance
