@@ -302,6 +302,8 @@ def load_xarray(fnames, tag='', inst_id='',
                                 repr(all_vars)])
                 raise ValueError(estr)
 
+        epoch_name = 'time'
+
     all_vars = io.xarray_all_vars(data)
 
     meta = pysat.Meta(labels=labels)
