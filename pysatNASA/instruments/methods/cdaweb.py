@@ -13,6 +13,7 @@ import os
 import pandas as pds
 import requests
 import xarray as xr
+import warnings
 
 from bs4 import BeautifulSoup
 
@@ -95,11 +96,6 @@ def load(fnames, tag='', inst_id='', file_cadence=dt.timedelta(days=1),
     This routine is intended to be used by pysat instrument modules supporting
     a particular NASA CDAWeb dataset
 
-    Raises
-    ------
-    ValueError
-        If `pandas_format=False` and `use_cdflib=False`
-
     """
 
     if pandas_format:
@@ -110,7 +106,7 @@ def load(fnames, tag='', inst_id='', file_cadence=dt.timedelta(days=1),
     else:
         if not use_cdflib:
             estr = 'The `use_cdflib` option is not currently enabled for xarray'
-            raise ValueError(estr)
+            warnings.warn(estr)
 
         data, meta = load_xarray(fnames, tag=tag, inst_id=inst_id,
                                  epoch_name=epoch_name,
