@@ -20,6 +20,7 @@ import pysat
 from pysat.instruments.methods import general
 from pysat import logger
 from pysat.utils import files as futils
+from pysat.utils import io
 from pysatNASA.instruments.methods import CDF as libCDF
 
 try:
@@ -31,7 +32,8 @@ except ImportError:
 
 def load(fnames, tag='', inst_id='', file_cadence=dt.timedelta(days=1),
          flatten_twod=True, pandas_format=True, epoch_name='Epoch',
-         meta_processor=None, meta_translation=None, drop_meta_labels=None):
+         meta_processor=None, meta_translation=None, drop_meta_labels=None,
+         use_cdflib=None):
     """Load NASA CDAWeb CDF files.
 
     Parameters
@@ -75,6 +77,11 @@ def load(fnames, tag='', inst_id='', file_cadence=dt.timedelta(days=1),
     drop_meta_labels : list or NoneType
         List of variable metadata labels that should be dropped. Applied
         to metadata as loaded from the file. (default=None)
+    use_cdflib : bool or NoneType
+        If True, force use of cdflib for loading. If False, prevent use of
+        cdflib for loading. If None, will use pysatCDF if available with
+        cdflib as fallback. Only appropriate for `pandas_format=True`.
+        (default=None)
 
     Returns
     -------
@@ -88,13 +95,22 @@ def load(fnames, tag='', inst_id='', file_cadence=dt.timedelta(days=1),
     This routine is intended to be used by pysat instrument modules supporting
     a particular NASA CDAWeb dataset
 
+    Raises
+    ------
+    ValueError
+        If `pandas_format=False` and `use_cdflib=False`
+
     """
 
     if pandas_format:
         data, meta = load_pandas(fnames, tag=tag, inst_id=inst_id,
                                  file_cadence=file_cadence,
-                                 flatten_twod=flatten_twod)
+                                 flatten_twod=flatten_twod,
+                                 use_cdflib=use_cdflib)
     else:
+        if not use_cdflib:
+            estr = 'The `use_cdflib` option is not currently enabled for xarray'
+            raise ValueError(estr)
 
         data, meta = load_xarray(fnames, tag=tag, inst_id=inst_id,
                                  epoch_name=epoch_name,
@@ -104,8 +120,8 @@ def load(fnames, tag='', inst_id='', file_cadence=dt.timedelta(days=1),
     return data, meta
 
 
-def load_pandas(fnames, tag='', inst_id='',
-                file_cadence=dt.timedelta(days=1), flatten_twod=True):
+def load_pandas(fnames, tag='', inst_id='', file_cadence=dt.timedelta(days=1),
+                flatten_twod=True, use_cdflib=None):
     """Load NASA CDAWeb CDF files into a pandas DataFrame.
 
     Parameters
