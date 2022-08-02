@@ -7,31 +7,110 @@ Adding new CDAWeb datasets should only require mininal user intervention.
 
 """
 
+import cdflib
 import datetime as dt
 import os
 import pandas as pds
 import requests
+import xarray as xr
 
 from bs4 import BeautifulSoup
 
+import pysat
 from pysat.instruments.methods import general
 from pysat import logger
 from pysat.utils import files as futils
+from pysat.utils import io
 from pysatNASA.instruments.methods import CDF
 
 
-def load(fnames, tag=None, inst_id=None, file_cadence=dt.timedelta(days=1),
-         flatten_twod=True):
+def load(fnames, tag='', inst_id='', file_cadence=dt.timedelta(days=1),
+         flatten_twod=True, pandas_format=True, epoch_name='Epoch',
+         meta_processor=None, meta_translation=None, drop_meta_labels=None):
     """Load NASA CDAWeb CDF files.
 
     Parameters
     ----------
     fnames : pandas.Series
         Series of filenames
-    tag : str or NoneType
-        tag or None (default=None)
-    inst_id : str or NoneType
-        satellite id or None (default=None)
+    tag : str
+        tag or None (default='')
+    inst_id : str
+        satellite id or None (default='')
+    file_cadence : dt.timedelta or pds.DateOffset
+        pysat assumes a daily file cadence, but some instrument data files
+        contain longer periods of time.  This parameter allows the specification
+        of regular file cadences greater than or equal to a day (e.g., weekly,
+        monthly, or yearly). (default=dt.timedelta(days=1))
+    flatted_twod : bool
+        Flattens 2D data into different columns of root DataFrame rather
+        than produce a Series of DataFrames. (default=True)
+    pandas_format : bool
+        Flag specifying if data is stored in a pandas DataFrame (True) or
+        xarray Dataset (False). (default=True)
+    epoch_name : str or NoneType
+        Data key for epoch variable.  The epoch variable is expected to be an
+        array of integer or float values denoting time elapsed from an origin
+        specified by `epoch_origin` with units specified by `epoch_unit`. This
+        epoch variable will be converted to a `DatetimeIndex` for consistency
+        across pysat instruments.  (default='Epoch')
+    meta_processor : function or NoneType
+        If not None, a dict containing all of the loaded metadata will be
+        passed to `meta_processor` which should return a filtered version
+        of the input dict. The returned dict is loaded into a pysat.Meta
+        instance and returned as `meta`. (default=None)
+    meta_translation : dict or NoneType
+        Translation table used to map metadata labels in the file to
+        those used by the returned `meta`. Keys are labels from file
+        and values are labels in `meta`. Redundant file labels may be
+        mapped to a single pysat label. If None, will use
+        `default_from_netcdf_translation_table`. This feature
+        is maintained for compatibility. To disable all translation,
+        input an empty dict. (default={})
+    drop_meta_labels : list or NoneType
+        List of variable metadata labels that should be dropped. Applied
+        to metadata as loaded from the file. (default=None)
+
+    Returns
+    -------
+    data : pandas.DataFrame
+        Object containing satellite data
+    meta : pysat.Meta
+        Object containing metadata such as column names and units
+
+    Note
+    ----
+    This routine is intended to be used by pysat instrument modules supporting
+    a particular NASA CDAWeb dataset
+
+    """
+
+    if pandas_format:
+        data, meta = load_pandas(fnames, tag=tag, inst_id=inst_id,
+                                 file_cadence=file_cadence,
+                                 flatten_twod=flatten_twod)
+    else:
+
+        data, meta = load_xarray(fnames, tag=tag, inst_id=inst_id,
+                                 epoch_name=epoch_name,
+                                 meta_processor=meta_processor,
+                                 meta_translation=meta_translation,
+                                 drop_meta_labels=drop_meta_labels)
+    return data, meta
+
+
+def load_pandas(fnames, tag='', inst_id='',
+                file_cadence=dt.timedelta(days=1), flatten_twod=True):
+    """Load NASA CDAWeb CDF files into a pandas DataFrame.
+
+    Parameters
+    ----------
+    fnames : pandas.Series
+        Series of filenames
+    tag : str
+        tag or None (default='')
+    inst_id : str
+        satellite id or None (default='')
     file_cadence : dt.timedelta or pds.DateOffset
         pysat assumes a daily file cadence, but some instrument data files
         contain longer periods of time.  This parameter allows the specification
@@ -113,7 +192,180 @@ def load(fnames, tag=None, inst_id=None, file_cadence=dt.timedelta(days=1),
         return data, meta
 
 
-def download(date_array, tag=None, inst_id=None, supported_tags=None,
+def load_xarray(fnames, tag='', inst_id='',
+                labels={'units': ('units', str), 'name': ('long_name', str),
+                        'notes': ('notes', str), 'desc': ('desc', str),
+                        'plot': ('plot_label', str), 'axis': ('axis', str),
+                        'scale': ('scale', str),
+                        'min_val': ('value_min', float),
+                        'max_val': ('value_max', float),
+                        'fill_val': ('fill', float)},
+                epoch_name='Epoch', meta_processor=None,
+                meta_translation=None, drop_meta_labels=None):
+    """Load NASA CDAWeb CDF files into an xarray Dataset.
+
+    Parameters
+    ----------
+    fnames : pandas.Series
+        Series of filenames
+    tag : str
+        tag or (default='')
+    inst_id : str
+        satellite id (default='')
+    labels : dict
+        Dict where keys are the label attribute names and the values are tuples
+        that have the label values and value types in that order.
+        (default={'units': ('units', str), 'name': ('long_name', str),
+        'notes': ('notes', str), 'desc': ('desc', str),
+        'min_val': ('value_min', np.float64),
+        'max_val': ('value_max', np.float64),
+        'fill_val': ('fill', np.float64)})
+    epoch_name : str
+        Data key for epoch variable.  The epoch variable is expected to be an
+        array of integer or float values denoting time elapsed from an origin
+        specified by `epoch_origin` with units specified by `epoch_unit`. This
+        epoch variable will be converted to a `DatetimeIndex` for consistency
+        across pysat instruments.  (default='Epoch')
+    meta_processor : function or NoneType
+        If not None, a dict containing all of the loaded metadata will be
+        passed to `meta_processor` which should return a filtered version
+        of the input dict. The returned dict is loaded into a pysat.Meta
+        instance and returned as `meta`. (default=None)
+    meta_translation : dict or NoneType
+        Translation table used to map metadata labels in the file to
+        those used by the returned `meta`. Keys are labels from file
+        and values are labels in `meta`. Redundant file labels may be
+        mapped to a single pysat label. If None, will use
+        `default_from_netcdf_translation_table`. This feature
+        is maintained for compatibility. To disable all translation,
+        input an empty dict. (default=None)
+    drop_meta_labels : list or NoneType
+        List of variable metadata labels that should be dropped. Applied
+        to metadata as loaded from the file. (default=None)
+
+    Returns
+    -------
+    data : xarray.Dataset
+        Class holding file data
+    meta : pysat.Meta
+        Object containing metadata such as column names and units
+
+    Note
+    ----
+    This routine is intended to be used by pysat instrument modules supporting
+    a particular NASA CDAWeb dataset
+
+    Examples
+    --------
+    ::
+
+        # Within the new instrument module, at the top level define
+        # a new variable named load, and set it equal to this load method.
+        # Code below taken from cnofs_ivm.py.
+
+        # support load routine
+        # use the default CDAWeb method
+        load = functools.partial(cdw.load, pandas_format=False)
+
+    """
+
+    # Load data from any files provided
+    if len(fnames) <= 0:
+        return xr.Dataset()
+    else:
+        # Using cdflib wrapper to load the CDF and format data and
+        # metadata for pysat using some assumptions. Depending upon your needs
+        # the resulting pandas DataFrame may need modification.
+        ldata = []
+        for lfname in fnames:
+            temp_data = cdflib.cdf_to_xarray(lfname, to_datetime=True)
+            ldata.append(temp_data)
+
+        # Combine individual files together
+        if len(ldata) > 0:
+            data = xr.combine_by_coords(ldata)
+
+    all_vars = io.xarray_all_vars(data)
+
+    # Convert output epoch name to 'time' for pysat consistency
+    if epoch_name != 'time':
+        if 'time' not in all_vars:
+            if epoch_name in data.dims:
+                data = data.rename({epoch_name: 'time'})
+            elif epoch_name in all_vars:
+                data = data.rename({epoch_name: 'time'})
+                wstr = ''.join(['Epoch label: "', epoch_name, '"',
+                                ' is not a dimension.'])
+                pysat.logger.warning(wstr)
+            else:
+                estr = ''.join(['Epoch label: "', epoch_name, '"',
+                                ' not found in loaded data, ',
+                                repr(all_vars)])
+                raise ValueError(estr)
+
+        epoch_name = 'time'
+
+    all_vars = io.xarray_all_vars(data)
+
+    meta = pysat.Meta(labels=labels)
+
+    full_mdict = {}
+
+    if meta_translation is None:
+        # Assign default translation using `meta`
+        meta_translation = {}
+
+    # Drop metadata labels initialization
+    if drop_meta_labels is None:
+        drop_meta_labels = []
+    else:
+        drop_meta_labels = pysat.utils.listify(drop_meta_labels)
+
+    for key in all_vars:
+        meta_dict = {}
+        for nc_key in data[key].attrs.keys():
+            meta_dict[nc_key] = data[key].attrs[nc_key]
+        full_mdict[key] = meta_dict
+        data[key].attrs = {}
+
+    for data_attr in data.attrs.keys():
+        setattr(meta.header, data_attr, getattr(data, data_attr))
+
+    # Process the metadata. First, drop labels as requested.
+    for var in full_mdict:
+        for label in drop_meta_labels:
+            if label in full_mdict[var]:
+                full_mdict[var].pop(label)
+
+    # Second, remove some items pysat added for netcdf compatibility
+    filt_mdict = io.remove_netcdf4_standards_from_meta(full_mdict, epoch_name,
+                                                       meta.labels)
+
+    # Translate labels from file to pysat compatible labels using
+    # `meta_translation`
+    filt_mdict = io.apply_table_translation_from_file(meta_translation,
+                                                      filt_mdict)
+
+    # Next, allow processing by developers so they can deal with
+    # issues with specific files
+    if meta_processor is not None:
+        filt_mdict = meta_processor(filt_mdict)
+
+    # Meta cannot take array data, if present save it as seperate meta data
+    # labels
+    filt_mdict = io.meta_array_expander(filt_mdict)
+
+    # Assign filtered metadata to pysat.Meta instance
+    for key in filt_mdict:
+        meta[key] = filt_mdict[key]
+
+    # Remove attributes from the data object
+    data.attrs = {}
+
+    return data, meta
+
+
+def download(date_array, tag='', inst_id='', supported_tags=None,
              remote_url='https://cdaweb.gsfc.nasa.gov', data_path=None):
     """Download NASA CDAWeb CDF data.
 
@@ -124,16 +376,16 @@ def download(date_array, tag=None, inst_id=None, supported_tags=None,
     ----------
     date_array : array-like
         Array of datetimes to download data for. Provided by pysat.
-    tag : str or NoneType
-        tag or None (default=None)
-    inst_id : str or NoneType
-        satellite id or None (default=None)
+    tag : str
+        tag or None (default='')
+    inst_id : str
+        satellite id or None (default='')
     supported_tags : dict
         dict of dicts. Keys are supported tag names for download. Value is
         a dict with 'remote_dir', 'fname'. Inteded to be pre-set with
         functools.partial then assigned to new instrument code.
         (default=None)
-    remote_url : str or NoneType
+    remote_url : str
         Remote site to download data from
         (default='https://cdaweb.gsfc.nasa.gov')
     data_path : str or NoneType
@@ -156,10 +408,6 @@ def download(date_array, tag=None, inst_id=None, supported_tags=None,
 
     """
 
-    if tag is None:
-        tag = ''
-    if inst_id is None:
-        inst_id = ''
     try:
         inst_dict = supported_tags[inst_id][tag]
     except KeyError:
@@ -220,12 +468,12 @@ def list_remote_files(tag=None, inst_id=None, start=None, stop=None,
 
     Parameters
     ----------
-    tag : str or NoneType
+    tag : str
         Denotes type of file to load.  Accepted types are <tag strings>.
-        (default=None)
-    inst_id : str or NoneType
+        (default='')
+    inst_id : str
         Specifies the satellite ID for a constellation.
-        (default=None)
+        (default='')
     start : dt.datetime or NoneType
         Starting time for file list. A None value will start with the first
         file found.
@@ -234,7 +482,7 @@ def list_remote_files(tag=None, inst_id=None, start=None, stop=None,
         Ending time for the file list.  A None value will stop with the last
         file found.
         (default=None)
-    remote_url : str or NoneType
+    remote_url : str
         Remote site to download data from
         (default='https://cdaweb.gsfc.nasa.gov')
     supported_tags : dict
@@ -274,10 +522,6 @@ def list_remote_files(tag=None, inst_id=None, start=None, stop=None,
 
     """
 
-    if tag is None:
-        tag = ''
-    if inst_id is None:
-        inst_id = ''
     try:
         inst_dict = supported_tags[inst_id][tag]
     except KeyError:
