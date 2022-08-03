@@ -10,23 +10,20 @@ import warnings
 
 import pytest
 
-import pysat
 # Make sure to import your instrument library here
 import pysatNASA
 
 # Import the test classes from pysat
 from pysat.tests.classes import cls_instrument_library as clslib
-from pysat.tests.classes.cls_instrument_library import InstLibTests
-from pysat.utils import generate_instrument_list
 
 
 # Tell the standard tests which instruments to run each test on.
 # Need to return instrument list for custom tests.
-instruments = InstLibTests.initialize_test_package(
-    InstLibTests, inst_loc=pysatNASA.instruments)
+instruments = clslib.InstLibTests.initialize_test_package(
+    clslib.InstLibTests, inst_loc=pysatNASA.instruments)
 
 
-class TestInstruments(InstLibTests):
+class TestInstruments(clslib.InstLibTests):
     """Main class for instrument tests.
 
     Note
