@@ -223,7 +223,7 @@ def time_shift_to_magnetic_poles(inst):
 
     .. deprecated:: 0.0.4
     This function has been moved to `pysatNASA.instruments.methods.omni`.  This
-    redirect will be removed in 0.1.0+.
+    redirect will be removed in v0.1.0+.
 
     Parameters
     ----------
@@ -254,7 +254,7 @@ def calculate_clock_angle(inst):
 
     .. deprecated:: 0.0.4
     This function has been moved to `pysatNASA.instruments.methods.omni`.  This
-    redirect will be removed in 0.1.0+.
+    redirect will be removed in v0.1.0+.
 
     Parameters
     -----------
@@ -278,7 +278,7 @@ def calculate_imf_steadiness(inst, steady_window=15, min_window_frac=0.75,
 
     .. deprecated:: 0.0.4
     This function has been moved to `pysatNASA.instruments.methods.omni`.  This
-    redirect will be removed in 0.1.0+.
+    redirect will be removed in v0.1.0+.
 
     Parameters
     ----------
@@ -315,7 +315,7 @@ def calculate_dayside_reconnection(inst):
 
     .. deprecated:: 0.0.4
     This function has been moved to `pysatNASA.instruments.methods.omni`.  This
-    redirect will be removed in 0.1.0+.
+    redirect will be removed in v0.1.0+.
 
     Parameters
     ----------
