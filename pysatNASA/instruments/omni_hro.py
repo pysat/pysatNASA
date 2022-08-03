@@ -302,10 +302,10 @@ def calculate_imf_steadiness(inst, steady_window=15, min_window_frac=0.75,
 
     """
 
-    mm_omni.calculate_imf_steadiness(inst, steady_window=15,
-                                     min_window_frac=0.75,
-                                     max_clock_angle_std=(90.0 / np.pi),
-                                     max_bmag_cv=0.5)
+    mm_omni.calculate_imf_steadiness(inst, steady_window=steady_window,
+                                     min_window_frac=min_window_frac,
+                                     max_clock_angle_std=max_clock_angle_std,
+                                     max_bmag_cv=max_bmag_cv)
     return
 
 
