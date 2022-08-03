@@ -42,11 +42,13 @@ import datetime as dt
 import functools
 import numpy as np
 import pandas as pds
+import warnings
 
 from pysat.instruments.methods import general as mm_gen
 from pysat import logger
 
 from pysatNASA.instruments.methods import cdaweb as cdw
+from pysatNASA.instruments.methods import omni as mm_omni
 
 # ----------------------------------------------------------------------------
 # Instrument attributes
@@ -189,3 +191,142 @@ def load(fnames, tag=None, inst_id=None, file_cadence=pds.DateOffset(months=1),
                           use_cdflib=use_cdflib)
 
     return data, meta
+
+
+# Local Functions (deprecated)
+
+def deprecated(func):
+    """Warn users that function has moved locations.
+
+    Decorator function for deprecation warnings.
+
+    """
+
+    def wrapper(*args, **kwargs):
+        """Wrap functions that use the decorator function."""
+
+        warn_message = ' '.join(
+            ['pysatNASA.instruments.omni_hro.{:}'.format(func.__name__),
+             'has been moved to',
+             'pysatNASA.instruments.methods.omni.{:}.'.format(func.__name__),
+             'Please update your path to suppress this warning.',
+             'This redirect will be removed in v0.1.0.'])
+        # Triggered if OMMBV is not installed
+        warnings.warn(warn_message, DeprecationWarning, stacklevel=2)
+
+    return wrapper
+
+
+@deprecated
+def time_shift_to_magnetic_poles(inst):
+    """Shift OMNI times to intersection with the magnetic pole.
+
+    .. deprecated:: 0.0.4
+    This function has been moved to `pysatNASA.instruments.methods.omni`.  This
+    redirect will be removed in 0.1.0+.
+
+    Parameters
+    ----------
+    inst : Instrument class object
+        Instrument with OMNI HRO data
+
+    Note
+    ----
+    - Time shift calculated using distance to bow shock nose (BSN)
+      and velocity of solar wind along x-direction.
+    - OMNI data is time-shifted to bow shock. Time shifted again
+      to intersections with magnetic pole.
+
+    Warnings
+    --------
+    Use at own risk.
+
+    """
+
+    mm_omni.time_shift_to_magnetic_poles(inst)
+
+    return
+
+
+@deprecated
+def calculate_clock_angle(inst):
+    """Calculate IMF clock angle and magnitude of IMF in GSM Y-Z plane.
+
+    .. deprecated:: 0.0.4
+    This function has been moved to `pysatNASA.instruments.methods.omni`.  This
+    redirect will be removed in 0.1.0+.
+
+    Parameters
+    -----------
+    inst : pysat.Instrument
+        Instrument with OMNI HRO data
+
+    """
+
+    print('Aha!')
+
+    mm_omni.calculate_clock_angle(inst)
+
+    return
+
+
+@deprecated
+def calculate_imf_steadiness(inst, steady_window=15, min_window_frac=0.75,
+                             max_clock_angle_std=(90.0 / np.pi),
+                             max_bmag_cv=0.5):
+    """Calculate IMF steadiness and add parameters to instrument data.
+
+    .. deprecated:: 0.0.4
+    This function has been moved to `pysatNASA.instruments.methods.omni`.  This
+    redirect will be removed in 0.1.0+.
+
+    Parameters
+    ----------
+    inst : pysat.Instrument
+        Instrument with OMNI HRO data
+    steady_window : int
+        Window for calculating running statistical moments in min (default=15)
+    min_window_frac : float
+        Minimum fraction of points in a window for steadiness to be calculated
+        (default=0.75)
+    max_clock_angle_std : float
+        Maximum standard deviation of the clock angle in degrees (default=22.5)
+    max_bmag_cv : float
+        Maximum coefficient of variation of the IMF magnitude in the GSM
+        Y-Z plane (default=0.5)
+
+    Note
+    ----
+    Uses clock angle standard deviation and the coefficient of variation of
+    the IMF magnitude in the GSM Y-Z plane
+
+    """
+
+    mm_omni.calculate_imf_steadiness(inst, steady_window=15,
+                                     min_window_frac=0.75,
+                                     max_clock_angle_std=(90.0 / np.pi),
+                                     max_bmag_cv=0.5)
+    return
+
+
+@deprecated
+def calculate_dayside_reconnection(inst):
+    """Calculate the dayside reconnection rate (Milan et al. 2014).
+
+    .. deprecated:: 0.0.4
+    This function has been moved to `pysatNASA.instruments.methods.omni`.  This
+    redirect will be removed in 0.1.0+.
+
+    Parameters
+    ----------
+    inst : pysat.Instrument
+        Instrument with OMNI HRO data, requires BYZ_GSM and clock_angle
+
+    Note
+    ----
+    recon_day = 3.8 Re (Vx / 4e5 m/s)^1/3 Vx B_yz (sin(theta/2))^9/2
+
+    """
+
+    mm_omni.calculate_dayside_reconnection(inst)
+    return
