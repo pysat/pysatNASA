@@ -3,10 +3,20 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [0.0.4] - 2022-XX-XX
+* Update instrument tests with new test class
+* Support xarray datasets through cdflib
+* Preferentially loads data into pandas using pysatCDF if installed
+* Adds pysatCDF to optional requirements invoked via '[all]' option at installation
+* New Instruments
+  * JPL GPS ROTI
 * Bug Fixes
+  * Fixed a bug in metadata when loading GOLD Nmax data.
+  * Fixed a bug in user feedback for `methods.cdaweb.download`
+  * Fixed a bug in loading ICON IVM data (added multi_file_day = True)
   * Allow for array-like OMNI HRO meta data
 * Maintenance
   * Reduce duplication of code in instrument modules
+  * Include flake8 linting of docstrings and style in Github Actions
   * Move OMNI HRO custom functions to an instrument module
 
 ## [0.0.3] - 2022-05-18
@@ -16,6 +26,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   * Expanded cleaning of ICON IVM ion drifts to more variables
   * Fixed a bug in loading ICON IVM data (added multi_file_day = True)
   * Fixed a bug where OMNI meta data float values are loaded as arrays
+  * Fixed metadata type issues when loading ICON instrument data.
 * Maintenance
   * Removed dummy vars after importing instruments and constellations
   * Updated NEP29 compliance in Github Actions

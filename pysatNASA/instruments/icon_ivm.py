@@ -71,6 +71,8 @@ _test_dates = {'a': {'': dt.datetime(2020, 1, 1)},
                'b': {'': dt.datetime(2020, 1, 1)}}  # IVM-B not yet engaged
 _test_download = {'b': {kk: False for kk in tags.keys()}}
 _password_req = {'b': {kk: True for kk in tags.keys()}}
+_test_load_opt = {jj: {'': {'keep_original_names': True}}
+                  for jj in inst_ids.keys()}
 
 # ----------------------------------------------------------------------------
 # Instrument methods
@@ -200,6 +202,33 @@ list_remote_files = functools.partial(cdw.list_remote_files,
                                       supported_tags=download_tags)
 
 
+def filter_metadata(meta_dict):
+    """Filter IVM metadata to remove warnings during loading.
+
+    Parameters
+    ----------
+    meta_dict : dict
+        Dictionary of metadata from file
+
+    Returns
+    -------
+    dict
+        Filtered IVM metadata
+
+    """
+    if 'ICON_L27_UTC_Time' in meta_dict:
+        meta_dict['ICON_L27_UTC_Time']['ValidMax'] = np.inf
+        meta_dict['ICON_L27_UTC_Time']['ValidMin'] = 0
+
+    # Deal with string arrays
+    for var in meta_dict.keys():
+        if 'Var_Notes' in meta_dict[var]:
+            meta_dict[var]['Var_Notes'] = ' '.join(pysat.utils.listify(
+                meta_dict[var]['Var_Notes']))
+
+    return meta_dict
+
+
 def load(fnames, tag=None, inst_id=None, keep_original_names=False):
     """Load ICON IVM data into `pandas.DataFrame` and `pysat.Meta` objects.
 
@@ -247,7 +276,15 @@ def load(fnames, tag=None, inst_id=None, keep_original_names=False):
               'min_val': ('ValidMin', float),
               'max_val': ('ValidMax', float), 'fill_val': ('FillVal', float)}
 
-    data, meta = pysat.utils.load_netcdf4(fnames, epoch_name='Epoch',
-                                          labels=labels)
+    meta_translation = {'FieldNam': 'plot', 'LablAxis': 'axis',
+                        'ScaleTyp': 'scale',
+                        '_FillValue': 'FillVal'}
+
+    data, meta = pysat.utils.io.load_netcdf(fnames, epoch_name='Epoch',
+                                            labels=labels,
+                                            meta_processor=filter_metadata,
+                                            meta_translation=meta_translation,
+                                            drop_meta_labels=['Valid_Max',
+                                                              'Valid_Min'])
 
     return data, meta
