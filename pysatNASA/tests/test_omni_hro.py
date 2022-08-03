@@ -2,11 +2,14 @@
 
 import datetime as dt
 import numpy as np
+import warnings
 
 import pandas as pds
+import pytest
 
 import pysat
 from pysatNASA.instruments.methods import omni
+from pysatNASA.instruments import omni_hro as depr_omni
 
 
 class TestOMNICustom(object):
@@ -157,4 +160,40 @@ class TestOMNICustom(object):
 
         assert test_diff.shape[0] == 12
         assert np.all(test_diff < 1.0e-6)
+        return
+
+
+class TestDeprecation(object):
+    """Unit tests for deprecation warnings in `pysat.instrument.omni_hro`."""
+
+    def setup(self):
+        """Set up the unit test environment for each method."""
+
+        self.test_inst = pysat.Instrument()
+        warnings.simplefilter("always", DeprecationWarning)
+
+        return
+
+    def teardown(self):
+        """Clean up test environment after each method."""
+
+        del self.test_inst
+
+        return
+
+    @pytest.mark.parametrize(
+        "func_name", ["calculate_clock_angle",
+                      "time_shift_to_magnetic_poles",
+                      "calculate_imf_steadiness",
+                      "calculate_dayside_reconnection"])
+    def test_deprecation(self, func_name):
+        """Test that running moved functions will give DeprecationWarning."""
+
+        func = getattr(depr_omni, func_name)
+        with warnings.catch_warnings(record=True) as war:
+            func(self.test_inst)
+
+        warn_msgs = ["{:} has been moved to".format(func_name)]
+
+        pysat.utils.testing.eval_warnings(war, warn_msgs)
         return
