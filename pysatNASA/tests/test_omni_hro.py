@@ -103,7 +103,7 @@ class TestOMNICustom(object):
         # Run the clock angle and steadiness routines
         omni.calculate_clock_angle(self.testInst)
         omni.calculate_imf_steadiness(self.testInst, steady_window=5,
-                                          min_window_frac=0.8)
+                                      min_window_frac=0.8)
 
         # Ensure the BYZ coefficient of variation is calculated correctly
         byz_cv = np.array([np.nan, 0.158620, 0.229267, 0.239404, 0.469371,
@@ -124,7 +124,7 @@ class TestOMNICustom(object):
         # Run the clock angle and steadiness routines
         omni.calculate_clock_angle(self.testInst)
         omni.calculate_imf_steadiness(self.testInst, steady_window=5,
-                                          min_window_frac=0.8)
+                                      min_window_frac=0.8)
 
         # Ensure the BYZ coefficient of variation is calculated correctly
         ca_std = np.array([np.nan, 13.317200, 14.429278, 27.278579,
