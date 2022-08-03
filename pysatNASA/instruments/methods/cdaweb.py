@@ -12,6 +12,7 @@ import datetime as dt
 import os
 import pandas as pds
 import requests
+import warnings
 import xarray as xr
 
 from bs4 import BeautifulSoup
@@ -21,12 +22,19 @@ from pysat.instruments.methods import general
 from pysat import logger
 from pysat.utils import files as futils
 from pysat.utils import io
-from pysatNASA.instruments.methods import CDF
+from pysatNASA.instruments.methods import CDF as libCDF
+
+try:
+    import pysatCDF
+    auto_CDF = pysatCDF.CDF
+except ImportError:
+    auto_CDF = libCDF
 
 
 def load(fnames, tag='', inst_id='', file_cadence=dt.timedelta(days=1),
          flatten_twod=True, pandas_format=True, epoch_name='Epoch',
-         meta_processor=None, meta_translation=None, drop_meta_labels=None):
+         meta_processor=None, meta_translation=None, drop_meta_labels=None,
+         use_cdflib=None):
     """Load NASA CDAWeb CDF files.
 
     Parameters
@@ -70,6 +78,11 @@ def load(fnames, tag='', inst_id='', file_cadence=dt.timedelta(days=1),
     drop_meta_labels : list or NoneType
         List of variable metadata labels that should be dropped. Applied
         to metadata as loaded from the file. (default=None)
+    use_cdflib : bool or NoneType
+        If True, force use of cdflib for loading. If False, prevent use of
+        cdflib for loading. If None, will use pysatCDF if available with
+        cdflib as fallback. Only appropriate for `pandas_format=True`.
+        (default=None)
 
     Returns
     -------
@@ -88,8 +101,12 @@ def load(fnames, tag='', inst_id='', file_cadence=dt.timedelta(days=1),
     if pandas_format:
         data, meta = load_pandas(fnames, tag=tag, inst_id=inst_id,
                                  file_cadence=file_cadence,
-                                 flatten_twod=flatten_twod)
+                                 flatten_twod=flatten_twod,
+                                 use_cdflib=use_cdflib)
     else:
+        if not use_cdflib:
+            estr = 'The `use_cdflib` option is not currently enabled for xarray'
+            warnings.warn(estr)
 
         data, meta = load_xarray(fnames, tag=tag, inst_id=inst_id,
                                  epoch_name=epoch_name,
@@ -99,8 +116,8 @@ def load(fnames, tag='', inst_id='', file_cadence=dt.timedelta(days=1),
     return data, meta
 
 
-def load_pandas(fnames, tag='', inst_id='',
-                file_cadence=dt.timedelta(days=1), flatten_twod=True):
+def load_pandas(fnames, tag='', inst_id='', file_cadence=dt.timedelta(days=1),
+                flatten_twod=True, use_cdflib=None):
     """Load NASA CDAWeb CDF files into a pandas DataFrame.
 
     Parameters
@@ -119,6 +136,10 @@ def load_pandas(fnames, tag='', inst_id='',
     flatted_twod : bool
         Flattens 2D data into different columns of root DataFrame rather
         than produce a Series of DataFrames. (default=True)
+    use_cdflib : bool or NoneType
+        If True, force use of cdflib for loading. If False, prevent use of
+        cdflib for loading. If None, will use pysatCDF if available with
+        cdflib as fallback. (default=None)
 
     Returns
     -------
@@ -150,9 +171,18 @@ def load_pandas(fnames, tag='', inst_id='',
     if len(fnames) <= 0:
         return pds.DataFrame(None), None
     else:
-        # Using cdflib wrapper to load the CDF and format data and
-        # metadata for pysat using some assumptions. Depending upon your needs
-        # the resulting pandas DataFrame may need modification
+        if use_cdflib is not None:
+            if use_cdflib:
+                # Using cdflib wrapper to load the CDF and format data and
+                # metadata for pysat using some assumptions.
+                CDF = libCDF
+            else:
+                # Using pysatCDF to load the CDF and format data and
+                # metadata for pysat using some assumptions.
+                CDF = pysatCDF.CDF
+        else:
+            CDF = auto_CDF
+
         ldata = []
         for lfname in fnames:
             if not general.is_daily_file_cadence(file_cadence):
@@ -161,16 +191,17 @@ def load_pandas(fnames, tag='', inst_id='',
                 date = dt.datetime.strptime(lfname[-10:], '%Y-%m-%d')
 
                 with CDF(fname) as cdf:
-                    # Convert data to pysat format
+                    # Convert data to pysat format. Depending upon
+                    # your needs the resulting pandas DataFrame may need
+                    # modification.
                     try:
-                        temp_data, meta = cdf.to_pysat(
-                            flatten_twod=flatten_twod)
+                        tdata, meta = cdf.to_pysat(flatten_twod=flatten_twod)
 
                         # Select data from multi-day down to daily
-                        temp_data = temp_data.loc[
-                            date:date + dt.timedelta(days=1)
-                            - dt.timedelta(microseconds=1), :]
-                        ldata.append(temp_data)
+                        date2 = date + dt.timedelta(days=1)
+                        date2 -= dt.timedelta(microseconds=1)
+                        tdata = tdata.loc[date:date2, :]
+                        ldata.append(tdata)
                     except ValueError as verr:
                         logger.warn("unable to load {:}: {:}".format(fname,
                                                                      str(verr)))

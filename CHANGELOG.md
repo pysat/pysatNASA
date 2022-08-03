@@ -5,6 +5,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## [0.0.4] - 2022-XX-XX
 * Update instrument tests with new test class
 * Support xarray datasets through cdflib
+* Preferentially loads data into pandas using pysatCDF if installed
+* Adds pysatCDF to optional requirements invoked via '[all]' option at installation
 * New Instruments
   * JPL GPS ROTI
 * Bug Fixes

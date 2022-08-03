@@ -56,6 +56,9 @@ Installation Options
 
         python setup.py develop --user
 
+.. extras-require:: all
+    :setup.cfg:
+
 .. _post-install:
 
 Post Installation
