@@ -202,7 +202,7 @@ def deprecated(func):
 
     """
 
-    def wrapper(*args, **kwargs):
+    def func_wrapper(*args, **kwargs):
         """Wrap functions that use the decorator function."""
 
         warn_message = ' '.join(
@@ -214,7 +214,7 @@ def deprecated(func):
         # Triggered if OMMBV is not installed
         warnings.warn(warn_message, DeprecationWarning, stacklevel=2)
 
-    return wrapper
+    return func_wrapper
 
 
 @deprecated
