@@ -20,7 +20,8 @@ class TestOMNICustom(object):
 
         # Load a test instrument
         self.testInst = pysat.Instrument('pysat', 'testing', tag='',
-                                         num_samples=12, clean_level='clean')
+                                         num_samples=12, clean_level='clean',
+                                         use_header=True)
         self.testInst.load(2009, 1)
 
         # Recast time in minutes rather than seconds
