@@ -16,6 +16,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 * Maintenance
   * Reduce duplication of code in instrument modules
   * Include flake8 linting of docstrings and style in Github Actions
+* Documentation
+  * New logo added
 
 ## [0.0.3] - 2022-05-18
 * Include flake8 linting of docstrings and style in Github Actions
