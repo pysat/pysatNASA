@@ -41,15 +41,12 @@ class TestInstruments(clslib.InstLibTests):
     """
 
     @pytest.mark.second
-    @pytest.mark.parametrize("clean_level", ['none', 'dirty', 'dusty', 'clean'])
     @pytest.mark.parametrize("inst_dict", instruments['cdf'])
-    def test_load_cdflib(self, clean_level, inst_dict):
+    def test_load_cdflib(self, inst_dict):
         """Test that instruments load at each cleaning level.
 
         Parameters
         ----------
-        clean_level : str
-            Cleanliness level for loaded instrument data.
         inst_dict : dict
             Dictionary containing info to instantiate a specific instrument.
 
@@ -59,7 +56,6 @@ class TestInstruments(clslib.InstLibTests):
         files = test_inst.files.files
         if len(files) > 0:
             # Set Clean Level
-            test_inst.clean_level = clean_level
             target = 'Fake Data to be cleared'
             test_inst.data = [target]
             try:
@@ -79,10 +75,6 @@ class TestInstruments(clslib.InstLibTests):
 
             # Make sure fake data is cleared
             assert target not in test_inst.data
-            # If cleaning not used, something should be in the file
-            # Not used for clean levels since cleaning may remove all data
-            if clean_level == "none":
-                assert not test_inst.empty
         else:
             pytest.skip("Download data not available.")
 
