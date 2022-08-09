@@ -22,6 +22,13 @@ from pysat.tests.classes import cls_instrument_library as clslib
 instruments = clslib.InstLibTests.initialize_test_package(
     clslib.InstLibTests, inst_loc=pysatNASA.instruments)
 
+# Create a new list of instruments with the option of forcing cdflib
+instruments['cdf'] = []
+for inst in instruments['download']:
+    fname = inst['inst_module'].supported_tags[inst['inst_id']][inst['tag']]
+    if '.cdf' in fname:
+        instruments['cdf'].append(inst)
+
 
 class TestInstruments(clslib.InstLibTests):
     """Main class for instrument tests.
@@ -35,7 +42,7 @@ class TestInstruments(clslib.InstLibTests):
 
     @pytest.mark.second
     @pytest.mark.parametrize("clean_level", ['none', 'dirty', 'dusty', 'clean'])
-    @pytest.mark.parametrize("inst_dict", instruments['download'])
+    @pytest.mark.parametrize("inst_dict", instruments['cdf'])
     def test_load_cdflib(self, clean_level, inst_dict):
         """Test that instruments load at each cleaning level.
 
@@ -50,7 +57,7 @@ class TestInstruments(clslib.InstLibTests):
 
         test_inst, date = clslib.initialize_test_inst_and_date(inst_dict)
         files = test_inst.files.files
-        if len(files) > 0 and '.cdf' in files[0]:
+        if len(files) > 0:
             # Set Clean Level
             test_inst.clean_level = clean_level
             target = 'Fake Data to be cleared'
@@ -77,7 +84,6 @@ class TestInstruments(clslib.InstLibTests):
             if clean_level == "none":
                 assert not test_inst.empty
         else:
-            pytest.skip(" ".join(("Download data not available or instrument",
-                                  "does not use cdflib.")))
+            pytest.skip("Download data not available.")
 
         return
