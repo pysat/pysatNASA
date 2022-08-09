@@ -263,8 +263,6 @@ def calculate_clock_angle(inst):
 
     """
 
-    print('Aha!')
-
     mm_omni.calculate_clock_angle(inst)
 
     return
