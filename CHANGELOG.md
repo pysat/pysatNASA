@@ -16,6 +16,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 * Maintenance
   * Reduce duplication of code in instrument modules
   * Include flake8 linting of docstrings and style in Github Actions
+  * Update TIMED SEE data to use xarray
 * Documentation
   * New logo added
 
