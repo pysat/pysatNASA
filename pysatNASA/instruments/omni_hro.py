@@ -214,6 +214,8 @@ def deprecated(func):
         # Triggered if OMMBV is not installed
         warnings.warn(warn_message, DeprecationWarning, stacklevel=2)
 
+        return func(*args, **kwargs)
+
     return func_wrapper
 
 
