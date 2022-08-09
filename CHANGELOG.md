@@ -19,6 +19,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   * Include flake8 linting of docstrings and style in Github Actions
   * Move OMNI HRO custom functions to a methods module
   * Deprecate OMNI HRO custom functions in instrument module
+* Documentation
+  * New logo added
 
 ## [0.0.3] - 2022-05-18
 * Include flake8 linting of docstrings and style in Github Actions
