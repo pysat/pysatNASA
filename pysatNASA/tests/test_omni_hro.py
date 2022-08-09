@@ -170,7 +170,9 @@ class TestDeprecation(object):
     def setup(self):
         """Set up the unit test environment for each method."""
 
-        self.test_inst = pysat.Instrument()
+        # Copy main instrument setup
+        self = TestOMNICustom.setup(self)
+
         warnings.simplefilter("always", DeprecationWarning)
 
         return
