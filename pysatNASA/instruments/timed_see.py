@@ -17,15 +17,6 @@ tag
     None
 inst_id
     None supported
-flatten_twod
-    If True, then two dimensional data is flattened across
-    columns. Name mangling is used to group data, first column
-    is 'name', last column is 'name_end'. In between numbers are
-    appended 'name_1', 'name_2', etc. All data for a given 2D array
-    may be accessed via, data.loc[:, 'item':'item_end']
-    If False, then 2D data is stored as a series of DataFrames,
-    indexed by Epoch. data.loc[0, 'item']
-    (default=True)
 
 Note
 ----
@@ -54,6 +45,7 @@ platform = 'timed'
 name = 'see'
 tags = {'': ''}
 inst_ids = {'': [tag for tag in tags.keys()]}
+pandas_format = False
 
 # ----------------------------------------------------------------------------
 # Instrument test attributes
@@ -104,7 +96,8 @@ list_files = functools.partial(mm_gen.list_files,
                                file_cadence=pds.DateOffset(months=1))
 
 # Set the load routine
-load = functools.partial(cdw.load, file_cadence=pds.DateOffset(months=1))
+load = functools.partial(cdw.load, pandas_format=pandas_format,
+                         file_cadence=pds.DateOffset(months=1))
 
 # Set the download routine
 basic_tag = {'remote_dir': ''.join(('/pub/data/timed/see/data/level3a_cdf',
