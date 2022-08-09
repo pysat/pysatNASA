@@ -206,6 +206,8 @@ class TestDeprecation(object):
         func = getattr(depr_omni, func_name)
         with warnings.catch_warnings(record=True) as war:
             try:
+                # Using an empty instrument produces a KeyError after the
+                # warning is generated.
                 func(self.test_inst)
             except KeyError as kerr:
                 if kvar not in str(kerr):
