@@ -61,25 +61,6 @@ class TestOMNICustom(object):
                         287.780562, 58.539121],
                        index=self.test_inst.data.index)
 
-        # TODO(#34): Replace dummy variables with reasonable values for
-        # testing the output of time_shift_to_magnetic_poles. Dummies currently
-        # in place to check that the function is passed through for deprecation.
-        self.test_inst['Vx'] = pds.Series(np.ones(12),
-                                          index=self.test_inst.data.index)
-        self.test_inst['Vy'] = pds.Series(np.ones(12),
-                                          index=self.test_inst.data.index)
-        self.test_inst['Vz'] = pds.Series(np.ones(12),
-                                          index=self.test_inst.data.index)
-        self.test_inst['BSN_x'] = pds.Series(np.ones(12),
-                                             index=self.test_inst.data.index)
-        self.test_inst['BSN_y'] = pds.Series(np.ones(12),
-                                             index=self.test_inst.data.index)
-        self.test_inst['BSN_z'] = pds.Series(np.ones(12),
-                                             index=self.test_inst.data.index)
-
-        # Save reference index
-        self.ref_index = self.test_inst.data.index[0]
-
         return
 
     def teardown(self):
@@ -190,8 +171,8 @@ class TestDeprecation(object):
     def setup(self):
         """Set up the unit test environment for each method."""
 
-        # Copy main instrument setup
-        self = TestOMNICustom.setup(self)
+        # Use an empty instrument to test redirect
+        self.test_inst = pysat.Instrument()
 
         warnings.simplefilter("always", DeprecationWarning)
 
@@ -205,39 +186,34 @@ class TestDeprecation(object):
         return
 
     @pytest.mark.parametrize(
-        "func_name, outvar", [("calculate_clock_angle", "clock_angle"),
-                              ("time_shift_to_magnetic_poles", "Vx"),
-                              ("calculate_imf_steadiness", "IMF_Steady"),
-                              ("calculate_dayside_reconnection", "recon_day")])
-    def test_deprecation(self, func_name, outvar):
+        "func_name, kvar", [("calculate_clock_angle", "BY_GSM"),
+                            ("time_shift_to_magnetic_poles", "Vx"),
+                            ("calculate_imf_steadiness", "BYZ_GSM"),
+                            ("calculate_dayside_reconnection", "clock_angle")])
+    def test_deprecation(self, func_name, kvar):
         """Test that running moved functions will give DeprecationWarning.
 
         Parameters
         ----------
         func_name : str
             Name of function that is deprecated.
-        outvar : str
-            Name of new variable that should be in instrument if the deprecated
-            function is successfully redirected.
+        kvar : str
+            Name of key error that should be raised if the correct function is
+            redirected for an empty instrument.
 
         """
 
         func = getattr(depr_omni, func_name)
-        if 'calculate_clock_angle' not in func_name:
-            # Run the clock angle routine
-            omni.calculate_clock_angle(self.test_inst)
         with warnings.catch_warnings(record=True) as war:
-            func(self.test_inst)
+            try:
+                func(self.test_inst)
+            except KeyError as kerr:
+                if kvar not in str(kerr):
+                    # If an unexpected error occurs, raise it
+                    raise kerr
 
         warn_msgs = ["{:} has been moved to".format(func_name)]
 
         pysat.utils.testing.eval_warnings(war, warn_msgs)
-
-        # Check that function was successfully run.
-        assert outvar in self.test_inst.data.keys()
-
-        if "time_shift_to_magnetic_poles" == func_name:
-            # Check that index has been shifted
-            assert self.test_inst.data.index[0] != self.ref_index
 
         return
