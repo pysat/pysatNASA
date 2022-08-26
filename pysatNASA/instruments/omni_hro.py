@@ -45,8 +45,8 @@ import pandas as pds
 import warnings
 
 from pysat.instruments.methods import general as mm_gen
-from pysat.utils import time as pysat_time
 from pysat import logger
+from pysat.utils import time as pysat_time
 
 from pysatNASA.instruments.methods import cdaweb as cdw
 from pysatNASA.instruments.methods import omni as mm_omni
