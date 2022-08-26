@@ -6,7 +6,7 @@ onboard the Communication and Navigation Outage Forecasting
 System (C/NOFS) satellite. Downloads data from the
 NASA Coordinated Data Analysis Web (CDAWeb).
 
-Description from CDAWeb:
+Description from CDAWeb (with updated link):
 
 The DC vector magnetometer on the CNOFS spacecraft is a three axis, fluxgate
 sensor with active thermal control situated on a 0.6m boom.  This magnetometer
@@ -15,7 +15,7 @@ sec with a range of .. 45,000 nT.  Its primary objective on the CNOFS
 spacecraft is to enable an accurate V x B measurement along the spacecraft
 trajectory.  In order to provide an in-flight calibration of the magnetic field
 data, we compare the most recent POMME model (the POtsdam Magnetic Model of the
-Earth, http://geomag.org/models/pomme5.html) with the actual magnetometer
+Earth, http://geomag.us/models/pomme5.html) with the actual magnetometer
 measurements to help determine a set of calibration parameters for the gains,
 offsets, and non-orthogonality matrix of the sensor axes.  The calibrated
 magnetic field measurements are provided in the data file here. The VEFI
