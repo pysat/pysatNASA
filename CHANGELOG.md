@@ -14,6 +14,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   * Fixed a bug in user feedback for `methods.cdaweb.download`
   * Fixed a bug in loading ICON IVM data (added multi_file_day = True)
   * Allow for array-like OMNI HRO meta data
+  * Fixed date handling for OMNI HRO downloads
 * Maintenance
   * Reduce duplication of code in instrument modules
   * Include flake8 linting of docstrings and style in Github Actions

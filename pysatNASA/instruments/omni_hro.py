@@ -45,6 +45,7 @@ import pandas as pds
 import warnings
 
 from pysat.instruments.methods import general as mm_gen
+from pysat.utils import time as pysat_time
 from pysat import logger
 
 from pysatNASA.instruments.methods import cdaweb as cdw
@@ -138,21 +139,64 @@ list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags,
                                file_cadence=pds.DateOffset(months=1))
 
-# Set the download routine
+# Set the list_remote_files routine
 remote_dir = '/pub/data/omni/omni_cdaweb/hro_{tag:s}/{{year:4d}}/'
 download_tags = {inst_id: {tag: {'remote_dir': remote_dir.format(tag=tag),
                                  'fname': supported_tags[inst_id][tag]}
-                           for tag in inst_ids[inst_id]}
+                           for tag in tags.keys()}
                  for inst_id in inst_ids.keys()}
-download = functools.partial(cdw.download, supported_tags=download_tags)
-
-# Set the list_remote_files routine
 list_remote_files = functools.partial(cdw.list_remote_files,
                                       supported_tags=download_tags)
 
 
+# Set the download routine
+def download(date_array, tag, inst_id, data_path, update_files=False):
+    """Download OMNI HRO data from CDAWeb.
+
+    Parameters
+    ----------
+    date_array : array-like
+        Sequence of dates for which files will be downloaded.
+    tag : str
+        Denotes type of file to load.
+    inst_id : str
+        Specifies the satellite ID for a constellation.
+    data_path : str
+        Path to data directory.
+    update_files : bool
+        Re-download data for files that already exist if True (default=False)
+
+    Raises
+    ------
+    IOError
+        If a problem is encountered connecting to the gateway or retrieving
+        data from the repository.
+
+    Warnings
+    --------
+    Only able to download current forecast data, not archived forecasts.
+
+    Note
+    ----
+    Called by pysat. Not intended for direct use by user.
+
+    """
+
+    # Set the download tags
+
+    # Adjust the date_array for monthly downloads
+    if date_array.freq != 'MS':
+        date_array = pysat_time.create_date_range(
+            dt.datetime(date_array[0].year, date_array[0].month, 1),
+            date_array[-1], freq='MS')
+
+    cdw.download(date_array, tag=tag, inst_id=inst_id,
+                 supported_tags=download_tags, data_path=data_path)
+    return
+
+
 # Set the load routine
-def load(fnames, tag=None, inst_id=None, file_cadence=pds.DateOffset(months=1),
+def load(fnames, tag='', inst_id='', file_cadence=pds.DateOffset(months=1),
          flatten_twod=True, use_cdflib=None):
     """Load data and fix meta data.
 
@@ -160,10 +204,10 @@ def load(fnames, tag=None, inst_id=None, file_cadence=pds.DateOffset(months=1),
     ----------
     fnames : pandas.Series
         Series of filenames
-    tag : str or NoneType
-        tag or None (default=None)
-    inst_id : str or NoneType
-        satellite id or None (default=None)
+    tag : str
+        tag or None (default='')
+    inst_id : str
+        satellite id or None (default='')
     file_cadence : dt.timedelta or pds.DateOffset
         pysat assumes a daily file cadence, but some instrument data files
         contain longer periods of time.  This parameter allows the specification
