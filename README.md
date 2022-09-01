@@ -25,12 +25,12 @@ Python 3.8+.
 | Common modules   | Community modules |
 | ---------------- | ----------------- |
 | beautifulsoup4   | cdflib            |
-| lxml             | pysat>=3.0.2      |
+| lxml             | pysat>=3.0.4      |
 | netCDF4          |                   |
 | numpy            |                   |
 | pandas           |                   |
 | requests         |                   |
-| xarray<2022.06.0 |                   |
+| xarray           |                   |
 
 ## GitHub Installation
 
