@@ -36,31 +36,20 @@ Warnings
   these level-2 products are expected to be ok.
 - Module not written by OMNI team.
 
-
-Custom Functions
-----------------
-time_shift_to_magnetic_poles
-    Shift time from bowshock to intersection with one of the magnetic poles
-calculate_clock_angle
-    Calculate the clock angle and IMF mag in the YZ plane
-calculate_imf_steadiness
-    Calculate the IMF steadiness using clock angle and magnitude in the YZ plane
-calculate_dayside_reconnection
-    Calculate the dayside reconnection rate
-
 """
 
 import datetime as dt
 import functools
 import numpy as np
 import pandas as pds
-import scipy.stats as stats
 import warnings
 
 from pysat.instruments.methods import general as mm_gen
 from pysat import logger
+from pysat.utils import time as pysat_time
 
 from pysatNASA.instruments.methods import cdaweb as cdw
+from pysatNASA.instruments.methods import omni as mm_omni
 
 # ----------------------------------------------------------------------------
 # Instrument attributes
@@ -115,7 +104,11 @@ def clean(self):
     for key in self.data.columns:
         if key != 'Epoch':
             fill = self.meta[key, self.meta.labels.fill_val]
-            idx, = np.where(self[key] == fill)
+            if np.asarray(fill).shape == ():
+                idx, = np.where(self[key] == fill)
+            else:
+                idx, = np.where(self[key] == fill[0])
+
             # Set the fill values to NaN
             self[idx, key] = np.nan
 
@@ -146,21 +139,64 @@ list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags,
                                file_cadence=pds.DateOffset(months=1))
 
-# Set the download routine
+# Set the list_remote_files routine
 remote_dir = '/pub/data/omni/omni_cdaweb/hro_{tag:s}/{{year:4d}}/'
 download_tags = {inst_id: {tag: {'remote_dir': remote_dir.format(tag=tag),
                                  'fname': supported_tags[inst_id][tag]}
-                           for tag in inst_ids[inst_id]}
+                           for tag in tags.keys()}
                  for inst_id in inst_ids.keys()}
-download = functools.partial(cdw.download, supported_tags=download_tags)
-
-# Set the list_remote_files routine
 list_remote_files = functools.partial(cdw.list_remote_files,
                                       supported_tags=download_tags)
 
 
+# Set the download routine
+def download(date_array, tag, inst_id, data_path, update_files=False):
+    """Download OMNI HRO data from CDAWeb.
+
+    Parameters
+    ----------
+    date_array : array-like
+        Sequence of dates for which files will be downloaded.
+    tag : str
+        Denotes type of file to load.
+    inst_id : str
+        Specifies the satellite ID for a constellation.
+    data_path : str
+        Path to data directory.
+    update_files : bool
+        Re-download data for files that already exist if True (default=False)
+
+    Raises
+    ------
+    IOError
+        If a problem is encountered connecting to the gateway or retrieving
+        data from the repository.
+
+    Warnings
+    --------
+    Only able to download current forecast data, not archived forecasts.
+
+    Note
+    ----
+    Called by pysat. Not intended for direct use by user.
+
+    """
+
+    # Set the download tags
+
+    # Adjust the date_array for monthly downloads
+    if date_array.freq != 'MS':
+        date_array = pysat_time.create_date_range(
+            dt.datetime(date_array[0].year, date_array[0].month, 1),
+            date_array[-1], freq='MS')
+
+    cdw.download(date_array, tag=tag, inst_id=inst_id,
+                 supported_tags=download_tags, data_path=data_path)
+    return
+
+
 # Set the load routine
-def load(fnames, tag=None, inst_id=None, file_cadence=pds.DateOffset(months=1),
+def load(fnames, tag='', inst_id='', file_cadence=pds.DateOffset(months=1),
          flatten_twod=True, use_cdflib=None):
     """Load data and fix meta data.
 
@@ -168,10 +204,10 @@ def load(fnames, tag=None, inst_id=None, file_cadence=pds.DateOffset(months=1),
     ----------
     fnames : pandas.Series
         Series of filenames
-    tag : str or NoneType
-        tag or None (default=None)
-    inst_id : str or NoneType
-        satellite id or None (default=None)
+    tag : str
+        tag or None (default='')
+    inst_id : str
+        satellite id or None (default='')
     file_cadence : dt.timedelta or pds.DateOffset
         pysat assumes a daily file cadence, but some instrument data files
         contain longer periods of time.  This parameter allows the specification
@@ -201,12 +237,39 @@ def load(fnames, tag=None, inst_id=None, file_cadence=pds.DateOffset(months=1),
     return data, meta
 
 
-# ----------------------------------------------------------------------------
-# Local functions
+# Local Functions (deprecated)
+
+def deprecated(func):
+    """Warn users that function has moved locations.
+
+    Decorator function for deprecation warnings.
+
+    """
+
+    def func_wrapper(*args, **kwargs):
+        """Wrap functions that use the decorator function."""
+
+        warn_message = ' '.join(
+            ['pysatNASA.instruments.omni_hro.{:}'.format(func.__name__),
+             'has been moved to',
+             'pysatNASA.instruments.methods.omni.{:}.'.format(func.__name__),
+             'Please update your path to suppress this warning.',
+             'This redirect will be removed in v0.1.0.'])
+        # Triggered if OMMBV is not installed
+        warnings.warn(warn_message, DeprecationWarning, stacklevel=2)
+
+        return func(*args, **kwargs)
+
+    return func_wrapper
 
 
+@deprecated
 def time_shift_to_magnetic_poles(inst):
     """Shift OMNI times to intersection with the magnetic pole.
+
+    .. deprecated:: 0.0.4
+    This function has been moved to `pysatNASA.instruments.methods.omni`.  This
+    redirect will be removed in v0.1.0+.
 
     Parameters
     ----------
@@ -226,36 +289,18 @@ def time_shift_to_magnetic_poles(inst):
 
     """
 
-    # Need to fill in Vx to get an estimate of what is going on.
-    inst['Vx'] = inst['Vx'].interpolate('nearest')
-    inst['Vx'] = inst['Vx'].fillna(method='backfill')
-    inst['Vx'] = inst['Vx'].fillna(method='pad')
-
-    inst['BSN_x'] = inst['BSN_x'].interpolate('nearest')
-    inst['BSN_x'] = inst['BSN_x'].fillna(method='backfill')
-    inst['BSN_x'] = inst['BSN_x'].fillna(method='pad')
-
-    # Make sure there are no gaps larger than a minute.
-    inst.data = inst.data.resample('1T').interpolate('time')
-
-    time_x = inst['BSN_x'] * 6371.2 / -inst['Vx']
-    idx, = np.where(np.isnan(time_x))
-    if len(idx) > 0:
-        logger.info(time_x[idx])
-        logger.info(time_x)
-    time_x_offset = [pds.DateOffset(seconds=time)
-                     for time in time_x.astype(int)]
-    new_index = []
-    for i, time in enumerate(time_x_offset):
-        new_index.append(inst.data.index[i] + time)
-    inst.data.index = new_index
-    inst.data = inst.data.sort_index()
+    mm_omni.time_shift_to_magnetic_poles(inst)
 
     return
 
 
+@deprecated
 def calculate_clock_angle(inst):
     """Calculate IMF clock angle and magnitude of IMF in GSM Y-Z plane.
+
+    .. deprecated:: 0.0.4
+    This function has been moved to `pysatNASA.instruments.methods.omni`.  This
+    redirect will be removed in v0.1.0+.
 
     Parameters
     -----------
@@ -264,23 +309,20 @@ def calculate_clock_angle(inst):
 
     """
 
-    # Calculate clock angle in degrees
-    clock_angle = np.degrees(np.arctan2(inst['BY_GSM'], inst['BZ_GSM']))
-    clock_angle[clock_angle < 0.0] += 360.0
-    inst['clock_angle'] = pds.Series(clock_angle, index=inst.data.index)
-
-    # Calculate magnitude of IMF in Y-Z plane
-    inst['BYZ_GSM'] = pds.Series(np.sqrt(inst['BY_GSM']**2
-                                         + inst['BZ_GSM']**2),
-                                 index=inst.data.index)
+    mm_omni.calculate_clock_angle(inst)
 
     return
 
 
+@deprecated
 def calculate_imf_steadiness(inst, steady_window=15, min_window_frac=0.75,
                              max_clock_angle_std=(90.0 / np.pi),
                              max_bmag_cv=0.5):
     """Calculate IMF steadiness and add parameters to instrument data.
+
+    .. deprecated:: 0.0.4
+    This function has been moved to `pysatNASA.instruments.methods.omni`.  This
+    redirect will be removed in v0.1.0+.
 
     Parameters
     ----------
@@ -304,73 +346,20 @@ def calculate_imf_steadiness(inst, steady_window=15, min_window_frac=0.75,
 
     """
 
-    # We are not going to interpolate through missing values
-    rates = {'': 1, '1min': 1, '5min': 5}
-    sample_rate = int(rates[inst.tag])
-    max_wnum = np.floor(steady_window / sample_rate)
-    if max_wnum != steady_window / sample_rate:
-        steady_window = max_wnum * sample_rate
-        logger.warning("sample rate is not a factor of the statistical window")
-        logger.warning("new statistical window is {:.1f}".format(steady_window))
-
-    min_wnum = int(np.ceil(max_wnum * min_window_frac))
-
-    # Calculate the running coefficient of variation of the BYZ magnitude
-    byz_mean = inst['BYZ_GSM'].rolling(min_periods=min_wnum, center=True,
-                                       window=steady_window).mean()
-    byz_std = inst['BYZ_GSM'].rolling(min_periods=min_wnum, center=True,
-                                      window=steady_window).std()
-    inst['BYZ_CV'] = pds.Series(byz_std / byz_mean, index=inst.data.index)
-
-    # Calculate the running circular standard deviation of the clock angle
-    circ_kwargs = {'high': 360.0, 'low': 0.0, 'nan_policy': 'omit'}
-    try:
-        ca_std = \
-            inst['clock_angle'].rolling(min_periods=min_wnum,
-                                        window=steady_window,
-                                        center=True).apply(stats.circstd,
-                                                           kwargs=circ_kwargs,
-                                                           raw=True)
-    except TypeError:
-        warnings.warn(' '.join(['To automatically remove NaNs from the',
-                                'calculation, please upgrade to scipy 1.4 or',
-                                'newer']))
-        circ_kwargs.pop('nan_policy')
-        ca_std = \
-            inst['clock_angle'].rolling(min_periods=min_wnum,
-                                        window=steady_window,
-                                        center=True).apply(stats.circstd,
-                                                           kwargs=circ_kwargs,
-                                                           raw=True)
-    inst['clock_angle_std'] = pds.Series(ca_std, index=inst.data.index)
-
-    # Determine how long the clock angle and IMF magnitude are steady
-    imf_steady = np.zeros(shape=inst.data.index.shape)
-
-    steady = False
-    for i, cv in enumerate(inst.data['BYZ_CV']):
-        if steady:
-            del_min = int((inst.data.index[i]
-                           - inst.data.index[i - 1]).total_seconds() / 60.0)
-            if np.isnan(cv) or np.isnan(ca_std[i]) or del_min > sample_rate:
-                # Reset the steadiness flag if fill values are encountered, or
-                # if an entry is missing
-                steady = False
-
-        if cv <= max_bmag_cv and ca_std[i] <= max_clock_angle_std:
-            # Steadiness conditions have been met
-            if steady:
-                imf_steady[i] = imf_steady[i - 1]
-
-            imf_steady[i] += sample_rate
-            steady = True
-
-    inst['IMF_Steady'] = pds.Series(imf_steady, index=inst.data.index)
+    mm_omni.calculate_imf_steadiness(inst, steady_window=steady_window,
+                                     min_window_frac=min_window_frac,
+                                     max_clock_angle_std=max_clock_angle_std,
+                                     max_bmag_cv=max_bmag_cv)
     return
 
 
+@deprecated
 def calculate_dayside_reconnection(inst):
     """Calculate the dayside reconnection rate (Milan et al. 2014).
+
+    .. deprecated:: 0.0.4
+    This function has been moved to `pysatNASA.instruments.methods.omni`.  This
+    redirect will be removed in v0.1.0+.
 
     Parameters
     ----------
@@ -383,12 +372,5 @@ def calculate_dayside_reconnection(inst):
 
     """
 
-    rearth = 6371008.8
-    sin_htheta = np.power(np.sin(np.radians(0.5 * inst['clock_angle'])), 4.5)
-    byz = inst['BYZ_GSM'] * 1.0e-9
-    vx = inst['flow_speed'] * 1000.0
-
-    recon_day = 3.8 * rearth * vx * byz * sin_htheta * np.power((vx / 4.0e5),
-                                                                1.0 / 3.0)
-    inst['recon_day'] = pds.Series(recon_day, index=inst.data.index)
+    mm_omni.calculate_dayside_reconnection(inst)
     return
