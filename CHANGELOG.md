@@ -9,6 +9,10 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 * Adds pysatCDF to optional requirements invoked via '[all]' option at installation
 * New Instruments
   * JPL GPS ROTI
+  * ACE EPAM
+  * ACE MAG
+  * ACE SIS
+  * ACE SWEPAM
 * Bug Fixes
   * Fixed a bug in metadata when loading GOLD Nmax data.
   * Fixed a bug in user feedback for `methods.cdaweb.download`
