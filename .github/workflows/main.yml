@@ -31,7 +31,6 @@ jobs:
       if: ${{ matrix.numpy_ver != 'latest'}}
       run: |
         pip install --no-binary :numpy: numpy==${{ matrix.numpy_ver }}
-        pip install "xarray<2022.06"
 
     - name: Install standard dependencies
       run: |
