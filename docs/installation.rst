@@ -40,24 +40,23 @@ Installation Options
 
 
 2. Install pysatNASA:
-   Change directories into the repository folder and run the setup.py file.
+   Change directories into the repository folder and build the project.
    There are a few ways you can do this:
 
    A. Install on the system (root privileges required)::
 
 
-        sudo python setup.py install
+        sudo pip install .
+
    B. Install at the user level::
 
 
-        python setup.py install --user
+        pip install .
+
    C. Install with the intent to develop locally::
 
 
-        python setup.py develop --user
-
-.. extras-require:: all
-    :setup.cfg:
+        pip install -e .
 
 .. _post-install:
 

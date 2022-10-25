@@ -40,7 +40,7 @@ dependencies = [
   "cdflib >= 0.4.4",
   "numpy",
   "pandas",
-  "pysat >= 3.0.2",
+  "pysat >= 3.0.4",
   "xarray"
 ]
 
@@ -53,6 +53,7 @@ test = [
   "pytest-ordering"
 ]
 doc = [
+  "extras_require",
   "flake8",
   "flake8-docstrings",
   "hacking>=1.0",

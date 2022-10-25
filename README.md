@@ -1,6 +1,6 @@
 <div align="left">
         <img height="0" width="0px">
-        <img width="20%" src="https://raw.githubusercontent.com/pysat/pysatNASA/main/docs/figures/logo.png" alt="pysatNASA" title="pysatNASA" </img>
+        <img width="20%" src="https://raw.githubusercontent.com/pysat/pysatNASA/main/docs/figures/pysatnasa_logo.png" alt="pysatNASA" title="pysatNASA" </img>
 </div>
 
 # pysatNASA: pysat support for NASA Space Science instruments
@@ -40,17 +40,17 @@ Currently, the main way to get pysatNASA is through github.
 git clone https://github.com/pysat/pysatNASA.git
 ```
 
-Change directories into the repository folder and run the setup.py file.  For
+Change directories into the repository folder and build the project.  For
 a local install use the "--user" flag after "install".
 
 ```
 cd pysatNASA/
-python setup.py install
+pip install .
 ```
 
 Note: pre-1.0.0 version
 -----------------------
-pysatNASA is currently in an initial development phase and requires pysat 3.0.0.  
+pysatNASA is currently in an initial development phase and requires pysat 3.0.4.  
 
 # Using with pysat
 
