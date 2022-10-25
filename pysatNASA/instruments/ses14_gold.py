@@ -68,7 +68,7 @@ def init(self):
     Runs once upon instantiation.
 
     Parameters
-    -----------
+    ----------
     self : pysat.Instrument
         Instrument class object
 
