@@ -58,6 +58,15 @@ Installation Options
 
         pip install -e .
 
+.. extras-require:: pysatcdf
+    :pyproject:
+
+.. extras-require:: test
+    :pyproject:
+
+.. extras-require:: doc
+    :pyproject:
+
 .. _post-install:
 
 Post Installation
