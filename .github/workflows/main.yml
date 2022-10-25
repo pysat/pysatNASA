@@ -38,6 +38,9 @@ jobs:
       run: |
         pip install .[test]
 
+    - name: Install pysatCDF
+      run: pip install pysatCDF --no-binary=pysatCDF
+
     - name: Set up pysat
       run: |
         mkdir pysatData
