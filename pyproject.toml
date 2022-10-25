@@ -47,7 +47,7 @@ dependencies = [
 [project.optional-dependencies]
 pysatcdf = ["pysatCDF"]
 test = [
-  "coveralls<3.3",
+  "coveralls < 3.3",
   "pytest",
   "pytest-cov",
   "pytest-ordering"
@@ -56,7 +56,7 @@ doc = [
   "extras_require",
   "flake8",
   "flake8-docstrings",
-  "hacking>=1.0",
+  "hacking >= 1.0",
   "ipython",
   "m2r2",
   "numpydoc",
