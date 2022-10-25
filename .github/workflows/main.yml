@@ -31,12 +31,12 @@ jobs:
       if: ${{ matrix.numpy_ver != 'latest'}}
       run: |
         pip install --no-binary :numpy: numpy==${{ matrix.numpy_ver }}
-        pip install .[doc,test]
+        pip install .[test]
 
     - name: Install standard dependencies
       if: ${{ matrix.numpy_ver == 'latest'}}
       run: |
-        pip install .[doc,test]
+        pip install .[test]
 
     - name: Set up pysat
       run: |
