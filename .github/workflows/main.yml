@@ -31,13 +31,12 @@ jobs:
       if: ${{ matrix.numpy_ver != 'latest'}}
       run: |
         pip install --no-binary :numpy: numpy==${{ matrix.numpy_ver }}
-        pip install "xarray<2022.06"
+        pip install .[test,pysatcdf]
 
     - name: Install standard dependencies
+      if: ${{ matrix.numpy_ver == 'latest'}}
       run: |
-        pip install -r requirements.txt
-        pip install pysatCDF --no-binary=pysatCDF
-        pip install -r test_requirements.txt
+        pip install .[test,pysatcdf]
 
     - name: Set up pysat
       run: |
@@ -51,8 +50,7 @@ jobs:
       run: flake8 . --count --exit-zero --max-complexity=10 --statistics
 
     - name: Test with pytest
-      run: |
-        pytest -vs --cov=pysatNASA/
+      run: pytest
 
     - name: Publish results to coveralls
       env:
