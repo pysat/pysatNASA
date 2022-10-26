@@ -15,11 +15,13 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   * Fixed a bug in loading ICON IVM data (added multi_file_day = True)
   * Allow for array-like OMNI HRO meta data
   * Fixed date handling for OMNI HRO downloads
+  * Updated filenames for TIMED SABER
 * Maintenance
   * Reduce duplication of code in instrument modules
   * Include flake8 linting of docstrings and style in Github Actions
   * Move OMNI HRO custom functions to a methods module
   * Deprecate OMNI HRO custom functions in instrument module
+  * Update GitHub actions to the latest versions
   * Use pyproject.toml to manage setup
 * Documentation
   * New logo added
