@@ -41,6 +41,8 @@ jobs:
         pip install .[test]
 
     - name: Install pysatCDF
+      # Optional package, continue with tests if install fails
+      continue-on-error: true
       # Need custom install until pysatCDF is updated
       run: pip install pysatCDF --no-binary=pysatCDF
 
