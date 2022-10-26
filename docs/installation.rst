@@ -51,7 +51,7 @@ Installation Options
    B. Install at the user level::
 
 
-        pip install .
+        pip install --user .
 
    C. Install with the intent to develop locally::
 
