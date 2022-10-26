@@ -31,6 +31,8 @@ jobs:
       if: ${{ matrix.numpy_ver != 'latest'}}
       run: |
         pip install --no-binary :numpy: numpy==${{ matrix.numpy_ver }}
+        # Force install version compatible with NEP29
+        pip install "pandas<1.5"
         pip install --upgrade-strategy only-if-needed .[test]
 
     - name: Install standard dependencies
@@ -58,4 +60,4 @@ jobs:
     - name: Publish results to coveralls
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: coveralls --rcfile=setup.cfg --service=github
+      run: coveralls --rcfile=pyproject.toml --service=github
