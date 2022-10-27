@@ -72,7 +72,7 @@ release = '{:s}-alpha'.format(version)  # Include alpha/beta/rc tags.
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = None
+language = 'en'
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -96,7 +96,7 @@ html_theme = 'sphinx_rtd_theme'
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
-html_logo = os.path.join(os.path.abspath('.'), 'figures', 'pysatnasa_logo.jpg')
+html_logo = os.path.join(os.path.abspath('.'), 'figures', 'logo.png')
 html_theme_options = {'logo_only': True}
 
 # Add any paths that contain custom static files (such as style sheets) here,
