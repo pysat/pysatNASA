@@ -2,7 +2,7 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
-## [0.0.4] - 2022-XX-XX
+## [0.0.4] - 2022-11-11
 * Update instrument tests with new test class
 * Support xarray datasets through cdflib
 * Preferentially loads data into pandas using pysatCDF if installed
