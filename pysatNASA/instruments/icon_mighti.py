@@ -264,7 +264,7 @@ def filter_metadata(meta_dict):
 
     Returns
     -------
-    dict
+    meta_dict : dict
         Filtered FUV metadata
 
     """
