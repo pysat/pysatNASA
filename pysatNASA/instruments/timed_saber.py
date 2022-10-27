@@ -38,7 +38,7 @@ Users of SABER data are asked to respect the following guidelines
 
 Warnings
 --------
-- Note on Temperature Errors: http://saber.gats-inc.com/temp_errors.php
+- Note on Temperature Errors: https://saber.gats-inc.com/temp_errors.php
 - No cleaning routine
 
 """
