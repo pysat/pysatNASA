@@ -87,4 +87,5 @@ download = functools.partial(cdw.download, supported_tags=download_tags,
 
 # Set the list_remote_files routine
 list_remote_files = functools.partial(cdw.list_remote_files,
-                                      supported_tags=download_tags)
+                                      supported_tags=download_tags,
+                                      remote_url='http://rbsp.space.umn.edu')
