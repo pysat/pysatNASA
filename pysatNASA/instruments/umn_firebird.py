@@ -70,7 +70,7 @@ clean = mm_nasa.clean_warn
 fname = ''.join(('{id:}_context_{{year:04d}}{{month:02d}}{{day:02d}}'
                  '_v{{version:02d}}.cdf'))
 supported_tags = {id: {'': fname.format(id=id.upper())}
-                       for id in inst_ids.keys()}
+                  for id in inst_ids.keys()}
 list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags)
 
@@ -78,9 +78,10 @@ list_files = functools.partial(mm_gen.list_files,
 load = cdw.load
 
 # Set the download routine
-download_tags = {id: {
-    '': {'remote_dir': '/firebird/{id:}/{{year:4d}}/'.format(id=id.upper()),
-    'fname': fname.format(id=id.upper())}} for id in inst_ids.keys()}
+download_tags = {id: {'': {'remote_dir':
+                           '/firebird/{id:}/{{year:4d}}/'.format(id=id.upper()),
+                           'fname': fname.format(id=id.upper())}}
+                 for id in inst_ids.keys()}
 download = functools.partial(cdw.download, supported_tags=download_tags,
                              remote_url='http://rbsp.space.umn.edu')
 
