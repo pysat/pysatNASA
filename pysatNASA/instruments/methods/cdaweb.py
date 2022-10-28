@@ -488,7 +488,7 @@ def download(date_array, tag='', inst_id='', supported_tags=None,
     return
 
 
-def list_remote_files(tag='', inst_id='', start=None, stop=None,
+def list_remote_files(tag=None, inst_id=None, start=None, stop=None,
                       remote_url='https://cdaweb.gsfc.nasa.gov',
                       supported_tags=None, two_digit_year_break=None,
                       delimiter=None):

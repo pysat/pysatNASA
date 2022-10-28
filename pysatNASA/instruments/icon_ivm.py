@@ -229,7 +229,7 @@ def filter_metadata(meta_dict):
     return meta_dict
 
 
-def load(fnames, tag='', inst_id='', keep_original_names=False):
+def load(fnames, tag=None, inst_id=None, keep_original_names=False):
     """Load ICON IVM data into `pandas.DataFrame` and `pysat.Meta` objects.
 
     This routine is called as needed by pysat. It is not intended
