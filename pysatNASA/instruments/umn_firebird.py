@@ -69,8 +69,10 @@ clean = mm_nasa.clean_warn
 # Use the default CDAWeb and pysat methods
 
 # Set the list_files routine
-fname = '{id:}_context_{{year:04d}}{{month:02d}}{{day:02d}}_v{{version:02d}}.cdf'
-supported_tags = {id: {'': fname.format(id=id.upper())} for id in inst_ids.keys()}
+fname = ''.join(('{id:}_context_{{year:04d}}{{month:02d}}{{day:02d}}'
+                 '_v{{version:02d}}.cdf'))
+supported_tags = {
+    id: {'': fname.format(id=id.upper())} for id in inst_ids.keys()}
 list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags)
 
