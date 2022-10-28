@@ -1,0 +1,52 @@
+# This workflow will install Python dependencies, run tests and lint with a variety of Python versions
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
+name: Test with latest pysat RC
+
+on: [push]
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python-version: ["3.10"]
+
+    name: Python ${{ matrix.python-version }} on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install pysat RC
+      run: pip install --no-deps -i https://test.pypi.org/simple/ pysat
+
+    - name: Install standard dependencies
+      run: |
+        pip install -r requirements.txt
+        pip install pysatCDF --no-binary=pysatCDF
+        pip install -r test_requirements.txt
+
+    - name: Set up pysat
+      run: |
+        mkdir pysatData
+        python -c "import pysat; pysat.params['data_dirs'] = 'pysatData'"
+
+    - name: Test PEP8 compliance
+      run: flake8 . --count --select=D,E,F,H,W --show-source --statistics
+
+    - name: Evaluate complexity
+      run: flake8 . --count --exit-zero --max-complexity=10 --statistics
+
+    - name: Test with pytest
+      run: |
+        pytest -vs --cov=pysatNASA/
+
+    - name: Publish results to coveralls
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: coveralls --rcfile=setup.cfg --service=github
