@@ -22,6 +22,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   * Move OMNI HRO custom functions to a methods module
   * Deprecate OMNI HRO custom functions in instrument module
   * Update GitHub actions to the latest versions
+  * Added downstream test to test code with pysat RC
 * Documentation
   * New logo added
 
