@@ -99,7 +99,7 @@ def preprocess(self, keep_original_names=False):
 
     Parameters
     ----------
-    keep_original_names : boolean
+    keep_original_names : bool
         if True then the names as given in the netCDF ICON file
         will be used as is. If False, a preamble is removed. (default=False)
 

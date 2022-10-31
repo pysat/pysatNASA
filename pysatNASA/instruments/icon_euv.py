@@ -78,7 +78,7 @@ def preprocess(self, keep_original_names=False):
 
     Parameters
     ----------
-    keep_original_names : boolean
+    keep_original_names : bool
         if True then the names as given in the netCDF ICON file
         will be used as is. If False, a preamble is removed. (default=False)
 
@@ -186,7 +186,7 @@ def load(fnames, tag='', inst_id='', keep_original_names=False):
     inst_id : str
         Satellite ID used to identify particular data set to be loaded.
         This input is nominally provided by pysat itself. (default=None)
-    keep_original_names : boolean
+    keep_original_names : bool
         If True then the names as given in the netCDF ICON file
         will be used as is. If False, a preamble is removed. (default=False)
 
