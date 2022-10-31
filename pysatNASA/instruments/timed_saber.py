@@ -7,13 +7,13 @@ Dynamics (TIMED) satellite.
 
 Properties
 ----------
-platform : string
+platform : str
     'timed'
-name : string
+name : str
     'saber'
-tag : string
+tag : str
     None supported
-inst_id : string
+inst_id : str
     None supported
 
 Note

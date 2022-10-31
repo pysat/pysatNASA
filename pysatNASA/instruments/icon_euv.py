@@ -180,10 +180,10 @@ def load(fnames, tag='', inst_id='', keep_original_names=False):
     fnames : array-like
         Iterable of filename strings, full path, to data files to be loaded.
         This input is nominally provided by pysat itself.
-    tag : string
+    tag : str
         Tag name used to identify particular data set to be loaded.
         This input is nominally provided by pysat itself. (default=None)
-    inst_id : string
+    inst_id : str
         Satellite ID used to identify particular data set to be loaded.
         This input is nominally provided by pysat itself. (default=None)
     keep_original_names : boolean
