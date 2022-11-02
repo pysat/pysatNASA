@@ -4,9 +4,6 @@ Dynamics Explorer 2 (DE2).
 
 From CDAWeb:
 
-
-
-
 References
 ----------
 
