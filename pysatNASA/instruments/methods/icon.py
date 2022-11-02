@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
-"""Provides non-instrument specific routines for ICON data"""
+"""Provides non-instrument specific routines for ICON data."""
+
+from pysat.instruments.methods import general as mm_gen
+
 
 ackn_str = ''.join(('This is a data product from the NASA Ionospheric ',
                     'Connection Explorer mission, an Explorer launched ',
                     'at 21:59:45 EDT on October 10, 2019.\n\nGuidelines ',
                     'for the use of this product are described in the ',
                     'ICON Rules of the Road  ',
-                    '(https://http://icon.ssl.berkeley.edu/Data).',
+                    '(https://icon.ssl.berkeley.edu/Data).',
                     '\n\nResponsibility for the mission science ',
                     'falls to the Principal Investigator, Dr. ',
                     'Thomas Immel at UC Berkeley:\nImmel, T.J., ',
@@ -60,7 +63,7 @@ ackn_str = ''.join(('This is a data product from the NASA Ionospheric ',
                     'contracts NNG12FA45C and NNG12FA42I".\n\nThese data ',
                     'are openly available as described in the ICON Data ',
                     'Management Plan available on the ICON website ',
-                    '(http://icon.ssl.berkeley.edu/Data).'))
+                    '(https://icon.ssl.berkeley.edu/Data).'))
 
 refs = {'euv': ' '.join(('Stephan, A.W., Meier, R.R., England, S.L. et al.',
                          'Daytime O/N2 Retrieval Algorithm for the Ionospheric',
@@ -95,3 +98,28 @@ refs = {'euv': ' '.join(('Stephan, A.W., Meier, R.R., England, S.L. et al.',
                              'Mission Goals and Design. Space Sci Rev 214, 13',
                              '(2018).',
                              'https://doi.org/10.1007/s11214-017-0449-2\n'))}
+
+
+def remove_preamble(inst):
+    """Remove preambles in variable names.
+
+    Parameters
+    -----------
+    inst : pysat.Instrument
+        ICON FUV or MIGHTI Instrument class object
+
+    """
+    id_str = inst.inst_id.upper()
+
+    target = {'los_wind_green': 'ICON_L21_',
+              'los_wind_red': 'ICON_L21_',
+              'vector_wind_green': 'ICON_L22_',
+              'vector_wind_red': 'ICON_L22_',
+              'temperature': ['ICON_L1_MIGHTI_{id:s}_'.format(id=id_str),
+                              'ICON_L23_MIGHTI_{id:s}_'.format(id=id_str),
+                              'ICON_L23_'],
+              'day': 'ICON_L24_',
+              'night': 'ICON_L25_'}
+    mm_gen.remove_leading_text(inst, target=target[inst.tag])
+
+    return

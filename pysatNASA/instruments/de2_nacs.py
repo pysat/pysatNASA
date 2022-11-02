@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
-"""Supports the Neutral Atmosphere Composition Spectrometer (NACS) instrument
+"""The DE2 NACS instrument.
+
+Supports the Neutral Atmosphere Composition Spectrometer (NACS) instrument
 on Dynamics Explorer 2 (DE2).
 
 From CDAWeb:
@@ -51,9 +53,8 @@ were lost between 12 March 1982 and 31 March 1982 when the counter overflowed.
 References
 ----------
 G. R. Carrignan, B. P. Block, J. C. Maurer,  A. E. Hedin, C. A. Reber,
-N. W. Spencer
-The neutral mass spectrometer on Dynamics Explorer B
-Space Sci. Instrum., v. 5, n. 4, p. 429, 1981.
+N. W. Spencer, "The neutral mass spectrometer on Dynamics Explorer B",
+Space Sci. Instrum., 5, 429-441, 1981.
 
 Properties
 ----------
@@ -70,20 +71,16 @@ Warnings
 --------
 - Currently no cleaning routine.
 
-Authors
--------
-J. Klenzing
-
 """
 
 import datetime as dt
 import functools
-import warnings
 
-from pysat import logger
 from pysat.instruments.methods import general as mm_gen
-from pysatNASA.instruments.methods import de2 as mm_de2
+
 from pysatNASA.instruments.methods import cdaweb as cdw
+from pysatNASA.instruments.methods import de2 as mm_de2
+from pysatNASA.instruments.methods import general as mm_nasa
 
 # ----------------------------------------------------------------------------
 # Instrument attributes
@@ -102,34 +99,11 @@ _test_dates = {'': {'': dt.datetime(1983, 1, 1)}}
 # Instrument methods
 
 
-def init(self):
-    """Initializes the Instrument object with instrument specific values.
+# Use standard init routine
+init = functools.partial(mm_nasa.init, module=mm_de2, name=name)
 
-    Runs once upon instantiation.
-
-    """
-
-    logger.info(mm_de2.ackn_str)
-    self.acknowledgements = mm_de2.ackn_str
-    self.references = mm_de2.refs['lang']
-    return
-
-
-def clean(self):
-    """Routine to return DE2 NACS data cleaned to the specified level
-
-    Note
-    ----
-    'clean' - Not specified
-    'dusty' - Not specified
-    'dirty' - Not specified
-    'none'  No cleaning applied, routine not called in this case.
-
-    """
-    warnings.warn('No cleaning routines available for DE2 NACS')
-
-    return
-
+# No cleaning, use standard warning function instead
+clean = mm_nasa.clean_warn
 
 # ----------------------------------------------------------------------------
 # Instrument functions
@@ -142,16 +116,16 @@ supported_tags = {'': {'': fname}}
 list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags)
 
-# use the default CDAWeb method
+# Use the default CDAWeb method
 load = cdw.load
 
-# support download routine
+# Support download routine
 basic_tag = {'remote_dir': ''.join(('/pub/data/de/de2/neutral_gas_nacs',
                                     '/neutral1s_nacs_cdaweb/{year:4d}/')),
              'fname': fname}
 download_tags = {'': {'': basic_tag}}
 download = functools.partial(cdw.download, supported_tags=download_tags)
 
-# support listing files currently on CDAWeb
+# Support listing files currently on CDAWeb
 list_remote_files = functools.partial(cdw.list_remote_files,
                                       supported_tags=download_tags)

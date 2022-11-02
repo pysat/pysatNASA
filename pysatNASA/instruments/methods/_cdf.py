@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Provides CDF class to parse cdaweb CDF files.
-"""
+"""Provides CDF class to parse cdaweb CDF files."""
 
 import datetime as dt
 import numpy as np
@@ -8,13 +7,12 @@ import pandas as pds
 import re
 
 import cdflib
-
 import pysat
 from pysat import logger
 
 
 def convert_ndimensional(data, index=None, columns=None):
-    """Converts high-dimensional data to a Dataframe
+    """Convert high-dimensional data to a Dataframe.
 
     Parameters
     ----------
@@ -38,16 +36,16 @@ def convert_ndimensional(data, index=None, columns=None):
                          columns=columns, index=index)
 
 
-class CDF():
-    """cdflib wrapper for loading time series data
+class CDF(object):
+    """Wraps cdflib for loading time series data.
 
     Loading routines borrow heavily from pyspedas's cdf_to_tplot function
 
     Parameters
     ----------
-    filename : string
+    filename : str
         full filename to location of .cdf
-    varformat : string
+    varformat : str
         format of variables for regex parsing. (default='*')
     var_types : list of strings
         list of the different variable types in cdf
@@ -73,6 +71,8 @@ class CDF():
                  regnames=None,
                  datetime=True,
                  **kwargs):
+        """Initialize the CDF class."""
+
         self._raise_errors = raise_errors
         self._filename = filename
         self._varformat = varformat
@@ -97,15 +97,16 @@ class CDF():
         self.load_variables()
 
     def __enter__(self):
-        """Context manager protocol
-        enters runtime context related to this object.
+        """Enter runtime context related to this object.
+
         The with statement will bind this method’s return value
         to the target(s) specified in the as clause of the statement
         """
         return self
 
     def __exit__(self, type, value, tb):
-        """Context manager protocol
+        """Exit runtime context related to this object.
+
         If any exceptions occur while attempting to execute the block
         of code nested after the with statement, Python will pass
         information about the exception into this method
@@ -122,18 +123,18 @@ class CDF():
         pass
 
     def get_dependency(self, x_axis_var):
-        """Retrieves variable dependency unique to filename
+        """Retrieve variable dependency unique to filename.
 
         Parameter
         ---------
-        x_axis_var : string
+        x_axis_var : str
             name of variable
         """
 
         return self._dependencies.get(self._filename + x_axis_var)
 
     def set_dependency(self, x_axis_var, x_axis_data):
-        """Sets variable dependency unique to filename
+        """Set variable dependency unique to filename.
 
         Parameters
         ----------
@@ -146,7 +147,7 @@ class CDF():
         self._dependencies[self._filename + x_axis_var] = x_axis_data
 
     def set_epoch(self, x_axis_var):
-        """Stores epoch dependency
+        """Store epoch dependency.
 
         Parameters
         ----------
@@ -155,8 +156,8 @@ class CDF():
 
         """
 
-        data_type_description \
-            = self._cdf_file.varinq(x_axis_var)['Data_Type_Description']
+        data_type_description = self._cdf_file.varinq(
+            x_axis_var)['Data_Type_Description']
 
         center_measurement = self._center_measurement
         cdf_file = self._cdf_file
@@ -206,8 +207,8 @@ class CDF():
                             delta_minus_var.astype(float) \
                             * np.float(si_conv.split('>')[0])
 
-            if ('CDF_TIME' in data_type_description) or \
-                    ('CDF_EPOCH' in data_type_description):
+            if ('CDF_TIME' in data_type_description) \
+                    or ('CDF_EPOCH' in data_type_description):
                 if self._datetime:
                     # Convert xdata to datetime
                     try:
@@ -235,7 +236,7 @@ class CDF():
                 self.set_dependency(x_axis_var, xdata)
 
     def get_index(self, variable_name):
-        """Return index of variable
+        """Retrieve index of variable.
 
         Parameters
         ----------
@@ -284,8 +285,8 @@ class CDF():
         return index_
 
     def load_variables(self):
-        """Loads cdf variables based on varformat
-        """
+        """Load cdf variables based on varformat."""
+
         varformat = self._varformat
         if varformat is None:
             varformat = ".*"
@@ -362,8 +363,7 @@ class CDF():
                          'min_val': ('ValidMin', float),
                          'max_val': ('ValidMax', float),
                          'fill_val': ('FillVal', float)}):
-        """
-        Exports loaded CDF data into data, meta for pysat module
+        """Export loaded CDF data into data, meta for pysat module.
 
         Parameters
         ----------

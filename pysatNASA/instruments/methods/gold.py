@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Provides non-instrument specific routines for GOLD data"""
+"""Provides non-instrument specific routines for GOLD data."""
 
 ack_str = ' '.join(('This is a data product from the NASA Global-scale',
                     'Observations of the Limb and Disk (GOLD) mission, an',

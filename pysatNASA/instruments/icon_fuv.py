@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
-"""Supports the Far Ultraviolet (FUV) imager onboard the Ionospheric
+"""Module for the ICON FUV instrument.
+
+Supports the Far Ultraviolet (FUV) imager onboard the Ionospheric
 CONnection Explorer (ICON) satellite.  Accesses local data in
 netCDF format.
 
@@ -33,25 +35,19 @@ ICON_L27_Ion_Density becomes Ion_Density.  To retain the original names, use
     fuv = pysat.Instrument(platform='icon', name='fuv', tag=day',
                            keep_original_names=True)
 
-Authors
--------
-Originated from EUV support.
-Jeff Klenzing, Mar 17, 2018, Goddard Space Flight Center
-Russell Stoneback, Mar 23, 2018, University of Texas at Dallas
-Conversion to FUV, Oct 8th, 2028, University of Texas at Dallas
-
 """
 
 import datetime as dt
 import functools
-import warnings
+import numpy as np
 
 import pysat
 from pysat.instruments.methods import general as mm_gen
+
 from pysatNASA.instruments.methods import cdaweb as cdw
+from pysatNASA.instruments.methods import general as mm_nasa
 from pysatNASA.instruments.methods import icon as mm_icon
 
-logger = pysat.logger
 
 # ----------------------------------------------------------------------------
 # Instrument attributes
@@ -68,33 +64,18 @@ pandas_format = False
 # Instrument test attributes
 
 _test_dates = {'': {kk: dt.datetime(2020, 1, 1) for kk in tags.keys()}}
+_test_load_opt = {'': {kk: {'keep_original_names': True} for kk in tags.keys()}}
 
 # ----------------------------------------------------------------------------
 # Instrument methods
 
 
-def init(self):
-    """Initializes the Instrument object with instrument specific values.
-
-    Runs once upon instantiation.
-
-    Parameters
-    -----------
-    inst : pysat.Instrument
-        Instrument class object
-
-    """
-
-    logger.info(mm_icon.ackn_str)
-    self.acknowledgements = mm_icon.ackn_str
-    self.references = ''.join((mm_icon.refs['mission'],
-                               mm_icon.refs['fuv']))
-
-    return
+# Use standard init routine
+init = functools.partial(mm_nasa.init, module=mm_icon, name=name)
 
 
 def preprocess(self, keep_original_names=False):
-    """Adjusts epoch timestamps to datetimes and removes variable preambles.
+    """Adjust epoch timestamps to datetimes and remove variable preambles.
 
     Parameters
     ----------
@@ -106,12 +87,12 @@ def preprocess(self, keep_original_names=False):
 
     mm_gen.convert_timestamp_to_datetime(self, sec_mult=1.0e-3)
     if not keep_original_names:
-        remove_preamble(self)
+        mm_icon.remove_preamble(self)
     return
 
 
 def clean(self):
-    """Provides data cleaning based upon clean_level.
+    """Clean ICON FUV data to the specified level.
 
     Note
     ----
@@ -119,7 +100,7 @@ def clean(self):
 
     """
 
-    warnings.warn("Cleaning actions for ICON FUV are not yet defined.")
+    pysat.logger.warning("Cleaning actions for ICON FUV are not yet defined.")
     return
 
 
@@ -152,8 +133,44 @@ list_remote_files = functools.partial(cdw.list_remote_files,
                                       supported_tags=download_tags)
 
 
+def filter_metadata(meta_dict):
+    """Filter FUV metadata to remove warnings during loading.
+
+    Parameters
+    ----------
+    meta_dict : dict
+        Dictionary of metadata from file
+
+    Returns
+    -------
+    dict
+        Filtered FUV metadata
+
+    """
+
+    vars = ['ICON_L24_UTC_Time', 'ICON_L25_Inversion_Method']
+    for var in vars:
+        if var in meta_dict:
+            meta_dict[var]['FillVal'] = np.nan
+
+    vars = ['ICON_L25_Start_Times', 'ICON_L25_Stop_Times', 'ICON_L25_UTC_Time']
+    for var in vars:
+        if var in meta_dict:
+            meta_dict[var]['FillVal'] = np.nan
+            meta_dict[var]['ValidMin'] = np.nan
+            meta_dict[var]['ValidMax'] = np.nan
+
+    # Deal with string arrays
+    for var in meta_dict.keys():
+        if 'Var_Notes' in meta_dict[var]:
+            meta_dict[var]['Var_Notes'] = ' '.join(pysat.utils.listify(
+                meta_dict[var]['Var_Notes']))
+
+    return meta_dict
+
+
 def load(fnames, tag=None, inst_id=None, keep_original_names=False):
-    """Loads ICON FUV data using pysat into pandas.
+    """Load ICON FUV data into xarray.Dataset object and pysat.Meta objects.
 
     This routine is called as needed by pysat. It is not intended
     for direct user interaction.
@@ -198,25 +215,17 @@ def load(fnames, tag=None, inst_id=None, keep_original_names=False):
               'min_val': ('ValidMin', float),
               'max_val': ('ValidMax', float), 'fill_val': ('FillVal', float)}
 
-    data, meta = pysat.utils.load_netcdf4(fnames, epoch_name='Epoch',
-                                          pandas_format=pandas_format,
-                                          labels=labels)
+    meta_translation = {'FieldNam': 'plot', 'LablAxis': 'axis',
+                        'FIELDNAM': 'plot', 'LABLAXIS': 'axis',
+                        'Bin_Location': 'bin_loc'}
+
+    drop_labels = ['Valid_Max', 'Valid_Min', 'Valid_Range', 'SCALETYP',
+                   'TYPE', 'CONTENT']
+
+    data, meta = pysat.utils.io.load_netcdf(fnames, epoch_name='Epoch',
+                                            pandas_format=pandas_format,
+                                            labels=labels,
+                                            meta_processor=filter_metadata,
+                                            meta_translation=meta_translation,
+                                            drop_meta_labels=drop_labels)
     return data, meta
-
-# ----------------------------------------------------------------------------
-# Local functions
-
-
-def remove_preamble(inst):
-    """Removes preambles in variable names
-
-    Parameters
-    ----------
-    inst : pysat.Instrument
-        ICON FUV Instrument object
-
-    """
-
-    target = {'day': 'ICON_L24_', 'night': 'ICON_L25_'}
-    mm_gen.remove_leading_text(inst, target=target[inst.tag])
-    return

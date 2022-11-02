@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
+"""Module for the ICON IVM instrument.
 
-"""Supports the Ion Velocity Meter (IVM)
-onboard the Ionospheric Connections (ICON) Explorer.
+Supports the Ion Velocity Meter (IVM) onboard the Ionospheric Connections
+(ICON) Explorer.
 
 Properties
 ----------
@@ -41,9 +42,10 @@ import functools
 import numpy as np
 
 import pysat
-from pysat import logger
 from pysat.instruments.methods import general as mm_gen
+
 from pysatNASA.instruments.methods import cdaweb as cdw
+from pysatNASA.instruments.methods import general as mm_nasa
 from pysatNASA.instruments.methods import icon as mm_icon
 
 # ----------------------------------------------------------------------------
@@ -60,7 +62,7 @@ tags = {'': 'Level 2 public geophysical data'}
 # is not available as of Jun 26 2020, as this mode has not yet been engaged.
 # Bypassing tests and warning checks via the password_req flag
 inst_ids = {'a': [''], 'b': ['']}
-
+multi_file_day = True
 
 # ----------------------------------------------------------------------------
 # Instrument test attributes
@@ -69,33 +71,19 @@ _test_dates = {'a': {'': dt.datetime(2020, 1, 1)},
                'b': {'': dt.datetime(2020, 1, 1)}}  # IVM-B not yet engaged
 _test_download = {'b': {kk: False for kk in tags.keys()}}
 _password_req = {'b': {kk: True for kk in tags.keys()}}
+_test_load_opt = {jj: {'': {'keep_original_names': True}}
+                  for jj in inst_ids.keys()}
 
 # ----------------------------------------------------------------------------
 # Instrument methods
 
 
-def init(self):
-    """Initializes the Instrument object with instrument specific values.
-
-    Runs once upon instantiation.
-
-    Parameters
-    -----------
-    inst : pysat.Instrument
-        Instrument class object
-
-    """
-
-    logger.info(mm_icon.ackn_str)
-    self.acknowledgements = mm_icon.ackn_str
-    self.references = ''.join((mm_icon.refs['mission'],
-                               mm_icon.refs['ivm']))
-
-    return
+# Use standard init routine
+init = functools.partial(mm_nasa.init, module=mm_icon, name=name)
 
 
 def preprocess(self, keep_original_names=False):
-    """Removes variable preambles.
+    """Remove variable preambles.
 
     Parameters
     ----------
@@ -111,7 +99,7 @@ def preprocess(self, keep_original_names=False):
 
 
 def clean(self):
-    """Provides data cleaning based upon clean_level.
+    """Clean ICON IVM data to the specified level.
 
     Note
     ----
@@ -122,11 +110,40 @@ def clean(self):
     # IVM variable groupings
     drift_variables = ['Ion_Velocity_X', 'Ion_Velocity_Zonal',
                        'Ion_Velocity_Meridional',
-                       'Ion_Velocity_Field_Aligned']
+                       'Ion_Velocity_Field_Aligned',
+                       'Equator_Ion_Velocity_Meridional',
+                       'Equator_Ion_Velocity_Zonal',
+                       'Footpoint_Zonal_Ion_Velocity_North',
+                       'Footpoint_Zonal_Ion_Velocity_South',
+                       'Footpoint_Meridional_Ion_Velocity_North',
+                       'Footpoint_Meridional_Ion_Velocity_South',
+                       'Ion_Velocity_East', 'Ion_Velocity_North',
+                       'Ion_Velocity_Up',
+                       'Footpoint_East_Ion_Velocity_North',
+                       'Footpoint_East_Ion_Velocity_South',
+                       'Footpoint_North_Ion_Velocity_North',
+                       'Footpoint_North_Ion_Velocity_South',
+                       'Footpoint_Up_Ion_Velocity_North',
+                       'Footpoint_Up_Ion_Velocity_South']
+
     cross_drift_variables = ['Ion_Velocity_Z', 'Ion_Velocity_Y',
                              'Ion_Velocity_Zonal',
                              'Ion_Velocity_Meridional',
-                             'Ion_Velocity_Field_Aligned']
+                             'Ion_Velocity_Field_Aligned',
+                             'Equator_Ion_Velocity_Meridional',
+                             'Equator_Ion_Velocity_Zonal',
+                             'Footpoint_Zonal_Ion_Velocity_North',
+                             'Footpoint_Zonal_Ion_Velocity_South',
+                             'Footpoint_Meridional_Ion_Velocity_North',
+                             'Footpoint_Meridional_Ion_Velocity_South',
+                             'Ion_Velocity_East', 'Ion_Velocity_North',
+                             'Ion_Velocity_Up',
+                             'Footpoint_East_Ion_Velocity_North',
+                             'Footpoint_East_Ion_Velocity_South',
+                             'Footpoint_North_Ion_Velocity_North',
+                             'Footpoint_North_Ion_Velocity_South',
+                             'Footpoint_Up_Ion_Velocity_North',
+                             'Footpoint_Up_Ion_Velocity_South']
     rpa_variables = ['Ion_Temperature', 'Ion_Density',
                      'Fractional_Ion_Density_H',
                      'Fractional_Ion_Density_O']
@@ -185,8 +202,35 @@ list_remote_files = functools.partial(cdw.list_remote_files,
                                       supported_tags=download_tags)
 
 
+def filter_metadata(meta_dict):
+    """Filter IVM metadata to remove warnings during loading.
+
+    Parameters
+    ----------
+    meta_dict : dict
+        Dictionary of metadata from file
+
+    Returns
+    -------
+    dict
+        Filtered IVM metadata
+
+    """
+    if 'ICON_L27_UTC_Time' in meta_dict:
+        meta_dict['ICON_L27_UTC_Time']['ValidMax'] = np.inf
+        meta_dict['ICON_L27_UTC_Time']['ValidMin'] = 0
+
+    # Deal with string arrays
+    for var in meta_dict.keys():
+        if 'Var_Notes' in meta_dict[var]:
+            meta_dict[var]['Var_Notes'] = ' '.join(pysat.utils.listify(
+                meta_dict[var]['Var_Notes']))
+
+    return meta_dict
+
+
 def load(fnames, tag=None, inst_id=None, keep_original_names=False):
-    """Loads ICON IVM data using pysat into pandas.
+    """Load ICON IVM data into `pandas.DataFrame` and `pysat.Meta` objects.
 
     This routine is called as needed by pysat. It is not intended
     for direct user interaction.
@@ -226,12 +270,21 @@ def load(fnames, tag=None, inst_id=None, keep_original_names=False):
         inst.load(2020, 1)
 
     """
+
     labels = {'units': ('Units', str), 'name': ('Long_Name', str),
               'notes': ('Var_Notes', str), 'desc': ('CatDesc', str),
               'min_val': ('ValidMin', float),
               'max_val': ('ValidMax', float), 'fill_val': ('FillVal', float)}
 
-    data, meta = pysat.utils.load_netcdf4(fnames, epoch_name='Epoch',
-                                          labels=labels)
+    meta_translation = {'FieldNam': 'plot', 'LablAxis': 'axis',
+                        'ScaleTyp': 'scale',
+                        '_FillValue': 'FillVal'}
+
+    data, meta = pysat.utils.io.load_netcdf(fnames, epoch_name='Epoch',
+                                            labels=labels,
+                                            meta_processor=filter_metadata,
+                                            meta_translation=meta_translation,
+                                            drop_meta_labels=['Valid_Max',
+                                                              'Valid_Min'])
 
     return data, meta

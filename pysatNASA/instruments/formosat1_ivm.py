@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
-"""Supports the Ion Velocity Meter (IVM) onboard the Formosat-1 (formerly
+"""Module for the ICON EUV instrument.
+
+Supports the Ion Velocity Meter (IVM) onboard the Formosat-1 (formerly
 ROCSAT-1) mission. Downloads data from the NASA Coordinated Data Analysis
 Web (CDAWeb).
 
@@ -22,11 +24,12 @@ Warnings
 
 import datetime as dt
 import functools
-import warnings
 
-from pysat import logger
 from pysat.instruments.methods import general as mm_gen
+from pysat import logger
+
 from pysatNASA.instruments.methods import cdaweb as cdw
+from pysatNASA.instruments.methods import general as mm_nasa
 
 # ----------------------------------------------------------------------------
 # Instrument attributes
@@ -46,7 +49,7 @@ _test_dates = {'': {'': dt.datetime(2002, 1, 1)}}
 
 
 def init(self):
-    """Initializes the Instrument object with instrument specific values.
+    """Initialize the Instrument object with instrument specific values.
 
     Runs once upon instantiation.
 
@@ -71,19 +74,8 @@ def init(self):
     return
 
 
-def clean(self):
-    """Routine to return FORMOSAT-1 IVM data cleaned to the specified level
-
-    Note
-    ----
-    No cleaning currently available for FORMOSAT-1 IVM.
-
-    """
-
-    warnings.warn("No cleaning currently available for FORMOSAT-1")
-
-    return
-
+# No cleaning, use standard warning function instead
+clean = mm_nasa.clean_warn
 
 # ----------------------------------------------------------------------------
 # Instrument functions
