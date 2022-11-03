@@ -26,7 +26,7 @@ of the ion drift velocity; the ion and electron concentration irregularity
 spectrum; and the concentration of H+, He+, O+, and Fe+, and of molecular ions
 near perigee.
 
-It includes the DUCT portion of the high resolutiondata from the Dynamics
+It includes the DUCT portion of the high resolution data from the Dynamics
 Explorer 2 (DE-2) Retarding Potential Analyzer (RPA) for the whole DE-2 mission
 time period in ASCII format. This version was generated at NSSDC from the
 PI-provided binary data (SPIO-00232). The DUCT files include RPA measurements
