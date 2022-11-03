@@ -1,12 +1,11 @@
-# -*- coding: utf-8 -*-
-"""Supports the Vector Electric Field Instrument (VEFI) on
-Dynamics Explorer 2 (DE2).
+"""Module for the DE2 VEFI instrument.
 
 From CDAWeb:
+TBA
 
 References
 ----------
-
+TBD
 
 Properties
 ----------
@@ -33,12 +32,11 @@ J. Klenzing
 
 import datetime as dt
 import functools
-import warnings
 
-from pysat import logger
 from pysat.instruments.methods import general as mm_gen
-from pysatNASA.instruments.methods import de2 as mm_de2
 from pysatNASA.instruments.methods import cdaweb as cdw
+from pysatNASA.instruments.methods import de2 as mm_de2
+from pysatNASA.instruments.methods import general as mm_nasa
 
 # ----------------------------------------------------------------------------
 # Instrument attributes
@@ -54,38 +52,15 @@ inst_ids = {'': ['dca', 'ac']}
 
 _test_dates = {'': {tag: dt.datetime(1983, 1, 1) for tag in tags}}
 
+
 # ----------------------------------------------------------------------------
 # Instrument methods
 
+# Use standard init routine
+init = functools.partial(mm_nasa.init, module=mm_de2, name=name)
 
-def init(self):
-    """Initializes the Instrument object with instrument specific values.
-
-    Runs once upon instantiation.
-
-    """
-
-    logger.info(mm_de2.ackn_str)
-    self.acknowledgements = mm_de2.ackn_str
-    self.references = mm_de2.refs['vefi']
-    return
-
-
-def clean(self):
-    """Routine to return DE2 VEFI data cleaned to the specified level
-
-    Note
-    ----
-    'clean' - Not specified
-    'dusty' - Not specified
-    'dirty' - Not specified
-    'none'  No cleaning applied, routine not called in this case.
-
-    """
-    warnings.warn('No cleaning routines available for DE2 VEFI')
-
-    return
-
+# No cleaning, use standard warning function instead
+clean = mm_nasa.clean_warn
 
 # ----------------------------------------------------------------------------
 # Instrument functions
