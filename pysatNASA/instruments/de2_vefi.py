@@ -1,11 +1,24 @@
 """Module for the DE2 VEFI instrument.
 
-From CDAWeb:
-TBA
+From CDAWeb (adpated):
+This directory gathers data for the VEFI instrument that flew on the DE 2 spacecraft
+which was launched on 3 August 1981 into an elliptical orbit with an altitude range of
+300 km to 1000 km and re-entered the atmosphere on 19 February 1983.
+
+dca   (NSSDC ID: 81-070B-02C)
+
+This data set contains the averaged (2 samples per second) DC electric fields in
+spacecraft coordinates and orbit information in ASCII format.
+
+ac   (NSSDC ID: 81-070B-02E)
+
+This data set contains the averaged AC electric field data (1 or 2 points per
+second) and orbit information.
 
 References
 ----------
-TBD
+Maynard, N. C., E. A. Bielecki, H. G. Burdick, Instrumentation for vector
+electric field measurements from DE-B, Space Sci. Instrum., 5, 523, 1981.
 
 Properties
 ----------
@@ -23,10 +36,6 @@ Warnings
 --------
 - Currently no cleaning routine.
 
-
-Authors
--------
-J. Klenzing
 
 """
 

@@ -21,5 +21,8 @@ refs = {'idm': ' '.join(('TBD')),
                           'Hedin, G. R. Carrignan, J. C. Maurer, The',
                           'Dynamics Explorer Wind and Temperature Spectrometer',
                           'Space Sci. Instrum., v. 5, n. 4, p. 417, 1981.')),
-        'vefi': ' '.join(('TBD'))
+        'vefi': ' '.join(('Maynard, N. C., E. A. Bielecki, H. G. Burdick,',
+                          'Instrumentation for vector electric field',
+                          'measurements from DE-B, Space Sci. Instrum., 5,',
+                          '523, 1981.'))
         }
