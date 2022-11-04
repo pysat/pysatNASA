@@ -3,7 +3,10 @@
 
 ackn_str = "The Dynamics Explorer 2 satellite data is provided through CDAWeb"
 
-refs = {'idm': ' '.join(('TBD')),
+refs = {'idm': ' '.join(('Heelis, R. A., W. B. Hanson, C. R. Lippincott, D. R.',
+                         'Zuccaro, L. L. Harmon, B. J. Holt, J. E. Doherty, R.',
+                         'A. Power, The ion drift meter for Dynamics',
+                         'Explorer-B, Space Sci. Instrum., 5, 511, 1981.')),
         'lang': ' '.join(('J. P. Krehbiel, L. H. Brace, R. F. Theis, W. H.',
                           'Pinkus, and R. B. Kaplan, The Dynamics Explorer 2',
                           'Langmuir Probe (LANG), Space Sci. Instrum., v. 5,',
