@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.1.0] - 202X-XX-XX
+* New Instruments
+  * DE2 Ion Drift Meter
+  * DE2 RPA DUCT (high rate plasma density)
+  * DE2 Vector Electric Field Instrument
+
 ## [0.0.4] - 2022-11-11
 * Update instrument tests with new test class
 * Support xarray datasets through cdflib
