@@ -455,7 +455,7 @@ def download(date_array, tag='', inst_id='', supported_tags=None,
                                      stop=date_array[-1])
 
     # Download only requested files that exist remotely
-    for date, fname in remote_files.iteritems():
+    for date, fname in remote_files.items():
         # Format files for specific dates and download location
         formatted_remote_dir = remote_dir.format(year=date.year,
                                                  month=date.month,
