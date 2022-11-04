@@ -89,6 +89,7 @@ platform = 'de2'
 name = 'idm'
 tags = {'': '1 s cadence Neutral Atmosphere Composition Spectrometer data'}
 inst_ids = {'': ['']}
+pandas_format=False
 
 # ----------------------------------------------------------------------------
 # Instrument test attributes
@@ -117,7 +118,21 @@ list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags)
 
 # Use the default CDAWeb method
-load = cdw.load
+load = functools.partial(cdw.load, pandas_format=pandas_format)
+
+def preprocess(self):
+    """Apply DE2 IDM default attributes.
+
+    Note
+    ----
+    Corrects the epoch names
+
+    """
+
+    self.data = self.data.rename({'record0': 'Epoch_velZ',
+                                  'record1': 'Epoch_velY'})
+    return
+
 
 # Support download routine
 basic_tag = {'remote_dir': ''.join(('/pub/data/de/de2/plasma_idm',
