@@ -128,10 +128,10 @@ def load(fnames, tag='', inst_id=''):
         iterable of filename strings, full path, to data files to be loaded.
         This input is nominally provided by pysat itself.
     tag : str
-        tag name used to identify particular data set to be loaded.
+        Tag name used to identify particular data set to be loaded.
         This input is nominally provided by pysat itself.
     inst_id : str
-        Satellite ID used to identify particular data set to be loaded.
+        Instrument ID used to identify particular data set to be loaded.
         This input is nominally provided by pysat itself.
     **kwargs : extra keywords
         Passthrough for additional keyword arguments specified when

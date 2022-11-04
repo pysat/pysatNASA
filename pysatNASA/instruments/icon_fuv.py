@@ -180,14 +180,14 @@ def load(fnames, tag='', inst_id='', keep_original_names=False):
         iterable of filename strings, full path, to data files to be loaded.
         This input is nominally provided by pysat itself.
     tag : str
-        tag name used to identify particular data set to be loaded.
-        This input is nominally provided by pysat itself.
+        Tag name used to identify particular data set to be loaded.
+        This input is nominally provided by pysat itself. (default='')
     inst_id : str
-        Satellite ID used to identify particular data set to be loaded.
-        This input is nominally provided by pysat itself.
+        Instrument ID used to identify particular data set to be loaded.
+        This input is nominally provided by pysat itself. (default='')
     keep_original_names : bool
         if True then the names as given in the netCDF ICON file
-        will be used as is. If False, a preamble is removed.
+        will be used as is. If False, a preamble is removed. (default=False)
 
     Returns
     -------

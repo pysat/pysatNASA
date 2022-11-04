@@ -18,6 +18,8 @@ inst_id : str
 
 Note
 ----
+Note on Temperature Errors: https://saber.gats-inc.com/temp_errors.php
+
 SABER "Rules of the Road" for DATA USE
 Users of SABER data are asked to respect the following guidelines
 
@@ -36,9 +38,9 @@ Users of SABER data are asked to respect the following guidelines
   - Pre-prints of publications and conference abstracts should be widely
     distributed to interested parties within the mission and related projects.
 
+
 Warnings
 --------
-- Note on Temperature Errors: https://saber.gats-inc.com/temp_errors.php
 - No cleaning routine
 
 """

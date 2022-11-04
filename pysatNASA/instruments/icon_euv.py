@@ -181,10 +181,10 @@ def load(fnames, tag='', inst_id='', keep_original_names=False):
         This input is nominally provided by pysat itself.
     tag : str
         Tag name used to identify particular data set to be loaded.
-        This input is nominally provided by pysat itself. (default=None)
+        This input is nominally provided by pysat itself. (default='')
     inst_id : str
-        Satellite ID used to identify particular data set to be loaded.
-        This input is nominally provided by pysat itself. (default=None)
+        Instrument ID used to identify particular data set to be loaded.
+        This input is nominally provided by pysat itself. (default='')
     keep_original_names : bool
         If True then the names as given in the netCDF ICON file
         will be used as is. If False, a preamble is removed. (default=False)
