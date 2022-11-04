@@ -1,9 +1,10 @@
 """Module for the DE2 VEFI instrument.
 
 From CDAWeb (adpated):
-This directory gathers data for the VEFI instrument that flew on the DE 2 spacecraft
-which was launched on 3 August 1981 into an elliptical orbit with an altitude range of
-300 km to 1000 km and re-entered the atmosphere on 19 February 1983.
+This directory gathers data for the VEFI instrument that flew on the DE 2
+spacecraft which was launched on 3 August 1981 into an elliptical orbit with
+an altitude range of 300 km to 1000 km and re-entered the atmosphere on
+19 February 1983.
 
 dca   (NSSDC ID: 81-070B-02C)
 
