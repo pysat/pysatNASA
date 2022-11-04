@@ -89,7 +89,7 @@ platform = 'de2'
 name = 'idm'
 tags = {'': '1 s cadence Neutral Atmosphere Composition Spectrometer data'}
 inst_ids = {'': ['']}
-pandas_format=False
+pandas_format = False
 
 # ----------------------------------------------------------------------------
 # Instrument test attributes
@@ -119,6 +119,7 @@ list_files = functools.partial(mm_gen.list_files,
 
 # Use the default CDAWeb method
 load = functools.partial(cdw.load, pandas_format=pandas_format)
+
 
 def preprocess(self):
     """Apply DE2 IDM default attributes.
