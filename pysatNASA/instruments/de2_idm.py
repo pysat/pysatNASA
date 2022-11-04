@@ -6,9 +6,10 @@ on Dynamics Explorer 2 (DE2).
 
 From CDAWeb (adapted):
 
-This directory gathers data for the IDM instrument that flew on the DE 2 spacecraft
-which was launched on 3 August 1981 into an elliptical orbit with an altitude range
-of 300 km to 1000 km and re-entered the atmosphere on 19 February 1983.
+This directory gathers data for the IDM instrument that flew on the DE 2
+spacecraft which was launched on 3 August 1981 into an elliptical orbit
+with an altitude range of 300 km to 1000 km and re-entered the atmosphere on
+19 February 1983.
 
 (NSSDC ID: 81-070B-06D)
 This data set provides the cross track ion drift with a time resolution of
