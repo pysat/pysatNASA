@@ -25,6 +25,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   * Added downstream test to test code with pysat RC
   * Remove deprecated `convert_timestamp_to_datetime` calls
   * Remove deprecated pandas syntax
+  * Added version cap for xarray 2022.11
 * Documentation
   * New logo added
 
