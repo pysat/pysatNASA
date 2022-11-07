@@ -129,10 +129,10 @@ def load(fnames, tag='', inst_id=''):
         This input is nominally provided by pysat itself.
     tag : str
         Tag name used to identify particular data set to be loaded.
-        This input is nominally provided by pysat itself.
+        This input is nominally provided by pysat itself. (default='')
     inst_id : str
         Instrument ID used to identify particular data set to be loaded.
-        This input is nominally provided by pysat itself.
+        This input is nominally provided by pysat itself. (default='')
     **kwargs : extra keywords
         Passthrough for additional keyword arguments specified when
         instantiating an Instrument object. These additional keywords
