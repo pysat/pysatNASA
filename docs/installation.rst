@@ -14,19 +14,19 @@ Prerequisites
 
 pysatNASA uses common Python modules, as well as modules developed by
 and for the Space Physics community.  This module officially supports
-Python 3.7+ and pysat 3.0.0+.
+Python 3.8+ and pysat 3.0.4+.
 
- ================ =================
- Common modules   Community modules
- ================ =================
-  beautifulsoup4   cdflib>=0.4.4
-  lxml             pysat>=3.0.0
+ ================== =================
+ Common modules     Community modules
+ ================== =================
+  beautifulsoup4     cdflib>=0.4.4
+  lxml               pysat>=3.0.4
   netCDF4
   numpy
   pandas
   requests
-  xarray
- ================ =================
+  xarray<2022.11
+ ================== =================
 
 
 Installation Options
@@ -55,6 +55,9 @@ Installation Options
 
 
         python setup.py develop --user
+
+.. extras-require:: all
+    :setup.cfg:
 
 .. _post-install:
 

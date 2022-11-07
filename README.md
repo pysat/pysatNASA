@@ -1,6 +1,6 @@
 <div align="left">
         <img height="0" width="0px">
-        <img width="20%" src="https://raw.githubusercontent.com/pysat/pysatNASA/main/docs/figures/pysatnasa_logo.jpg" alt="pysatNASA" title="pysatNASA" </img>
+        <img width="20%" src="https://raw.githubusercontent.com/pysat/pysatNASA/main/docs/figures/logo.png" alt="pysatNASA" title="pysatNASA" </img>
 </div>
 
 # pysatNASA: pysat support for NASA Space Science instruments
@@ -20,17 +20,17 @@ some examples on how to use the routines
 
 pysatNASA uses common Python modules, as well as modules developed by
 and for the Space Physics community.  This module officially supports
-Python 3.7+.
+Python 3.8+.
 
-| Common modules | Community modules |
-| -------------- | ----------------- |
-| beautifulsoup4 | cdflib            |
-| lxml           | pysat             |
-| netCDF4        |                   |
-| numpy          |                   |
-| pandas         |                   |
-| requests       |                   |
-| xarray         |                   |
+| Common modules   | Community modules |
+| ---------------- | ----------------- |
+| beautifulsoup4   | cdflib            |
+| lxml             | pysat>=3.0.4      |
+| netCDF4          |                   |
+| numpy            |                   |
+| pandas           |                   |
+| requests         |                   |
+| xarray<2022.11   |                   |
 
 ## GitHub Installation
 
@@ -50,7 +50,7 @@ python setup.py install
 
 Note: pre-1.0.0 version
 -----------------------
-pysatNASA is currently in an initial development phase and requires pysat 3.0.0.  
+pysatNASA is currently in an initial development phase and requires pysat 3.0.4.  
 
 # Using with pysat
 

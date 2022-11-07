@@ -43,9 +43,9 @@ import numpy as np
 
 import pysat
 from pysat.instruments.methods import general as mm_gen
-from pysat import logger
 
 from pysatNASA.instruments.methods import cdaweb as cdw
+from pysatNASA.instruments.methods import general as mm_nasa
 from pysatNASA.instruments.methods import icon as mm_icon
 
 # ----------------------------------------------------------------------------
@@ -71,29 +71,15 @@ _test_dates = {'a': {'': dt.datetime(2020, 1, 1)},
                'b': {'': dt.datetime(2020, 1, 1)}}  # IVM-B not yet engaged
 _test_download = {'b': {kk: False for kk in tags.keys()}}
 _password_req = {'b': {kk: True for kk in tags.keys()}}
+_test_load_opt = {jj: {'': {'keep_original_names': True}}
+                  for jj in inst_ids.keys()}
 
 # ----------------------------------------------------------------------------
 # Instrument methods
 
 
-def init(self):
-    """Initialize the Instrument object with instrument specific values.
-
-    Runs once upon instantiation.
-
-    Parameters
-    -----------
-    inst : pysat.Instrument
-        Instrument class object
-
-    """
-
-    logger.info(mm_icon.ackn_str)
-    self.acknowledgements = mm_icon.ackn_str
-    self.references = ''.join((mm_icon.refs['mission'],
-                               mm_icon.refs['ivm']))
-
-    return
+# Use standard init routine
+init = functools.partial(mm_nasa.init, module=mm_icon, name=name)
 
 
 def preprocess(self, keep_original_names=False):
@@ -101,7 +87,7 @@ def preprocess(self, keep_original_names=False):
 
     Parameters
     ----------
-    keep_original_names : boolean
+    keep_original_names : bool
         if True then the names as given in the netCDF ICON file
         will be used as is. If False, a preamble is removed. (default=False)
 
@@ -216,7 +202,34 @@ list_remote_files = functools.partial(cdw.list_remote_files,
                                       supported_tags=download_tags)
 
 
-def load(fnames, tag=None, inst_id=None, keep_original_names=False):
+def filter_metadata(meta_dict):
+    """Filter IVM metadata to remove warnings during loading.
+
+    Parameters
+    ----------
+    meta_dict : dict
+        Dictionary of metadata from file
+
+    Returns
+    -------
+    dict
+        Filtered IVM metadata
+
+    """
+    if 'ICON_L27_UTC_Time' in meta_dict:
+        meta_dict['ICON_L27_UTC_Time']['ValidMax'] = np.inf
+        meta_dict['ICON_L27_UTC_Time']['ValidMin'] = 0
+
+    # Deal with string arrays
+    for var in meta_dict.keys():
+        if 'Var_Notes' in meta_dict[var]:
+            meta_dict[var]['Var_Notes'] = ' '.join(pysat.utils.listify(
+                meta_dict[var]['Var_Notes']))
+
+    return meta_dict
+
+
+def load(fnames, tag='', inst_id='', keep_original_names=False):
     """Load ICON IVM data into `pandas.DataFrame` and `pysat.Meta` objects.
 
     This routine is called as needed by pysat. It is not intended
@@ -227,15 +240,15 @@ def load(fnames, tag=None, inst_id=None, keep_original_names=False):
     fnames : array-like
         iterable of filename strings, full path, to data files to be loaded.
         This input is nominally provided by pysat itself.
-    tag : string
-        tag name used to identify particular data set to be loaded.
-        This input is nominally provided by pysat itself.
-    inst_id : string
-        Satellite ID used to identify particular data set to be loaded.
-        This input is nominally provided by pysat itself.
-    keep_original_names : boolean
+    tag : str
+        Tag name used to identify particular data set to be loaded.
+        This input is nominally provided by pysat itself. (default='')
+    inst_id : str
+        Instrument ID used to identify particular data set to be loaded.
+        This input is nominally provided by pysat itself. (default='')
+    keep_original_names : bool
         if True then the names as given in the netCDF ICON file
-        will be used as is. If False, a preamble is removed.
+        will be used as is. If False, a preamble is removed. (default=False)
 
     Returns
     -------
@@ -263,7 +276,15 @@ def load(fnames, tag=None, inst_id=None, keep_original_names=False):
               'min_val': ('ValidMin', float),
               'max_val': ('ValidMax', float), 'fill_val': ('FillVal', float)}
 
-    data, meta = pysat.utils.load_netcdf4(fnames, epoch_name='Epoch',
-                                          labels=labels)
+    meta_translation = {'FieldNam': 'plot', 'LablAxis': 'axis',
+                        'ScaleTyp': 'scale',
+                        '_FillValue': 'FillVal'}
+
+    data, meta = pysat.utils.io.load_netcdf(fnames, epoch_name='Epoch',
+                                            labels=labels,
+                                            meta_processor=filter_metadata,
+                                            meta_translation=meta_translation,
+                                            drop_meta_labels=['Valid_Max',
+                                                              'Valid_Min'])
 
     return data, meta

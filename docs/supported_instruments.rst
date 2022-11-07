@@ -106,6 +106,14 @@ ISS FPMU
 .. automodule:: pysatNASA.instruments.iss_fpmu
    :members:
 
+.. _jpl_gps:
+
+JPL GPS
+-------
+
+.. automodule:: pysatNASA.instruments.jpl_gps
+   :members:
+
 .. _omni_hro:
 
 OMNI HRO

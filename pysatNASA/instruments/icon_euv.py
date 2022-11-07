@@ -40,12 +40,13 @@ ICON_L27_Ion_Density becomes Ion_Density.  To retain the original names, use
 
 import datetime as dt
 import functools
+import numpy as np
 
 import pysat
 from pysat.instruments.methods import general as mm_gen
-from pysat import logger
 
 from pysatNASA.instruments.methods import cdaweb as cdw
+from pysatNASA.instruments.methods import general as mm_nasa
 from pysatNASA.instruments.methods import icon as mm_icon
 
 # ----------------------------------------------------------------------------
@@ -62,29 +63,14 @@ pandas_format = False
 # Instrument test attributes
 
 _test_dates = {'': {'': dt.datetime(2020, 1, 1)}}
+_test_load_opt = {'': {'': {'keep_original_names': True}}}
 
 # ----------------------------------------------------------------------------
 # Instrument methods
 
 
-def init(self):
-    """Initialize the Instrument object with instrument specific values.
-
-    Runs once upon instantiation.
-
-    Parameters
-    -----------
-    inst : pysat.Instrument
-        Instrument class object
-
-    """
-
-    logger.info(mm_icon.ackn_str)
-    self.acknowledgements = mm_icon.ackn_str
-    self.references = ''.join((mm_icon.refs['mission'],
-                               mm_icon.refs['euv']))
-
-    return
+# Use standard init routine
+init = functools.partial(mm_nasa.init, module=mm_icon, name=name)
 
 
 def preprocess(self, keep_original_names=False):
@@ -92,13 +78,12 @@ def preprocess(self, keep_original_names=False):
 
     Parameters
     ----------
-    keep_original_names : boolean
+    keep_original_names : bool
         if True then the names as given in the netCDF ICON file
         will be used as is. If False, a preamble is removed. (default=False)
 
     """
 
-    mm_gen.convert_timestamp_to_datetime(self, sec_mult=1.0e-3)
     if not keep_original_names:
         mm_gen.remove_leading_text(self, target='ICON_L26_')
     return
@@ -152,7 +137,38 @@ list_remote_files = functools.partial(cdw.list_remote_files,
                                       supported_tags=download_tags)
 
 
-def load(fnames, tag=None, inst_id=None, keep_original_names=False):
+def filter_metadata(meta_dict):
+    """Filter EUV metadata to remove warnings during loading.
+
+    Parameters
+    ----------
+    meta_dict : dict
+        Dictionary of metadata from file
+
+    Returns
+    -------
+    meta_dict : dict
+        Filtered EUV metadata
+
+    """
+    vars = ['ICON_L26_Ancillary_Filename', 'ICON_L26_Flag_Details',
+            'ICON_L26_Input_Filename', 'ICON_L26_Processing_Date',
+            'ICON_L26_UTC_Time']
+
+    for var in vars:
+        if var in meta_dict:
+            meta_dict[var]['FillVal'] = np.nan
+
+    # Deal with string arrays
+    for var in meta_dict.keys():
+        if 'Var_Notes' in meta_dict[var]:
+            meta_dict[var]['Var_Notes'] = ' '.join(pysat.utils.listify(
+                meta_dict[var]['Var_Notes']))
+
+    return meta_dict
+
+
+def load(fnames, tag='', inst_id='', keep_original_names=False):
     """Load ICON EUV data into `xarray.Dataset` object and `pysat.Meta` objects.
 
     This routine is called as needed by pysat. It is not intended
@@ -163,13 +179,13 @@ def load(fnames, tag=None, inst_id=None, keep_original_names=False):
     fnames : array-like
         Iterable of filename strings, full path, to data files to be loaded.
         This input is nominally provided by pysat itself.
-    tag : string
+    tag : str
         Tag name used to identify particular data set to be loaded.
-        This input is nominally provided by pysat itself. (default=None)
-    inst_id : string
-        Satellite ID used to identify particular data set to be loaded.
-        This input is nominally provided by pysat itself. (default=None)
-    keep_original_names : boolean
+        This input is nominally provided by pysat itself. (default='')
+    inst_id : str
+        Instrument ID used to identify particular data set to be loaded.
+        This input is nominally provided by pysat itself. (default='')
+    keep_original_names : bool
         If True then the names as given in the netCDF ICON file
         will be used as is. If False, a preamble is removed. (default=False)
 
@@ -201,9 +217,16 @@ def load(fnames, tag=None, inst_id=None, keep_original_names=False):
               'min_val': ('ValidMin', float),
               'max_val': ('ValidMax', float), 'fill_val': ('FillVal', float)}
 
-    data, meta = pysat.utils.load_netcdf4(fnames, epoch_name='Epoch',
-                                          pandas_format=pandas_format,
-                                          labels=labels)
+    meta_translation = {'FieldNam': 'plot'}
+
+    data, meta = pysat.utils.io.load_netcdf(fnames, epoch_name='Epoch',
+                                            pandas_format=pandas_format,
+                                            labels=labels,
+                                            meta_processor=filter_metadata,
+                                            meta_translation=meta_translation,
+                                            drop_meta_labels=['Valid_Max',
+                                                              'Valid_Min',
+                                                              '_FillValue'])
 
     # xarray can't merge if variable and dim names are the same
     if 'Altitude' in data.dims:

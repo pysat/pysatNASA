@@ -1,4 +1,5 @@
 coveralls<3.3
+extras_require
 flake8
 flake8-docstrings
 hacking>=1.0
