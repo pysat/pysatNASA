@@ -99,13 +99,12 @@ def preprocess(self, keep_original_names=False):
 
     Parameters
     ----------
-    keep_original_names : boolean
+    keep_original_names : bool
         if True then the names as given in the netCDF ICON file
         will be used as is. If False, a preamble is removed. (default=False)
 
     """
 
-    mm_gen.convert_timestamp_to_datetime(self, sec_mult=1.0e-3)
     if not keep_original_names:
         mm_icon.remove_preamble(self)
     return
@@ -264,7 +263,7 @@ def filter_metadata(meta_dict):
 
     Returns
     -------
-    dict
+    meta_dict : dict
         Filtered FUV metadata
 
     """
@@ -283,7 +282,7 @@ def filter_metadata(meta_dict):
     return meta_dict
 
 
-def load(fnames, tag=None, inst_id=None, keep_original_names=False):
+def load(fnames, tag='', inst_id='', keep_original_names=False):
     """Load ICON MIGHTI data into `xarray.Dataset` and `pysat.Meta` objects.
 
     This routine is called as needed by pysat. It is not intended
@@ -294,12 +293,12 @@ def load(fnames, tag=None, inst_id=None, keep_original_names=False):
     fnames : array-like
         iterable of filename strings, full path, to data files to be loaded.
         This input is nominally provided by pysat itself.
-    tag : str or NoneType
-        tag name used to identify particular data set to be loaded.
-        This input is nominally provided by pysat itself. (default=None)
-    inst_id : str or NoneType
-        Satellite ID used to identify particular data set to be loaded.
-        This input is nominally provided by pysat itself. (default=None)
+    tag : str
+        Tag name used to identify particular data set to be loaded.
+        This input is nominally provided by pysat itself. (default='')
+    inst_id : str
+        Instrument ID used to identify particular data set to be loaded.
+        This input is nominally provided by pysat itself. (default='')
     keep_original_names : bool
         if True then the names as given in the netCDF ICON file
         will be used as is. If False, a preamble is removed. (default=False)

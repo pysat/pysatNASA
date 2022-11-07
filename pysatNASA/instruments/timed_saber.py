@@ -7,17 +7,19 @@ Dynamics (TIMED) satellite.
 
 Properties
 ----------
-platform : string
+platform : str
     'timed'
-name : string
+name : str
     'saber'
-tag : string
+tag : str
     None supported
-inst_id : string
+inst_id : str
     None supported
 
 Note
 ----
+Note on Temperature Errors: https://saber.gats-inc.com/temp_errors.php
+
 SABER "Rules of the Road" for DATA USE
 Users of SABER data are asked to respect the following guidelines
 
@@ -36,9 +38,9 @@ Users of SABER data are asked to respect the following guidelines
   - Pre-prints of publications and conference abstracts should be widely
     distributed to interested parties within the mission and related projects.
 
+
 Warnings
 --------
-- Note on Temperature Errors: http://saber.gats-inc.com/temp_errors.php
 - No cleaning routine
 
 """
@@ -104,8 +106,9 @@ clean = mm_nasa.clean_warn
 # Use the default CDAWeb and pysat methods
 
 # Set the list_files routine
-fname = ''.join(('timed_l2av207_saber_{year:04d}{month:02d}{day:02d}',
-                 '{hour:02d}{minute:02d}_v{version:02d}.cdf'))
+fname = ''.join(('timed_l2a_saber_{year:04d}{month:02d}{day:02d}',
+                 '{hour:02d}{minute:02d}_v{version:02d}-{revision:02d}-',
+                 '{cycle:02d}.cdf'))
 supported_tags = {'': {'': fname}}
 list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags)
@@ -114,7 +117,7 @@ list_files = functools.partial(mm_gen.list_files,
 load = cdw.load
 
 # Set the download routine
-basic_tag = {'remote_dir': ''.join(('/pub/data/timed/saber/level2a_v2_07_cdf',
+basic_tag = {'remote_dir': ''.join(('/pub/data/timed/saber/level2a_cdf',
                                     '/{year:4d}/{month:02d}/')),
              'fname': fname}
 download_tags = {'': {'': basic_tag}}

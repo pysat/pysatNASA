@@ -2,7 +2,7 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
-## [0.0.4] - 2022-XX-XX
+## [0.0.4] - 2022-11-11
 * Update instrument tests with new test class
 * Support xarray datasets through cdflib
 * Preferentially loads data into pandas using pysatCDF if installed
@@ -13,10 +13,19 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   * Fixed a bug in metadata when loading GOLD Nmax data.
   * Fixed a bug in user feedback for `methods.cdaweb.download`
   * Fixed a bug in loading ICON IVM data (added multi_file_day = True)
+  * Allow for array-like OMNI HRO meta data
+  * Fixed date handling for OMNI HRO downloads
+  * Updated filenames for TIMED SABER
 * Maintenance
   * Reduce duplication of code in instrument modules
   * Include flake8 linting of docstrings and style in Github Actions
-  * Update TIMED SEE data to use xarray
+  * Move OMNI HRO custom functions to a methods module
+  * Deprecate OMNI HRO custom functions in instrument module
+  * Update GitHub actions to the latest versions
+  * Added downstream test to test code with pysat RC
+  * Remove deprecated `convert_timestamp_to_datetime` calls
+  * Remove deprecated pandas syntax
+  * Added version cap for xarray 2022.11
 * Documentation
   * New logo added
 

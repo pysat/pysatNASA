@@ -20,17 +20,17 @@ some examples on how to use the routines
 
 pysatNASA uses common Python modules, as well as modules developed by
 and for the Space Physics community.  This module officially supports
-Python 3.7+.
+Python 3.8+.
 
-| Common modules | Community modules |
-| -------------- | ----------------- |
-| beautifulsoup4 | cdflib            |
-| lxml           | pysat>=3.0.2      |
-| netCDF4        |                   |
-| numpy          |                   |
-| pandas         |                   |
-| requests       |                   |
-| xarray         |                   |
+| Common modules   | Community modules |
+| ---------------- | ----------------- |
+| beautifulsoup4   | cdflib            |
+| lxml             | pysat>=3.0.4      |
+| netCDF4          |                   |
+| numpy            |                   |
+| pandas           |                   |
+| requests         |                   |
+| xarray<2022.11   |                   |
 
 ## GitHub Installation
 
@@ -50,7 +50,7 @@ python setup.py install
 
 Note: pre-1.0.0 version
 -----------------------
-pysatNASA is currently in an initial development phase and requires pysat 3.0.0.  
+pysatNASA is currently in an initial development phase and requires pysat 3.0.4.  
 
 # Using with pysat
 
