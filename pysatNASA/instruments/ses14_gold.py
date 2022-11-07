@@ -116,7 +116,7 @@ list_remote_files = functools.partial(cdw.list_remote_files,
                                       supported_tags=download_tags)
 
 
-def load(fnames, tag=None, inst_id=None):
+def load(fnames, tag='', inst_id=''):
     """Load GOLD NMAX data into `xarray.Dataset` and `pysat.Meta` objects.
 
     This routine is called as needed by pysat. It is not intended
@@ -127,12 +127,12 @@ def load(fnames, tag=None, inst_id=None):
     fnames : array-like
         iterable of filename strings, full path, to data files to be loaded.
         This input is nominally provided by pysat itself.
-    tag : string
-        tag name used to identify particular data set to be loaded.
-        This input is nominally provided by pysat itself.
-    inst_id : string
-        Satellite ID used to identify particular data set to be loaded.
-        This input is nominally provided by pysat itself.
+    tag : str
+        Tag name used to identify particular data set to be loaded.
+        This input is nominally provided by pysat itself. (default='')
+    inst_id : str
+        Instrument ID used to identify particular data set to be loaded.
+        This input is nominally provided by pysat itself. (default='')
     **kwargs : extra keywords
         Passthrough for additional keyword arguments specified when
         instantiating an Instrument object. These additional keywords

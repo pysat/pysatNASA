@@ -2,7 +2,7 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
-## [0.0.4] - 2022-XX-XX
+## [0.0.4] - 2022-11-07
 * Update instrument tests with new test class
 * Support xarray datasets through cdflib
 * Preferentially loads data into pandas using pysatCDF if installed
@@ -22,6 +22,10 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   * Move OMNI HRO custom functions to a methods module
   * Deprecate OMNI HRO custom functions in instrument module
   * Update GitHub actions to the latest versions
+  * Added downstream test to test code with pysat RC
+  * Remove deprecated `convert_timestamp_to_datetime` calls
+  * Remove deprecated pandas syntax
+  * Added version cap for xarray 2022.11
 * Documentation
   * New logo added
 
