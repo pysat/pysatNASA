@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Provides non-instrument specific routines for DE2 data"""
+"""Provides non-instrument specific routines for C/NOFS data."""
 
 ackn_str = ' '.join(("The Communication Navigation Outage Forecast System",
                      "(C/NOFS) satellite data is provided through CDAWeb"))

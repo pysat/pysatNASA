@@ -1,12 +1,28 @@
 # -*- coding: utf-8 -*-
-"""Supports the Ion Drift Meter (IDM) instrument on
-Dynamics Explorer 2 (DE2).
+"""The DE2 IDM instrument.
 
-From CDAWeb:
+Supports the Ion Drift Meter (IDM) instrument
+on Dynamics Explorer 2 (DE2).
+
+From CDAWeb (adapted):
+
+This directory gathers data for the IDM instrument that flew on the DE 2
+spacecraft which was launched on 3 August 1981 into an elliptical orbit
+with an altitude range of 300 km to 1000 km and re-entered the atmosphere on
+19 February 1983.
+
+(NSSDC ID: 81-070B-06D)
+This data set provides the cross track ion drift with a time resolution of
+125 milli-seconds for the time period from Aug 15, 1981 to Feb 16, 1983. The
+ASCII version was generated at NSSDC from the originally PI-submitted binary
+data.
 
 
 References
 ----------
+Heelis, R. A., W. B. Hanson, C. R. Lippincott, D. R. Zuccaro, L. L. Harmon,
+B. J. Holt, J. E. Doherty, R. A. Power, The ion drift meter for Dynamics
+Explorer-B, Space Sci. Instrum., 5, 511, 1981.
 
 Properties
 ----------
@@ -23,28 +39,25 @@ Warnings
 --------
 - Currently no cleaning routine.
 
-Authors
--------
-J. Klenzing
-
 """
 
 import datetime as dt
 import functools
-import warnings
 
-from pysat import logger
 from pysat.instruments.methods import general as mm_gen
-from pysatNASA.instruments.methods import de2 as mm_de2
+
 from pysatNASA.instruments.methods import cdaweb as cdw
+from pysatNASA.instruments.methods import de2 as mm_de2
+from pysatNASA.instruments.methods import general as mm_nasa
 
 # ----------------------------------------------------------------------------
 # Instrument attributes
 
 platform = 'de2'
 name = 'idm'
-tags = {'': '2 sec cadence IDM data'}  # this is the default cadence
+tags = {'': '1 s cadence Neutral Atmosphere Composition Spectrometer data'}
 inst_ids = {'': ['']}
+pandas_format = False
 
 # ----------------------------------------------------------------------------
 # Instrument test attributes
@@ -55,34 +68,11 @@ _test_dates = {'': {'': dt.datetime(1983, 1, 1)}}
 # Instrument methods
 
 
-def init(self):
-    """Initializes the Instrument object with instrument specific values.
+# Use standard init routine
+init = functools.partial(mm_nasa.init, module=mm_de2, name=name)
 
-    Runs once upon instantiation.
-
-    """
-
-    logger.info(mm_de2.ackn_str)
-    self.acknowledgements = mm_de2.ackn_str
-    self.references = mm_de2.refs['idm']
-    return
-
-
-def clean(self):
-    """Routine to return DE2 IDM data cleaned to the specified level
-
-    Note
-    ----
-    'clean' - Not specified
-    'dusty' - Not specified
-    'dirty' - Not specified
-    'none'  No cleaning applied, routine not called in this case.
-
-    """
-    warnings.warn('No cleaning routines available for DE2 IDM')
-
-    return
-
+# No cleaning, use standard warning function instead
+clean = mm_nasa.clean_warn
 
 # ----------------------------------------------------------------------------
 # Instrument functions
@@ -95,16 +85,31 @@ supported_tags = {'': {'': fname}}
 list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags)
 
-# Set the load routine
-load = cdw.load
+# Use the default CDAWeb method
+load = functools.partial(cdw.load, pandas_format=pandas_format)
 
-# Set the download routine
+
+def preprocess(self):
+    """Apply DE2 IDM default attributes.
+
+    Note
+    ----
+    Corrects the epoch names
+
+    """
+
+    self.data = self.data.rename({'record0': 'Epoch_velZ',
+                                  'record1': 'Epoch_velY'})
+    return
+
+
+# Support download routine
 basic_tag = {'remote_dir': ''.join(('/pub/data/de/de2/plasma_idm',
                                     '/vion250ms_cdaweb/{year:4d}/')),
              'fname': fname}
 download_tags = {'': {'': basic_tag}}
 download = functools.partial(cdw.download, supported_tags=download_tags)
 
-# Set the list_remote_files routine
+# Support listing files currently on CDAWeb
 list_remote_files = functools.partial(cdw.list_remote_files,
                                       supported_tags=download_tags)

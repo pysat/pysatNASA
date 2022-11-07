@@ -40,11 +40,12 @@ Warnings
 import datetime as dt
 import functools
 import pandas as pds
-import warnings
 
-from pysat import logger
 from pysat.instruments.methods import general as mm_gen
+from pysat import logger
+
 from pysatNASA.instruments.methods import cdaweb as cdw
+from pysatNASA.instruments.methods import general as mm_nasa
 
 # ----------------------------------------------------------------------------
 # Instrument attributes
@@ -64,13 +65,13 @@ _test_dates = {'': {'': dt.datetime(2009, 1, 1)}}
 
 
 def init(self):
-    """Initializes the Instrument object with instrument specific values.
+    """Initialize the Instrument object with instrument specific values.
 
     Runs once upon instantiation.
 
     """
 
-    rules_url = 'http://www.timed.jhuapl.edu/WWW/scripts/mdc_rules.pl'
+    rules_url = 'https://www.timed.jhuapl.edu/WWW/scripts/mdc_rules.pl'
     ackn_str = ' '.join(('Please see the Rules of the Road at', rules_url))
     logger.info(ackn_str)
     self.acknowledgements = ackn_str
@@ -86,17 +87,8 @@ def init(self):
     return
 
 
-def clean(self):
-    """Routine to return TIMED SEE data cleaned to the specified level
-
-    Note
-    ----
-    No cleaning currently available.
-
-    """
-    warnings.warn('no cleaning routines available for TIMED SEE data')
-
-    return
+# No cleaning, use standard warning function instead
+clean = mm_nasa.clean_warn
 
 
 # ----------------------------------------------------------------------------

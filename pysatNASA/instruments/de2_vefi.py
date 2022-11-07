@@ -1,15 +1,25 @@
-# -*- coding: utf-8 -*-
-"""Supports the Vector Electric Field Instrument (VEFI) on
-Dynamics Explorer 2 (DE2).
+"""Module for the DE2 VEFI instrument.
 
-From CDAWeb:
+From CDAWeb (adpated):
+This directory gathers data for the VEFI instrument that flew on the DE 2
+spacecraft which was launched on 3 August 1981 into an elliptical orbit with
+an altitude range of 300 km to 1000 km and re-entered the atmosphere on
+19 February 1983.
 
+dca   (NSSDC ID: 81-070B-02C)
 
+This data set contains the averaged (2 samples per second) DC electric fields in
+spacecraft coordinates and orbit information in ASCII format.
 
+ac   (NSSDC ID: 81-070B-02E)
+
+This data set contains the averaged AC electric field data (1 or 2 points per
+second) and orbit information.
 
 References
 ----------
-
+Maynard, N. C., E. A. Bielecki, H. G. Burdick, Instrumentation for vector
+electric field measurements from DE-B, Space Sci. Instrum., 5, 523, 1981.
 
 Properties
 ----------
@@ -28,20 +38,15 @@ Warnings
 - Currently no cleaning routine.
 
 
-Authors
--------
-J. Klenzing
-
 """
 
 import datetime as dt
 import functools
-import warnings
 
-from pysat import logger
 from pysat.instruments.methods import general as mm_gen
-from pysatNASA.instruments.methods import de2 as mm_de2
 from pysatNASA.instruments.methods import cdaweb as cdw
+from pysatNASA.instruments.methods import de2 as mm_de2
+from pysatNASA.instruments.methods import general as mm_nasa
 
 # ----------------------------------------------------------------------------
 # Instrument attributes
@@ -57,38 +62,15 @@ inst_ids = {'': ['dca', 'ac']}
 
 _test_dates = {'': {tag: dt.datetime(1983, 1, 1) for tag in tags}}
 
+
 # ----------------------------------------------------------------------------
 # Instrument methods
 
+# Use standard init routine
+init = functools.partial(mm_nasa.init, module=mm_de2, name=name)
 
-def init(self):
-    """Initializes the Instrument object with instrument specific values.
-
-    Runs once upon instantiation.
-
-    """
-
-    logger.info(mm_de2.ackn_str)
-    self.acknowledgements = mm_de2.ackn_str
-    self.references = mm_de2.refs['vefi']
-    return
-
-
-def clean(self):
-    """Routine to return DE2 VEFI data cleaned to the specified level
-
-    Note
-    ----
-    'clean' - Not specified
-    'dusty' - Not specified
-    'dirty' - Not specified
-    'none'  No cleaning applied, routine not called in this case.
-
-    """
-    warnings.warn('No cleaning routines available for DE2 VEFI')
-
-    return
-
+# No cleaning, use standard warning function instead
+clean = mm_nasa.clean_warn
 
 # ----------------------------------------------------------------------------
 # Instrument functions

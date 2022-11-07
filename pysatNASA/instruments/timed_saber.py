@@ -1,17 +1,19 @@
 # -*- coding: utf-8 -*-
-"""Supports the Sounding of the Atmosphere using Broadband Emission Radiometry
+"""The TIMED SABER instrument.
+
+Supports the Sounding of the Atmosphere using Broadband Emission Radiometry
 (SABER) instrument on the Thermosphere Ionosphere Mesosphere Energetics
 Dynamics (TIMED) satellite.
 
 Properties
 ----------
-platform : string
+platform : str
     'timed'
-name : string
+name : str
     'saber'
-tag : string
+tag : str
     None supported
-inst_id : string
+inst_id : str
     None supported
 
 Note
@@ -36,24 +38,20 @@ Users of SABER data are asked to respect the following guidelines
 
 Warnings
 --------
-- Note on Temperature Errors: http://saber.gats-inc.com/temp_errors.php
+- Note on Temperature Errors: https://saber.gats-inc.com/temp_errors.php
 - No cleaning routine
-
-
-Authors
--------
-J. Klenzing, 4 March 2019
 
 """
 
 import datetime as dt
 import functools
-import warnings
 
 # CDAWeb methods prewritten for pysat
-from pysat import logger
 from pysat.instruments.methods import general as mm_gen
+from pysat import logger
+
 from pysatNASA.instruments.methods import cdaweb as cdw
+from pysatNASA.instruments.methods import general as mm_nasa
 
 # ----------------------------------------------------------------------------
 # Instrument attributes
@@ -80,13 +78,13 @@ _test_dates = {'': {'': dt.datetime(2019, 1, 1)}}
 
 
 def init(self):
-    """Initializes the Instrument object with instrument specific values.
+    """Initialize the Instrument object with instrument specific values.
 
     Runs once upon instantiation.
 
     """
 
-    rules_url = 'http://saber.gats-inc.com/data_services.php'
+    rules_url = 'https://saber.gats-inc.com/data_services.php'
     ackn_str = ' '.join(('Please see the Rules of the Road at', rules_url))
 
     logger.info(ackn_str)
@@ -96,23 +94,8 @@ def init(self):
     return
 
 
-def clean(self):
-    """Routine to return TIMED SABER data cleaned to the specified level
-
-    Note
-    ----
-    'clean' All parameters should be good, suitable for statistical and
-            case studies
-    'dusty' All paramers should generally be good though same may
-            not be great
-    'dirty' There are data areas that have issues, data should be used
-            with caution
-    'none'  No cleaning applied, routine not called in this case.
-
-    """
-    warnings.warn('no cleaning routine available for TIMED SABER')
-
-    return
+# No cleaning, use standard warning function instead
+clean = mm_nasa.clean_warn
 
 
 # ----------------------------------------------------------------------------
@@ -121,8 +104,9 @@ def clean(self):
 # Use the default CDAWeb and pysat methods
 
 # Set the list_files routine
-fname = ''.join(('timed_l2av207_saber_{year:04d}{month:02d}{day:02d}',
-                 '{hour:02d}{minute:02d}_v{version:02d}.cdf'))
+fname = ''.join(('timed_l2a_saber_{year:04d}{month:02d}{day:02d}',
+                 '{hour:02d}{minute:02d}_v{version:02d}-{revision:02d}-',
+                 '{cycle:02d}.cdf'))
 supported_tags = {'': {'': fname}}
 list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags)
@@ -131,7 +115,7 @@ list_files = functools.partial(mm_gen.list_files,
 load = cdw.load
 
 # Set the download routine
-basic_tag = {'remote_dir': ''.join(('/pub/data/timed/saber/level2a_v2_07_cdf',
+basic_tag = {'remote_dir': ''.join(('/pub/data/timed/saber/level2a_cdf',
                                     '/{year:4d}/{month:02d}/')),
              'fname': fname}
 download_tags = {'': {'': basic_tag}}

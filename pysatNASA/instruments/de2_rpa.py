@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
-"""Supports the Retarding Potential Analyzer (RPA) instrument on
-Dynamics Explorer 2 (DE2).
+"""Module for the DE2 RPA instrument.
+
+Supports the Retarding Potential Analyzer (RPA) instrument on Dynamics
+Explorer 2 (DE2).
 
 From CDAWeb:
 
@@ -24,7 +26,7 @@ of the ion drift velocity; the ion and electron concentration irregularity
 spectrum; and the concentration of H+, He+, O+, and Fe+, and of molecular ions
 near perigee.
 
-It includes the DUCT portion of the high resolutiondata from the Dynamics
+It includes the DUCT portion of the high resolution data from the Dynamics
 Explorer 2 (DE-2) Retarding Potential Analyzer (RPA) for the whole DE-2 mission
 time period in ASCII format. This version was generated at NSSDC from the
 PI-provided binary data (SPIO-00232). The DUCT files include RPA measurements
@@ -55,20 +57,16 @@ Warnings
 --------
 - Currently no cleaning routine.
 
-Authors
--------
-J. Klenzing
-
 """
 
 import datetime as dt
 import functools
-import warnings
 
-from pysat import logger
 from pysat.instruments.methods import general as mm_gen
-from pysatNASA.instruments.methods import de2 as mm_de2
+
 from pysatNASA.instruments.methods import cdaweb as cdw
+from pysatNASA.instruments.methods import de2 as mm_de2
+from pysatNASA.instruments.methods import general as mm_nasa
 
 # ----------------------------------------------------------------------------
 # Instrument attributes
@@ -88,34 +86,11 @@ _test_dates = {'': {tag: dt.datetime(1983, 1, 1) for tag in tags}}
 # Instrument methods
 
 
-def init(self):
-    """Initializes the Instrument object with instrument specific values.
+# Use standard init routine
+init = functools.partial(mm_nasa.init, module=mm_de2, name=name)
 
-    Runs once upon instantiation.
-
-    """
-
-    logger.info(mm_de2.ackn_str)
-    self.acknowledgements = mm_de2.ackn_str
-    self.references = mm_de2.refs['rpa']
-    return
-
-
-def clean(self):
-    """Routine to return DE2 RPA data cleaned to the specified level
-
-    Note
-    ----
-    'clean' - Not specified
-    'dusty' - Not specified
-    'dirty' - Not specified
-    'none'  No cleaning applied, routine not called in this case.
-
-    """
-    warnings.warn('No cleaning routines available for DE2 RPA')
-
-    return
-
+# No cleaning, use standard warning function instead
+clean = mm_nasa.clean_warn
 
 # ----------------------------------------------------------------------------
 # Instrument functions

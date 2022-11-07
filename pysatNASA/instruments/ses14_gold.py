@@ -1,4 +1,6 @@
-"""Supports the Nmax data product from the Global Observations of the Limb and
+"""Module for the SES14 GOLD instrument.
+
+Supports the Nmax data product from the Global Observations of the Limb and
 Disk (GOLD) satellite.  Accesses data in netCDF format.
 
 Properties
@@ -27,22 +29,19 @@ Examples
     nmax.download(dt.datetime(2020, 1, 1), dt.datetime(2020, 1, 31))
     nmax.load(2020, 1)
 
-
-Authors
----------
-Jeff Klenzing, Oct 06, 2020, Goddard Space Flight Center
-
 """
 
 import datetime as dt
 import functools
-import warnings
+import numpy as np
 
-from pysat import logger
 from pysat.instruments.methods import general as ps_gen
-from pysat.utils import load_netcdf4
-from pysatNASA.instruments.methods import gold as mm_gold
+from pysat import logger
+from pysat.utils.io import load_netcdf
+
 from pysatNASA.instruments.methods import cdaweb as cdw
+from pysatNASA.instruments.methods import general as mm_nasa
+from pysatNASA.instruments.methods import gold as mm_gold
 
 # ----------------------------------------------------------------------------
 # Instrument attributes
@@ -64,7 +63,7 @@ _test_dates = {'': {'nmax': dt.datetime(2020, 1, 1)}}
 
 
 def init(self):
-    """Initializes the Instrument object with instrument specific values.
+    """Initialize the Instrument object with instrument specific values.
 
     Runs once upon instantiation.
 
@@ -87,25 +86,8 @@ def init(self):
     return
 
 
-def clean(self):
-    """Provides data cleaning based upon clean_level.
-
-    Routine is called by pysat, and not by the end user directly.
-
-    Parameters
-    -----------
-    self : pysat.Instrument
-        Instrument class object, whose attribute clean_level is used to return
-        the desired level of data selectivity.
-
-    Note
-    ----
-        Supports 'clean', 'dusty', 'dirty', 'none'
-
-    """
-
-    warnings.warn("Cleaning actions for GOLD Nmax are not yet implemented.")
-    return
+# No cleaning, use standard warning function instead
+clean = mm_nasa.clean_warn
 
 
 # ----------------------------------------------------------------------------
@@ -134,8 +116,8 @@ list_remote_files = functools.partial(cdw.list_remote_files,
                                       supported_tags=download_tags)
 
 
-def load(fnames, tag=None, inst_id=None):
-    """Loads GOLD NMAX data using pysat into xarray
+def load(fnames, tag='', inst_id=''):
+    """Load GOLD NMAX data into `xarray.Dataset` and `pysat.Meta` objects.
 
     This routine is called as needed by pysat. It is not intended
     for direct user interaction.
@@ -145,10 +127,10 @@ def load(fnames, tag=None, inst_id=None):
     fnames : array-like
         iterable of filename strings, full path, to data files to be loaded.
         This input is nominally provided by pysat itself.
-    tag : string
+    tag : str
         tag name used to identify particular data set to be loaded.
         This input is nominally provided by pysat itself.
-    inst_id : string
+    inst_id : str
         Satellite ID used to identify particular data set to be loaded.
         This input is nominally provided by pysat itself.
     **kwargs : extra keywords
@@ -174,22 +156,48 @@ def load(fnames, tag=None, inst_id=None):
     --------
     ::
 
-        inst = pysat.Instrument('gold', 'nmax')
+        inst = pysat.Instrument('ses14', 'gold', tag='nmax')
         inst.load(2019, 1)
 
     """
 
-    data, meta = load_netcdf4(fnames, pandas_format=pandas_format)
+    labels = {'units': ('Units', str), 'name': ('Long_Name', str),
+              'notes': ('Var_Notes', str), 'desc': ('CatDesc', str),
+              'plot': ('plot', str), 'axis': ('axis', str),
+              'scale': ('scale', str),
+              'min_val': ('Valid_Min', np.float64),
+              'max_val': ('Valid_Max', np.float64),
+              'fill_val': ('fill', np.float64)}
+
+    # Generate custom meta translation table. When left unspecified the default
+    # table handles the multiple values for fill. We must recreate that
+    # functionality in our table. The targets for meta_translation should
+    # map to values in `labels` above.
+    meta_translation = {'FIELDNAM': 'plot', 'LABLAXIS': 'axis',
+                        'ScaleTyp': 'scale', 'VALIDMIN': 'Valid_Min',
+                        'Valid_Min': 'Valid_Min', 'VALIDMAX': 'Valid_Max',
+                        'Valid_Max': 'Valid_Max', '_FillValue': 'fill',
+                        'FillVal': 'fill', 'TIME_BASE': 'time_base'}
+
+    data, meta = load_netcdf(fnames, pandas_format=pandas_format,
+                             epoch_name='nscans', labels=labels,
+                             meta_translation=meta_translation,
+                             drop_meta_labels='FILLVAL')
+
     if tag == 'nmax':
         # Add time coordinate from scan_start_time
-        data['time'] = ('nscans',
-                        [dt.datetime.strptime(str(val), "b'%Y-%m-%dT%H:%M:%SZ'")
-                         for val in data['scan_start_time'].values])
-        data = data.swap_dims({'nscans': 'time'})
+        data['time'] = [dt.datetime.strptime(str(val), "b'%Y-%m-%dT%H:%M:%SZ'")
+                        for val in data['scan_start_time'].values]
+
+        # Update coordinates with dimensional data
         data = data.assign_coords({'nlats': data['nlats'],
                                    'nlons': data['nlons'],
                                    'nmask': data['nmask'],
                                    'channel': data['channel'],
                                    'hemisphere': data['hemisphere']})
+        meta['time'] = {meta.labels.notes: 'Converted from scan_start_time'}
+        meta['nlats'] = {meta.labels.notes: 'Index for latitude values'}
+        meta['nlons'] = {meta.labels.notes: 'Index for longitude values'}
+        meta['nmask'] = {meta.labels.notes: 'Index for mask values'}
 
     return data, meta

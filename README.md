@@ -1,9 +1,38 @@
-# pysatNASA: pysat support for NASA instruments
+<div align="left">
+        <img height="0" width="0px">
+        <img width="20%" src="https://raw.githubusercontent.com/pysat/pysatNASA/main/docs/figures/logo.png" alt="pysatNASA" title="pysatNASA" </img>
+</div>
+
+# pysatNASA: pysat support for NASA Space Science instruments
+[![PyPI Package latest release](https://img.shields.io/pypi/v/pysatNASA.svg)](https://pypi.python.org/pypi/pysatNASA)
 [![Build Status](https://github.com/github/docs/actions/workflows/main.yml/badge.svg)](https://github.com/github/docs/actions/workflows/main.yml/badge.svg)
 [![Coverage Status](https://coveralls.io/repos/github/pysat/pysatNASA/badge.svg?branch=main)](https://coveralls.io/github/pysat/pysatNASA?branch=main)
+
+[![Documentation Status](https://readthedocs.org/projects/pysatnasa/badge/?version=latest)](https://pysatnasa.readthedocs.io/en/latest/?badge=latest)
 [![DOI](https://zenodo.org/badge/287387638.svg)](https://zenodo.org/badge/latestdoi/287387638)
 
 # Installation
+
+The following instructions provide a guide for installing pysatNASA and give
+some examples on how to use the routines
+
+### Prerequisites
+
+pysatNASA uses common Python modules, as well as modules developed by
+and for the Space Physics community.  This module officially supports
+Python 3.8+.
+
+| Common modules   | Community modules |
+| ---------------- | ----------------- |
+| beautifulsoup4   | cdflib            |
+| lxml             | pysat>=3.0.4      |
+| netCDF4          |                   |
+| numpy            |                   |
+| pandas           |                   |
+| requests         |                   |
+| xarray           |                   |
+
+## GitHub Installation
 
 Currently, the main way to get pysatNASA is through github.
 
@@ -20,15 +49,8 @@ python setup.py install
 ```
 
 Note: pre-1.0.0 version
-------------------
-pysatNASA is currently in an initial development phase.  Much of the API is being built off of the upcoming pysat 3.0.0 software in order to streamline the usage and test coverage.  This version of pysat is planned for release later this year.  Currently, you can access the develop version of this through github:
-```
-git clone https://github.com/pysat/pysat.git
-cd pysat
-git checkout develop-3
-python setup.py install
-```
-It should be noted that this is a working branch and is subject to change.
+-----------------------
+pysatNASA is currently in an initial development phase and requires pysat 3.0.4.  
 
 # Using with pysat
 
@@ -45,6 +67,6 @@ Another way to use the instruments in an external repository is to register the 
 ```
 import pysat
 
-pysat.utils.registry.register('pysatNASA.instruments.icon_ivm')
+pysat.utils.registry.register(['pysatNASA.instruments.icon_ivm'])
 ivm = pysat.Instrument('icon', 'ivm', inst_id='a')
 ```
