@@ -105,7 +105,6 @@ def preprocess(self, keep_original_names=False):
 
     """
 
-    mm_gen.convert_timestamp_to_datetime(self, sec_mult=1.0e-3)
     if not keep_original_names:
         mm_icon.remove_preamble(self)
     return
@@ -295,11 +294,11 @@ def load(fnames, tag='', inst_id='', keep_original_names=False):
         iterable of filename strings, full path, to data files to be loaded.
         This input is nominally provided by pysat itself.
     tag : str
-        tag name used to identify particular data set to be loaded.
-        This input is nominally provided by pysat itself. (default=None)
+        Tag name used to identify particular data set to be loaded.
+        This input is nominally provided by pysat itself. (default='')
     inst_id : str
-        Satellite ID used to identify particular data set to be loaded.
-        This input is nominally provided by pysat itself. (default=None)
+        Instrument ID used to identify particular data set to be loaded.
+        This input is nominally provided by pysat itself. (default='')
     keep_original_names : bool
         if True then the names as given in the netCDF ICON file
         will be used as is. If False, a preamble is removed. (default=False)

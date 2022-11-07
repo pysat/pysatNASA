@@ -42,9 +42,9 @@ def load(fnames, tag='', inst_id='', file_cadence=dt.timedelta(days=1),
     fnames : pandas.Series
         Series of filenames
     tag : str
-        tag or None (default='')
+        Data product tag (default='')
     inst_id : str
-        satellite id or None (default='')
+        Instrument ID (default='')
     file_cadence : dt.timedelta or pds.DateOffset
         pysat assumes a daily file cadence, but some instrument data files
         contain longer periods of time.  This parameter allows the specification
@@ -125,9 +125,9 @@ def load_pandas(fnames, tag='', inst_id='', file_cadence=dt.timedelta(days=1),
     fnames : pandas.Series
         Series of filenames
     tag : str
-        tag or None (default='')
+        Data product tag (default='')
     inst_id : str
-        satellite id or None (default='')
+        Instrument ID (default='')
     file_cadence : dt.timedelta or pds.DateOffset
         pysat assumes a daily file cadence, but some instrument data files
         contain longer periods of time.  This parameter allows the specification
@@ -240,9 +240,9 @@ def load_xarray(fnames, tag='', inst_id='',
     fnames : pandas.Series
         Series of filenames
     tag : str
-        tag or (default='')
+        Data product tag (default='')
     inst_id : str
-        satellite id (default='')
+        Instrument ID (default='')
     labels : dict
         Dict where keys are the label attribute names and the values are tuples
         that have the label values and value types in that order.
@@ -408,9 +408,9 @@ def download(date_array, tag='', inst_id='', supported_tags=None,
     date_array : array-like
         Array of datetimes to download data for. Provided by pysat.
     tag : str
-        tag or None (default='')
+        Data product tag (default='')
     inst_id : str
-        satellite id or None (default='')
+        Instrument ID (default='')
     supported_tags : dict
         dict of dicts. Keys are supported tag names for download. Value is
         a dict with 'remote_dir', 'fname'. Inteded to be pre-set with
@@ -455,7 +455,7 @@ def download(date_array, tag='', inst_id='', supported_tags=None,
                                      stop=date_array[-1])
 
     # Download only requested files that exist remotely
-    for date, fname in remote_files.iteritems():
+    for date, fname in remote_files.items():
         # Format files for specific dates and download location
         formatted_remote_dir = remote_dir.format(year=date.year,
                                                  month=date.month,
@@ -500,11 +500,9 @@ def list_remote_files(tag='', inst_id='', start=None, stop=None,
     Parameters
     ----------
     tag : str
-        Denotes type of file to load.  Accepted types are <tag strings>.
-        (default='')
+        Data product tag (default='')
     inst_id : str
-        Specifies the satellite ID for a constellation.
-        (default='')
+        Instrument ID (default='')
     start : dt.datetime or NoneType
         Starting time for file list. A None value will start with the first
         file found.
