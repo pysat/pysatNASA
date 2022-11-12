@@ -457,12 +457,21 @@ def download(date_array, tag='', inst_id='', supported_tags=None,
     # Download only requested files that exist remotely
     for date, fname in remote_files.items():
         # Format files for specific dates and download location
-        formatted_remote_dir = remote_dir.format(year=date.year,
-                                                 month=date.month,
-                                                 day=date.day,
-                                                 hour=date.hour,
-                                                 min=date.minute,
-                                                 sec=date.second)
+        # Year and day found in remote_dir: day is assumed to be day of year
+        if 'day' in remote_dir and 'month' not in remote_dir:
+            doy = date.timetuple().tm_yday
+            formatted_remote_dir = remote_dir.format(year=date.year,
+                                                     day=doy,
+                                                     hour=date.hour,
+                                                     min=date.minute,
+                                                     sec=date.second)
+        else:
+            formatted_remote_dir = remote_dir.format(year=date.year,
+                                                     month=date.month,
+                                                     day=date.day,
+                                                     hour=date.hour,
+                                                     min=date.minute,
+                                                     sec=date.second)
         remote_path = '/'.join((remote_url.strip('/'),
                                 formatted_remote_dir.strip('/'),
                                 fname))
@@ -599,17 +608,31 @@ def list_remote_files(tag='', inst_id='', start=None, stop=None,
         stop = dt.datetime.now() if (stop is None) else stop
 
         if 'year' in search_dir['keys']:
+            # Year, month found: assume monthly cadence of directory format
             if 'month' in search_dir['keys']:
                 search_times = pds.date_range(start,
                                               stop + pds.DateOffset(months=1),
                                               freq='M')
+            # Year, day found: assume daily cadence of directory format
+            elif 'day' in search_dir['keys']:
+                search_times = pds.date_range(start,
+                                              stop + pds.DateOffset(days=1),
+                                              freq='D')
+            # Year found alone: assume yearly cadence of directory format
             else:
                 search_times = pds.date_range(start,
                                               stop + pds.DateOffset(years=1),
                                               freq='Y')
+
             url_list = []
             for time in search_times:
-                subdir = format_dir.format(year=time.year, month=time.month)
+                if 'month' in search_dir['keys']:
+                    subdir = format_dir.format(year=time.year, month=time.month)
+                elif 'day' in search_dir['keys']:
+                    subdir = format_dir.format(year=time.year,
+                                               day=time.timetuple().tm_yday)
+                else:
+                    subdir = format_dir.format(year=time.year)
                 url_list.append('/'.join((remote_url, subdir)))
     try:
         for top_url in url_list:

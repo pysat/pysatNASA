@@ -130,6 +130,14 @@ SES14 GOLD
 .. automodule:: pysatNASA.instruments.ses14_gold
    :members:
 
+.. _timed_guvi:
+
+TIMED GUVI
+----------
+
+.. automodule:: pysatNASA.instruments.timed_guvi
+   :members:
+
 .. _timed_saber:
 
 TIMED SABER
