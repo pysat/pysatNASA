@@ -22,12 +22,10 @@ inst_id
 
 Note
 ----
-No `inst_id` required.
 
 Warnings
 --------
 Currently no cleaning routine.
-
 
 Example
 -------
