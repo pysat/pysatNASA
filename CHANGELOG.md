@@ -2,6 +2,13 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.1.0] - 2022-XX-XX
+* New Instruments
+* ACE EPAM
+* ACE MAG
+* ACE SIS
+* ACE SWEPAM
+
 ## [0.0.4] - 2022-11-07
 * Update instrument tests with new test class
 * Support xarray datasets through cdflib
@@ -9,10 +16,6 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 * Adds pysatCDF to optional requirements invoked via '[all]' option at installation
 * New Instruments
   * JPL GPS ROTI
-  * ACE EPAM
-  * ACE MAG
-  * ACE SIS
-  * ACE SWEPAM
 * Bug Fixes
   * Fixed a bug in metadata when loading GOLD Nmax data.
   * Fixed a bug in user feedback for `methods.cdaweb.download`
