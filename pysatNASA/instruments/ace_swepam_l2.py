@@ -45,7 +45,7 @@ from pysatNASA.instruments.methods import general as mm_nasa
 # Instrument attributes
 
 platform = 'ace'
-name = 'swepam'
+name = 'swepam_l2'
 tags = {'': ''}
 inst_ids = {id: [''] for id in ['h0', 'h2', 'k0', 'k1']}
 pandas_format = False
