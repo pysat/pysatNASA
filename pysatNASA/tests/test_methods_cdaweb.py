@@ -13,14 +13,14 @@ from pysatNASA.instruments.methods import cdaweb as cdw
 class TestCDAWeb(object):
     """Unit tests for `pysat.instrument.methods.cdaweb`."""
 
-    def setup(self):
+    def setup_method(self):
         """Set up the unit test environment for each method."""
 
         self.download_tags = pysatNASA.instruments.cnofs_plp.download_tags
         self.kwargs = {'tag': None, 'inst_id': None}
         return
 
-    def teardown(self):
+    def teardown_method(self):
         """Clean up the unit test environment after each method."""
 
         del self.download_tags, self.kwargs

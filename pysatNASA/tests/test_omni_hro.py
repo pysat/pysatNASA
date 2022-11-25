@@ -15,7 +15,7 @@ from pysatNASA.instruments import omni_hro as depr_omni
 class TestOMNICustom(object):
     """Unit tests for `pysat.instrument.methods.omni`."""
 
-    def setup(self):
+    def setup_method(self):
         """Set up the unit test environment for each method."""
 
         # Load a test instrument
@@ -25,10 +25,9 @@ class TestOMNICustom(object):
         self.test_inst.load(2009, 1)
 
         # Recast time in minutes rather than seconds
-        self.test_inst.data.index = \
-            pds.Series([t + dt.timedelta(seconds=(60 - i))
-                        + dt.timedelta(minutes=i)
-                        for i, t in enumerate(self.test_inst.data.index)])
+        self.test_inst.data.index = pds.Series(
+            [t + dt.timedelta(seconds=(60 - i)) + dt.timedelta(minutes=i)
+             for i, t in enumerate(self.test_inst.data.index)])
 
         # Add IMF data
         self.test_inst['BX_GSM'] = pds.Series([3.17384966, 5.98685138,
@@ -63,7 +62,7 @@ class TestOMNICustom(object):
 
         return
 
-    def teardown(self):
+    def teardown_method(self):
         """Clean up the unit test environment after each method."""
 
         del self.test_inst
@@ -168,7 +167,7 @@ class TestOMNICustom(object):
 class TestDeprecation(object):
     """Unit tests for deprecation warnings in `pysat.instrument.omni_hro`."""
 
-    def setup(self):
+    def setup_method(self):
         """Set up the unit test environment for each method."""
 
         # Use an empty instrument to test redirect
@@ -178,7 +177,7 @@ class TestDeprecation(object):
 
         return
 
-    def teardown(self):
+    def teardown_method(self):
         """Clean up test environment after each method."""
 
         del self.test_inst

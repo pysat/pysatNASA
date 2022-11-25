@@ -30,7 +30,7 @@ Python 3.8+.
 | numpy            |                   |
 | pandas           |                   |
 | requests         |                   |
-| xarray           |                   |
+| xarray<2022.11   |                   |
 
 ## GitHub Installation
 
@@ -50,7 +50,7 @@ python setup.py install
 
 Note: pre-1.0.0 version
 -----------------------
-pysatNASA is currently in an initial development phase and requires pysat 3.0.0.  
+pysatNASA is currently in an initial development phase and requires pysat 3.0.4.  
 
 # Using with pysat
 
