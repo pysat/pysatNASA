@@ -43,7 +43,7 @@ from pysatNASA.instruments.methods import general as mm_nasa
 # Instrument attributes
 
 platform = 'ace'
-name = 'sis'
+name = 'sis_l2'
 tags = {'': ''}
 inst_ids = {id: [''] for id in ['h1', 'h2', 'k0']}
 pandas_format = False
