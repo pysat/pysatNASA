@@ -1,9 +1,13 @@
 # -*- coding: utf-8 -*-
-"""Module for the ACE EPAM instrument.
+"""Module for the Advanced Composition Explorer (ACE) EPAM instrument.
 
 References
 ----------
-????
+- Stone, E., Frandsen, A., Mewaldt, R. et al. The Advanced Composition Explorer.
+  Space Science Reviews 86, 1–22 (1998). https://doi.org/10.1023/A:1005082526237
+- Gold, R., Krimigis, S., Hawkins, S. et al. Electron, Proton, and Alpha Monitor
+  on the Advanced Composition Explorer spacecraft. Space Science Reviews 86,
+  541–562 (1998). https://doi.org/10.1023/A:1005088115759
 
 Properties
 ----------
@@ -18,7 +22,9 @@ inst_id
 
 Note
 ----
-Level 1 ACE data is maintained at pysatSpaceWeather.
+- Level 1 ACE data is maintained at pysatSpaceWeather.
+- Release notes at
+  https://cdaweb.gsfc.nasa.gov/pub/data/ace/epam/epam_level2_release_notes.txt
 
 Warnings
 --------

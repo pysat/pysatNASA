@@ -1,9 +1,13 @@
 # -*- coding: utf-8 -*-
-"""Module for the ACE SIS instrument.
+"""Module for the Advanced Composition Explorer (ACE) SIS instrument.
 
 References
 ----------
-????
+- Stone, E., Frandsen, A., Mewaldt, R. et al. The Advanced Composition Explorer.
+  Space Science Reviews 86, 1–22 (1998). https://doi.org/10.1023/A:1005082526237
+- Stone, E., Cohen, C., Cook, W. et al. The Solar Isotope Spectrometer for the
+  Advanced Composition Explorer. Space Science Reviews 86, 357–408 (1998).
+  https://doi.org/10.1023/A:1005027929871
 
 Properties
 ----------
@@ -18,7 +22,7 @@ inst_id
 
 Note
 ----
-Level 1 ACE data is maintained at pysatSpaceWeather.
+- Level 1 ACE data is maintained at pysatSpaceWeather.
 
 Warnings
 --------

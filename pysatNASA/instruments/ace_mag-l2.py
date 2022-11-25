@@ -1,9 +1,13 @@
 # -*- coding: utf-8 -*-
-"""Module for the ACE MAG instrument.
+"""Module for the Advanced Composition Explorer (ACE) MAG instrument.
 
 References
 ----------
-????
+- Stone, E., Frandsen, A., Mewaldt, R. et al. The Advanced Composition Explorer.
+  Space Science Reviews 86, 1–22 (1998). https://doi.org/10.1023/A:1005082526237
+- Smith, C., L'Heureux, J., Ness, N. et al. The ACE Magnetic Fields Experiment.
+  Space Science Reviews 86, 613–632 (1998).
+  https://doi.org/10.1023/A:1005092216668
 
 Properties
 ----------
@@ -18,7 +22,9 @@ inst_id
 
 Note
 ----
-Level 1 ACE data is maintained at pysatSpaceWeather.
+- Level 1 ACE data is maintained at pysatSpaceWeather.
+- Release notes at
+  https://cdaweb.gsfc.nasa.gov/pub/data/ace/mag/mag_level2_release_notes.txt
 
 Warnings
 --------
