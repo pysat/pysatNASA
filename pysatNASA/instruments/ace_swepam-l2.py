@@ -10,11 +10,15 @@ Properties
 platform
     'ace'
 name
-    'swepam'
+    'swepam-l2'
 tag
     None supported
 inst_id
     ['h0', 'h2', 'k0', 'k1']
+
+Note
+----
+Level 1 ACE data is maintained at pysatSpaceWeather.
 
 Warnings
 --------

@@ -10,11 +10,15 @@ Properties
 platform
     'ace'
 name
-    'mag'
+    'mag-l2'
 tag
     None supported
 inst_id
     ['h0', 'h1', 'h2', 'h3', 'k0', 'k1', 'k2']
+
+Note
+----
+Level 1 ACE data is maintained at pysatSpaceWeather.
 
 Warnings
 --------

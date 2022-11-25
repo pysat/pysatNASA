@@ -10,11 +10,15 @@ Properties
 platform
     'ace'
 name
-    'epam'
+    'epam-l2'
 tag
     None supported
 inst_id
     ['h1', 'h2', 'h3', 'k0', 'k1']
+
+Note
+----
+Level 1 ACE data is maintained at pysatSpaceWeather.
 
 Warnings
 --------
