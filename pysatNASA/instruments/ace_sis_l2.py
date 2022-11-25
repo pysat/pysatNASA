@@ -1,30 +1,28 @@
 # -*- coding: utf-8 -*-
-"""Module for the Advanced Composition Explorer (ACE) EPAM instrument.
+"""Module for the Advanced Composition Explorer (ACE) SIS instrument.
 
 References
 ----------
 - Stone, E., Frandsen, A., Mewaldt, R. et al. The Advanced Composition Explorer.
   Space Science Reviews 86, 1–22 (1998). https://doi.org/10.1023/A:1005082526237
-- Gold, R., Krimigis, S., Hawkins, S. et al. Electron, Proton, and Alpha Monitor
-  on the Advanced Composition Explorer spacecraft. Space Science Reviews 86,
-  541–562 (1998). https://doi.org/10.1023/A:1005088115759
+- Stone, E., Cohen, C., Cook, W. et al. The Solar Isotope Spectrometer for the
+  Advanced Composition Explorer. Space Science Reviews 86, 357–408 (1998).
+  https://doi.org/10.1023/A:1005027929871
 
 Properties
 ----------
 platform
     'ace'
 name
-    'epam-l2'
+    'sis_l2'
 tag
     None supported
 inst_id
-    ['h1', 'h2', 'h3', 'k0', 'k1']
+    ['h1', 'h2', 'k0']
 
 Note
 ----
 - Level 1 ACE data is maintained at pysatSpaceWeather.
-- Release notes at
-  https://cdaweb.gsfc.nasa.gov/pub/data/ace/epam/epam_level2_release_notes.txt
 
 Warnings
 --------
@@ -45,9 +43,9 @@ from pysatNASA.instruments.methods import general as mm_nasa
 # Instrument attributes
 
 platform = 'ace'
-name = 'epam'
+name = 'sis'
 tags = {'': ''}
-inst_ids = {id: [''] for id in ['h1', 'h2', 'h3', 'k0', 'k1']}
+inst_ids = {id: [''] for id in ['h1', 'h2', 'k0']}
 pandas_format = False
 
 # ----------------------------------------------------------------------------
@@ -72,7 +70,7 @@ clean = mm_nasa.clean_warn
 # Use the default CDAWeb and pysat methods
 
 # Set the list_files routine
-fname = ''.join(('ac_{inst_id:s}_epm_{{year:4d}}{{month:02d}}{{day:02d}}_',
+fname = ''.join(('ac_{inst_id:s}_sis_{{year:4d}}{{month:02d}}{{day:02d}}_',
                  'v{{version:02d}}.cdf'))
 supported_tags = {}
 for inst_id in inst_ids.keys():
@@ -84,7 +82,7 @@ list_files = functools.partial(mm_gen.list_files,
 load = functools.partial(cdw.load, pandas_format=pandas_format)
 
 # Set the download routine
-remote_dir = '/pub/data/ace/epam/level_2_cdaweb/epm_{inst_id:s}/{{year:4d}}/'
+remote_dir = '/pub/data/ace/sis/level_2_cdaweb/sis_{inst_id:s}/{{year:4d}}/'
 download_tags = {}
 for inst_id in inst_ids.keys():
     download_tags[inst_id] = {'': {
