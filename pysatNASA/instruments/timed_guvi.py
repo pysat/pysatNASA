@@ -124,10 +124,11 @@ fname = ''.join(('TIMED_GUVI_L1C{res:s}-disk-{mode:s}_{{year:04d}}{{day:03d}}',
                  '-?????????????_REV??????_',
                  'Av{{version:02d}}-??r{{revision:03d}}.nc'))
 
-supported_tags = {inst: {tag: fname.format(res = "-2" if 'low' in tag else "",
-                                           mode = "IMG" if 'imag' in inst else "SPECT")
-                        for tag in tags.keys()}
-                 for inst in inst_ids}
+res = {'low': '-2', 'high': ''}
+mode = {'imaging': 'IMG', 'spectrograph': 'SPECT'}
+supported_tags = {inst: {tag: fname.format(res=res[tag], mode=mode[inst])
+                         for tag in tags.keys()}
+                  for inst in inst_ids}
 
 list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags,)
