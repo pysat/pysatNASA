@@ -66,8 +66,9 @@ pandas_format = False
 # ----------------------------------------------------------------------------
 # Instrument test attributes
 
-_test_dates = {'imaging': {tag: dt.datetime(2005, 6, 28) for tag in tags.keys()},
-               'spectrograph': {tag: dt.datetime(2005, 6, 28) for tag in tags.keys()}}
+_test_dates = {
+    'imaging': {tag: dt.datetime(2005, 6, 28) for tag in tags.keys()},
+    'spectrograph': {tag: dt.datetime(2005, 6, 28) for tag in tags.keys()}}
 
 # ----------------------------------------------------------------------------
 # Instrument methods
