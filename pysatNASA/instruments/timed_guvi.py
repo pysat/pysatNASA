@@ -306,8 +306,8 @@ def load(fnames, tag='', inst_id=''):
         if inners['time'] is None:
             inners = jnners
         else:
-            inners = {dim : xr.concat([inners[dim], jnners[dim]], dim=dim)
-                      for dim in dims }
+            inners = {dim: xr.concat([inners[dim], jnners[dim]], dim=dim)
+                      for dim in dims}
 
     data = xr.merge([inners[dim] for dim in dims])
 
