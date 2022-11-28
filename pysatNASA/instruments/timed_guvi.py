@@ -35,7 +35,7 @@ Example
     guvi = pysat.Instrument(platform='timed', name='guvi', inst_id='imaging', 
                             tag='low')
     guvi.download(dt.datetime(2005, 6, 28), dt.datetime(2005, 6, 29))
-    guvi.load(yr=2005, doy=171)
+    guvi.load(date=dt.datetime(2005, 6, 28))
 
 """
 
