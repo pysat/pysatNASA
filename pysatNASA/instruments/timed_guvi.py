@@ -138,8 +138,8 @@ url = ''.join(('/pub/data/timed/guvi/levels_v13/level1c/{mode:s}/',
                '{{year:4d}}/{{day:03d}}/'))
 
 supported_urls = {inst: {tag: url.format(mode=inst)
-                        for tag in tags.keys()}
-                 for inst in inst_ids}
+                         for tag in tags.keys()}
+                  for inst in inst_ids}```
 
 download_tags = {inst: {tag: {'remote_dir': supported_urls[inst][tag],
                               'fname': supported_tags[inst][tag]}
