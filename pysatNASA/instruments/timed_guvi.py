@@ -344,7 +344,7 @@ def load(fnames, tag='', inst_id=''):
                   "nCrossDayAur": data.nCrossDayAur.data}
     elif 'spect' in inst_id:
         coords = {"nchan": ["121.6nm", "130.4nm", "135.6nm",
-                            "LBHshort", "LBHlong","?"]}
+                            "LBHshort", "LBHlong", "?"]}
 
     data = data.assign_coords(coords=coords)
 
