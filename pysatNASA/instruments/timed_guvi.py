@@ -278,7 +278,7 @@ def load(fnames, tag='', inst_id=''):
                                        "nAlongGAIMNight": "time_gaim_night"})
 
         # Update time variables
-        # night_dts and day_dts are the same temporal array 
+        # night_dts and day_dts are the same temporal array
         data = data.assign(time=night_dts)
         if 'imag' in inst_id:
             data = data.assign(time_auroral=aur_dts)
