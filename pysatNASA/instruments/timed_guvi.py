@@ -265,8 +265,8 @@ def load(fnames, tag='', inst_id=''):
             if data.nCrossDay.size != data.nCrossNight.size:
                 raise Exception("nCrossDay/Night have different dimensions")
 
-            data = data.rename_dims({"nCrossDay":"nCross",
-                                     "nCrossNight":"nCross"})
+            data = data.rename_dims({"nCrossDay": "nCross",
+                                     "nCrossNight": "nCross"})
 
         # 'nAlong' will be renamed as 'time' to follow pysat standards
         data = data.swap_dims({"nAlong": "time"})
