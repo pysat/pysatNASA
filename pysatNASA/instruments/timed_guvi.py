@@ -20,9 +20,6 @@ inst_id
     'imaging'
     'spectrograph'
 
-Note
-----
-
 Warnings
 --------
 Currently no cleaning routine.
