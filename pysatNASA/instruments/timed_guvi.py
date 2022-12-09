@@ -256,7 +256,8 @@ def load(fnames, tag='', inst_id=''):
             raise Exception("time along day and night are different")
 
         # Renaming along/cross dimensions
-        data = data.rename_dims({"nAlongDay":"nAlong", "nAlongNight":"nAlong"})
+        data = data.rename_dims({"nAlongDay": "nAlong",
+                                 "nAlongNight": "nAlong"})
 
         # 'nCross' dimension only in imaging 
         if 'imag' in inst_id:
