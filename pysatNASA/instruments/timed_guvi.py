@@ -259,7 +259,7 @@ def load(fnames, tag='', inst_id=''):
         data = data.rename_dims({"nAlongDay": "nAlong",
                                  "nAlongNight": "nAlong"})
 
-        # 'nCross' dimension only in imaging 
+        # 'nCross' dimension only in imaging
         if 'imag' in inst_id:
 
             if data.nCrossDay.size != data.nCrossNight.size:
