@@ -208,7 +208,8 @@ def load(fnames, tag='', inst_id=''):
         return dts
 
     # Dimensions for time variables
-    # night/day along, cross and time are the same imaging low, high, spectrograph low, high
+    # night/day along, cross and time are the same imaging low, high,
+    #    spectrograph low, high
     # imaging high possess extra dims DayAur
     # spectrograph low possess extra dims GAIMDay, GAIMNight
     dims = ['time']
