@@ -140,8 +140,8 @@ supported_urls = {inst: {tag: url.format(mode=inst)
 
 download_tags = {inst: {tag: {'remote_dir': supported_urls[inst][tag],
                               'fname': supported_tags[inst][tag]}
-                       for tag in tags.keys()}
-                for inst in inst_ids.keys()}
+                        for tag in tags.keys()}
+                 for inst in inst_ids.keys()}
 
 download = functools.partial(cdw.download, supported_tags=download_tags)
 
