@@ -241,7 +241,8 @@ def load(fnames, tag='', inst_id=''):
                                "TIME_NIGHT", "TIME_EPOCH_NIGHT"])
         if 'imag' in inst_id:
             data = data.drop_vars(["YEAR_DAY_AURORAL", "DOY_DAY_AURORAL",
-                                   "TIME_DAY_AURORAL", "TIME_EPOCH_DAY_AURORAL"])
+                                   "TIME_DAY_AURORAL",
+                                   "TIME_EPOCH_DAY_AURORAL"])
         elif 'spect' in inst_id:
             if 'low' in tag:
                 data = data.drop_vars(["YEAR_GAIM_DAY", "DOY_GAIM_DAY",
