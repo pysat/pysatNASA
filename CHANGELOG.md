@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.0.5] - 2023-XX-XX
+* Maintenance
+  * Added a version cap for numpy (required by pysatCDF, revisit before release)
+
 ## [0.0.4] - 2022-11-07
 * Update instrument tests with new test class
 * Support xarray datasets through cdflib
