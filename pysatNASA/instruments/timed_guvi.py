@@ -238,7 +238,7 @@ def load(fnames, tag='', inst_id=''):
 
         # Drop out redundant time variables
         data = data.drop_vars(["YEAR_DAY", "DOY_DAY", "TIME_DAY",
-                               "TIME_EPOCH_DAY", "YEAR_NIGHT", "DOY_NIGHT"
+                               "TIME_EPOCH_DAY", "YEAR_NIGHT", "DOY_NIGHT",
                                "TIME_NIGHT", "TIME_EPOCH_NIGHT"])
         if 'imag' in inst_id:
             data = data.drop_vars(["YEAR_DAY_AURORAL", "DOY_DAY_AURORAL",
