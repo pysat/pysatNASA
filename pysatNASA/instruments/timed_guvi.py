@@ -70,6 +70,7 @@ _test_dates = {
 # ----------------------------------------------------------------------------
 # Instrument methods
 
+
 def init(self):
     """Initialize the Instrument object with references and acknowledgements."""
 
