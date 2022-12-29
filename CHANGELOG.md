@@ -5,6 +5,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## [0.0.5] - 2023-XX-XX
 * Maintenance
   * Added a version cap for numpy (required for cdf interface, revisit before release)
+  * Updated actions and templates based on pysatEcosystem docs.
 
 ## [0.0.4] - 2022-11-07
 * Update instrument tests with new test class
