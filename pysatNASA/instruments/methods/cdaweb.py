@@ -16,6 +16,7 @@ import warnings
 import xarray as xr
 
 from bs4 import BeautifulSoup
+from cdasws import CdasWs
 
 import pysat
 from pysat.instruments.methods import general
@@ -29,6 +30,35 @@ try:
     auto_CDF = pysatCDF.CDF
 except ImportError:
     auto_CDF = libCDF
+
+
+def try_inst_dict(inst_id, tag, supported_tags):
+    """Check that the inst_id and tag combination is valid.
+
+    Parameters
+    ----------
+    tag : str
+        Data product tag (default='')
+    inst_id : str
+        Instrument ID (default='')
+    supported_tags : dict
+        dict of dicts. Keys are supported tag names for download. Value is
+        a dict with 'remote_dir', 'fname'. Inteded to be
+        pre-set with functools.partial then assigned to new instrument code.
+        (default=None)
+
+    Returns
+    -------
+    inst_dict : dict or str
+        dictionary containing file location in spdf archive, or dataset ID for
+        cdasws
+    """
+    try:
+        inst_dict = supported_tags[inst_id][tag]
+    except KeyError:
+        raise ValueError('inst_id / tag combo unknown.')
+
+    return inst_dict
 
 
 def load(fnames, tag='', inst_id='', file_cadence=dt.timedelta(days=1),
@@ -439,10 +469,7 @@ def download(date_array, tag='', inst_id='', supported_tags=None,
 
     """
 
-    try:
-        inst_dict = supported_tags[inst_id][tag]
-    except KeyError:
-        raise ValueError('inst_id / tag combo unknown.')
+    inst_dict = try_inst_dict(inst_id, tag, supported_tags)
 
     # Naming scheme for files on the CDAWeb server
     remote_dir = inst_dict['remote_dir']
@@ -485,6 +512,76 @@ def download(date_array, tag='', inst_id='', supported_tags=None,
         except requests.exceptions.RequestException as exception:
             logger.info(' '.join((str(exception), '- File not available for',
                                   date.strftime('%d %B %Y'))))
+    return
+
+
+def cdas_download(date_array, tag='', inst_id='', supported_tags=None,
+                  data_path=None):
+    """Download NASA CDAWeb CDF data using cdasws.
+
+    This routine is intended to be used by pysat instrument modules supporting
+    a particular NASA CDAWeb dataset.
+
+    Parameters
+    ----------
+    date_array : array-like
+        Array of datetimes to download data for. Provided by pysat.
+    tag : str
+        Data product tag (default='')
+    inst_id : str
+        Instrument ID (default='')
+    supported_tags : dict
+        dict of dicts. Keys are supported tag names for download. Value is
+        a dict with 'remote_dir', 'fname'. Inteded to be pre-set with
+        functools.partial then assigned to new instrument code.
+        (default=None)
+    data_path : str or NoneType
+        Path to data directory.  If None is specified, the value previously
+        set in Instrument.files.data_path is used.  (default=None)
+
+    Examples
+    --------
+    ::
+
+        # download support added to cnofs_vefi.py using code below
+        fn = 'cnofs_vefi_bfield_1sec_{year:4d}{month:02d}{day:02d}_v05.cdf'
+        dc_b_tag = {'remote_dir': ''.join(('/pub/data/cnofs/vefi/bfield_1sec',
+                                            '/{year:4d}/')),
+                    'fname': fn}
+        supported_tags = {'dc_b': dc_b_tag}
+
+        download = functools.partial(nasa_cdaweb.download,
+                                     supported_tags=supported_tags)
+
+    """
+
+    start = date_array[0]
+    stop = date_array[-1]
+    remote_files = cdas_list_remote_files(tag=tag, inst_id=inst_id,
+                                          start=start, stop=stop,
+                                          supported_tags=supported_tags)
+
+    for file in remote_files:
+
+        fname = file.split('/')[-1]
+        saved_local_fname = os.path.join(data_path, fname)
+
+        # Perform download
+        logger.info(' '.join(('Attempting to download file: ',
+                              file)))
+        try:
+            with requests.get(file) as req:
+                if req.status_code != 404:
+                    with open(saved_local_fname, 'wb') as open_f:
+                        open_f.write(req.content)
+                    logger.info('Successfully downloaded {:}.'.format(
+                        saved_local_fname))
+                else:
+                    logger.info(' '.join(('File: "', file,
+                                          '" is not available')))
+        except requests.exceptions.RequestException as exception:
+            logger.info(' '.join((str(exception), '- File: "', file,
+                                  '" Is not available')))
     return
 
 
@@ -551,10 +648,7 @@ def list_remote_files(tag='', inst_id='', start=None, stop=None,
 
     """
 
-    try:
-        inst_dict = supported_tags[inst_id][tag]
-    except KeyError:
-        raise ValueError('inst_id / tag combo unknown.')
+    inst_dict = try_inst_dict(inst_id, tag, supported_tags)
 
     # Naming scheme for files on the CDAWeb server
     format_str = '/'.join((inst_dict['remote_dir'].strip('/'),
@@ -654,3 +748,72 @@ def list_remote_files(tag='', inst_id='', start=None, stop=None,
         stored_list = stored_list[mask]
 
     return stored_list
+
+
+def cdas_list_remote_files(tag='', inst_id='', start=None, stop=None,
+                           supported_tags=None):
+    """Return a list of every file for chosen remote data.
+
+    This routine is intended to be used by pysat instrument modules supporting
+    a particular NASA CDAWeb dataset.
+
+    Parameters
+    ----------
+    tag : str
+        Data product tag (default='')
+    inst_id : str
+        Instrument ID (default='')
+    start : dt.datetime or NoneType
+        Starting time for file list. A None value will start with the first
+        file found.
+        (default=None)
+    stop : dt.datetime or NoneType
+        Ending time for the file list.  A None value will stop with the last
+        file found.
+        (default=None)
+    supported_tags : dict
+        dict of dicts. Keys are supported tag names for download. Value is
+        a dict with 'remote_dir', 'fname'. Inteded to be
+        pre-set with functools.partial then assigned to new instrument code.
+        (default=None)
+
+    Returns
+    -------
+    file_list : list
+        A list containing the verified available files
+
+    Examples
+    --------
+    ::
+
+        fname = 'cnofs_vefi_bfield_1sec_{year:04d}{month:02d}{day:02d}_v05.cdf'
+        supported_tags = {'dc_b': fname}
+        list_remote_files = \
+            functools.partial(nasa_cdaweb.list_remote_files,
+                              supported_tags=supported_tags)
+
+        fname = 'cnofs_cindi_ivm_500ms_{year:4d}{month:02d}{day:02d}_v01.cdf'
+        supported_tags = {'': fname}
+        list_remote_files = \
+            functools.partial(cdw.list_remote_files,
+                              supported_tags=supported_tags)
+
+    """
+    cdas = CdasWs()
+    dataset = try_inst_dict(inst_id, tag, supported_tags)
+
+    if start is None and stop is None:
+        # Use the topmost directory without variables
+        start = cdas.get_inventory(identifier=dataset)[0].start
+        stop = cdas.get_inventory(identifier=dataset)[-1].end
+
+    if start == stop:
+        stop = start + dt.timedelta(days=1)
+
+    if isinstance(start, pds._libs.tslibs.timestamps.Timestamp):
+        start = start.tz_localize('utc')
+        stop = stop.tz_localize('utc')
+    og_files = cdas.get_original_files(dataset=dataset, start=start, end=stop)
+    file_list = [f['Name'] for f in og_files[1]]
+
+    return file_list
