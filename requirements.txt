@@ -7,3 +7,4 @@ numpy<1.24
 pandas
 pysat>=3.0.4
 xarray<2022.11
+cdasws
