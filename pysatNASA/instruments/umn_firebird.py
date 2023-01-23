@@ -35,6 +35,8 @@ name = 'firebird'
 tags = {'': ''}
 inst_ids = {'fu3': [''], 'fu4': ['']}
 
+pandas_format = False
+
 # ----------------------------------------------------------------------------
 # Instrument test attributes
 
@@ -75,7 +77,8 @@ list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags)
 
 # Set the load routine
-load = cdw.load
+load = functools.partial(cdw.load, pandas_format=pandas_format,
+                         epoch_name='epoch')
 
 # Set the download routine
 download_tags = {id: {'': {'remote_dir':
