@@ -11,7 +11,7 @@ __all__ = ['cnofs_ivm', 'cnofs_plp', 'cnofs_vefi',
            'dmsp_ssusi', 'formosat1_ivm',
            'icon_euv', 'icon_fuv', 'icon_ivm', 'icon_mighti',
            'iss_fpmu', 'jpl_gps', 'omni_hro', 'ses14_gold',
-           'timed_saber', 'timed_see']
+           'timed_guvi', 'timed_saber', 'timed_see']
 
 for inst in __all__:
     exec("from pysatNASA.instruments import {x}".format(x=inst))
