@@ -50,15 +50,12 @@ Warnings
 
 import datetime as dt
 import functools
-import numpy as np
-import pandas as pds
-import xarray as xr
 
 from pysat.instruments.methods import general as mm_gen
-from pysat.utils.io import load_netcdf
 
 from pysatNASA.instruments.methods import cdaweb as cdw
 from pysatNASA.instruments.methods import dmsp as mm_dmsp
+from pysatNASA.instruments.methods import jhuapl
 from pysatNASA.instruments.methods import general as mm_nasa
 
 # ----------------------------------------------------------------------------
@@ -107,108 +104,8 @@ supported_tags = {sat_id: {tag: fname.format(tag=tag, inst_id=sat_id)
 list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags)
 
-
 # Set the load routine
-def load(fnames, tag='', inst_id=''):
-    """Load DMSP SSUSI data and meta data.
-
-    Parameters
-    ----------
-    fnames : array-like
-        Iterable of filename strings, full path, to data files to be loaded.
-    tag : str
-        Tag name used to identify particular data set to be loaded (default='')
-    inst_id : str
-        DMSP satellite ID (default='')
-
-    Returns
-    -------
-    data : pds.DataFrame or xr.Dataset
-        Data to be assigned to the pysat.Instrument.data object.
-    mdata : pysat.Meta
-        Pysat Meta data for each data variable.
-
-    Examples
-    --------
-    ::
-
-        inst = pysat.Instrument('dmsp', 'ssusi', tag='edr-aurora',
-                                inst_id='f16')
-        inst.load(2006, 1)
-
-    """
-    # Define the input variables
-    labels = {'units': ('UNITS', str), 'desc': ('TITLE', str)}
-
-    # CDAWeb stores these files in the NetCDF format instead of the CDF format
-    single_data = list()
-    for fname in fnames:
-        # There are multiple files per day, with time as a variable rather
-        # than a dimension or coordinate.  Additionally, no coordinates
-        # are assigned.
-        subday_data, mdata = load_netcdf(fname, epoch_name='TIME',
-                                         epoch_unit='s', labels=labels,
-                                         pandas_format=pandas_format)
-        single_data.append(subday_data)
-
-    # After loading all the data, determine which dimensions need to be expanded
-    combo_dims = {dim: max([sdata.dims[dim] for sdata in single_data])
-                  for dim in subday_data.dims.keys()}
-
-    # Expand the data so that all dimensions are the same shape
-    for i, sdata in enumerate(single_data):
-        # Determine which dimensions need to be updated
-        fix_dims = [dim for dim in sdata.dims.keys()
-                    if sdata.dims[dim] < combo_dims[dim]]
-
-        new_data = {}
-        update_new = False
-        for dvar in sdata.data_vars.keys():
-            # See if any dimensions need to be updated
-            update_dims = list(set(sdata[dvar].dims) & set(fix_dims))
-
-            # Save the old data as is, or pad it to have the right dims
-            if len(update_dims) > 0:
-                update_new = True
-                new_shape = list(sdata[dvar].values.shape)
-                old_slice = [slice(0, ns) for ns in new_shape]
-
-                for dim in update_dims:
-                    idim = list(sdata[dvar].dims).index(dim)
-                    new_shape[idim] = combo_dims[dim]
-
-                # Set the new data for output
-                new_dat = np.full(shape=new_shape, fill_value=mdata[
-                    dvar, mdata.labels.fill_val])
-                new_dat[tuple(old_slice)] = sdata[dvar].values
-                new_data[dvar] = (sdata[dvar].dims, new_dat)
-            else:
-                new_data[dvar] = sdata[dvar]
-
-        # Calculate the time for this data file
-        ftime = dt.datetime.strptime(
-            "{:4d}-{:03d}".format(
-                sdata['YEAR'].values.astype(int),
-                sdata['DOY'].values.astype(int)), '%Y-%j') + (
-                    pds.to_datetime(sdata['time'].values).to_pydatetime()
-                    - dt.datetime(1970, 1, 1))
-
-        # Get the updated dataset
-        ndata = xr.Dataset(new_data) if update_new else sdata
-        ndata['time'] = ftime
-
-        # Assign a datetime variable, making indexing possible
-        single_data[i] = ndata.assign_coords(
-            {'time': ndata['time']}).expand_dims(dim='time')
-
-    # Combine all the data, indexing along time
-    data = xr.combine_by_coords(single_data)
-
-    # TODO(https://github.com/pysat/pysat/issues/1078): Update the metadata by
-    # removing 'TIME', once possible
-
-    return data, mdata
-
+load = functools.partial(jhuapl.load_edr_aurora, pandas_format=pandas_format)
 
 # Set the download routine
 basic_tag = {'remote_dir': ''.join(('/pub/data/dmsp/dmsp{inst_id:s}/ssusi/',
