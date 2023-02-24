@@ -36,7 +36,6 @@ import functools
 import numpy as np
 
 from pysat.instruments.methods import general as ps_gen
-from pysat import logger
 from pysat.utils.io import load_netcdf
 
 from pysatNASA.instruments.methods import cdaweb as cdw
@@ -61,34 +60,10 @@ _test_dates = {'': {'nmax': dt.datetime(2020, 1, 1)}}
 # ----------------------------------------------------------------------------
 # Instrument methods
 
-
-def init(self):
-    """Initialize the Instrument object with instrument specific values.
-
-    Runs once upon instantiation.
-
-    Parameters
-    -----------
-    self : pysat.Instrument
-        Instrument class object
-
-    """
-
-    logger.info(mm_gold.ack_str)
-    logger.warning(' '.join(('Time stamps may be non-unique because Channel A',
-                             'and B are different instruments.  An upgrade to',
-                             'the pysat.Constellation object is required to',
-                             'solve this issue. See pysat issue #614 for more',
-                             'info.')))
-    self.acknowledgements = mm_gold.ack_str
-    self.references = mm_gold.ref_str
-
-    return
-
+init = functools.partial(mm_nasa.init, module=mm_gold, name=name)
 
 # No cleaning, use standard warning function instead
 clean = mm_nasa.clean_warn
-
 
 # ----------------------------------------------------------------------------
 # Instrument functions
