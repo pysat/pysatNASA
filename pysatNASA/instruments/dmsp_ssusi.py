@@ -133,7 +133,7 @@ def load(fnames, tag='', inst_id=''):
     ::
 
         inst = pysat.Instrument('dmsp', 'ssusi', tag='edr-aurora',
-                                inst_id='f16')
+                                inst_id='f15')
         inst.load(2006, 1)
 
     """
