@@ -5,10 +5,17 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## [0.0.5] - 2023-XX-XX
 * New Instruments
   * DMSP SSUSI EDR-Aurora data
+  * TIMED GUVI EDR-Aur data
 * Bug Fixes
   * Updated CDAWeb routines to allow for data stored by year/day-of-year
+  * Added missing sub-module imports
+* Enhancements
+  * Updated platform methods to follow a consistent style and work with the
+    general `init` function
+  * Added unit tests for the different platform method attributes
 * Maintenance
-  * Added a version cap for numpy (required for cdf interface, revisit before release)
+  * Added a version cap for numpy (required for cdf interface, revisit before
+    release)
 
 ## [0.0.4] - 2022-11-07
 * Update instrument tests with new test class
