@@ -58,8 +58,8 @@ from pysat.instruments.methods import general as mm_gen
 from pysat.utils.io import load_netcdf
 
 from pysatNASA.instruments.methods import cdaweb as cdw
-from pysatNASA.instruments.methods import general as mm_nasa
 from pysatNASA.instruments.methods import dmsp as mm_dmsp
+from pysatNASA.instruments.methods import general as mm_nasa
 
 # ----------------------------------------------------------------------------
 # Instrument attributes
