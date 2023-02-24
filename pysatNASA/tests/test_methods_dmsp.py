@@ -20,7 +20,8 @@ class TestDMSPMethods(object):
     def test_ack(self):
         """Test that the acknowledgements reference the correct platform."""
 
-        assert dmsp.find('Defense Meteorological Satellite Program') >= 0
+        assert dmsp.ackn_str.find(
+            'Defense Meteorological Satellite Program') >= 0
         return
 
     def test_ref(self):
