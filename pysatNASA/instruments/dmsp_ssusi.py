@@ -55,8 +55,8 @@ from pysat.instruments.methods import general as mm_gen
 
 from pysatNASA.instruments.methods import cdaweb as cdw
 from pysatNASA.instruments.methods import dmsp as mm_dmsp
-from pysatNASA.instruments.methods import jhuapl
 from pysatNASA.instruments.methods import general as mm_nasa
+from pysatNASA.instruments.methods import jhuapl
 
 # ----------------------------------------------------------------------------
 # Instrument attributes
