@@ -40,7 +40,7 @@ from pysat.utils.io import load_netcdf
 
 from pysatNASA.instruments.methods import cdaweb as cdw
 from pysatNASA.instruments.methods import general as mm_nasa
-from pysatNASA.instruments.methods import gold as mm_gold
+from pysatNASA.instruments.methods import ses14 as mm_gold
 
 # ----------------------------------------------------------------------------
 # Instrument attributes
