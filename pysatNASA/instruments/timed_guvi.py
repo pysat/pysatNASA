@@ -59,7 +59,7 @@ from pysatNASA.instruments.methods import timed as mm_timed
 # Instrument attributes
 
 platform = 'timed'
-name = 'ssusi'
+name = 'guvi'
 tags = {'edr-aur': ''.join(['Auroral disk imaging mode'])}
 inst_ids = {'': list(tags.keys())}
 
@@ -88,9 +88,9 @@ clean = mm_nasa.clean_warn
 # Use the default CDAWeb and pysat methods
 
 # Set the list_files routine
-fname = ''.join(['TIMED_GUVI_L2B_{tag:s}_IMB_{{year:04d}}{{day:03d}}',
-                 '{{hour:02d}}{{minute:02d}}{{second:02d}}-?????????????-REV',
-                 '??????_Av{{version:2d}}-01r{{cycle:03d}}.nc'])
+fname = ''.join(['TIMED_GUVI_L2B-{tag:s}-IMG_{{year:04d}}{{day:03d}}',
+                 '{{hour:02d}}{{minute:02d}}{{second:02d}}-?????????????_REV',
+                 '??????_Av{{version:2d}}-??r{{cycle:03d}}.nc'])
 supported_tags = {inst_id: {tag: fname.format(tag=tag) for tag in tags.keys()}
                   for inst_id in inst_ids.keys()}
 list_files = functools.partial(mm_gen.list_files, supported_tags=supported_tags)
@@ -99,8 +99,9 @@ list_files = functools.partial(mm_gen.list_files, supported_tags=supported_tags)
 load = functools.partial(jhuapl.load_edr_aurora, pandas_format=pandas_format)
 
 # Set the download routine
-basic_tag = {'remote_dir': ''.join(('/pub/data/dmsp/dmsp{inst_id:s}/ssusi/',
-                                    '/data/{tag:s}/{{year:4d}}/{{day:03d}}/')),
+basic_tag = {'remote_dir': ''.join(('/data/timed/guvi/levels_v13/level2b/',
+                                    'imaging/{tag:s}/{{year:4d}}/',
+                                    '{{day:03d}}/')),
              'fname': fname}
 download_tags = {
     sat_id: {tag: {btag: basic_tag[btag].format(tag=tag, inst_id=sat_id)
