@@ -45,7 +45,7 @@ from pysatNASA.instruments.methods import general as mm_nasa
 platform = 'ace'
 name = 'sis_l2'
 tags = {'': ''}
-inst_ids = {id: [''] for id in ['h1', 'h2', 'k0']}
+inst_ids = {id: [tag for tag in tags.keys()] for id in ['h1', 'h2', 'k0']}
 pandas_format = False
 
 # ----------------------------------------------------------------------------
@@ -72,9 +72,7 @@ clean = mm_nasa.clean_warn
 # Set the list_files routine
 fname = ''.join(('ac_{inst_id:s}_sis_{{year:4d}}{{month:02d}}{{day:02d}}_',
                  'v{{version:02d}}.cdf'))
-supported_tags = {}
-for inst_id in inst_ids.keys():
-    supported_tags[inst_id] = {'': fname.format(inst_id=inst_id)}
+supported_tags = {id: {'': fname.format(inst_id=id)} for id in inst_ids.keys()}
 list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags)
 
