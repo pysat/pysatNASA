@@ -2,12 +2,14 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
-## [0.1.0] - 2022-XX-XX
+## [0.X.X] - 2023-XX-XX
 * New Instruments
-* ACE EPAM
-* ACE MAG
-* ACE SIS
-* ACE SWEPAM
+  * ACE EPAM
+  * ACE MAG
+  * ACE SIS
+  * ACE SWEPAM
+* Maintenance
+  * Added a version cap for numpy (required for cdf interface, revisit before release)
 
 ## [0.0.4] - 2022-11-07
 * Update instrument tests with new test class
