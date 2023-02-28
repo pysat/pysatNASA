@@ -57,6 +57,14 @@ DE2 WATS
 .. automodule:: pysatNASA.instruments.de2_wats
    :members:
 
+.. _dmsp_ssusi:
+
+DMSP SSUSI
+----------
+
+.. automodule:: pysatNASA.instruments.dmsp_ssusi
+   :members:
+
 .. _formosat1_ivm:
 
 FORMOSAT-1 IVM

@@ -2,20 +2,21 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
-## [0.0.5] - 2022-11-12
+## [0.0.5] - 2023-XX-XX
 * New Instruments
   * TIMED GUVI
+  * DMSP SSUSI EDR-Aurora data
 * Add TIMED GUVI platform to support L1C intensity datasets.
   * Type of sensor source handled by inst_id with options of
     spectrograph, imaging
   * Resolution of dataset handled by tag with
     low, high
 * Bug Fixes
-  * CDAWEB improved to consider cases of
-    remote directory structured by DOY instead of month/day combination
-    cadence of directory format consider yearly, monthly and daily cases.
+  * Updated CDAWeb routines to allow for data stored by year/day-of-year
 * Documentation
   * Added TIMED-GUVI platform
+* Maintenance
+  * Added a version cap for numpy (required for cdf interface, revisit before release)
 
 ## [0.0.4] - 2022-11-07
 * Update instrument tests with new test class
