@@ -74,7 +74,8 @@ clean = mm_nasa.clean_warn
 # Set the list_files routine
 fname = ''.join(('ac_{inst_id:s}_mfi_{{year:4d}}{{month:02d}}{{day:02d}}_',
                  'v{{version:02d}}.cdf'))
-supported_tags = {id: {'': fname.format(inst_id=id)} for id in inst_ids.keys()}
+supported_tags = {id: {tag: fname.format(inst_id=id) for tag in tags.keys()}
+                  for id in inst_ids.keys()}
 list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags)
 
@@ -83,11 +84,10 @@ load = functools.partial(cdw.load, pandas_format=pandas_format)
 
 # Set the download routine
 remote_dir = '/pub/data/ace/mag/level_2_cdaweb/mfi_{inst_id:s}/{{year:4d}}/'
-download_tags = {}
-for inst_id in inst_ids.keys():
-    download_tags[inst_id] = {'': {
-        'remote_dir': remote_dir.format(inst_id=inst_id),
-        'fname': fname.format(inst_id=inst_id)}}
+download_tags = {id: {tag: {'remote_dir': remote_dir.format(inst_id=id),
+                            'fname': fname.format(inst_id=id)}
+                      for tag in tags.keys()}
+                 for id in inst_ids.keys()}
 download = functools.partial(cdw.download, supported_tags=download_tags)
 
 # Set the list_remote_files routine
