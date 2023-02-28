@@ -31,6 +31,11 @@ def load_edr_aurora(fnames, tag='', inst_id='', pandas_format=False):
     mdata : pysat.Meta
         Pysat Meta data for each data variable.
 
+    Note
+    ----
+    Logger warning 'Epoch label: TIME is not a dimension.' is raised due to
+    the data format and pysat file expectations.
+
     Examples
     --------
     ::
