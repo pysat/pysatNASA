@@ -16,9 +16,9 @@ platform
 name
     'sis_l2'
 tag
-    None supported
+    'base' or 'key'
 inst_id
-    ['h1', 'h2', 'k0']
+    '256sec' or '1hr'
 
 Note
 ----
@@ -44,14 +44,17 @@ from pysatNASA.instruments.methods import general as mm_nasa
 
 platform = 'ace'
 name = 'sis_l2'
-tags = {'': ''}
-inst_ids = {id: [tag for tag in tags.keys()] for id in ['h1', 'h2', 'k0']}
+tags = {'base': 'ACE/SIS Solar Isotope Spectrometer Base Data',
+        'key': 'ACE/SIS Solar Isotope Spectrometer Key Parameters'}
+inst_ids = {'256sec': ['base'],
+            '1hr': ['base', 'key']}
 pandas_format = False
 
 # ----------------------------------------------------------------------------
 # Instrument test attributes
 
-_test_dates = {id: {'': dt.datetime(2022, 1, 1)} for id in inst_ids.keys()}
+_test_dates = {id: {tag: dt.datetime(2022, 1, 1) for tag in inst_ids[id]}
+               for id in inst_ids.keys()}
 
 # ----------------------------------------------------------------------------
 # Instrument methods
@@ -70,9 +73,12 @@ clean = mm_nasa.clean_warn
 # Use the default CDAWeb and pysat methods
 
 # Set the list_files routine
-fname = ''.join(('ac_{inst_id:s}_sis_{{year:4d}}{{month:02d}}{{day:02d}}_',
+strid = {'256sec': {'base': 'h1'},
+         '1hr': {'base': 'h2', 'key': 'k0'}}
+fname = ''.join(('ac_{sid:s}_sis_{{year:4d}}{{month:02d}}{{day:02d}}_',
                  'v{{version:02d}}.cdf'))
-supported_tags = {id: {tag: fname.format(inst_id=id) for tag in tags.keys()}
+supported_tags = {id: {tag: fname.format(sid=strid[id][tag])
+                       for tag in inst_ids[id]}
                   for id in inst_ids.keys()}
 list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags)
@@ -81,10 +87,10 @@ list_files = functools.partial(mm_gen.list_files,
 load = functools.partial(cdw.load, pandas_format=pandas_format)
 
 # Set the download routine
-remote_dir = '/pub/data/ace/sis/level_2_cdaweb/sis_{inst_id:s}/{{year:4d}}/'
-download_tags = {id: {tag: {'remote_dir': remote_dir.format(inst_id=id),
-                            'fname': fname.format(inst_id=id)}
-                      for tag in tags.keys()}
+remote_dir = '/pub/data/ace/sis/level_2_cdaweb/sis_{sid:s}/{{year:4d}}/'
+download_tags = {id: {tag: {'remote_dir': remote_dir.format(sid=strid[id][tag]),
+                            'fname': fname.format(sid=strid[id][tag])}
+                      for tag in inst_ids[id]}
                  for id in inst_ids.keys()}
 download = functools.partial(cdw.download, supported_tags=download_tags)
 

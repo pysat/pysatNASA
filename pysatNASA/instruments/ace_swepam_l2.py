@@ -16,9 +16,9 @@ platform
 name
     'swepam_l2'
 tag
-    None supported
+    'base' or 'key'
 inst_id
-    ['h0', 'h2', 'k0', 'k1']
+    '64sec', '5min', '1hr'
 
 Note
 ----
@@ -46,14 +46,18 @@ from pysatNASA.instruments.methods import general as mm_nasa
 
 platform = 'ace'
 name = 'swepam_l2'
-tags = {'': ''}
-inst_ids = {id: [tag for tag in tags.keys()] for id in ['h0', 'h2', 'k0', 'k1']}
+tags = {'base': 'ACE/SWEPAM Solar Wind Experiment Base Data',
+        'key': 'ACE/SWEPAM Solar Wind Experiment Key Parameters'}
+inst_ids = {'64sec': ['base'],
+            '5min': ['key'],
+            '1hr': ['key', 'base']}
 pandas_format = False
 
 # ----------------------------------------------------------------------------
 # Instrument test attributes
 
-_test_dates = {id: {'': dt.datetime(2021, 1, 1)} for id in inst_ids.keys()}
+_test_dates = {id: {tag: dt.datetime(2021, 1, 1) for tag in inst_ids[id]}
+               for id in inst_ids.keys()}
 
 # ----------------------------------------------------------------------------
 # Instrument methods
@@ -72,9 +76,13 @@ clean = mm_nasa.clean_warn
 # Use the default CDAWeb and pysat methods
 
 # Set the list_files routine
-fname = ''.join(('ac_{inst_id:s}_swe_{{year:4d}}{{month:02d}}{{day:02d}}_',
+strid = {'64sec': {'base': 'h0'},
+         '5min': {'key': 'k0'},
+         '1hr': {'base': 'h2', 'key': 'k1'}}
+fname = ''.join(('ac_{sid:s}_swe_{{year:4d}}{{month:02d}}{{day:02d}}_',
                  'v{{version:02d}}.cdf'))
-supported_tags = {id: {tag: fname.format(inst_id=id) for tag in tags.keys()}
+supported_tags = {id: {tag: fname.format(sid=strid[id][tag])
+                       for tag in inst_ids[id]}
                   for id in inst_ids.keys()}
 list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags)
@@ -83,10 +91,10 @@ list_files = functools.partial(mm_gen.list_files,
 load = functools.partial(cdw.load, pandas_format=pandas_format)
 
 # Set the download routine
-remote_dir = '/pub/data/ace/swepam/level_2_cdaweb/swe_{inst_id:s}/{{year:4d}}/'
-download_tags = {id: {tag: {'remote_dir': remote_dir.format(inst_id=id),
-                            'fname': fname.format(inst_id=id)}
-                      for tag in tags.keys()}
+remote_dir = '/pub/data/ace/swepam/level_2_cdaweb/swe_{sid:s}/{{year:4d}}/'
+download_tags = {id: {tag: {'remote_dir': remote_dir.format(sid=strid[id][tag]),
+                            'fname': fname.format(sid=strid[id][tag])}
+                      for tag in inst_ids[id]}
                  for id in inst_ids.keys()}
 download = functools.partial(cdw.download, supported_tags=download_tags)
 

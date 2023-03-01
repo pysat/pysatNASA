@@ -16,9 +16,9 @@ platform
 name
     'epam_l2'
 tag
-    None supported
+    'base' or 'key'
 inst_id
-    ['h1', 'h2', 'h3', 'k0', 'k1']
+    '12sec', '5min', '1hr'
 
 Note
 ----
@@ -46,15 +46,18 @@ from pysatNASA.instruments.methods import general as mm_nasa
 
 platform = 'ace'
 name = 'epam_l2'
-tags = {'': ''}
-inst_ids = {id: [tag for tag in tags.keys()]
-            for id in ['h1', 'h2', 'h3', 'k0', 'k1']}
+tags = {'base': 'ACE/EPAM Solar Energetic Particle Base Data',
+        'key': 'ACE/EPAM Solar Energetic Particle Key Parameters'}
+inst_ids = {'12sec': ['base'],
+            '5min': ['key', 'base'],
+            '1hr': ['key', 'base']}
 pandas_format = False
 
 # ----------------------------------------------------------------------------
 # Instrument test attributes
 
-_test_dates = {id: {'': dt.datetime(2022, 1, 1)} for id in inst_ids.keys()}
+_test_dates = {id: {tag: dt.datetime(2022, 1, 1) for tag in inst_ids[id]}
+               for id in inst_ids.keys()}
 
 # ----------------------------------------------------------------------------
 # Instrument methods
@@ -73,9 +76,13 @@ clean = mm_nasa.clean_warn
 # Use the default CDAWeb and pysat methods
 
 # Set the list_files routine
-fname = ''.join(('ac_{inst_id:s}_epm_{{year:4d}}{{month:02d}}{{day:02d}}_',
+strid = {'12sec': {'base': 'h3'},
+         '5min': {'base': 'h1', 'key': 'k0'},
+         '1hr': {'base': 'h2', 'key': 'k1'}}
+fname = ''.join(('ac_{sid:s}_epm_{{year:4d}}{{month:02d}}{{day:02d}}_',
                  'v{{version:02d}}.cdf'))
-supported_tags = {id: {tag: fname.format(inst_id=id) for tag in tags.keys()}
+supported_tags = {id: {tag: fname.format(sid=strid[id][tag])
+                       for tag in inst_ids[id]}
                   for id in inst_ids.keys()}
 list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags)
@@ -84,10 +91,10 @@ list_files = functools.partial(mm_gen.list_files,
 load = functools.partial(cdw.load, pandas_format=pandas_format)
 
 # Set the download routine
-remote_dir = '/pub/data/ace/epam/level_2_cdaweb/epm_{inst_id:s}/{{year:4d}}/'
-download_tags = {id: {tag: {'remote_dir': remote_dir.format(inst_id=id),
-                            'fname': fname.format(inst_id=id)}
-                      for tag in tags.keys()}
+remote_dir = '/pub/data/ace/epam/level_2_cdaweb/epm_{sid:s}/{{year:4d}}/'
+download_tags = {id: {tag: {'remote_dir': remote_dir.format(sid=strid[id][tag]),
+                            'fname': fname.format(sid=strid[id][tag])}
+                      for tag in inst_ids[id]}
                  for id in inst_ids.keys()}
 download = functools.partial(cdw.download, supported_tags=download_tags)
 
