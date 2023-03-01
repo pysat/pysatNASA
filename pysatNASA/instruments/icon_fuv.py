@@ -124,7 +124,7 @@ list_files = functools.partial(mm_gen.list_files,
 # basic_tag25 = {'remote_dir': '/pub/data/icon/l2/l2-5_fuv_night/{year:04d}/',
 #                'fname': fname25}
 # download_tags = {'': {'day': basic_tag24, 'night': basic_tag25}}
-download_tags = {'': {'day': 'ICON_L2-5_FUV_DAY',
+download_tags = {'': {'day': 'ICON_L2-4_FUV_DAY',
                       'night': 'ICON_L2-5_FUV_NIGHT'}}
 
 download = functools.partial(cdw.cdas_download, supported_tags=download_tags)
