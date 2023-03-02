@@ -9,6 +9,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   * Updated CDAWeb routines to allow for data stored by year/day-of-year
 * Maintenance
   * Added a version cap for numpy (required for cdf interface, revisit before release)
+  * Updated dosctring style for consistency
 
 ## [0.0.4] - 2022-11-07
 * Update instrument tests with new test class
