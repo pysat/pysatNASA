@@ -26,12 +26,6 @@ B_west    Magnetic field in the west direction
 
 The data is PRELIMINARY, and as such, is intended for BROWSE PURPOSES ONLY.
 
-References
-----------
-A brief discussion of the C/NOFS mission and instruments can be found at
-de La Beaujardière, O., et al. (2004), C/NOFS: A mission to forecast
-scintillations, J. Atmos. Sol. Terr. Phys., 66, 1573–1591,
-doi:10.1016/j.jastp.2004.07.030.
 
 Properties
 ----------
@@ -43,6 +37,14 @@ tag
     Select measurement type, one of {'dc_b'}
 inst_id
     None supported
+
+
+References
+----------
+A brief discussion of the C/NOFS mission and instruments can be found at
+de La Beaujardière, O., et al. (2004), C/NOFS: A mission to forecast
+scintillations, J. Atmos. Sol. Terr. Phys., 66, 1573–1591,
+doi:10.1016/j.jastp.2004.07.030.
 
 
 Note
