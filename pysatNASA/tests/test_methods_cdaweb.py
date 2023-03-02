@@ -1,6 +1,7 @@
 """Unit tests for the cdaweb instrument methods."""
 
 import datetime as dt
+import pandas as pds
 import requests
 
 import pytest
@@ -80,11 +81,17 @@ class TestCDAWeb(object):
         assert str(excinfo.value).find(err_msg) >= 0
         return
 
-    def test_remote_file_list_all(self):
-        """Test that remote_file_list works if start/stop dates unspecified."""
+    @pytest.mark.parametrize("start, stop",
+                             [(None, None),
+                              (dt.datetime(2009, 1, 1),
+                               dt.datetime(2009, 1, 1)),
+                              (pds.Timestamp(2009, 1, 1),
+                               pds.Timestamp(2009, 1, 2))])
+    def test_remote_file_list_all(self, start, stop):
+        """Test that remote_file_list works for all start and stop cases."""
 
         self.module = pysatNASA.instruments.cnofs_plp
         self.test_inst = pysat.Instrument(inst_module=self.module)
-        files = self.test_inst.remote_file_list()
+        files = self.test_inst.remote_file_list(start, stop)
         assert len(files) > 0
         return
