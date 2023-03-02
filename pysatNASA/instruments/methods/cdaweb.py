@@ -539,19 +539,18 @@ def cdas_download(date_array, tag='', inst_id='', supported_tags=None,
         Path to data directory.  If None is specified, the value previously
         set in Instrument.files.data_path is used.  (default=None)
 
+    Note
+    ----
+    Supported tags for this function use the cdaweb dataset naming convention.
+    You can find the dataset names on cdaweb or you can use cdasws.
+
     Examples
     --------
     ::
-
         # download support added to cnofs_vefi.py using code below
-        fn = 'cnofs_vefi_bfield_1sec_{year:4d}{month:02d}{day:02d}_v05.cdf'
-        dc_b_tag = {'remote_dir': ''.join(('/pub/data/cnofs/vefi/bfield_1sec',
-                                            '/{year:4d}/')),
-                    'fname': fn}
-        supported_tags = {'dc_b': dc_b_tag}
-
-        download = functools.partial(nasa_cdaweb.download,
-                                     supported_tags=supported_tags)
+        download_tags = {'': {'dc_b': 'CNOFS_VEFI_BFIELD_1SEC'}}
+        download = functools.partial(cdw.cdas_download,
+                                     supported_tags=download_tags)
 
     """
 
@@ -782,22 +781,21 @@ def cdas_list_remote_files(tag='', inst_id='', start=None, stop=None,
     file_list : list
         A list containing the verified available files
 
+    Note
+    ----
+    Supported tags for this function use the cdaweb dataset naming convention.
+    You can find the dataset names on cdaweb or you can use cdasws.
+
     Examples
     --------
     ::
+        download_tags = {'': {'dc_b': 'CNOFS_VEFI_BFIELD_1SEC'}}
+        list_remote_files = functools.partial(cdw.cdas_list_remote_files,
+                                              supported_tags=download_tags)
 
-        fname = 'cnofs_vefi_bfield_1sec_{year:04d}{month:02d}{day:02d}_v05.cdf'
-        supported_tags = {'dc_b': fname}
-        list_remote_files = \
-            functools.partial(nasa_cdaweb.list_remote_files,
-                              supported_tags=supported_tags)
-
-        fname = 'cnofs_cindi_ivm_500ms_{year:4d}{month:02d}{day:02d}_v01.cdf'
-        supported_tags = {'': fname}
-        list_remote_files = \
-            functools.partial(cdw.list_remote_files,
-                              supported_tags=supported_tags)
-
+        download_tags = {'': {'': 'CNOFS_CINDI_IVM_500MS'}}
+        list_remote_files = functools.partial(cdw.cdas_list_remote_files,
+                                              supported_tags=download_tags)
     """
     cdas = CdasWs()
     dataset = try_inst_dict(inst_id, tag, supported_tags)
@@ -813,6 +811,7 @@ def cdas_list_remote_files(tag='', inst_id='', start=None, stop=None,
     if isinstance(start, pds._libs.tslibs.timestamps.Timestamp):
         start = start.tz_localize('utc')
         stop = stop.tz_localize('utc')
+
     og_files = cdas.get_original_files(dataset=dataset, start=start, end=stop)
     file_list = [f['Name'] for f in og_files[1]]
 
