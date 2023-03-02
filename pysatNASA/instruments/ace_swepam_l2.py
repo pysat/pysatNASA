@@ -1,14 +1,6 @@
 # -*- coding: utf-8 -*-
 """Module for the Advanced Composition Explorer (ACE) EPAM instrument.
 
-References
-----------
-- Stone, E., Frandsen, A., Mewaldt, R. et al. The Advanced Composition Explorer.
-  Space Science Reviews 86, 1–22 (1998). https://doi.org/10.1023/A:1005082526237
-- McComas, D., Bame, S., Barker, P. et al. Solar Wind Electron Proton Alpha
-  Monitor (SWEPAM) for the Advanced Composition Explorer. Space Science Reviews
-  86, 563–612 (1998). https://doi.org/10.1023/A:1005040232597
-
 Properties
 ----------
 platform
@@ -19,6 +11,14 @@ tag
     'base' or 'key'
 inst_id
     '64sec', '5min', '1hr'
+
+References
+----------
+- Stone, E., Frandsen, A., Mewaldt, R. et al. The Advanced Composition Explorer.
+  Space Science Reviews 86, 1–22 (1998). https://doi.org/10.1023/A:1005082526237
+- McComas, D., Bame, S., Barker, P. et al. Solar Wind Electron Proton Alpha
+  Monitor (SWEPAM) for the Advanced Composition Explorer. Space Science Reviews
+  86, 563–612 (1998). https://doi.org/10.1023/A:1005040232597
 
 Note
 ----

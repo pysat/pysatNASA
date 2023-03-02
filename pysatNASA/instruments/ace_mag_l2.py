@@ -1,14 +1,6 @@
 # -*- coding: utf-8 -*-
 """Module for the Advanced Composition Explorer (ACE) MAG instrument.
 
-References
-----------
-- Stone, E., Frandsen, A., Mewaldt, R. et al. The Advanced Composition Explorer.
-  Space Science Reviews 86, 1–22 (1998). https://doi.org/10.1023/A:1005082526237
-- Smith, C., L'Heureux, J., Ness, N. et al. The ACE Magnetic Fields Experiment.
-  Space Science Reviews 86, 613–632 (1998).
-  https://doi.org/10.1023/A:1005092216668
-
 Properties
 ----------
 platform
@@ -19,6 +11,14 @@ tag
     'base' or 'key'
 inst_id
     '1sec', '16sec', '4min', '5min', '1hr'
+
+References
+----------
+- Stone, E., Frandsen, A., Mewaldt, R. et al. The Advanced Composition Explorer.
+  Space Science Reviews 86, 1–22 (1998). https://doi.org/10.1023/A:1005082526237
+- Smith, C., L'Heureux, J., Ness, N. et al. The ACE Magnetic Fields Experiment.
+  Space Science Reviews 86, 613–632 (1998).
+  https://doi.org/10.1023/A:1005092216668
 
 Note
 ----

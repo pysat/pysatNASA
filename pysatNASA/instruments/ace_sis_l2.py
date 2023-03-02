@@ -1,14 +1,6 @@
 # -*- coding: utf-8 -*-
 """Module for the Advanced Composition Explorer (ACE) SIS instrument.
 
-References
-----------
-- Stone, E., Frandsen, A., Mewaldt, R. et al. The Advanced Composition Explorer.
-  Space Science Reviews 86, 1–22 (1998). https://doi.org/10.1023/A:1005082526237
-- Stone, E., Cohen, C., Cook, W. et al. The Solar Isotope Spectrometer for the
-  Advanced Composition Explorer. Space Science Reviews 86, 357–408 (1998).
-  https://doi.org/10.1023/A:1005027929871
-
 Properties
 ----------
 platform
@@ -19,6 +11,14 @@ tag
     'base' or 'key'
 inst_id
     '256sec' or '1hr'
+
+References
+----------
+- Stone, E., Frandsen, A., Mewaldt, R. et al. The Advanced Composition Explorer.
+  Space Science Reviews 86, 1–22 (1998). https://doi.org/10.1023/A:1005082526237
+- Stone, E., Cohen, C., Cook, W. et al. The Solar Isotope Spectrometer for the
+  Advanced Composition Explorer. Space Science Reviews 86, 357–408 (1998).
+  https://doi.org/10.1023/A:1005027929871
 
 Note
 ----
