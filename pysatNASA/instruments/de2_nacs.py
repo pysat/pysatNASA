@@ -62,16 +62,16 @@ tag
     None Supported
 
 
+Warnings
+--------
+- Currently no cleaning routine.
+
+
 References
 ----------
 G. R. Carrignan, B. P. Block, J. C. Maurer,  A. E. Hedin, C. A. Reber,
 N. W. Spencer, "The neutral mass spectrometer on Dynamics Explorer B",
 Space Sci. Instrum., 5, 429-441, 1981.
-
-
-Warnings
---------
-- Currently no cleaning routine.
 
 """
 

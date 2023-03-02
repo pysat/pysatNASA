@@ -37,17 +37,16 @@ tag
     None Supported
 
 
+Warnings
+--------
+- Currently no cleaning routine.
+
+
 References
 ----------
 J. P. Krehbiel, L. H. Brace, R. F. Theis, W. H. Pinkus, and R. B. Kaplan,
 "The Dynamics Explorer 2 Langmuir Probe (LANG)", Space Sci. Instrum., 5,
 493-502, 1981.
-
-
-Warnings
---------
-- Currently no cleaning routine.
-
 
 """
 

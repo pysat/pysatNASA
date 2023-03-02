@@ -59,16 +59,16 @@ tag
     None Supported
 
 
+Warnings
+--------
+- Currently no cleaning routine.
+
+
 References
 ----------
 N. W. Spencer, L. E. Wharton, H. B. Niemann, A. E. Hedin, G. R. Carrignan,
 J. C. Maurer, "The Dynamics Explorer Wind and Temperature Spectrometer",
 Space Sci. Instrum., 5, 417-428, 1981.
-
-
-Warnings
---------
-- Currently no cleaning routine.
 
 """
 

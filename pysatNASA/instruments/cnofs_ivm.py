@@ -29,6 +29,14 @@ inst_id
     None supported
 
 
+Warnings
+--------
+- The sampling rate of the instrument changes on July 29th, 2010.
+  The rate is attached to the instrument object as .sample_rate.
+
+- The cleaning parameters for the instrument are still under development.
+
+
 References
 ----------
 A brief discussion of the C/NOFS mission and instruments can be found at
@@ -45,14 +53,6 @@ Discussion of cleaning parameters for ion temperature can be found in:
 Hairston, M. R., W. R. Coley, and R. A. Heelis (2010), Mapping the
 duskside topside ionosphere with CINDI and DMSP, J. Geophys. Res.,115,
 A08324, doi:10.1029/2009JA015051.
-
-
-Warnings
---------
-- The sampling rate of the instrument changes on July 29th, 2010.
-  The rate is attached to the instrument object as .sample_rate.
-
-- The cleaning parameters for the instrument are still under development.
 
 """
 
