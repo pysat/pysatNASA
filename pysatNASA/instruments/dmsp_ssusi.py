@@ -20,14 +20,6 @@ that can be utilized in a number of applications, such as maintenance of high
 frequency (HF) communication links and related systems and assessment of the
 environmental hazard to astronauts on the Space Station.
 
-References
-----------
-Larry J. Paxton, Daniel Morrison, Yongliang Zhang, Hyosub Kil, Brian Wolven,
-Bernard S. Ogorzalek, David C. Humm, and Ching-I. Meng "Validation of remote
-sensing products produced by the Special Sensor Ultraviolet Scanning Imager
-(SSUSI): a far UV-imaging spectrograph on DMSP F-16", Proc. SPIE 4485, Optical
-Spectroscopic Techniques, Remote Sensing, and Instrumentation for Atmospheric
-and Space Research IV, (30 January 2002); doi:10.1117/12.454268
 
 Properties
 ----------
@@ -45,6 +37,15 @@ Warnings
 --------
 - Currently no cleaning routine.
 
+
+References
+----------
+Larry J. Paxton, Daniel Morrison, Yongliang Zhang, Hyosub Kil, Brian Wolven,
+Bernard S. Ogorzalek, David C. Humm, and Ching-I. Meng "Validation of remote
+sensing products produced by the Special Sensor Ultraviolet Scanning Imager
+(SSUSI): a far UV-imaging spectrograph on DMSP F-16", Proc. SPIE 4485, Optical
+Spectroscopic Techniques, Remote Sensing, and Instrumentation for Atmospheric
+and Space Research IV, (30 January 2002); doi:10.1117/12.454268
 
 """
 
