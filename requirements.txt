@@ -6,4 +6,4 @@ cdflib>=0.4.4
 numpy<1.24
 pandas
 pysat>=3.0.4
-xarray<2022.11
+xarray
