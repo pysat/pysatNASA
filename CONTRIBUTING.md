@@ -81,7 +81,7 @@ To set up `pysatNASA` for local development:
   is broken on your local system:
 
   ```
-  pytest PACKAGENAME
+  pytest pysatNASA
   ```
 
 5. You should also check for flake8 style compliance:
