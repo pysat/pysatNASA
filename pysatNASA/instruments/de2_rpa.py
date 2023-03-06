@@ -36,11 +36,6 @@ to 82057 13:16:00 UT. This data set is based on the revised version of the RPA
 files that was submitted by the PI team in June of 1995. The revised RPA data
 include a correction to the spacecraft potential.
 
-References
-----------
-W. B. Hanson, R. A. Heelis, R. A. Power, C. R. Lippincott, D. R. Zuccaro,
-B. J. Holt, L. H. Harmon, and S. Sanatani, “The retarding potential analyzer
-for dynamics explorer-B,” Space Sci. Instrum. 5, 503–510 (1981).
 
 Properties
 ----------
@@ -53,9 +48,17 @@ inst_id
 tag
     None Supported
 
+
 Warnings
 --------
 - Currently no cleaning routine.
+
+
+References
+----------
+W. B. Hanson, R. A. Heelis, R. A. Power, C. R. Lippincott, D. R. Zuccaro,
+B. J. Holt, L. H. Harmon, and S. Sanatani, “The retarding potential analyzer
+for dynamics explorer-B,” Space Sci. Instrum. 5, 503–510 (1981).
 
 """
 

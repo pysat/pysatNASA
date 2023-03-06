@@ -3,10 +3,15 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [0.0.5] - 2023-XX-XX
+* New Instruments
+  * DMSP SSUSI EDR-Aurora data
+* Bug Fixes
+  * Updated CDAWeb routines to allow for data stored by year/day-of-year
 * Maintenance
   * Added a version cap for numpy (required for cdf interface, revisit before release)
   * Updated actions and templates based on pysatEcosystem docs.
   * Remove pandas cap on NEP29 tests
+  * Updated dosctring style for consistency
 
 ## [0.0.4] - 2022-11-07
 * Update instrument tests with new test class
