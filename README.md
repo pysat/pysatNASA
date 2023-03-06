@@ -32,9 +32,12 @@ Python 3.8+.
 | requests         |                   |                  |
 | xarray<2022.11   |                   |                  |
 
-## GitHub Installation
+## PyPi Installation
+```
+pip install pysatNASA
+```
 
-Currently, the main way to get pysatNASA is through github.
+## GitHub Installation
 
 ```
 git clone https://github.com/pysat/pysatNASA.git
@@ -51,6 +54,7 @@ python setup.py install
 Note: pre-1.0.0 version
 -----------------------
 pysatNASA is currently in an initial development phase and requires pysat 3.0.4.  
+Feedback and contributions are appreciated.
 
 # Using with pysat
 
@@ -62,7 +66,9 @@ from pysatNASA.instruments import icon_ivm
 
 ivm = pysat.Instrument(inst_module=icon_ivm, inst_id='a')
 ```
-Another way to use the instruments in an external repository is to register the instruments.  This only needs to be done the first time you load an instrument.  Afterward, pysat will identify them using the `platform` and `name` keywords.
+Another way to use the instruments in an external repository is to register the
+instruments.  This only needs to be done the first time you load an instrument.  
+Afterward, pysat will identify them using the `platform` and `name` keywords.
 
 ```
 import pysat
