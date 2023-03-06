@@ -30,7 +30,7 @@ Python 3.8+.
 | numpy            |                   |
 | pandas           |                   |
 | requests         |                   |
-| xarray<2022.11   |                   |
+| xarray           |                   |
 
 ## GitHub Installation
 
