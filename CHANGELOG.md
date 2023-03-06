@@ -12,6 +12,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   * Updated actions and templates based on pysatEcosystem docs.
   * Remove pandas cap on NEP29 tests
   * Updated dosctring style for consistency
+  * Removed version cap for xarray
 
 ## [0.0.4] - 2022-11-07
 * Update instrument tests with new test class

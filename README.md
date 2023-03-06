@@ -27,10 +27,10 @@ Python 3.8+.
 | beautifulsoup4   | cdflib            | pysatCDF         |
 | lxml             | pysat>=3.0.4      |                  |
 | netCDF4          |                   |                  |
-| numpy            |                   |                  |
+| numpy<1.24       |                   |                  |
 | pandas           |                   |                  |
 | requests         |                   |                  |
-| xarray<2022.11   |                   |                  |
+| xarray           |                   |                  |
 
 ## PyPi Installation
 ```
