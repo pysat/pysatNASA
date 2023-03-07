@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 """Provides non-instrument specific routines for ACE data."""
 
+import numpy as np
+
+
 ackn_str = ' '.join(("Please acknowledge the NASA National Space Science Data",
                      "Center, the Space Physics Data Facility, and the ACE",
                      "Principal Investigator, Edward C. Stone of the",
@@ -30,3 +33,21 @@ refs = {'mission': ' '.join(('Stone, E., Frandsen, A., Mewaldt, R. et al.',
                                'Science Reviews 86, 563–612 (1998).',
                                'https://doi.org/10.1023/A:1005040232597'))
         }
+
+
+def clean(self):
+    """Clean ACE data to the specified level.
+
+    Note
+    ----
+    Basic cleaning to replace fill values with NaN
+
+    """
+
+    for key in self.variables:
+        if key != 'time':
+            fill = self.meta[key, self.meta.labels.fill_val]
+            # Replace fill with nan
+            self[key] = self.data[key].where(key != fill)
+            self.meta[key] = {self.meta.labels.fill_val: np.nan}
+    return

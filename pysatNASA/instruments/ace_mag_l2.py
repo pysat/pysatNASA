@@ -67,9 +67,8 @@ _test_dates = {id: {tag: dt.datetime(2022, 1, 1) for tag in inst_ids[id]}
 # Use standard init routine
 init = functools.partial(mm_nasa.init, module=mm_ace, name=name)
 
-# No cleaning, use standard warning function instead
-clean = mm_nasa.clean_warn
-
+# Use default ace clean
+clean = mm_ace.clean
 
 # ----------------------------------------------------------------------------
 # Instrument functions

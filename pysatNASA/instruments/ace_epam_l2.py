@@ -67,28 +67,12 @@ _test_dates = {id: {tag: dt.datetime(2022, 1, 1) for tag in inst_ids[id]}
 # Use standard init routine
 init = functools.partial(mm_nasa.init, module=mm_ace, name=name)
 
+# Use default ace clean
+clean = mm_ace.clean
 
 # ----------------------------------------------------------------------------
 # Instrument functions
 #
-
-def clean(self):
-    """Clean ACE EPAM data to the specified level.
-
-    Note
-    ----
-    Basic cleaning to replace fill values with NaN
-
-    """
-
-    for key in self.variables:
-        if key != 'time':
-            fill = self.meta[key, self.meta.labels.fill_val]
-            # Replace fill with nan
-            self[key] = self.data[key].where(key != fill)
-            self.meta[key, self.meta.labels.fill_val] = np.nan
-    return
-
 
 # Use the default CDAWeb and pysat methods
 
