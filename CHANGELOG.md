@@ -9,6 +9,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   * Updated CDAWeb routines to allow for data stored by year/day-of-year
 * Maintenance
   * Added a version cap for numpy (required for cdf interface, revisit before release)
+  * Updated actions and templates based on pysatEcosystem docs.
+  * Remove pandas cap on NEP29 tests
   * Updated dosctring style for consistency
   * Removed version cap for xarray
 
