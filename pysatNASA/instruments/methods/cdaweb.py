@@ -428,7 +428,7 @@ def load_xarray(fnames, tag='', inst_id='',
 
 def download(date_array, tag='', inst_id='', supported_tags=None,
              remote_url='https://cdaweb.gsfc.nasa.gov', data_path=None):
-    """Download NASA CDAWeb CDF data.
+    """Download NASA CDAWeb data.
 
     This routine is intended to be used by pysat instrument modules supporting
     a particular NASA CDAWeb dataset.
@@ -457,7 +457,7 @@ def download(date_array, tag='', inst_id='', supported_tags=None,
     --------
     ::
 
-        # download support added to cnofs_vefi.py using code below
+        # Download support added to cnofs_vefi.py using code below
         fn = 'cnofs_vefi_bfield_1sec_{year:4d}{month:02d}{day:02d}_v05.cdf'
         dc_b_tag = {'remote_dir': ''.join(('/pub/data/cnofs/vefi/bfield_1sec',
                                             '/{year:4d}/')),
@@ -692,18 +692,27 @@ def list_remote_files(tag='', inst_id='', start=None, stop=None,
         stop = dt.datetime.now() if (stop is None) else stop
 
         if 'year' in search_dir['keys']:
+            url_list = []
             if 'month' in search_dir['keys']:
                 search_times = pds.date_range(start,
                                               stop + pds.DateOffset(months=1),
                                               freq='M')
+                for time in search_times:
+                    subdir = format_dir.format(year=time.year, month=time.month)
+                    url_list.append('/'.join((remote_url, subdir)))
             else:
-                search_times = pds.date_range(start,
-                                              stop + pds.DateOffset(years=1),
-                                              freq='Y')
-            url_list = []
-            for time in search_times:
-                subdir = format_dir.format(year=time.year, month=time.month)
-                url_list.append('/'.join((remote_url, subdir)))
+                if 'day' in search_dir['keys']:
+                    search_times = pds.date_range(start, stop
+                                                  + pds.DateOffset(days=1),
+                                                  freq='D')
+                else:
+                    search_times = pds.date_range(start, stop
+                                                  + pds.DateOffset(years=1),
+                                                  freq='Y')
+                for time in search_times:
+                    doy = int(time.strftime('%j'))
+                    subdir = format_dir.format(year=time.year, day=doy)
+                    url_list.append('/'.join((remote_url, subdir)))
     try:
         for top_url in url_list:
             for level in range(n_layers + 1):

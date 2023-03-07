@@ -47,12 +47,6 @@ WATS_VOLDESC_SFDU_DE.DOC and WATS_FORMAT_SFDU_DE.DOC files. More information
 about the processing done at NSSDC is given in WATS_NSSDC_PRO_DE.DOC.
 
 
-References
-----------
-N. W. Spencer, L. E. Wharton, H. B. Niemann, A. E. Hedin, G. R. Carrignan,
-J. C. Maurer, "The Dynamics Explorer Wind and Temperature Spectrometer",
-Space Sci. Instrum., 5, 417-428, 1981.
-
 Properties
 ----------
 platform
@@ -64,9 +58,17 @@ inst_id
 tag
     None Supported
 
+
 Warnings
 --------
 - Currently no cleaning routine.
+
+
+References
+----------
+N. W. Spencer, L. E. Wharton, H. B. Niemann, A. E. Hedin, G. R. Carrignan,
+J. C. Maurer, "The Dynamics Explorer Wind and Temperature Spectrometer",
+Space Sci. Instrum., 5, 417-428, 1981.
 
 """
 
