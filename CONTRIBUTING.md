@@ -78,33 +78,44 @@ To set up `pysatNASA` for local development:
 
 
 4. When you're done making changes, run all the checks to ensure that nothing
-   is broken on your local system, as well as check for flake8 compliance:
+  is broken on your local system:
 
-   ```
-    pytest -vs --flake8 pysatNASA
-   ```
+  ```
+  pytest pysatNASA
+  ```
 
-5. Update/add documentation (in ``docs``), if relevant
+5. You should also check for flake8 style compliance:
 
-6. Add your name to the .zenodo.json file as an author
+  ```
+  flake8 . --count --select=D,E,F,H,W --show-source --statistics
+  ```
 
-7. Commit your changes:
-   ```
-   git add .
-   git commit -m "AAA: Brief description of your changes"
-   ```
-   Where AAA is a standard shorthand for the type of change (eg, BUG or DOC).
-   `pysat` follows the [numpy development workflow](https://numpy.org/doc/stable/dev/development_workflow.html),
-   see the discussion there for a full list of this shorthand notation.  
+  Note that pysat uses the `flake-docstrings` and `hacking` packages to ensure
+  standards in docstring formatting.
 
-8. Once you are happy with the local changes, push to Github:
-   ```
-   git push origin name-of-your-bugfix-or-feature
-   ```
-   Note that each push will trigger the Continuous Integration workflow.
 
-9. Submit a pull request through the GitHub website. Pull requests should be
-   made to the ``develop`` branch.
+6. Update/add documentation (in ``docs``), if relevant
+
+7. Add your name to the .zenodo.json file as an author
+
+8. Commit your changes:
+  ```
+  git add .
+  git commit -m "AAA: Brief description of your changes"
+  ```
+  Where AAA is a standard shorthand for the type of change (eg, BUG or DOC).
+  `pysat` follows the [numpy development workflow](https://numpy.org/doc/stable/dev/development_workflow.html),
+  see the discussion there for a full list of this shorthand notation.  
+
+9. Once you are happy with the local changes, push to Github:
+  ```
+  git push origin name-of-your-bugfix-or-feature
+  ```
+  Note that each push will trigger the Continuous Integration workflow.
+
+10. Submit a pull request through the GitHub website. Pull requests should be
+   made to the ``develop`` branch.  Note that automated tests will be run on
+   github actions, but these must be initialized by a member of the pysat team.
 
 Pull Request Guidelines
 -----------------------
@@ -160,3 +171,5 @@ These include:
 * Block and inline comments should use proper English grammar and punctuation
   with the exception of single sentences in a block, which may then omit the
   final period
+* When casting is necessary, use `np.int64` and `np.float64` to ensure operating
+  system agnosticism
