@@ -3,7 +3,7 @@
 
 name: Test install of latest RC from pip
 
-on: [push]
+on: [workflow_dispatch]
 
 jobs:
   build:
