@@ -1,4 +1,6 @@
-# This workflow will install Python dependencies, run tests and lint with a variety of Python versions
+# This workflow will install Python dependencies and the latest RC of pysat from test pypi.
+# All unit tests for pysatNASA will be run using the pysat RC.
+# This test should be manually run before a pysat RC is officially approved and versioned.
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
 
 name: Test with latest pysat RC
