@@ -53,10 +53,10 @@ from pysatNASA.instruments.methods import cdaweb as cdw
 
 platform = 'timed'
 name = 'guvi'
-tags = {'high': 'Level 1C high resolution data',
-        'low': 'Level 1C low resolution data'}
-inst_ids = {'imaging': list(tags.keys()),
-            'spectrograph': list(tags.keys())}
+tags = {'imaging': 'Level 1C imaging data',
+        'spectrograph': 'Level 1C spectrograph data'}
+inst_ids = {'high_res': list(tags.keys()),
+            'low_res': list(tags.keys())}
 
 pandas_format = False
 
