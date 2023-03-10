@@ -14,8 +14,8 @@ platform
 name
     'guvi'
 tag
-    'imaging'
-    'spectrograph'
+    'sdr-imaging'
+    'sdr-spectrograph'
 inst_id
     'high_res'
     'low_res'
@@ -29,8 +29,8 @@ Example
 ::
 
     import pysat
-    guvi = pysat.Instrument(platform='timed', name='guvi', inst_id='imaging',
-                            tag='low')
+    guvi = pysat.Instrument(platform='timed', name='guvi',
+                            inst_id='sdr-imaging', tag='low_res')
     guvi.download(dt.datetime(2005, 6, 28), dt.datetime(2005, 6, 29))
     guvi.load(date=dt.datetime(2005, 6, 28))
 
@@ -53,8 +53,8 @@ from pysatNASA.instruments.methods import cdaweb as cdw
 
 platform = 'timed'
 name = 'guvi'
-tags = {'imaging': 'Level 1C imaging data',
-        'spectrograph': 'Level 1C spectrograph data'}
+tags = {'sdr-imaging': 'Level 1C imaging data',
+        'sdr-spectrograph': 'Level 1C spectrograph data'}
 inst_ids = {'high_res': list(tags.keys()),
             'low_res': list(tags.keys())}
 
@@ -123,7 +123,7 @@ fname = ''.join(('TIMED_GUVI_L1C{res:s}-disk-{mode:s}_{{year:04d}}{{day:03d}}',
                  'Av{{version:02d}}-??r{{revision:03d}}.nc'))
 
 res = {'low_res': '-2', 'high_res': ''}
-mode = {'imaging': 'IMG', 'spectrograph': 'SPECT'}
+mode = {'sdr-imaging': 'IMG', 'sdr-spectrograph': 'SPECT'}
 supported_tags = {inst: {tag: fname.format(res=res[inst], mode=mode[tag])
                          for tag in tags.keys()}
                   for inst in inst_ids}
@@ -186,7 +186,8 @@ def load(fnames, tag='', inst_id=''):
     --------
     ::
 
-        inst = pysat.Instrument('timed', 'guvi', inst_id='high_res', tag='imaging')
+        inst = pysat.Instrument('timed', 'guvi',
+                                inst_id='high_res', tag='sdr-imaging')
         inst.load(2005, 179)
 
     """
@@ -214,9 +215,9 @@ def load(fnames, tag='', inst_id=''):
     # imaging high_res also has dims DayAur
     # spectrograph low_res also has dims GAIMDay, GAIMNight
     dims = ['time']
-    if 'imag' in tag:
+    if 'sdr-imag' in tag:
         dims = dims + ['time_auroral']
-    elif 'spect' in tag:
+    elif 'sdr-spect' in tag:
         if 'low' in inst_id:
             dims = dims + ['time_gaim_day', 'time_gaim_night']
 
@@ -229,9 +230,9 @@ def load(fnames, tag='', inst_id=''):
         # Collect datetime objects
         day_dts = np.array(get_dt_objects(data, "DAY"))
         night_dts = np.array(get_dt_objects(data, "NIGHT"))
-        if 'imag' in tag:
+        if 'sdr-imag' in tag:
             aur_dts = get_dt_objects(data, "DAY_AURORAL")
-        elif 'spect' in tag:
+        elif 'sdr-spect' in tag:
             if 'low' in inst_id:
                 gaimday_dts = get_dt_objects(data, "GAIM_DAY")
                 gaimnight_dts = get_dt_objects(data, "GAIM_NIGHT")
@@ -240,11 +241,11 @@ def load(fnames, tag='', inst_id=''):
         data = data.drop_vars(["YEAR_DAY", "DOY_DAY", "TIME_DAY",
                                "TIME_EPOCH_DAY", "YEAR_NIGHT", "DOY_NIGHT",
                                "TIME_NIGHT", "TIME_EPOCH_NIGHT"])
-        if 'imag' in tag:
+        if 'sdr-imag' in tag:
             data = data.drop_vars(["YEAR_DAY_AURORAL", "DOY_DAY_AURORAL",
                                    "TIME_DAY_AURORAL",
                                    "TIME_EPOCH_DAY_AURORAL"])
-        elif 'spect' in tag:
+        elif 'sdr-spect' in tag:
             if 'low' in inst_id:
                 data = data.drop_vars(["YEAR_GAIM_DAY", "DOY_GAIM_DAY",
                                        "TIME_GAIM_DAY", "TIME_GAIM_NIGHT",
@@ -261,7 +262,7 @@ def load(fnames, tag='', inst_id=''):
                                  "nAlongNight": "nAlong"})
 
         # 'nCross' dimension only in imaging
-        if 'imag' in tag:
+        if 'sdr-imag' in tag:
 
             if data.nCrossDay.size != data.nCrossNight.size:
                 raise Exception("nCrossDay/Night have different dimensions")
@@ -271,9 +272,9 @@ def load(fnames, tag='', inst_id=''):
 
         # 'nAlong' will be renamed as 'time' to follow pysat standards
         data = data.swap_dims({"nAlong": "time"})
-        if 'imag' in tag:
+        if 'sdr-imag' in tag:
             data = data.swap_dims({"nAlongDayAur": "time_auroral"})
-        elif 'spect' in tag:
+        elif 'sdr-spect' in tag:
             if 'low' in inst_id:
                 data = data.swap_dims({"nAlongGAIMDay": "time_gaim_day",
                                        "nAlongGAIMNight": "time_gaim_night"})
@@ -281,9 +282,9 @@ def load(fnames, tag='', inst_id=''):
         # Update time variables
         # night_dts and day_dts are the same temporal array
         data = data.assign(time=night_dts)
-        if 'imag' in tag:
+        if 'sdr-imag' in tag:
             data = data.assign(time_auroral=aur_dts)
-        elif 'spect' in tag:
+        elif 'sdr-spect' in tag:
             if 'low' in inst_id:
                 data = data.assign(time_gaim_day=gaimday_dts,
                                    time_gaim_night=gaimnight_dts)
@@ -322,12 +323,12 @@ def load(fnames, tag='', inst_id=''):
               'PIERCEPOINT_DAY_ALTITUDE',
               'PIERCEPOINT_DAY_SZA']
 
-    if 'imag' in tag:
+    if 'sdr-imag' in tag:
         coords = coords + ['PIERCEPOINT_DAY_LATITUDE_AURORAL',
                            'PIERCEPOINT_DAY_LONGITUDE_AURORAL',
                            'PIERCEPOINT_DAY_ALTITUDE_AURORAL',
                            'PIERCEPOINT_DAY_SZA_AURORAL']
-    elif 'spect' in tag:
+    elif 'sdr-spect' in tag:
         coords = coords + ['PIERCEPOINT_NIGHT_ZENITH_ANGLE',
                            'PIERCEPOINT_NIGHT_SAZIMUTH',
                            'PIERCEPOINT_DAY_ZENITH_ANGLE',
@@ -336,14 +337,14 @@ def load(fnames, tag='', inst_id=''):
     data = data.set_coords(coords)
 
     # Set 'nchan' and 'nCross' as coordinates
-    if 'imag' in tag:
+    if 'sdr-imag' in tag:
         coords = {"nchan": ["121.6nm", "130.4nm", "135.6nm",
                             "LBHshort", "LBHlong"],
                   "nchanAur": ["121.6nm", "130.4nm", "135.6nm",
                                "LBHshort", "LBHlong"],
                   "nCross": data.nCross.data,
                   "nCrossDayAur": data.nCrossDayAur.data}
-    elif 'spect' in tag:
+    elif 'sdr-spect' in tag:
         coords = {"nchan": ["121.6nm", "130.4nm", "135.6nm",
                             "LBHshort", "LBHlong", "?"]}
 
