@@ -13,6 +13,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   * Remove pandas cap on NEP29 tests
   * Updated dosctring style for consistency
   * Removed version cap for xarray
+  * Added manual workflow to check that latest RC is installable through test pip
 
 ## [0.0.4] - 2022-11-07
 * Update instrument tests with new test class
