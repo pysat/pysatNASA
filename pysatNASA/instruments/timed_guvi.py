@@ -135,7 +135,7 @@ list_files = functools.partial(mm_gen.list_files,
 url = ''.join(('/pub/data/timed/guvi/levels_v13/level1c/{mode:s}/',
                '{{year:4d}}/{{day:03d}}/'))
 
-supported_urls = {inst: {tag: url.format(mode=tag)
+supported_urls = {inst: {tag: url.format(mode=tag.split('-')[1])
                          for tag in tags.keys()}
                   for inst in inst_ids}
 
