@@ -54,6 +54,7 @@ inst_ids = {'1sec': ['base'],
             '5min': ['key'],
             '1hr': ['base', 'key']}
 pandas_format = False
+
 # ----------------------------------------------------------------------------
 # Instrument test attributes
 

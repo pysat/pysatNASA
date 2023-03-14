@@ -69,7 +69,6 @@ init = functools.partial(mm_nasa.init, module=mm_ace, name=name)
 # Use default ace clean
 clean = mm_ace.clean
 
-
 # ----------------------------------------------------------------------------
 # Instrument functions
 #

@@ -47,7 +47,9 @@ def clean(self):
     for key in self.variables:
         if key != 'time':
             fill = self.meta[key, self.meta.labels.fill_val]
+
             # Replace fill with nan
-            self[key] = self.data[key].where(key != fill)
+            fill_mask = self[key] == fill
+            self[key] = self.data[key].where(~fill_mask)
             self.meta[key] = {self.meta.labels.fill_val: np.nan}
     return
