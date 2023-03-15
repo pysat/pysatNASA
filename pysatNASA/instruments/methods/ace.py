@@ -3,7 +3,6 @@
 
 import numpy as np
 
-
 ackn_str = ' '.join(("Please acknowledge the NASA National Space Science Data",
                      "Center, the Space Physics Data Facility, and the ACE",
                      "Principal Investigator, Edward C. Stone of the",

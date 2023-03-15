@@ -64,7 +64,6 @@ _test_dates = {id: {tag: dt.datetime(2022, 1, 1) for tag in inst_ids[id]}
 # ----------------------------------------------------------------------------
 # Instrument methods
 
-
 # Use standard init routine
 init = functools.partial(mm_nasa.init, module=mm_ace, name=name)
 
