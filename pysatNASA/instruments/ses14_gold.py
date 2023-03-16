@@ -11,6 +11,8 @@ name
     'gold'
 tag
     'nmax'
+    'tlimb'
+    'tdisk'
 
 Warnings
 --------
@@ -33,7 +35,9 @@ Examples
 
 import datetime as dt
 import functools
+import pysat
 import numpy as np
+import xarray as xr
 
 from pysat.instruments.methods import general as ps_gen
 from pysat import logger
@@ -48,15 +52,19 @@ from pysatNASA.instruments.methods import gold as mm_gold
 
 platform = 'ses14'
 name = 'gold'
-tags = {'nmax': 'Level 2 Nmax data for the GOLD instrument'}
-inst_ids = {'': ['nmax']}
+tags = {'nmax': 'Level 2 Nmax data for the GOLD instrument',
+        'tlimb': 'Level 2 Tlimb data for the GOLD instrument',
+        'tdisk': 'Level 2 Tdisk data for the GOLD instrument'}
+inst_ids = {'': ['nmax','tlimb','tdisk']}
 
 pandas_format = False
 
 # ----------------------------------------------------------------------------
 # Instrument test attributes
 
-_test_dates = {'': {'nmax': dt.datetime(2020, 1, 1)}}
+_test_dates = {'': {'nmax': dt.datetime(2020, 1, 1)},
+                    'tlimb': dt.datetime(2020, 1, 1),
+                    'tdisk': dt.datetime(2020, 1, 1)}
 
 # ----------------------------------------------------------------------------
 # Instrument methods
@@ -168,36 +176,30 @@ def load(fnames, tag='', inst_id=''):
               'min_val': ('Valid_Min', np.float64),
               'max_val': ('Valid_Max', np.float64),
               'fill_val': ('fill', np.float64)}
+    meta = pysat.Meta(labels=labels)
 
-    # Generate custom meta translation table. When left unspecified the default
-    # table handles the multiple values for fill. We must recreate that
-    # functionality in our table. The targets for meta_translation should
-    # map to values in `labels` above.
-    meta_translation = {'FIELDNAM': 'plot', 'LABLAXIS': 'axis',
-                        'ScaleTyp': 'scale', 'VALIDMIN': 'Valid_Min',
-                        'Valid_Min': 'Valid_Min', 'VALIDMAX': 'Valid_Max',
-                        'Valid_Max': 'Valid_Max', '_FillValue': 'fill',
-                        'FillVal': 'fill', 'TIME_BASE': 'time_base'}
+    datos = []
 
-    data, meta = load_netcdf(fnames, pandas_format=pandas_format,
-                             epoch_name='nscans', labels=labels,
-                             meta_translation=meta_translation,
-                             drop_meta_labels='FILLVAL')
+    for path in fnames:
 
-    if tag == 'nmax':
-        # Add time coordinate from scan_start_time
-        data['time'] = [dt.datetime.strptime(str(val), "b'%Y-%m-%dT%H:%M:%SZ'")
-                        for val in data['scan_start_time'].values]
+        data = xr.load_dataset(path)
 
-        # Update coordinates with dimensional data
-        data = data.assign_coords({'nlats': data['nlats'],
-                                   'nlons': data['nlons'],
-                                   'nmask': data['nmask'],
-                                   'channel': data['channel'],
-                                   'hemisphere': data['hemisphere']})
-        meta['time'] = {meta.labels.notes: 'Converted from scan_start_time'}
-        meta['nlats'] = {meta.labels.notes: 'Index for latitude values'}
-        meta['nlons'] = {meta.labels.notes: 'Index for longitude values'}
-        meta['nmask'] = {meta.labels.notes: 'Index for mask values'}
+        if tag in ['nmax', 'tlimb', 'tdisk']:
+            # Add time coordinate from scan_start_time
+            data['time'] = ('nscans',
+                            [dt.datetime.strptime(str(val), "b'%Y-%m-%dT%H:%M:%SZ'")
+                             for val in data['scan_start_time'].values])
+            data = data.swap_dims({'nscans': 'time'})
+
+            # Update coordinates with dimensional data
+            data = data.assign_coords({'nlats': data['nlats'],
+                                       'nlons': data['nlons'],
+                                       'nmask': data['nmask'],
+                                       'channel': data['channel'],
+                                       'hemisphere': data['hemisphere']})
+
+        datos.append(data)
+
+    data = xr.concat(datos, dim='time')
 
     return data, meta
