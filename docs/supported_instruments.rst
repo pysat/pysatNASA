@@ -1,6 +1,38 @@
 Supported Instruments
 =====================
 
+.. _ace_epam:
+
+ACE EPAM
+--------
+
+.. automodule:: pysatNASA.instruments.ace_epam_l2
+   :members:
+
+.. _ace_mag:
+
+ACE MAG
+-------
+
+.. automodule:: pysatNASA.instruments.ace_mag_l2
+  :members:
+
+.. _ace_sis:
+
+ACE SIS
+-------
+
+.. automodule:: pysatNASA.instruments.ace_sis_l2
+   :members:
+
+.. _ace_swepam:
+
+ACE SWEPAM
+----------
+
+.. automodule:: pysatNASA.instruments.ace_swepam_l2
+  :members:
+
 .. _cnofs_ivm:
 
 C/NOFS IVM
