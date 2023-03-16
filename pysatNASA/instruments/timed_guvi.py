@@ -61,12 +61,10 @@ Example
 import datetime as dt
 import functools
 import numpy as np
-import warnings
 import xarray as xr
 
 import pysat
 from pysat.instruments.methods import general as mm_gen
-from pysat import logger
 
 from pysatNASA.instruments.methods import cdaweb as cdw
 from pysatNASA.instruments.methods import general as mm_nasa
@@ -91,7 +89,7 @@ multi_file_day = True  # This is only true for EDR-AUR
 # ----------------------------------------------------------------------------
 # Instrument test attributes
 
-_test_dates = {iid: {tag: dt.datetime(2005, 6, 28) for tag in inst_ids[iid]
+_test_dates = {iid: {tag: dt.datetime(2005, 6, 28) for tag in inst_ids[iid]}
                for iid in inst_ids.keys()}
 
 # ----------------------------------------------------------------------------
@@ -114,7 +112,7 @@ fname = ''.join(('TIMED_GUVI_{lvl:s}{mode:s}_{{year:04d}}{{day:03d}}',
                  '??????_Av{{version:02d}}-??r{{revision:03d}}.nc'))
 file_lvl = {'low_res': 'L1C-2-disk', 'high_res': 'L1C-disk', '': 'L2B'}
 mode = {'sdr-imaging': '-IMG', 'sdr-spectrograph': '-SPECT',
-        'edr-aur': '-edr-aur-IMG'}                 
+        'edr-aur': '-edr-aur-IMG'}
 supported_tags = {inst_id: {tag: fname.format(lvl=file_lvl[inst_id],
                                               mode=mode[tag])
                             for tag in tags.keys()}
@@ -129,7 +127,8 @@ url_lvl = {'sdr-imaging': 'level1c', 'sdr-spectrograph': 'level1c',
 url_mode = {tag: 'imaging' if tag == 'edr-aur' else tag.split('-')[1]
             for tag in tags.keys()}
 download_tags = {
-    sat_id: {tag: {'remote_dir': url.format(lvl=url_lvl[tag], url_mode[tag])
+    sat_id: {tag: {'remote_dir': url.format(lvl=url_lvl[tag],
+                                            mode=url_mode[tag]),
                    'fname': fname.format(lvl=file_lvl[sat_id], mode=mode[tag])}
              for tag in tags.keys()} for sat_id in inst_ids.keys()}
 download = functools.partial(cdw.download, supported_tags=download_tags)
@@ -237,7 +236,8 @@ def load(fnames, tag='', inst_id=''):
                                            "YEAR_GAIM_NIGHT", "DOY_GAIM_NIGHT"])
 
             if day_dts.size != night_dts.size:
-                raise Exception("nAlongDay & nAlongNight have different dimensions")
+                raise Exception(" ".join(("nAlongDay & nAlongNight have",
+                                          "different dimensions")))
 
             if np.any(day_dts != night_dts):
                 raise Exception("time along day and night are different")
@@ -262,7 +262,8 @@ def load(fnames, tag='', inst_id=''):
             elif 'sdr-spect' in tag:
                 if 'low' in inst_id:
                     data = data.swap_dims({"nAlongGAIMDay": "time_gaim_day",
-                                           "nAlongGAIMNight": "time_gaim_night"})
+                                           "nAlongGAIMNight":
+                                           "time_gaim_night"})
 
             # Update time variables
             # night_dts and day_dts are the same temporal array
@@ -294,7 +295,7 @@ def load(fnames, tag='', inst_id=''):
                 inners = jnners
             else:
                 inners = {dim: xr.concat([inners[dim], jnners[dim]], dim=dim)
-                         for dim in dims}
+                          for dim in dims}
 
         data = xr.merge([inners[dim] for dim in dims])
 
