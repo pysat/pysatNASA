@@ -95,3 +95,18 @@ class TestCDAWeb(object):
         files = self.test_inst.remote_file_list(start, stop)
         assert len(files) > 0
         return
+
+    @pytest.mark.parametrize("series_out", [(True), (False)])
+    def test_cdas_remote_files(self, series_out):
+        """Test that cdas_list_remote_files can return pandas series."""
+        start = dt.datetime(2009, 1, 1)
+        stop = dt.datetime(2009, 1, 2)
+        self.module = pysatNASA.instruments.cnofs_plp
+        self.test_inst = pysat.Instrument(inst_module=self.module)
+        files = self.test_inst.remote_file_list(start, stop,
+                                                series_out=series_out)
+        if series_out is True:
+            assert isinstance(files, pds.Series)
+        else:
+            assert isinstance(files, list)
+        return
