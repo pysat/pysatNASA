@@ -558,7 +558,8 @@ def cdas_download(date_array, tag='', inst_id='', supported_tags=None,
     stop = date_array[-1]
     remote_files = cdas_list_remote_files(tag=tag, inst_id=inst_id,
                                           start=start, stop=stop,
-                                          supported_tags=supported_tags)
+                                          supported_tags=supported_tags,
+                                          series_out=False)
 
     for file in remote_files:
 
@@ -750,7 +751,7 @@ def list_remote_files(tag='', inst_id='', start=None, stop=None,
 
 
 def cdas_list_remote_files(tag='', inst_id='', start=None, stop=None,
-                           supported_tags=None):
+                           supported_tags=None, series_out=True):
     """Return a list of every file for chosen remote data.
 
     This routine is intended to be used by pysat instrument modules supporting
@@ -775,6 +776,9 @@ def cdas_list_remote_files(tag='', inst_id='', start=None, stop=None,
         a dict with 'remote_dir', 'fname'. Inteded to be
         pre-set with functools.partial then assigned to new instrument code.
         (default=None)
+    series_out : bool
+        boolean to determine output type. True for pandas series, and False for
+        list.
 
     Returns
     -------
@@ -813,6 +817,12 @@ def cdas_list_remote_files(tag='', inst_id='', start=None, stop=None,
         stop = stop.tz_localize('utc')
 
     og_files = cdas.get_original_files(dataset=dataset, start=start, end=stop)
-    file_list = [f['Name'] for f in og_files[1]]
+
+    if series_out:
+        name_list = [os.path.basename(f['Name']) for f in og_files[1]]
+        t_stamp = [pds.Timestamp(f['StartTime'][:10]) for f in og_files[1]]
+        file_list = pds.Series(data=name_list, index=t_stamp)
+    else:
+        file_list = [f['Name'] for f in og_files[1]]
 
     return file_list
