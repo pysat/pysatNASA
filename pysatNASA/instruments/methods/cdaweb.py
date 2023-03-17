@@ -9,6 +9,7 @@ Adding new CDAWeb datasets should only require mininal user intervention.
 
 import cdflib
 import datetime as dt
+import numpy as np
 import os
 import pandas as pds
 import requests
@@ -110,6 +111,7 @@ def load(fnames, tag='', inst_id='', file_cadence=dt.timedelta(days=1),
 
         data, meta = load_xarray(fnames, tag=tag, inst_id=inst_id,
                                  epoch_name=epoch_name,
+                                 file_cadence=file_cadence,
                                  meta_processor=meta_processor,
                                  meta_translation=meta_translation,
                                  drop_meta_labels=drop_meta_labels)
@@ -224,6 +226,7 @@ def load_pandas(fnames, tag='', inst_id='', file_cadence=dt.timedelta(days=1),
 
 
 def load_xarray(fnames, tag='', inst_id='',
+                file_cadence=dt.timedelta(days=1),
                 labels={'units': ('units', str), 'name': ('long_name', str),
                         'notes': ('notes', str), 'desc': ('desc', str),
                         'plot': ('plot_label', str), 'axis': ('axis', str),
@@ -243,6 +246,11 @@ def load_xarray(fnames, tag='', inst_id='',
         Data product tag (default='')
     inst_id : str
         Instrument ID (default='')
+    file_cadence : dt.timedelta or pds.DateOffset
+        pysat assumes a daily file cadence, but some instrument data files
+        contain longer periods of time.  This parameter allows the specification
+        of regular file cadences greater than or equal to a day (e.g., weekly,
+        monthly, or yearly). (default=dt.timedelta(days=1))
     labels : dict
         Dict where keys are the label attribute names and the values are tuples
         that have the label values and value types in that order.
@@ -308,7 +316,14 @@ def load_xarray(fnames, tag='', inst_id='',
         # metadata for pysat using some assumptions. Depending upon your needs
         # the resulting pandas DataFrame may need modification.
         ldata = []
-        for lfname in fnames:
+
+        # Find unique files for monthly / yearly cadence.
+        # Arbitrary timestamp needed for comparison.
+        t0 = dt.datetime(2009, 1, 1)
+        if (t0 + file_cadence) > (t0 + dt.timedelta(days=1)):
+            lfnames = list(np.unique([fname[:-11] for fname in fnames]))
+
+        for lfname in lfnames:
             temp_data = cdflib.cdf_to_xarray(lfname, to_datetime=True)
             ldata.append(temp_data)
 
