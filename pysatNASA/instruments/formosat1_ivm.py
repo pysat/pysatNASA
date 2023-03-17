@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Module for the ICON EUV instrument.
+"""Module for the Formosat-1 IVM instrument.
 
 Supports the Ion Velocity Meter (IVM) onboard the Formosat-1 (formerly
 ROCSAT-1) mission. Downloads data from the NASA Coordinated Data Analysis
