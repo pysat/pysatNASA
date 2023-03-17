@@ -60,10 +60,7 @@ Example
 
 import datetime as dt
 import functools
-import numpy as np
-import xarray as xr
 
-import pysat
 from pysat.instruments.methods import general as mm_gen
 
 from pysatNASA.instruments.methods import cdaweb as cdw
