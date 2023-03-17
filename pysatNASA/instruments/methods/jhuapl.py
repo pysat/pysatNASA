@@ -280,16 +280,18 @@ def load_sdr_aurora(fnames, tag='', inst_id='', pandas_format=False,
         rename_dims['nCrossNight'] = 'nCross'
         rename_dims['nAlongDayAur'] = 'time_auroral'
     elif tag == 'sdr-spectrograph':
-        time_vars.extend(["YEAR_GAIM_DAY", "DOY_GAIM_DAY", "TIME_GAIM_DAY",
-                          "TIME_GAIM_NIGHT", "YEAR_GAIM_NIGHT",
-                          "DOY_GAIM_NIGHT"])
         coords.extend(['PIERCEPOINT_NIGHT_ZENITH_ANGLE',
                        'PIERCEPOINT_NIGHT_SAZIMUTH',
                        'PIERCEPOINT_DAY_ZENITH_ANGLE',
                        'PIERCEPOINT_DAY_SAZIMUTH'])
-        time_dims.extend(['time_gaim_day', 'time_gaim_night'])
-        rename_dims['nAlongGAIMDay'] = 'time_gaim_day'
-        rename_dims['nAlongGAIMNight'] = 'time_gaim_night'
+
+        if inst_id == 'low_res':
+            time_vars.extend(["YEAR_GAIM_DAY", "DOY_GAIM_DAY", "TIME_GAIM_DAY",
+                              "TIME_GAIM_NIGHT", "YEAR_GAIM_NIGHT",
+                              "DOY_GAIM_NIGHT"])
+            time_dims.extend(['time_gaim_day', 'time_gaim_night'])
+            rename_dims['nAlongGAIMDay'] = 'time_gaim_day'
+            rename_dims['nAlongGAIMNight'] = 'time_gaim_night'
 
     # CDAWeb stores these files in the NetCDF format instead of the CDF format
     inners = None
