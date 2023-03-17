@@ -266,6 +266,7 @@ def load_sdr_aurora(fnames, tag='', inst_id='', pandas_format=False,
               'PIERCEPOINT_DAY_LATITUDE', 'PIERCEPOINT_DAY_LONGITUDE',
               'PIERCEPOINT_DAY_ALTITUDE', 'PIERCEPOINT_DAY_SZA']
     time_dims = ['time']
+    rename_dims = {'nAlongDay': 'nAlong', 'nAlongNight': 'nAlong'}
 
     if tag == 'sdr-imaging':
         time_vars.extend(["YEAR_DAY_AURORAL", "DOY_DAY_AURORAL",
@@ -275,6 +276,9 @@ def load_sdr_aurora(fnames, tag='', inst_id='', pandas_format=False,
                        'PIERCEPOINT_DAY_ALTITUDE_AURORAL',
                        'PIERCEPOINT_DAY_SZA_AURORAL'])
         time_dims.append('time_auroral')
+        rename_dims['nCrossDay'] = 'nCross'
+        rename_dims['nCrossNight'] = 'nCross'
+        rename_dims['nAlongDayAur'] = 'time_auroral'
     elif tag == 'sdr-spectrograph':
         time_vars.extend(["YEAR_GAIM_DAY", "DOY_GAIM_DAY", "TIME_GAIM_DAY",
                           "TIME_GAIM_NIGHT", "YEAR_GAIM_NIGHT",
@@ -284,6 +288,8 @@ def load_sdr_aurora(fnames, tag='', inst_id='', pandas_format=False,
                        'PIERCEPOINT_DAY_ZENITH_ANGLE',
                        'PIERCEPOINT_DAY_SAZIMUTH'])
         time_dims.extend(['time_gaim_day', 'time_gaim_night'])
+        rename_dims['nAlongGAIMDay'] = 'time_gaim_day'
+        rename_dims['nAlongGAIMNight'] = 'time_gaim_night'
 
     # CDAWeb stores these files in the NetCDF format instead of the CDF format
     inners = None
@@ -303,22 +309,17 @@ def load_sdr_aurora(fnames, tag='', inst_id='', pandas_format=False,
         if sdata.dims['nAlongDay'] != sdata.dims['nAlongNight']:
             raise ValueError('Along-track day and night dimensions differ')
 
-        if sdata.dims['nCrossDay'] != sdata.dims['nCrossNight']:
-            raise ValueError('Cross-track day and night dimensions differ')
+        if 'nCrossDay' in rename_dims.keys():
+            if sdata.dims['nCrossDay'] != sdata.dims['nCrossNight']:
+                raise ValueError('Cross-track day and night dimensions differ')
 
         # Combine identical dimensions and rename 'nAlong' to 'time'
-        sdata = sdata.rename_dims({'nAlongDay': 'nAlong',
-                                   'nAlongNight': 'nAlong',
-                                   'nCrossDay': 'nCross',
-                                   'nCrossNight': 'nCross'})
+        sdata = sdata.rename_dims(rename_dims)
 
         if tag == 'sdr-imaging':
-            sdata = sdata.rename_dims({'nAlongDayAur': 'time_auroral'})
-            sdata = sdata.assign(time_auroral=build_dtimes(
-                sdata, '_DAY_AURORAL'))
+            sdata = sdata.assign(time_auroral=build_dtimes(sdata,
+                                                           '_DAY_AURORAL'))
         elif tag == 'sdr-spectrograph' and inst_id == 'low_res':
-            sdata = sdata.rename_dims({'nAlongGAIMDay': 'time_gaim_day',
-                                       'nAlongGAIMNight': 'time_gaim_night'})
             sdata = sdata.assign(time_gaim_day=build_dtimes(
                 sdata, '_GAIM_DAY'), time_gaim_night=build_dtimes(
                     sdata, '_GAIM_NIGHT'))
