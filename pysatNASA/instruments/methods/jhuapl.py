@@ -10,7 +10,7 @@ from pysat.utils.io import load_netcdf
 
 
 def build_dtimes(data, var, epoch=None, epoch_var='time'):
-    """Build datetime objects from standard JPL time variables.
+    """Build datetime objects from standard JHU APL time variables.
 
     Parameters
     ----------
