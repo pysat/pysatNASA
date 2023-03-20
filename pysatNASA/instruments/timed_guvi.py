@@ -88,6 +88,9 @@ multi_file_day = True
 
 _test_dates = {iid: {tag: dt.datetime(2005, 6, 28) for tag in inst_ids[iid]}
                for iid in inst_ids.keys()}
+_test_load_opt = {iid: {tag: [{'combine_times': True}, {'combine_times': False}]
+                        for tag in inst_ids[iid]} for iid in ['high_res',
+                                                              'low_res']}
 
 # ----------------------------------------------------------------------------
 # Instrument methods
