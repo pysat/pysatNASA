@@ -544,6 +544,31 @@ def cdas_download(date_array, tag='', inst_id='', supported_tags=None,
     Supported tags for this function use the cdaweb dataset naming convention.
     You can find the dataset names on cdaweb or you can use cdasws.
 
+    Starting from scratch using cdasws
+    ::
+        from cdasws import CdasWs
+        cads = CdasWs()
+
+        # Get list of available observatories/platforms.
+        cdas.get_observatories()
+
+        # Once your observatory is located, list the available instruments.
+        cdas.get_instruments(observatory=‘observatory_name’)
+
+        # Now list the available data sets for one instrument.
+        cdas.get_datasets(observatory=‘observatory_name’,
+                          instrument=‘instrument_name’)
+
+        # You can also list all of the datasets for an observatory.
+        cdas.get_datasets(observatory=‘observatory_name’)
+
+    Alternatively
+    ::
+        Visit https://cdaweb.gsfc.nasa.gov/
+        Select the observatory you want from the list and press submit.
+        The following page will have a list of the data sets.
+        The bolded names are in the format that cdasws uses.
+
     Examples
     --------
     ::
