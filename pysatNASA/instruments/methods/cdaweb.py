@@ -817,8 +817,9 @@ def cdas_list_remote_files(tag='', inst_id='', start=None, stop=None,
         # Use the topmost directory without variables
         start = cdas.get_inventory(identifier=dataset)[0].start
         stop = cdas.get_inventory(identifier=dataset)[-1].end
-
-    if start == stop:
+    elif stop is None:
+        stop = start + dt.timedelta(days=1)
+    elif start == stop:
         stop = start + dt.timedelta(days=1)
 
     if isinstance(start, pds._libs.tslibs.timestamps.Timestamp):

@@ -83,6 +83,7 @@ class TestCDAWeb(object):
 
     @pytest.mark.parametrize("start, stop",
                              [(None, None),
+                              (dt.datetime(2009, 1, 1), None),
                               (dt.datetime(2009, 1, 1),
                                dt.datetime(2009, 1, 1)),
                               (pds.Timestamp(2009, 1, 1),
