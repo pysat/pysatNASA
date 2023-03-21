@@ -118,12 +118,7 @@ supported_tags = {'': {'day': fname24, 'night': fname25}}
 list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags)
 
-# old Set the download routine
-# basic_tag24 = {'remote_dir': '/pub/data/icon/l2/l2-4_fuv_day/{year:04d}/',
-#                'fname': fname24}
-# basic_tag25 = {'remote_dir': '/pub/data/icon/l2/l2-5_fuv_night/{year:04d}/',
-#                'fname': fname25}
-# download_tags = {'': {'day': basic_tag24, 'night': basic_tag25}}
+# Set the download routine
 download_tags = {'': {'day': 'ICON_L2-4_FUV_DAY',
                       'night': 'ICON_L2-5_FUV_NIGHT'}}
 

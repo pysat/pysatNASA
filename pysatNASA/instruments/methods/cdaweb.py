@@ -542,7 +542,7 @@ def cdas_download(date_array, tag='', inst_id='', supported_tags=None,
     Note
     ----
     Supported tags for this function use the cdaweb dataset naming convention.
-    You can find the dataset names on cdaweb or you can use cdasws.
+    You can find the data set names on CDAWeb or you can use cdasws.
 
     Starting from scratch using cdasws
     ::
@@ -572,7 +572,7 @@ def cdas_download(date_array, tag='', inst_id='', supported_tags=None,
     Examples
     --------
     ::
-        # download support added to cnofs_vefi.py using code below
+        # Download support added to cnofs_vefi.py using code below
         download_tags = {'': {'dc_b': 'CNOFS_VEFI_BFIELD_1SEC'}}
         download = functools.partial(cdw.cdas_download,
                                      supported_tags=download_tags)
