@@ -484,12 +484,21 @@ def download(date_array, tag='', inst_id='', supported_tags=None,
     # Download only requested files that exist remotely
     for date, fname in remote_files.items():
         # Format files for specific dates and download location
-        formatted_remote_dir = remote_dir.format(year=date.year,
-                                                 month=date.month,
-                                                 day=date.day,
-                                                 hour=date.hour,
-                                                 min=date.minute,
-                                                 sec=date.second)
+        # Year and day found in remote_dir: day is assumed to be day of year
+        if 'day' in remote_dir and 'month' not in remote_dir:
+            doy = date.timetuple().tm_yday
+            formatted_remote_dir = remote_dir.format(year=date.year,
+                                                     day=doy,
+                                                     hour=date.hour,
+                                                     min=date.minute,
+                                                     sec=date.second)
+        else:
+            formatted_remote_dir = remote_dir.format(year=date.year,
+                                                     month=date.month,
+                                                     day=date.day,
+                                                     hour=date.hour,
+                                                     min=date.minute,
+                                                     sec=date.second)
         remote_path = '/'.join((remote_url.strip('/'),
                                 formatted_remote_dir.strip('/'),
                                 fname))

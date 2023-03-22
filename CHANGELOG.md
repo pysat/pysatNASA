@@ -2,18 +2,31 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
-## [0.0.5] - 2023-XX-XX
-* Added CDAWeb methods that can use cdasws to get the remote file list
+## [0.X.X] - 2023-XX-XX
 * New Instruments
+  * ACE EPAM
+  * ACE MAG
+  * ACE SIS
+  * ACE SWEPAM
+  * TIMED GUVI
   * DMSP SSUSI EDR-Aurora data
+* Add TIMED GUVI platform to support L1C intensity datasets.
+  * Type of sensor source handled by inst_id with options of
+    spectrograph, imaging
+  * Resolution of dataset handled by tag with
+    low, high
+* Added CDAWeb methods that can use cdasws to get the remote file list
 * Bug Fixes
   * Updated CDAWeb routines to allow for data stored by year/day-of-year
+* Documentation
+  * Added TIMED-GUVI platform
 * Maintenance
   * Added a version cap for numpy (required for cdf interface, revisit before release)
   * Updated actions and templates based on pysatEcosystem docs.
   * Remove pandas cap on NEP29 tests
   * Updated dosctring style for consistency
   * Removed version cap for xarray
+  * Added manual workflow to check that latest RC is installable through test pip
 
 ## [0.0.4] - 2022-11-07
 * Update instrument tests with new test class
