@@ -556,7 +556,7 @@ def cdas_download(date_array, tag='', inst_id='', supported_tags=None,
     Starting from scratch using cdasws
     ::
         from cdasws import CdasWs
-        cads = CdasWs()
+        cdas = CdasWs()
 
         # Get list of available observatories/platforms.
         cdas.get_observatories()
@@ -820,8 +820,8 @@ def cdas_list_remote_files(tag='', inst_id='', start=None, stop=None,
         pre-set with functools.partial then assigned to new instrument code.
         (default=None)
     series_out : bool
-        boolean to determine output type. True for pandas series, and False for
-        list.
+        boolean to determine output type. True for pandas series of file names, 
+        and False for a list of the full web address.
 
     Returns
     -------
