@@ -17,7 +17,7 @@ class TestCDAWeb(object):
     def setup_method(self):
         """Set up the unit test environment for each method."""
 
-        self.download_tags = pysatNASA.instruments.icon_mighti.download_tags
+        self.download_tags = pysatNASA.instruments.timed_guvi.download_tags
         self.kwargs = {'tag': None, 'inst_id': None}
         return
 
@@ -32,7 +32,7 @@ class TestCDAWeb(object):
 
         with pytest.raises(Exception) as excinfo:
             # Giving a bad remote_site address yields similar ConnectionError
-            cdw.list_remote_files(tag='los_wind_green', inst_id='a',
+            cdw.list_remote_files(tag='sdr-imaging', inst_id='high_res',
                                   supported_tags=self.download_tags,
                                   remote_url='https://bad/path')
 
