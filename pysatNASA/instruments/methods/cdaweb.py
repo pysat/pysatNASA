@@ -820,7 +820,7 @@ def cdas_list_remote_files(tag='', inst_id='', start=None, stop=None,
         pre-set with functools.partial then assigned to new instrument code.
         (default=None)
     series_out : bool
-        boolean to determine output type. True for pandas series of file names, 
+        boolean to determine output type. True for pandas series of file names,
         and False for a list of the full web address.
 
     Returns
