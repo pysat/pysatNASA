@@ -35,7 +35,7 @@ import functools
 import pandas as pds
 
 from pysat.instruments.methods import general as mm_gen
-from pysat import logger
+import pysat
 
 from pysatNASA.instruments.methods import cdaweb as cdw
 from pysatNASA.instruments.methods import general as mm_nasa
@@ -67,7 +67,7 @@ def init(self):
 
     rules_url = 'https://www.timed.jhuapl.edu/WWW/scripts/mdc_rules.pl'
     ackn_str = ' '.join(('Please see the Rules of the Road at', rules_url))
-    logger.info(ackn_str)
+    pysat.logger.info(ackn_str)
     self.acknowledgements = ackn_str
     self.references = ' '.join(('Woods, T. N., Eparvier, F. G., Bailey,',
                                 'S. M., Chamberlin, P. C., Lean, J.,',
@@ -100,8 +100,15 @@ list_files = functools.partial(mm_gen.list_files,
                                file_cadence=pds.DateOffset(months=1))
 
 # Set the load routine
+meta = pysat.Meta()
+meta_translation = {'CATDESC': meta.labels.desc,
+                    'FILLVAL': meta.labels.fill_val,
+                    'VALIDMIN': meta.labels.min_val,
+                    'VALIDMAX': meta.labels.max_val,
+                    'VAR_NOTES': meta.labels.notes}
 load = functools.partial(cdw.load, pandas_format=pandas_format,
-                         file_cadence=pds.DateOffset(months=1))
+                         file_cadence=pds.DateOffset(months=1),
+                         meta_translation=meta_translation)
 
 # Set the download routine
 download_tags = {'': {'': 'TIMED_L3A_SEE'}}
