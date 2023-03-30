@@ -352,6 +352,8 @@ def load_xarray(fnames, tag='', inst_id='',
         t0 = dt.datetime(2009, 1, 1)
         if (t0 + file_cadence) > (t0 + dt.timedelta(days=1)):
             lfnames = list(np.unique([fname[:-11] for fname in fnames]))
+        else:
+            lfnames = fnames
 
         for lfname in lfnames:
             temp_data = cdflib.cdf_to_xarray(lfname, to_datetime=True)
@@ -441,6 +443,7 @@ def load_xarray(fnames, tag='', inst_id='',
     return data, meta
 
 
+# TODO(#103): Include support to unzip / untar files after download.
 def download(date_array, tag='', inst_id='', supported_tags=None,
              remote_url='https://cdaweb.gsfc.nasa.gov', data_path=None):
     """Download NASA CDAWeb data.
