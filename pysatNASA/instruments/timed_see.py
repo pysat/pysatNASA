@@ -34,8 +34,8 @@ import datetime as dt
 import functools
 import pandas as pds
 
-from pysat.instruments.methods import general as mm_gen
 import pysat
+from pysat.instruments.methods import general as mm_gen
 
 from pysatNASA.instruments.methods import cdaweb as cdw
 from pysatNASA.instruments.methods import general as mm_nasa
