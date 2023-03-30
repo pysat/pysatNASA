@@ -15,6 +15,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
     spectrograph, imaging
   * Resolution of dataset handled by tag with
     low, high
+* xarray support for TIMED SEE
 * Added CDAWeb methods that can use cdasws to get the remote file list
 * Bug Fixes
   * Updated CDAWeb routines to allow for data stored by year/day-of-year
