@@ -100,12 +100,9 @@ load = functools.partial(cdw.load, pandas_format=pandas_format,
                          file_cadence=pds.DateOffset(months=1))
 
 # Set the download routine
-basic_tag = {'remote_dir': ''.join(('/pub/data/timed/see/data/level3a_cdf',
-                                    '/{year:4d}/{month:02d}/')),
-             'fname': fname}
-download_tags = {'': {'': basic_tag}}
-download = functools.partial(cdw.download, supported_tags=download_tags)
+download_tags = {'': {'': 'TIMED_L3A_SEE'}}
+download = functools.partial(cdw.cdas_download, supported_tags=download_tags)
 
 # Set the list_remote_files routine
-list_remote_files = functools.partial(cdw.list_remote_files,
+list_remote_files = functools.partial(cdw.cdas_list_remote_files,
                                       supported_tags=download_tags)

@@ -46,7 +46,6 @@ import warnings
 
 from pysat.instruments.methods import general as mm_gen
 from pysat import logger
-from pysat.utils import time as pysat_time
 
 from pysatNASA.instruments.methods import cdaweb as cdw
 from pysatNASA.instruments.methods import omni as mm_omni
@@ -140,59 +139,12 @@ list_files = functools.partial(mm_gen.list_files,
                                file_cadence=pds.DateOffset(months=1))
 
 # Set the list_remote_files routine
-remote_dir = '/pub/data/omni/omni_cdaweb/hro_{tag:s}/{{year:4d}}/'
-download_tags = {inst_id: {tag: {'remote_dir': remote_dir.format(tag=tag),
-                                 'fname': supported_tags[inst_id][tag]}
-                           for tag in tags.keys()}
-                 for inst_id in inst_ids.keys()}
-list_remote_files = functools.partial(cdw.list_remote_files,
+download_tags = {'': {'1min': 'OMNI_HRO_1MIN', '5min': 'OMNI_HRO_5MIN'}}
+download = functools.partial(cdw.cdas_download,
+                             supported_tags=download_tags)
+
+list_remote_files = functools.partial(cdw.cdas_list_remote_files,
                                       supported_tags=download_tags)
-
-
-# Set the download routine
-def download(date_array, tag, inst_id, data_path, update_files=False):
-    """Download OMNI HRO data from CDAWeb.
-
-    Parameters
-    ----------
-    date_array : array-like
-        Sequence of dates for which files will be downloaded.
-    tag : str
-        Denotes type of file to load.
-    inst_id : str
-        Specifies the satellite ID for a constellation.
-    data_path : str
-        Path to data directory.
-    update_files : bool
-        Re-download data for files that already exist if True (default=False)
-
-    Raises
-    ------
-    IOError
-        If a problem is encountered connecting to the gateway or retrieving
-        data from the repository.
-
-    Warnings
-    --------
-    Only able to download current forecast data, not archived forecasts.
-
-    Note
-    ----
-    Called by pysat. Not intended for direct use by user.
-
-    """
-
-    # Set the download tags
-
-    # Adjust the date_array for monthly downloads
-    if date_array.freq != 'MS':
-        date_array = pysat_time.create_date_range(
-            dt.datetime(date_array[0].year, date_array[0].month, 1),
-            date_array[-1], freq='MS')
-
-    cdw.download(date_array, tag=tag, inst_id=inst_id,
-                 supported_tags=download_tags, data_path=data_path)
-    return
 
 
 # Set the load routine
