@@ -257,13 +257,11 @@ def load_pandas(fnames, tag='', inst_id='', file_cadence=dt.timedelta(days=1),
 
 def load_xarray(fnames, tag='', inst_id='',
                 file_cadence=dt.timedelta(days=1),
-                labels={'units': ('units', str), 'name': ('long_name', str),
-                        'notes': ('notes', str), 'desc': ('desc', str),
-                        'plot': ('plot_label', str), 'axis': ('axis', str),
-                        'scale': ('scale', str),
-                        'min_val': ('value_min', float),
-                        'max_val': ('value_max', float),
-                        'fill_val': ('fill', float)},
+                labels={'units': ('Units', str), 'name': ('Long_Name', str),
+                        'notes': ('Var_Notes', str), 'desc': ('CatDesc', str),
+                        'min_val': ('ValidMin', float),
+                        'max_val': ('ValidMax', float),
+                        'fill_val': ('FillVal', float)},
                 epoch_name='Epoch', meta_processor=None,
                 meta_translation=None, drop_meta_labels=None):
     """Load NASA CDAWeb CDF files into an xarray Dataset.
