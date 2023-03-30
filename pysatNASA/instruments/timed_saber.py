@@ -105,6 +105,8 @@ clean = mm_nasa.clean_warn
 #
 # Use the default CDAWeb and pysat methods
 
+# TODO(#104): Switch to netCDF4 files once unzip (#103) is supported.
+
 # Set the list_files routine
 fname = ''.join(('timed_l2a_saber_{year:04d}{month:02d}{day:02d}',
                  '{hour:02d}{minute:02d}_v{version:02d}-{revision:02d}-',
