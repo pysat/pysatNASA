@@ -8,7 +8,6 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   * ACE MAG
   * ACE SIS
   * ACE SWEPAM
-  * DE2 Ion Drift Meter
   * DE2 RPA DUCT (high rate plasma density)
   * DE2 Vector Electric Field Instrument
   * DMSP SSUSI EDR-Aurora data
