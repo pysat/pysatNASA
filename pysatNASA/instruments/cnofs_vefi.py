@@ -26,12 +26,6 @@ B_west    Magnetic field in the west direction
 
 The data is PRELIMINARY, and as such, is intended for BROWSE PURPOSES ONLY.
 
-References
-----------
-A brief discussion of the C/NOFS mission and instruments can be found at
-de La Beaujardière, O., et al. (2004), C/NOFS: A mission to forecast
-scintillations, J. Atmos. Sol. Terr. Phys., 66, 1573–1591,
-doi:10.1016/j.jastp.2004.07.030.
 
 Properties
 ----------
@@ -55,6 +49,14 @@ Warnings
 - The data is PRELIMINARY, and as such, is intended for BROWSE PURPOSES ONLY.
 - Limited cleaning routine.
 - Module not written by VEFI team.
+
+
+References
+----------
+A brief discussion of the C/NOFS mission and instruments can be found at
+de La Beaujardière, O., et al. (2004), C/NOFS: A mission to forecast
+scintillations, J. Atmos. Sol. Terr. Phys., 66, 1573–1591,
+doi:10.1016/j.jastp.2004.07.030.
 
 """
 
@@ -122,11 +124,9 @@ list_files = functools.partial(mm_gen.list_files,
 load = cdw.load
 
 # Set the download routine
-basic_tag = {'remote_dir': '/pub/data/cnofs/vefi/bfield_1sec/{year:4d}/',
-             'fname': fname}
-download_tags = {'': {'dc_b': basic_tag}}
-download = functools.partial(cdw.download, supported_tags=download_tags)
+download_tags = {'': {'dc_b': 'CNOFS_VEFI_BFIELD_1SEC'}}
+download = functools.partial(cdw.cdas_download, supported_tags=download_tags)
 
 # Set the list_remote_files routine
-list_remote_files = functools.partial(cdw.list_remote_files,
+list_remote_files = functools.partial(cdw.cdas_list_remote_files,
                                       supported_tags=download_tags)

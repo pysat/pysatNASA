@@ -36,11 +36,6 @@ to 82057 13:16:00 UT. This data set is based on the revised version of the RPA
 files that was submitted by the PI team in June of 1995. The revised RPA data
 include a correction to the spacecraft potential.
 
-References
-----------
-W. B. Hanson, R. A. Heelis, R. A. Power, C. R. Lippincott, D. R. Zuccaro,
-B. J. Holt, L. H. Harmon, and S. Sanatani, “The retarding potential analyzer
-for dynamics explorer-B,” Space Sci. Instrum. 5, 503–510 (1981).
 
 Properties
 ----------
@@ -53,9 +48,17 @@ inst_id
 tag
     None Supported
 
+
 Warnings
 --------
 - Currently no cleaning routine.
+
+
+References
+----------
+W. B. Hanson, R. A. Heelis, R. A. Power, C. R. Lippincott, D. R. Zuccaro,
+B. J. Holt, L. H. Harmon, and S. Sanatani, “The retarding potential analyzer
+for dynamics explorer-B,” Space Sci. Instrum. 5, 503–510 (1981).
 
 """
 
@@ -111,18 +114,10 @@ list_files = functools.partial(mm_gen.list_files,
 load = cdw.load
 
 # Set the download routine
-download_tags = {'': {'': {'remote_dir': ''.join(('/pub/data/de/de2/plasma_rpa',
-                                                  '/ion2s_cdaweb/{year:4d}/')),
-                           'fname': fname.format(dp=dataproduct[''],
-                                                 datestr=datestr)},
-                      'duct': {'remote_dir': ''.join(('/pub/data/de/de2/',
-                                                      'plasma_rpa/',
-                                                      'rpa16ms_cdaweb/',
-                                                      '{year:4d}/')),
-                               'fname': fname.format(dp=dataproduct['duct'],
-                                                     datestr=datestr)}}}
-download = functools.partial(cdw.download, supported_tags=download_tags)
+download_tags = {'': {'': 'DE2_ION2S_RPA',
+                      'duct': 'DE2_DUCT16MS_RPA'}}
+download = functools.partial(cdw.cdas_download, supported_tags=download_tags)
 
 # Set the list_remote_files routine
-list_remote_files = functools.partial(cdw.list_remote_files,
+list_remote_files = functools.partial(cdw.cdas_list_remote_files,
                                       supported_tags=download_tags)
