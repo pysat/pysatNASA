@@ -21,6 +21,8 @@ inst_id
 Note
 ----
 - no tag required
+- cdflib load routine raises ISTP Compliance Warnings for severa variables.
+  This is due to how the Epoch is listed in the original files.
 
 Warnings
 --------
