@@ -8,21 +8,25 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   * ACE MAG
   * ACE SIS
   * ACE SWEPAM
-  * TIMED GUVI
+  * TIMED GUVI L1C intensity data and L2 EDR-Aurora data
+    * Type of sensor source handled by inst_id with options of
+      spectrograph, imaging
+    * Resolution of dataset handled by tag with low, high
   * DMSP SSUSI EDR-Aurora data
-* Add TIMED GUVI platform to support L1C intensity datasets.
-  * Type of sensor source handled by inst_id with options of
-    spectrograph, imaging
-  * Resolution of dataset handled by tag with
-    low, high
 * Added CDAWeb methods that can use cdasws to get the remote file list
 * Bug Fixes
   * Updated CDAWeb routines to allow for data stored by year/day-of-year
   * Updated GOLD nmax to sort scans by time.
 * Documentation
   * Added TIMED-GUVI platform
+  * Added missing sub-module imports
+* Enhancements
+  * Updated platform methods to follow a consistent style and work with the
+    general `init` function
+  * Added unit tests for the different platform method attributes
 * Maintenance
-  * Added a version cap for numpy (required for cdf interface, revisit before release)
+  * Added a version cap for numpy (required for cdf interface, revisit before
+    release)
   * Updated actions and templates based on pysatEcosystem docs.
   * Remove pandas cap on NEP29 tests
   * Updated dosctring style for consistency

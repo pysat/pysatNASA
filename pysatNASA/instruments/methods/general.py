@@ -23,6 +23,10 @@ def init(self, module, name):
 
     # Set acknowledgements
     self.acknowledgements = getattr(module, 'ackn_str')
+
+    if hasattr(module, 'rules_url'):
+        self.acknowledgements.format(getattr(module, 'rules_url')[name])
+
     pysat.logger.info(self.acknowledgements)
 
     # Set references
