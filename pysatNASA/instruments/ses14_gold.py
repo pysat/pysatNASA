@@ -185,7 +185,6 @@ def load(fnames, tag='', inst_id=''):
         data['time'] = [dt.datetime.strptime(str(val), "b'%Y-%m-%dT%H:%M:%SZ'")
                         for val in data['scan_start_time'].values]
         data = data.sortby('time')
-        data = data.sortby('time')
 
         # Update coordinates with dimensional data
         data = data.assign_coords({'nlats': data['nlats'],
