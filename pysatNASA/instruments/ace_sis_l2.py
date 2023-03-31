@@ -90,13 +90,11 @@ load = functools.partial(cdw.load, pandas_format=pandas_format,
                          meta_translation=meta_translation)
 
 # Set the download routine
-remote_dir = '/pub/data/ace/sis/level_2_cdaweb/sis_{sid:s}/{{year:4d}}/'
-download_tags = {id: {tag: {'remote_dir': remote_dir.format(sid=strid[id][tag]),
-                            'fname': fname.format(sid=strid[id][tag])}
-                      for tag in inst_ids[id]}
-                 for id in inst_ids.keys()}
-download = functools.partial(cdw.download, supported_tags=download_tags)
+download_tags = {'256sec': {'base': 'AC_H1_SIS'},
+                 '1hr': {'base': 'AC_H2_SIS', 'key': 'AC_K0_SIS'}}
+
+download = functools.partial(cdw.cdas_download, supported_tags=download_tags)
 
 # Set the list_remote_files routine
-list_remote_files = functools.partial(cdw.list_remote_files,
+list_remote_files = functools.partial(cdw.cdas_list_remote_files,
                                       supported_tags=download_tags)

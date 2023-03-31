@@ -79,15 +79,11 @@ list_files = functools.partial(ps_gen.list_files,
                                supported_tags=supported_tags)
 
 # Set the download routine
-download_tags = {inst_id:
-                 {tag: {'remote_dir': ''.join(('/pub/data/gold/level2/', tag,
-                                               '/{year:4d}/')),
-                        'fname': supported_tags[''][tag]}
-                  for tag in tags.keys()} for inst_id in inst_ids.keys()}
-download = functools.partial(cdw.download, supported_tags=download_tags)
+download_tags = {'': {'nmax': 'GOLD_L2_NMAX'}}
+download = functools.partial(cdw.cdas_download, supported_tags=download_tags)
 
 # Set the list_remote_files routine
-list_remote_files = functools.partial(cdw.list_remote_files,
+list_remote_files = functools.partial(cdw.cdas_list_remote_files,
                                       supported_tags=download_tags)
 
 
