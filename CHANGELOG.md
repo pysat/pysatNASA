@@ -18,7 +18,6 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 * Added CDAWeb methods that can use cdasws to get the remote file list
 * Bug Fixes
   * Updated CDAWeb routines to allow for data stored by year/day-of-year
-  * Added a sortby statement to GOLD nmax to sort scans by time.
 * Documentation
   * Added TIMED-GUVI platform
 * Maintenance
