@@ -89,14 +89,10 @@ list_files = functools.partial(mm_gen.list_files,
 load = cdw.load
 
 # Set the download routine
-download_tags = {'': {tag: {'remote_dir': ''.join(('/pub/data/de/de2/',
-                                                   'electric_fields_vefi/',
-                                                   tag, '500ms_vefi_cdaweb/',
-                                                   '{year:4d}/')),
-                            'fname': fname.format(tag=tag, datestr=datestr)}
-                      for tag in tags}}
-download = functools.partial(cdw.download, supported_tags=download_tags)
+download_tags = {'': {'ac': 'DE2_AC500MS_VEFI',
+                      'dca': 'DE2_DCA500MS_VEFI'}}
+download = functools.partial(cdw.cdas_download, supported_tags=download_tags)
 
 # Set the list_remote_files routine
-list_remote_files = functools.partial(cdw.list_remote_files,
+list_remote_files = functools.partial(cdw.cdas_list_remote_files,
                                       supported_tags=download_tags)
