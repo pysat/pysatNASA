@@ -20,6 +20,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 * Documentation
   * Added TIMED-GUVI platform
   * Added missing sub-module imports
+  * Added discussion of ICON constellation to docstrings, including caveats
 * Enhancements
   * Updated platform methods to follow a consistent style and work with the
     general `init` function
