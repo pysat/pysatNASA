@@ -17,19 +17,12 @@ tag
     None
 inst_id
     None supported
-flatten_twod
-    If True, then two dimensional data is flattened across
-    columns. Name mangling is used to group data, first column
-    is 'name', last column is 'name_end'. In between numbers are
-    appended 'name_1', 'name_2', etc. All data for a given 2D array
-    may be accessed via, data.loc[:, 'item':'item_end']
-    If False, then 2D data is stored as a series of DataFrames,
-    indexed by Epoch. data.loc[0, 'item']
-    (default=True)
 
 Note
 ----
 - no tag required
+- cdflib load routine raises ISTP Compliance Warnings for several variables.
+  This is due to how the Epoch is listed in the original files.
 
 Warnings
 --------
@@ -54,6 +47,7 @@ platform = 'timed'
 name = 'see'
 tags = {'': ''}
 inst_ids = {'': [tag for tag in tags.keys()]}
+pandas_format = False
 
 # ----------------------------------------------------------------------------
 # Instrument test attributes
@@ -73,6 +67,8 @@ clean = mm_nasa.clean_warn
 #
 # Use the default CDAWeb and pysat methods
 
+# TODO(#104): Switch to netCDF4 files once unzip (#103) is supported.
+
 # Set the list_files routine
 fname = 'timed_l3a_see_{year:04d}{month:02d}{day:02d}_v{version:02d}.cdf'
 supported_tags = {'': {'': fname}}
@@ -81,7 +77,8 @@ list_files = functools.partial(mm_gen.list_files,
                                file_cadence=pds.DateOffset(months=1))
 
 # Set the load routine
-load = functools.partial(cdw.load, file_cadence=pds.DateOffset(months=1))
+load = functools.partial(cdw.load, pandas_format=pandas_format,
+                         file_cadence=pds.DateOffset(months=1))
 
 # Set the download routine
 download_tags = {'': {'': 'TIMED_L3A_SEE'}}

@@ -24,6 +24,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   * Updated platform methods to follow a consistent style and work with the
     general `init` function
   * Added unit tests for the different platform method attributes
+  * xarray support for TIMED SEE
 * Maintenance
   * Added a version cap for numpy (required for cdf interface, revisit before
     release)
