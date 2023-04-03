@@ -8,8 +8,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   * ACE MAG
   * ACE SIS
   * ACE SWEPAM
-  * DE2 RPA DUCT (high rate plasma density)
-  * DE2 Vector Electric Field Instrument
+  * DE2 Fabry-Perot Interferometer (FPI)
+  * DE2 Vector Electric Field Instrument (VEFI) and magnetometer
   * DMSP SSUSI EDR-Aurora data
   * TIMED GUVI
 * Add TIMED GUVI platform to support L1C intensity datasets.
