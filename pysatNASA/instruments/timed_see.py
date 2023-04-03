@@ -17,19 +17,12 @@ tag
     None
 inst_id
     None supported
-flatten_twod
-    If True, then two dimensional data is flattened across
-    columns. Name mangling is used to group data, first column
-    is 'name', last column is 'name_end'. In between numbers are
-    appended 'name_1', 'name_2', etc. All data for a given 2D array
-    may be accessed via, data.loc[:, 'item':'item_end']
-    If False, then 2D data is stored as a series of DataFrames,
-    indexed by Epoch. data.loc[0, 'item']
-    (default=True)
 
 Note
 ----
 - no tag required
+- cdflib load routine raises ISTP Compliance Warnings for several variables.
+  This is due to how the Epoch is listed in the original files.
 
 Warnings
 --------
@@ -42,10 +35,10 @@ import functools
 import pandas as pds
 
 from pysat.instruments.methods import general as mm_gen
-from pysat import logger
 
 from pysatNASA.instruments.methods import cdaweb as cdw
 from pysatNASA.instruments.methods import general as mm_nasa
+from pysatNASA.instruments.methods import timed as mm_timed
 
 # ----------------------------------------------------------------------------
 # Instrument attributes
@@ -54,6 +47,7 @@ platform = 'timed'
 name = 'see'
 tags = {'': ''}
 inst_ids = {'': [tag for tag in tags.keys()]}
+pandas_format = False
 
 # ----------------------------------------------------------------------------
 # Instrument test attributes
@@ -63,38 +57,17 @@ _test_dates = {'': {'': dt.datetime(2009, 1, 1)}}
 # ----------------------------------------------------------------------------
 # Instrument methods
 
-
-def init(self):
-    """Initialize the Instrument object with instrument specific values.
-
-    Runs once upon instantiation.
-
-    """
-
-    rules_url = 'https://www.timed.jhuapl.edu/WWW/scripts/mdc_rules.pl'
-    ackn_str = ' '.join(('Please see the Rules of the Road at', rules_url))
-    logger.info(ackn_str)
-    self.acknowledgements = ackn_str
-    self.references = ' '.join(('Woods, T. N., Eparvier, F. G., Bailey,',
-                                'S. M., Chamberlin, P. C., Lean, J.,',
-                                'Rottman, G. J., Solomon, S. C., Tobiska,',
-                                'W. K., and Woodraska, D. L. (2005),',
-                                'Solar EUV Experiment (SEE): Mission',
-                                'overview and first results, J. Geophys.',
-                                'Res., 110, A01312,',
-                                'doi:10.1029/2004JA010765.'))
-
-    return
-
+init = functools.partial(mm_nasa.init, module=mm_timed, name=name)
 
 # No cleaning, use standard warning function instead
 clean = mm_nasa.clean_warn
-
 
 # ----------------------------------------------------------------------------
 # Instrument functions
 #
 # Use the default CDAWeb and pysat methods
+
+# TODO(#104): Switch to netCDF4 files once unzip (#103) is supported.
 
 # Set the list_files routine
 fname = 'timed_l3a_see_{year:04d}{month:02d}{day:02d}_v{version:02d}.cdf'
@@ -104,7 +77,8 @@ list_files = functools.partial(mm_gen.list_files,
                                file_cadence=pds.DateOffset(months=1))
 
 # Set the load routine
-load = functools.partial(cdw.load, file_cadence=pds.DateOffset(months=1))
+load = functools.partial(cdw.load, pandas_format=pandas_format,
+                         file_cadence=pds.DateOffset(months=1))
 
 # Set the download routine
 download_tags = {'': {'': 'TIMED_L3A_SEE'}}

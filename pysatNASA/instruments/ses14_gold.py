@@ -36,12 +36,11 @@ import functools
 import numpy as np
 
 from pysat.instruments.methods import general as ps_gen
-from pysat import logger
 from pysat.utils.io import load_netcdf
 
 from pysatNASA.instruments.methods import cdaweb as cdw
 from pysatNASA.instruments.methods import general as mm_nasa
-from pysatNASA.instruments.methods import gold as mm_gold
+from pysatNASA.instruments.methods import ses14 as mm_gold
 
 # ----------------------------------------------------------------------------
 # Instrument attributes
@@ -61,34 +60,10 @@ _test_dates = {'': {'nmax': dt.datetime(2020, 1, 1)}}
 # ----------------------------------------------------------------------------
 # Instrument methods
 
-
-def init(self):
-    """Initialize the Instrument object with instrument specific values.
-
-    Runs once upon instantiation.
-
-    Parameters
-    -----------
-    self : pysat.Instrument
-        Instrument class object
-
-    """
-
-    logger.info(mm_gold.ack_str)
-    logger.warning(' '.join(('Time stamps may be non-unique because Channel A',
-                             'and B are different instruments.  An upgrade to',
-                             'the pysat.Constellation object is required to',
-                             'solve this issue. See pysat issue #614 for more',
-                             'info.')))
-    self.acknowledgements = mm_gold.ack_str
-    self.references = mm_gold.ref_str
-
-    return
-
+init = functools.partial(mm_nasa.init, module=mm_gold, name=name)
 
 # No cleaning, use standard warning function instead
 clean = mm_nasa.clean_warn
-
 
 # ----------------------------------------------------------------------------
 # Instrument functions
@@ -184,6 +159,7 @@ def load(fnames, tag='', inst_id=''):
         # Add time coordinate from scan_start_time
         data['time'] = [dt.datetime.strptime(str(val), "b'%Y-%m-%dT%H:%M:%SZ'")
                         for val in data['scan_start_time'].values]
+        data = data.sortby('time')
 
         # Update coordinates with dimensional data
         data = data.assign_coords({'nlats': data['nlats'],
