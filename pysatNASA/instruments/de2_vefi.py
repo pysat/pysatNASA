@@ -53,9 +53,10 @@ from pysatNASA.instruments.methods import general as mm_nasa
 
 platform = 'de2'
 name = 'vefi'
-tags = {'dca': '500 ms cadence DC Averaged Electric Field data',
-        'ac': '500ms cadence AC Electric Field data'}
-inst_ids = {'': ['dca', 'ac']}
+tags = {'': '62 ms combination of Electric Field and Magnetometer',
+        'dca': '500 ms cadence DC Averaged Electric Field data',
+        'ac': '500 ms cadence AC Electric Field data'}
+inst_ids = {'': [tag for tag in tags]}
 
 # ----------------------------------------------------------------------------
 # Instrument test attributes
@@ -79,8 +80,11 @@ clean = mm_nasa.clean_warn
 
 # Set the list_files routine
 datestr = '{year:04d}{month:02d}{day:02d}_v{version:02d}'
-fname = 'de2_{tag:s}500ms_vefi_{datestr:s}.cdf'
-supported_tags = {'': {tag: fname.format(tag=tag, datestr=datestr)
+fid = {'': '62ms_vefimagb',
+       'ac': 'ac500ms_vefi',
+       'dca': 'dca500ms_vefi'}
+fname = 'de2_{fid:s}_{datestr:s}.cdf'
+supported_tags = {'': {tag: fname.format(fid=fid[tag], datestr=datestr)
                        for tag in tags}}
 list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags)
@@ -89,7 +93,8 @@ list_files = functools.partial(mm_gen.list_files,
 load = cdw.load
 
 # Set the download routine
-download_tags = {'': {'ac': 'DE2_AC500MS_VEFI',
+download_tags = {'': {'': 'DE2_62MS_VEFIMAGB',
+                      'ac': 'DE2_AC500MS_VEFI',
                       'dca': 'DE2_DCA500MS_VEFI'}}
 download = functools.partial(cdw.cdas_download, supported_tags=download_tags)
 
