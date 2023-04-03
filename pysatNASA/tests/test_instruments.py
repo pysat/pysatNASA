@@ -51,7 +51,9 @@ class TestInstruments(clslib.InstLibTests):
 
     @pytest.mark.second
     @pytest.mark.parametrize("inst_dict", instruments['cdf'])
-    @pytest.mark.skipif(cdflib_only)
+    @pytest.mark.skipif(cdflib_only,
+                        reason=" ".join(("Additional load tests not required",
+                                         "when pysatCDF not installed")))
     def test_load_cdflib(self, inst_dict):
         """Test that instruments load at each cleaning level.
 
