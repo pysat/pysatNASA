@@ -51,7 +51,7 @@ class TestInstruments(clslib.InstLibTests):
 
     @pytest.mark.second
     @pytest.mark.parametrize("inst_dict", instruments['cdf'])
-    @pytest.skipif(cdflib_only)
+    @pytest.mark.skipif(cdflib_only)
     def test_load_cdflib(self, inst_dict):
         """Test that instruments load at each cleaning level.
 
