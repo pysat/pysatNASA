@@ -1,4 +1,11 @@
-"""Creates a constellation from NASA the ICON satellite platform."""
+"""Creates a constellation from NASA the ICON satellite platform.
+
+Includes the core instruments without the line of sight winds.
+
+Note that IVM A and B are nominally never active at the same time. This
+constellation requires a bug-fix in pysat 3.1.0.
+
+"""
 
 import pysat
 
