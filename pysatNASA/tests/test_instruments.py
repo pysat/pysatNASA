@@ -36,7 +36,9 @@ instruments['cdf'] = []
 for inst in instruments['download']:
     fname = inst['inst_module'].supported_tags[inst['inst_id']][inst['tag']]
     if '.cdf' in fname:
-        instruments['cdf'].append(inst)
+        temp_inst, _ = clslib.initialize_test_inst_and_date(inst)
+        if temp_inst.pandas_format:
+            instruments['cdf'].append(inst)
 
 
 class TestInstruments(clslib.InstLibTests):
