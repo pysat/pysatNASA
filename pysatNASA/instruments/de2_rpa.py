@@ -76,8 +76,7 @@ from pysatNASA.instruments.methods import general as mm_nasa
 
 platform = 'de2'
 name = 'rpa'
-tags = {'': '2 sec cadence RPA data',  # this is the default cadence
-        'duct': '16ms DUCT plasma density'}
+tags = {'': '2 sec cadence RPA data'}
 inst_ids = {'': [tag for tag in tags]}
 
 # ----------------------------------------------------------------------------
@@ -102,8 +101,7 @@ clean = mm_nasa.clean_warn
 
 # Set the list_files routine
 datestr = '{year:04d}{month:02d}{day:02d}_v{version:02d}'
-dataproduct = {'': 'ion2s',
-               'duct': 'duct16ms'}
+dataproduct = {'': 'ion2s'}
 fname = 'de2_{dp:s}_rpa_{datestr:s}.cdf'
 supported_tags = {'': {tag: fname.format(dp=dataproduct[tag], datestr=datestr)
                        for tag in tags}}
@@ -114,8 +112,7 @@ list_files = functools.partial(mm_gen.list_files,
 load = cdw.load
 
 # Set the download routine
-download_tags = {'': {'': 'DE2_ION2S_RPA',
-                      'duct': 'DE2_DUCT16MS_RPA'}}
+download_tags = {'': {'': 'DE2_ION2S_RPA'}}
 download = functools.partial(cdw.cdas_download, supported_tags=download_tags)
 
 # Set the list_remote_files routine
