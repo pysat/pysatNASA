@@ -90,7 +90,7 @@ list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags)
 
 # Set the load routine
-load = cdw.load
+load = functools.partial(cdw.load, use_cdflib=True)
 
 # Set the download routine
 download_tags = {'': {'': 'DE2_62MS_VEFIMAGB',
