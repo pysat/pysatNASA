@@ -82,7 +82,8 @@ For data products stored as CDF files, this package can use either `cdflib` or
 `pysatCDF`.  Note that `cdflib` is a pure python package and more readily
 deployable across systems, whereas `pysatCDF` interfaces with the fortran.  
 This is a faster approach for loading data, but may not install on all systems.  
-Therefore, `pysatCDF` is optional rather than required.
+There are known issues with `numpy`>=1.24. Therefore, `pysatCDF` is optional
+rather than required.  
 
 You can specify which load routine to use via the optional `use_cdflib` kwarg.
 If no kwarg is specified, `pysatNASA` will default to `pysatCDF` if it is
