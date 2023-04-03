@@ -124,8 +124,10 @@ def load(fnames, tag='', inst_id='', file_cadence=dt.timedelta(days=1),
 
     Note
     ----
-    This routine is intended to be used by pysat instrument modules supporting
-    a particular NASA CDAWeb dataset
+    - This routine is intended to be used by pysat instrument modules supporting
+      a particular NASA CDAWeb dataset
+    - pysatCDF (as of v0.3.2) does not support numpy>=1.24.  Load errors may
+      arise.  See https://github.com/pysat/pysatCDF/issues/46
 
     """
 

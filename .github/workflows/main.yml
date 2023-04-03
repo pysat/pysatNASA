@@ -15,7 +15,7 @@ jobs:
         numpy_ver: ["latest"]
         include:
           - python-version: "3.8"
-            numpy_ver: "1.20"
+            numpy_ver: "1.21"
             os: "ubuntu-latest"
 
     name: Python ${{ matrix.python-version }} on ${{ matrix.os }} with numpy ${{ matrix.numpy_ver }}
@@ -35,11 +35,11 @@ jobs:
       if: ${{ matrix.numpy_ver != 'latest'}}
       run: |
         pip install --no-binary :numpy: numpy==${{ matrix.numpy_ver }}
+        pip install pysatCDF --no-binary=pysatCDF
 
     - name: Install standard dependencies
       run: |
         pip install -r requirements.txt
-        pip install pysatCDF --no-binary=pysatCDF
         pip install -r test_requirements.txt
 
     - name: Set up pysat
