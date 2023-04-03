@@ -16,6 +16,15 @@ import pysatNASA
 # Import the test classes from pysat
 from pysat.tests.classes import cls_instrument_library as clslib
 
+try:
+    import pysatCDF  # noqa: F401
+    # If this successfully imports, tests need to be run with both pysatCDF
+    # and cdflib
+    cdflib_only = False
+except ImportError:
+    # pysatCDF is not present, standard tests default to cdflib.
+    cdflib_only = True
+
 
 # Tell the standard tests which instruments to run each test on.
 # Need to return instrument list for custom tests.
@@ -42,6 +51,7 @@ class TestInstruments(clslib.InstLibTests):
 
     @pytest.mark.second
     @pytest.mark.parametrize("inst_dict", instruments['cdf'])
+    @pytest.skipif(cdflib_only)
     def test_load_cdflib(self, inst_dict):
         """Test that instruments load at each cleaning level.
 
