@@ -3,7 +3,10 @@
 
 ackn_str = "The Dynamics Explorer 2 satellite data is provided through CDAWeb"
 
-refs = {'lang': ' '.join(('J. P. Krehbiel, L. H. Brace, R. F. Theis, W. H.',
+refs = {'fpi': ' '.join(('Hays, P B, Killeen, T L, and Kennedy, B C.',
+                         '"Fabry-Perot interferometer on Dynamics Explorer".',
+                         'Space Sci. Instrum., v. 5, p. 395-416, 1981.')),
+        'lang': ' '.join(('J. P. Krehbiel, L. H. Brace, R. F. Theis, W. H.',
                           'Pinkus, and R. B. Kaplan, The Dynamics Explorer 2',
                           'Langmuir Probe (LANG), Space Sci. Instrum., v. 5,',
                           'n. 4, p. 493, 1981.')),
