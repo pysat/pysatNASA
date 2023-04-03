@@ -26,9 +26,9 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   * Added unit tests for the different platform method attributes
   * xarray support for TIMED SEE
 * Maintenance
-  * Added a version cap for numpy (required for cdf interface, revisit before
-    release)
-  * Updated actions and templates based on pysatEcosystem docs.
+  * Removed duplicate tests if pysatCDF not isntalled
+  * Only test pysatCDF on GitHub Actions for older numpy versions
+  * Updated actions and templates based on pysatEcosystem docs
   * Remove pandas cap on NEP29 tests
   * Updated dosctring style for consistency
   * Removed version cap for xarray
