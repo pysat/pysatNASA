@@ -57,6 +57,14 @@ C/NOFS VEFI
 .. automodule:: pysatNASA.instruments.cnofs_vefi
    :members:
 
+.. _de2_fpi:
+
+DE2 FPI
+--------
+
+.. automodule:: pysatNASA.instruments.de2_fpi
+   :members:
+
 .. _de2_lang:
 
 DE2 LANG
@@ -79,6 +87,14 @@ DE2 RPA
 -------
 
 .. automodule:: pysatNASA.instruments.de2_rpa
+   :members:
+
+.. _de2_vefi:
+
+DE2 VEFI
+--------
+
+.. automodule:: pysatNASA.instruments.de2_vefi
    :members:
 
 .. _de2_wats:
