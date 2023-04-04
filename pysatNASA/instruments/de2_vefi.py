@@ -90,6 +90,8 @@ list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags)
 
 # Set the load routine
+# Forcing use of cdflib as default since pysatCDF has a known issue with vefi
+# data.  See pysat/pysatCDF#48
 load = functools.partial(cdw.load, use_cdflib=True)
 
 # Set the download routine
