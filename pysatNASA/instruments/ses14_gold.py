@@ -156,9 +156,16 @@ def load(fnames, tag='', inst_id=''):
                              drop_meta_labels='FILLVAL')
 
     if tag == 'nmax':
-        # Add time coordinate from scan_start_time
-        data['time'] = [dt.datetime.strptime(str(val), "b'%Y-%m-%dT%H:%M:%SZ'")
-                        for val in data['scan_start_time'].values]
+        # Add time coordinate from scan_start_time.
+        time = [dt.datetime.strptime(str(val), "b'%Y-%m-%dT%H:%M:%SZ'")
+                for val in data['scan_start_time'].values]
+
+        # Add a delta of 1 microsecond for channel B.
+        delta_time = [1 if ch == b'CHB' else 0 for ch in data['channel'].values]
+        data['time'] = [time[i] + dt.timedelta(microseconds=delta_time[i])
+                        for i in range(0, len(time))]
+
+        # Sort times to ensure monotonic increase.
         data = data.sortby('time')
 
         # Update coordinates with dimensional data
