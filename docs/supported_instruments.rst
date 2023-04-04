@@ -89,20 +89,20 @@ DE2 RPA
 .. automodule:: pysatNASA.instruments.de2_rpa
    :members:
 
-.. _de2_wats:
-
-DE2 WATS
---------
-
-.. automodule:: pysatNASA.instruments.de2_wats
-   :members:
-
 .. _de2_vefi:
 
 DE2 VEFI
 --------
 
 .. automodule:: pysatNASA.instruments.de2_vefi
+   :members:
+
+.. _de2_wats:
+
+DE2 WATS
+--------
+
+.. automodule:: pysatNASA.instruments.de2_wats
    :members:
 
 .. _dmsp_ssusi:
