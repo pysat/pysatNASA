@@ -14,9 +14,13 @@ tag
 
 Warnings
 --------
-- The cleaning parameters for the instrument are still under development.
-- strict_time_flag must be set to False
+The cleaning parameters for the instrument are still under development.
 
+Note
+----
+In roughly 0.3% of daily files, Channel A and Channel B scans begin at the same
+time.  One microsecond is added to Channel B to ensure uniqueness in the xarray
+index.  The nominal scan rate for each channel is every 30 minutes.
 
 Examples
 --------
@@ -24,8 +28,7 @@ Examples
 
     import datetime as dt
     import pysat
-    nmax = pysat.Instrument(platform='ses14', name='gold', tag='nmax'
-                            strict_time_flag=False)
+    nmax = pysat.Instrument(platform='ses14', name='gold', tag='nmax')
     nmax.download(dt.datetime(2020, 1, 1), dt.datetime(2020, 1, 31))
     nmax.load(2020, 1)
 
