@@ -3,7 +3,20 @@
 Includes the core instruments without the line of sight winds.
 
 Note that IVM A and B are nominally never active at the same time. This
-constellation requires a bug-fix in pysat 3.1.0.
+constellation should be initialized with `common_index=False`.  This forgoes
+the pysat check that ensures all instruments load data.
+
+Examples
+--------
+::
+
+    import pysat
+    import pysatNASA
+
+    icon = pysat.Constellation(const_module=pysatNASA.constellations.icon,
+                               common_index=False)
+
+    icon.load(2020, 1)
 
 """
 
