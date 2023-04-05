@@ -21,6 +21,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 * Bug Fixes
   * Updated CDAWeb routines to allow for data stored by year/day-of-year
   * Updated GOLD nmax to sort scans by time.
+  * Added 1 usec to GOLD nmax channel B times to ensure uniqueness
 * Documentation
   * Added TIMED-GUVI platform
   * Added missing sub-module imports

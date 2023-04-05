@@ -14,9 +14,13 @@ tag
 
 Warnings
 --------
-- The cleaning parameters for the instrument are still under development.
-- strict_time_flag must be set to False
+The cleaning parameters for the instrument are still under development.
 
+Note
+----
+In roughly 0.3% of daily files, Channel A and Channel B scans begin at the same
+time.  One microsecond is added to Channel B to ensure uniqueness in the xarray
+index.  The nominal scan rate for each channel is every 30 minutes.
 
 Examples
 --------
@@ -24,8 +28,7 @@ Examples
 
     import datetime as dt
     import pysat
-    nmax = pysat.Instrument(platform='ses14', name='gold', tag='nmax'
-                            strict_time_flag=False)
+    nmax = pysat.Instrument(platform='ses14', name='gold', tag='nmax')
     nmax.download(dt.datetime(2020, 1, 1), dt.datetime(2020, 1, 31))
     nmax.load(2020, 1)
 
@@ -156,9 +159,16 @@ def load(fnames, tag='', inst_id=''):
                              drop_meta_labels='FILLVAL')
 
     if tag == 'nmax':
-        # Add time coordinate from scan_start_time
-        data['time'] = [dt.datetime.strptime(str(val), "b'%Y-%m-%dT%H:%M:%SZ'")
-                        for val in data['scan_start_time'].values]
+        # Add time coordinate from scan_start_time.
+        time = [dt.datetime.strptime(str(val), "b'%Y-%m-%dT%H:%M:%SZ'")
+                for val in data['scan_start_time'].values]
+
+        # Add a delta of 1 microsecond for channel B.
+        delta_time = [1 if ch == b'CHB' else 0 for ch in data['channel'].values]
+        data['time'] = [time[i] + dt.timedelta(microseconds=delta_time[i])
+                        for i in range(0, len(time))]
+
+        # Sort times to ensure monotonic increase.
         data = data.sortby('time')
 
         # Update coordinates with dimensional data
