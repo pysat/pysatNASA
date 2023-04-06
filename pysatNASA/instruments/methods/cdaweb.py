@@ -359,9 +359,9 @@ def load_xarray(fnames, tag='', inst_id='',
             temp_data = cdflib.cdf_to_xarray(lfname, to_datetime=True)
             ldata.append(temp_data)
 
-        # Combine individual files together
+        # Combine individual files together, concat along epoch
         if len(ldata) > 0:
-            data = xr.combine_by_coords(ldata)
+            data = xr.combine_nested(ldata, epoch_name)
 
     all_vars = io.xarray_all_vars(data)
 
