@@ -104,7 +104,7 @@ load = functools.partial(cdw.load, pandas_format=pandas_format,
 
 # Set the download routine
 download_tags = {'': {'': 'TIMED_L2A_SABER'}}
-download = functools.partial(cdw.download, supported_tags=download_tags)
+download = functools.partial(cdw.cdas_download, supported_tags=download_tags)
 
 # Set the list_remote_files routine
 list_remote_files = functools.partial(cdw.cdas_list_remote_files,
