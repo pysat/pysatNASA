@@ -22,6 +22,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   * Updated CDAWeb routines to allow for data stored by year/day-of-year
   * Updated GOLD nmax to sort scans by time.
   * Added 1 usec to GOLD nmax channel B times to ensure uniqueness
+  * Fixed multi-file loads for cdf xarray datasets.
 * Documentation
   * Added TIMED-GUVI platform
   * Added missing sub-module imports
@@ -31,6 +32,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
     general `init` function
   * Added unit tests for the different platform method attributes
   * xarray support for TIMED SABER and SEE
+  * Added `drop_dims` kwarg to `load_xarray` interface so that orphan dims can
+    be removed before attempting to merge.
 * Maintenance
   * Removed duplicate tests if pysatCDF not isntalled
   * Only test pysatCDF on GitHub Actions for older numpy versions
