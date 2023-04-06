@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pysatNASA"
-version = "0.0.4.1"
+version = "0.0.5"
 description = "pysat support for NASA Instruments"
 readme = "README.md"
 requires-python = ">=3.8"
@@ -33,14 +33,15 @@ keywords = [
   "ionosphere"
 ]
 dependencies = [
-  "netCDF4",
-  "requests",
   "beautifulsoup4",
-  "lxml",
+  "cdasws",
   "cdflib >= 0.4.4",
+  "lxml",
+  "netCDF4",
   "numpy",
   "pandas",
   "pysat >= 3.0.4",
+  "requests",
   "xarray"
 ]
 
