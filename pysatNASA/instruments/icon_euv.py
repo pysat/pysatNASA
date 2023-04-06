@@ -78,13 +78,12 @@ def preprocess(self, keep_original_names=False):
 
     Parameters
     ----------
-    keep_original_names : boolean
+    keep_original_names : bool
         if True then the names as given in the netCDF ICON file
         will be used as is. If False, a preamble is removed. (default=False)
 
     """
 
-    mm_gen.convert_timestamp_to_datetime(self, sec_mult=1.0e-3)
     if not keep_original_names:
         mm_gen.remove_leading_text(self, target='ICON_L26_')
     return
@@ -128,13 +127,11 @@ list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags)
 
 # Set the download routine
-basic_tag = {'remote_dir': '/pub/data/icon/l2/l2-6_euv/{year:04d}/',
-             'fname': fname}
-download_tags = {'': {'': basic_tag}}
-download = functools.partial(cdw.download, supported_tags=download_tags)
+download_tags = {'': {'': 'ICON_L2-6_EUV'}}
+download = functools.partial(cdw.cdas_download, supported_tags=download_tags)
 
 # Set the list_remote_files routine
-list_remote_files = functools.partial(cdw.list_remote_files,
+list_remote_files = functools.partial(cdw.cdas_list_remote_files,
                                       supported_tags=download_tags)
 
 
@@ -148,7 +145,7 @@ def filter_metadata(meta_dict):
 
     Returns
     -------
-    dict
+    meta_dict : dict
         Filtered EUV metadata
 
     """
@@ -169,7 +166,7 @@ def filter_metadata(meta_dict):
     return meta_dict
 
 
-def load(fnames, tag=None, inst_id=None, keep_original_names=False):
+def load(fnames, tag='', inst_id='', keep_original_names=False):
     """Load ICON EUV data into `xarray.Dataset` object and `pysat.Meta` objects.
 
     This routine is called as needed by pysat. It is not intended
@@ -180,13 +177,13 @@ def load(fnames, tag=None, inst_id=None, keep_original_names=False):
     fnames : array-like
         Iterable of filename strings, full path, to data files to be loaded.
         This input is nominally provided by pysat itself.
-    tag : string
+    tag : str
         Tag name used to identify particular data set to be loaded.
-        This input is nominally provided by pysat itself. (default=None)
-    inst_id : string
-        Satellite ID used to identify particular data set to be loaded.
-        This input is nominally provided by pysat itself. (default=None)
-    keep_original_names : boolean
+        This input is nominally provided by pysat itself. (default='')
+    inst_id : str
+        Instrument ID used to identify particular data set to be loaded.
+        This input is nominally provided by pysat itself. (default='')
+    keep_original_names : bool
         If True then the names as given in the netCDF ICON file
         will be used as is. If False, a preamble is removed. (default=False)
 

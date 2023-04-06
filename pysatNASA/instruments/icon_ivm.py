@@ -87,7 +87,7 @@ def preprocess(self, keep_original_names=False):
 
     Parameters
     ----------
-    keep_original_names : boolean
+    keep_original_names : bool
         if True then the names as given in the netCDF ICON file
         will be used as is. If False, a preamble is removed. (default=False)
 
@@ -192,13 +192,12 @@ list_files = functools.partial(mm_gen.list_files,
 
 # Set the download routine
 dirstr = '/pub/data/icon/l2/l2-7_ivm-{id:s}/{{year:4d}}/'
-download_tags = {id: {'': {'remote_dir': dirstr.format(id=id),
-                           'fname': supported_tags[id]['']}}
-                 for id in ['a', 'b']}
-download = functools.partial(cdw.download, supported_tags=download_tags)
+download_tags = {'a': {'': 'ICON_L2-7_IVM-A'}, 'b': {'': 'ICON_L2-7_IVM-B'}}
+
+download = functools.partial(cdw.cdas_download, supported_tags=download_tags)
 
 # Set the list_remote_files routine
-list_remote_files = functools.partial(cdw.list_remote_files,
+list_remote_files = functools.partial(cdw.cdas_list_remote_files,
                                       supported_tags=download_tags)
 
 
@@ -229,7 +228,7 @@ def filter_metadata(meta_dict):
     return meta_dict
 
 
-def load(fnames, tag=None, inst_id=None, keep_original_names=False):
+def load(fnames, tag='', inst_id='', keep_original_names=False):
     """Load ICON IVM data into `pandas.DataFrame` and `pysat.Meta` objects.
 
     This routine is called as needed by pysat. It is not intended
@@ -240,15 +239,15 @@ def load(fnames, tag=None, inst_id=None, keep_original_names=False):
     fnames : array-like
         iterable of filename strings, full path, to data files to be loaded.
         This input is nominally provided by pysat itself.
-    tag : string
-        tag name used to identify particular data set to be loaded.
-        This input is nominally provided by pysat itself.
-    inst_id : string
-        Satellite ID used to identify particular data set to be loaded.
-        This input is nominally provided by pysat itself.
-    keep_original_names : boolean
+    tag : str
+        Tag name used to identify particular data set to be loaded.
+        This input is nominally provided by pysat itself. (default='')
+    inst_id : str
+        Instrument ID used to identify particular data set to be loaded.
+        This input is nominally provided by pysat itself. (default='')
+    keep_original_names : bool
         if True then the names as given in the netCDF ICON file
-        will be used as is. If False, a preamble is removed.
+        will be used as is. If False, a preamble is removed. (default=False)
 
     Returns
     -------

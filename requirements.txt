@@ -1,0 +1,10 @@
+netCDF4
+requests
+beautifulsoup4
+lxml
+cdflib>=0.4.4
+numpy
+pandas
+pysat>=3.0.4
+cdasws
+xarray

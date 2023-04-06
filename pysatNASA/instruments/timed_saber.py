@@ -7,17 +7,19 @@ Dynamics (TIMED) satellite.
 
 Properties
 ----------
-platform : string
+platform : str
     'timed'
-name : string
+name : str
     'saber'
-tag : string
+tag : str
     None supported
-inst_id : string
+inst_id : str
     None supported
 
 Note
 ----
+Note on Temperature Errors: https://saber.gats-inc.com/temp_errors.php
+
 SABER "Rules of the Road" for DATA USE
 Users of SABER data are asked to respect the following guidelines
 
@@ -36,9 +38,9 @@ Users of SABER data are asked to respect the following guidelines
   - Pre-prints of publications and conference abstracts should be widely
     distributed to interested parties within the mission and related projects.
 
+
 Warnings
 --------
-- Note on Temperature Errors: http://saber.gats-inc.com/temp_errors.php
 - No cleaning routine
 
 """
@@ -48,10 +50,10 @@ import functools
 
 # CDAWeb methods prewritten for pysat
 from pysat.instruments.methods import general as mm_gen
-from pysat import logger
 
 from pysatNASA.instruments.methods import cdaweb as cdw
 from pysatNASA.instruments.methods import general as mm_nasa
+from pysatNASA.instruments.methods import timed as mm_timed
 
 # ----------------------------------------------------------------------------
 # Instrument attributes
@@ -76,32 +78,17 @@ _test_dates = {'': {'': dt.datetime(2019, 1, 1)}}
 # ----------------------------------------------------------------------------
 # Instrument methods
 
-
-def init(self):
-    """Initialize the Instrument object with instrument specific values.
-
-    Runs once upon instantiation.
-
-    """
-
-    rules_url = 'https://saber.gats-inc.com/data_services.php'
-    ackn_str = ' '.join(('Please see the Rules of the Road at', rules_url))
-
-    logger.info(ackn_str)
-    self.acknowledgements = ackn_str
-    self.references = ''
-
-    return
-
+init = functools.partial(mm_nasa.init, module=mm_timed, name=name)
 
 # No cleaning, use standard warning function instead
 clean = mm_nasa.clean_warn
-
 
 # ----------------------------------------------------------------------------
 # Instrument functions
 #
 # Use the default CDAWeb and pysat methods
+
+# TODO(#104): Switch to netCDF4 files once unzip (#103) is supported.
 
 # Set the list_files routine
 fname = ''.join(('timed_l2a_saber_{year:04d}{month:02d}{day:02d}',
@@ -115,12 +102,9 @@ list_files = functools.partial(mm_gen.list_files,
 load = cdw.load
 
 # Set the download routine
-basic_tag = {'remote_dir': ''.join(('/pub/data/timed/saber/level2a_cdf',
-                                    '/{year:4d}/{month:02d}/')),
-             'fname': fname}
-download_tags = {'': {'': basic_tag}}
-download = functools.partial(cdw.download, supported_tags=download_tags)
+download_tags = {'': {'': 'TIMED_L2A_SABER'}}
+download = functools.partial(cdw.cdas_download, supported_tags=download_tags)
 
 # Set the list_remote_files routine
-list_remote_files = functools.partial(cdw.list_remote_files,
+list_remote_files = functools.partial(cdw.cdas_list_remote_files,
                                       supported_tags=download_tags)

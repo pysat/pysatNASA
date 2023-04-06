@@ -14,9 +14,13 @@ tag
 
 Warnings
 --------
-- The cleaning parameters for the instrument are still under development.
-- strict_time_flag must be set to False
+The cleaning parameters for the instrument are still under development.
 
+Note
+----
+In roughly 0.3% of daily files, Channel A and Channel B scans begin at the same
+time.  One microsecond is added to Channel B to ensure uniqueness in the xarray
+index.  The nominal scan rate for each channel is every 30 minutes.
 
 Examples
 --------
@@ -24,8 +28,7 @@ Examples
 
     import datetime as dt
     import pysat
-    nmax = pysat.Instrument(platform='ses14', name='gold', tag='nmax'
-                            strict_time_flag=False)
+    nmax = pysat.Instrument(platform='ses14', name='gold', tag='nmax')
     nmax.download(dt.datetime(2020, 1, 1), dt.datetime(2020, 1, 31))
     nmax.load(2020, 1)
 
@@ -36,12 +39,11 @@ import functools
 import numpy as np
 
 from pysat.instruments.methods import general as ps_gen
-from pysat import logger
 from pysat.utils.io import load_netcdf
 
 from pysatNASA.instruments.methods import cdaweb as cdw
 from pysatNASA.instruments.methods import general as mm_nasa
-from pysatNASA.instruments.methods import gold as mm_gold
+from pysatNASA.instruments.methods import ses14 as mm_gold
 
 # ----------------------------------------------------------------------------
 # Instrument attributes
@@ -61,34 +63,10 @@ _test_dates = {'': {'nmax': dt.datetime(2020, 1, 1)}}
 # ----------------------------------------------------------------------------
 # Instrument methods
 
-
-def init(self):
-    """Initialize the Instrument object with instrument specific values.
-
-    Runs once upon instantiation.
-
-    Parameters
-    ----------
-    self : pysat.Instrument
-        Instrument class object
-
-    """
-
-    logger.info(mm_gold.ack_str)
-    logger.warning(' '.join(('Time stamps may be non-unique because Channel A',
-                             'and B are different instruments.  An upgrade to',
-                             'the pysat.Constellation object is required to',
-                             'solve this issue. See pysat issue #614 for more',
-                             'info.')))
-    self.acknowledgements = mm_gold.ack_str
-    self.references = mm_gold.ref_str
-
-    return
-
+init = functools.partial(mm_nasa.init, module=mm_gold, name=name)
 
 # No cleaning, use standard warning function instead
 clean = mm_nasa.clean_warn
-
 
 # ----------------------------------------------------------------------------
 # Instrument functions
@@ -104,19 +82,15 @@ list_files = functools.partial(ps_gen.list_files,
                                supported_tags=supported_tags)
 
 # Set the download routine
-download_tags = {inst_id:
-                 {tag: {'remote_dir': ''.join(('/pub/data/gold/level2/', tag,
-                                               '/{year:4d}/')),
-                        'fname': supported_tags[''][tag]}
-                  for tag in tags.keys()} for inst_id in inst_ids.keys()}
-download = functools.partial(cdw.download, supported_tags=download_tags)
+download_tags = {'': {'nmax': 'GOLD_L2_NMAX'}}
+download = functools.partial(cdw.cdas_download, supported_tags=download_tags)
 
 # Set the list_remote_files routine
-list_remote_files = functools.partial(cdw.list_remote_files,
+list_remote_files = functools.partial(cdw.cdas_list_remote_files,
                                       supported_tags=download_tags)
 
 
-def load(fnames, tag=None, inst_id=None):
+def load(fnames, tag='', inst_id=''):
     """Load GOLD NMAX data into `xarray.Dataset` and `pysat.Meta` objects.
 
     This routine is called as needed by pysat. It is not intended
@@ -127,12 +101,12 @@ def load(fnames, tag=None, inst_id=None):
     fnames : array-like
         iterable of filename strings, full path, to data files to be loaded.
         This input is nominally provided by pysat itself.
-    tag : string
-        tag name used to identify particular data set to be loaded.
-        This input is nominally provided by pysat itself.
-    inst_id : string
-        Satellite ID used to identify particular data set to be loaded.
-        This input is nominally provided by pysat itself.
+    tag : str
+        Tag name used to identify particular data set to be loaded.
+        This input is nominally provided by pysat itself. (default='')
+    inst_id : str
+        Instrument ID used to identify particular data set to be loaded.
+        This input is nominally provided by pysat itself. (default='')
     **kwargs : extra keywords
         Passthrough for additional keyword arguments specified when
         instantiating an Instrument object. These additional keywords
@@ -185,9 +159,17 @@ def load(fnames, tag=None, inst_id=None):
                              drop_meta_labels='FILLVAL')
 
     if tag == 'nmax':
-        # Add time coordinate from scan_start_time
-        data['time'] = [dt.datetime.strptime(str(val), "b'%Y-%m-%dT%H:%M:%SZ'")
-                        for val in data['scan_start_time'].values]
+        # Add time coordinate from scan_start_time.
+        time = [dt.datetime.strptime(str(val), "b'%Y-%m-%dT%H:%M:%SZ'")
+                for val in data['scan_start_time'].values]
+
+        # Add a delta of 1 microsecond for channel B.
+        delta_time = [1 if ch == b'CHB' else 0 for ch in data['channel'].values]
+        data['time'] = [time[i] + dt.timedelta(microseconds=delta_time[i])
+                        for i in range(0, len(time))]
+
+        # Sort times to ensure monotonic increase.
+        data = data.sortby('time')
 
         # Update coordinates with dimensional data
         data = data.assign_coords({'nlats': data['nlats'],

@@ -99,13 +99,12 @@ def preprocess(self, keep_original_names=False):
 
     Parameters
     ----------
-    keep_original_names : boolean
+    keep_original_names : bool
         if True then the names as given in the netCDF ICON file
         will be used as is. If False, a preamble is removed. (default=False)
 
     """
 
-    mm_gen.convert_timestamp_to_datetime(self, sec_mult=1.0e-3)
     if not keep_original_names:
         mm_icon.remove_preamble(self)
     return
@@ -227,30 +226,23 @@ list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags)
 
 # Set the download routine
-dirstr1 = '/pub/data/icon/l2/l2-1_mighti-{{id:s}}_los-wind-{color:s}/'
-dirstr2 = '/pub/data/icon/l2/l2-2_mighti_vector-wind-{color:s}/'
-dirstr3 = '/pub/data/icon/l2/l2-3_mighti-{id:s}_temperature/'
-dirnames = {'los_wind_green': dirstr1.format(color='green'),
-            'los_wind_red': dirstr1.format(color='red'),
-            'vector_wind_green': dirstr2.format(color='green'),
-            'vector_wind_red': dirstr2.format(color='red'),
-            'temperature': dirstr3}
+download_tags = {'vector':
+                 {'vector_wind_green': 'ICON_L2-2_MIGHTI_VECTOR-WIND-GREEN',
+                  'vector_wind_red': 'ICON_L2-2_MIGHTI_VECTOR-WIND-RED'},
+                 'a':
+                 {'los_wind_green': 'ICON_L2-1_MIGHTI-A_LOS-WIND-GREEN',
+                  'los_wind_red': 'ICON_L2-1_MIGHTI-A_LOS-WIND-RED',
+                  'temperature': 'ICON_L2-3_MIGHTI-A_TEMPERATURE'},
+                 'b':
+                 {'los_wind_green': 'ICON_L2-1_MIGHTI-B_LOS-WIND-GREEN',
+                  'los_wind_red': 'ICON_L2-1_MIGHTI-B_LOS-WIND-RED',
+                  'temperature': 'ICON_L2-3_MIGHTI-B_TEMPERATURE'}}
 
-download_tags = {}
-for inst_id in supported_tags.keys():
-    download_tags[inst_id] = {}
-    for tag in supported_tags[inst_id].keys():
-        fname = supported_tags[inst_id][tag]
 
-        download_tags[inst_id][tag] = {
-            'remote_dir': ''.join((dirnames[tag].format(id=inst_id),
-                                   '{year:04d}/')),
-            'fname': fname}
-
-download = functools.partial(cdw.download, supported_tags=download_tags)
+download = functools.partial(cdw.cdas_download, supported_tags=download_tags)
 
 # Set the list_remote_files routine
-list_remote_files = functools.partial(cdw.list_remote_files,
+list_remote_files = functools.partial(cdw.cdas_list_remote_files,
                                       supported_tags=download_tags)
 
 
@@ -264,7 +256,7 @@ def filter_metadata(meta_dict):
 
     Returns
     -------
-    dict
+    meta_dict : dict
         Filtered FUV metadata
 
     """
@@ -283,7 +275,7 @@ def filter_metadata(meta_dict):
     return meta_dict
 
 
-def load(fnames, tag=None, inst_id=None, keep_original_names=False):
+def load(fnames, tag='', inst_id='', keep_original_names=False):
     """Load ICON MIGHTI data into `xarray.Dataset` and `pysat.Meta` objects.
 
     This routine is called as needed by pysat. It is not intended
@@ -294,12 +286,12 @@ def load(fnames, tag=None, inst_id=None, keep_original_names=False):
     fnames : array-like
         iterable of filename strings, full path, to data files to be loaded.
         This input is nominally provided by pysat itself.
-    tag : str or NoneType
-        tag name used to identify particular data set to be loaded.
-        This input is nominally provided by pysat itself. (default=None)
-    inst_id : str or NoneType
-        Satellite ID used to identify particular data set to be loaded.
-        This input is nominally provided by pysat itself. (default=None)
+    tag : str
+        Tag name used to identify particular data set to be loaded.
+        This input is nominally provided by pysat itself. (default='')
+    inst_id : str
+        Instrument ID used to identify particular data set to be loaded.
+        This input is nominally provided by pysat itself. (default='')
     keep_original_names : bool
         if True then the names as given in the netCDF ICON file
         will be used as is. If False, a preamble is removed. (default=False)

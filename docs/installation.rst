@@ -25,7 +25,7 @@ Python 3.8+ and pysat 3.0.4+.
   numpy
   pandas
   requests
-  xarray
+  xarray<2022.11
  ================== =================
 
 

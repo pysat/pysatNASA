@@ -22,19 +22,22 @@ pysatNASA uses common Python modules, as well as modules developed by
 and for the Space Physics community.  This module officially supports
 Python 3.8+.
 
-| Common modules   | Community modules |
-| ---------------- | ----------------- |
-| beautifulsoup4   | cdflib            |
-| lxml             | pysat>=3.0.4      |
-| netCDF4          |                   |
-| numpy            |                   |
-| pandas           |                   |
-| requests         |                   |
-| xarray           |                   |
+| Common modules   | Community modules | Optional Modules |
+| ---------------- | ----------------- |------------------|
+| beautifulsoup4   | cdflib            | pysatCDF         |
+| lxml             | pysat>=3.0.4      |                  |
+| netCDF4          |                   |                  |
+| numpy<1.24       |                   |                  |
+| pandas           |                   |                  |
+| requests         |                   |                  |
+| xarray           |                   |                  |
+
+## PyPi Installation
+```
+pip install pysatNASA
+```
 
 ## GitHub Installation
-
-Currently, the main way to get pysatNASA is through github.
 
 ```
 git clone https://github.com/pysat/pysatNASA.git
@@ -51,6 +54,7 @@ pip install .
 Note: pre-1.0.0 version
 -----------------------
 pysatNASA is currently in an initial development phase and requires pysat 3.0.4.  
+Feedback and contributions are appreciated.
 
 # Using with pysat
 
@@ -62,11 +66,29 @@ from pysatNASA.instruments import icon_ivm
 
 ivm = pysat.Instrument(inst_module=icon_ivm, inst_id='a')
 ```
-Another way to use the instruments in an external repository is to register the instruments.  This only needs to be done the first time you load an instrument.  Afterward, pysat will identify them using the `platform` and `name` keywords.
+Another way to use the instruments in an external repository is to register the
+instruments.  This only needs to be done the first time you load an instrument.  
+Afterward, pysat will identify them using the `platform` and `name` keywords.
 
 ```
 import pysat
 
 pysat.utils.registry.register(['pysatNASA.instruments.icon_ivm'])
 ivm = pysat.Instrument('icon', 'ivm', inst_id='a')
+```
+
+# CDF Integration
+For data products stored as CDF files, this package can use either `cdflib` or
+`pysatCDF`.  Note that `cdflib` is a pure python package and more readily
+deployable across systems, whereas `pysatCDF` interfaces with the fortran.  
+This is a faster approach for loading data, but may not install on all systems.  
+There are known issues with `numpy`>=1.24. Therefore, `pysatCDF` is optional
+rather than required.  
+
+You can specify which load routine to use via the optional `use_cdflib` kwarg.
+If no kwarg is specified, `pysatNASA` will default to `pysatCDF` if it is
+successfully installed, and default to `cdflib` otherwise.
+
+```
+ivm = pysat.Instrument('cnofs', 'ivm', use_cdflib=True)
 ```
