@@ -64,8 +64,8 @@ def try_inst_dict(inst_id, tag, supported_tags):
 
 def load(fnames, tag='', inst_id='', file_cadence=dt.timedelta(days=1),
          flatten_twod=True, pandas_format=True, epoch_name='Epoch',
-         meta_processor=None, meta_translation=None, drop_meta_labels=None,
-         use_cdflib=None):
+         drop_dims=None, meta_processor=None, meta_translation=None,
+         drop_meta_labels=None, use_cdflib=None):
     """Load NASA CDAWeb CDF files.
 
     Parameters
@@ -93,6 +93,10 @@ def load(fnames, tag='', inst_id='', file_cadence=dt.timedelta(days=1),
         specified by `epoch_origin` with units specified by `epoch_unit`. This
         epoch variable will be converted to a `DatetimeIndex` for consistency
         across pysat instruments.  (default='Epoch')
+    drop_dims : list or NoneType
+        List of variable dimensions that should be dropped. Applied
+        to data as loaded from the file. Used only from xarray Dataset.
+        (default=None)
     meta_processor : function or NoneType
         If not None, a dict containing all of the loaded metadata will be
         passed to `meta_processor` which should return a filtered version
@@ -143,6 +147,7 @@ def load(fnames, tag='', inst_id='', file_cadence=dt.timedelta(days=1),
 
         data, meta = load_xarray(fnames, tag=tag, inst_id=inst_id,
                                  epoch_name=epoch_name,
+                                 drop_dims=drop_dims,
                                  file_cadence=file_cadence,
                                  meta_processor=meta_processor,
                                  meta_translation=meta_translation,
@@ -264,7 +269,7 @@ def load_xarray(fnames, tag='', inst_id='',
                         'min_val': ('ValidMin', float),
                         'max_val': ('ValidMax', float),
                         'fill_val': ('FillVal', float)},
-                epoch_name='Epoch', meta_processor=None,
+                epoch_name='Epoch', drop_dims=None, meta_processor=None,
                 meta_translation=None, drop_meta_labels=None):
     """Load NASA CDAWeb CDF files into an xarray Dataset.
 
@@ -295,6 +300,9 @@ def load_xarray(fnames, tag='', inst_id='',
         specified by `epoch_origin` with units specified by `epoch_unit`. This
         epoch variable will be converted to a `DatetimeIndex` for consistency
         across pysat instruments.  (default='Epoch')
+    drop_dims : list or NoneType
+        List of variable dimensions that should be dropped. Applied
+        to data as loaded from the file. (default=None)
     meta_processor : function or NoneType
         If not None, a dict containing all of the loaded metadata will be
         passed to `meta_processor` which should return a filtered version
@@ -357,6 +365,8 @@ def load_xarray(fnames, tag='', inst_id='',
 
         for lfname in lfnames:
             temp_data = cdflib.cdf_to_xarray(lfname, to_datetime=True)
+            if drop_dims:
+                temp_data = temp_data.drop_dims(drop_dims)
             ldata.append(temp_data)
 
         # Combine individual files together, concat along epoch
