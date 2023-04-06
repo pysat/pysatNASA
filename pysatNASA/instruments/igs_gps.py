@@ -15,6 +15,18 @@ Laboratory, Pasadena (USA), and UPC of the University Politechnical Catalonia in
 Barcelona (Spain). The IGS data are a computed as a weighted mean of the data
 from the four analysis centers.
 
+The rate of TEC index (ROTI) characterizes TEC fluctuations observed along
+receiver-to-satellite line of sight links over a 5-minute interval.
+The measurement is obtained by processing GNSS dual-frequency phase data and
+computing the standard deviation of the rate of TEC change over that interval
+after removing its background variation trend.
+
+ROTI data are provided as global maps using a 2.5 x 5 degree (geographic
+latitude x longitude) grid. The median ROTI value is calculated in each bin.
+GNSS data contributing to the ROTI computation are primarily collected from
+the global network of International GNSS Service and the regional network of
+Continuous Operating Reference Station (CORS).
+
 Properties
 ----------
 platform
@@ -22,9 +34,9 @@ platform
 name
     'gps'
 tag
-    ['15min', '1hr', '2hr']
+    ['tec', 'roti']
 inst_id
-    None supported
+    ['15min', '1hr', '2hr']
 
 
 Warnings
