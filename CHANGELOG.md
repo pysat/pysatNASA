@@ -30,7 +30,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   * Updated platform methods to follow a consistent style and work with the
     general `init` function
   * Added unit tests for the different platform method attributes
-  * xarray support for TIMED SEE
+  * xarray support for TIMED SABER and SEE
 * Maintenance
   * Removed duplicate tests if pysatCDF not isntalled
   * Only test pysatCDF on GitHub Actions for older numpy versions
