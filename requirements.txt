@@ -1,10 +1,10 @@
-netCDF4
-requests
 beautifulsoup4
-lxml
+cdasws
 cdflib>=0.4.4
+lxml
+netCDF4
 numpy
 pandas
 pysat>=3.0.4
-cdasws
+requests
 xarray

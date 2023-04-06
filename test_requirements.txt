@@ -1,0 +1,13 @@
+coveralls<3.3
+extras_require
+flake8
+flake8-docstrings
+hacking>=1.0
+ipython
+m2r2
+numpydoc
+pytest
+pytest-cov
+pytest-ordering
+sphinx
+sphinx_rtd_theme
