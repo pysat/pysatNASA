@@ -196,18 +196,11 @@ def load(fnames, tag='', inst_id=''):
     elif tag == 'o2den':
         epoch_name = 'nevents'
 
-    try:
-        data, meta = load_netcdf(fnames, pandas_format=pandas_format,
-                                 epoch_name=epoch_name, labels=labels,
-                                 meta_translation=meta_translation,
-                                 drop_meta_labels='FILLVAL')
-    except:
-        meta = Meta(labels=labels)
-        data = xr.open_mfdataset(fnames, concat_dim=epoch_name,
-                                 combine='nested')
-
-        # Renaming epoch variable
-        data = data.swap_dims({epoch_name: 'time'})
+    data, meta = load_netcdf(fnames, pandas_format=pandas_format,
+                             epoch_name=epoch_name, labels=labels,
+                             meta_translation=meta_translation,
+                             combine_by_coords=False,
+                             drop_meta_labels='FILLVAL')
 
     if tag in ['nmax', 'tdisk', 'tlimb']:
         # Add time coordinate from scan_start_time
@@ -248,7 +241,7 @@ def load(fnames, tag='', inst_id=''):
         meta['time'] = {meta.labels.notes: 'Converted from time_utc'}
         meta['zret'] = {meta.labels.notes: ''.join(('Index for retrieval',
                                                     ' altitude values'))}
-        meta['zdat'] = {meta.labels.notes: ''.joing(('Index for data tangent',
+        meta['zdat'] = {meta.labels.notes: ''.join(('Index for data tangent',
                                                      ' altitude values'))}
 
     return data, meta
