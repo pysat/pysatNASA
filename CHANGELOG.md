@@ -11,6 +11,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
     spectrograph, imaging
   * Resolution of dataset handled by tag with
     low, high
+* New Tags
+  * Added tlimb, tdisk, o2den tags into SES14-GOLD platform.
 * Bug Fixes
   * Updated CDAWeb routines to allow for data stored by year/day-of-year
 * Documentation
