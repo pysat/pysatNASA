@@ -40,6 +40,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   * Removed version cap for xarray
   * Added manual workflow to check that latest RC is installable through test pip
   * Update meta label type for instruments
+  * Use pysat logger to raise warnings
 
 ## [0.0.4] - 2022-11-07
 * Update instrument tests with new test class
