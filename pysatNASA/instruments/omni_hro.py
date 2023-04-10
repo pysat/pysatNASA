@@ -42,10 +42,9 @@ import datetime as dt
 import functools
 import numpy as np
 import pandas as pds
-import warnings
 
+import pysat
 from pysat.instruments.methods import general as mm_gen
-from pysat import logger
 
 from pysatNASA.instruments.methods import cdaweb as cdw
 from pysatNASA.instruments.methods import omni as mm_omni
@@ -85,7 +84,7 @@ def init(self):
                                 'magnetic field data, J. Geophys. Res.,',
                                 'Vol. 110, No. A2, A02209,',
                                 '10.1029/2004JA010649.'))
-    logger.info(ackn_str)
+    pysat.logger.info(ackn_str)
     return
 
 
@@ -208,7 +207,7 @@ def deprecated(func):
              'Please update your path to suppress this warning.',
              'This redirect will be removed in v0.1.0.'])
         # Triggered if OMMBV is not installed
-        warnings.warn(warn_message, DeprecationWarning, stacklevel=2)
+        pysat.logger.warn(warn_message, DeprecationWarning, stacklevel=2)
 
         return func(*args, **kwargs)
 
