@@ -41,6 +41,7 @@ import datetime as dt
 import functools
 import numpy as np
 
+import pysat
 from pysat.instruments.methods import general as ps_gen
 from pysat.utils.io import load_netcdf
 
@@ -169,11 +170,20 @@ def load(fnames, tag='', inst_id=''):
     elif tag == 'o2den':
         epoch_name = 'nevents'
 
-    data, meta = load_netcdf(fnames, pandas_format=pandas_format,
-                             epoch_name=epoch_name, labels=labels,
-                             meta_translation=meta_translation,
-                             combine_by_coords=False,
-                             drop_meta_labels='FILLVAL')
+    try:
+        data, meta = load_netcdf(fnames, pandas_format=pandas_format,
+                                 epoch_name=epoch_name, labels=labels,
+                                 meta_translation=meta_translation,
+                                 combine_by_coords=False,
+                                 drop_meta_labels='FILLVAL')
+    except TypeError:
+        pysat.logger.warn(' '.join(("Loading multiple days of data may error.",
+                                    "Upgrade to pysat 3.1.0 or higher to",
+                                    "resolve this issue.")))
+        data, meta = load_netcdf(fnames, pandas_format=pandas_format,
+                                 epoch_name=epoch_name, labels=labels,
+                                 meta_translation=meta_translation,
+                                 drop_meta_labels='FILLVAL')
 
     if tag in ['nmax', 'tdisk', 'tlimb']:
         # Add time coordinate from scan_start_time
