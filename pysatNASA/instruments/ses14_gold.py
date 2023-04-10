@@ -92,13 +92,95 @@ supported_tags = {inst_id: {tag: fname.format(tag=tag) for tag in tags.keys()}
 list_files = functools.partial(ps_gen.list_files,
                                supported_tags=supported_tags)
 
+# Set download tags.  Note that tlimb uses the general implementation, while
+# other tags use the cdasws implementation.
+download_tags = {'': {'tlimb': {'remote_dir': ''.join(('/pub/data/gold/',
+                                                       'level2/tlimb',
+                                                       '/{year:4d}/')),
+                                'fname': supported_tags['']['tlimb']},
+                      'nmax': 'GOLD_L2_NMAX',
+                      'o2den': 'GOLD_L2_O2DEN',
+                      'tdisk': 'GOLD_L2_TDISK'}}
+
+
 # Set the download routine
-download_tags = {'': {'nmax': 'GOLD_L2_NMAX'}}
-download = functools.partial(cdw.cdas_download, supported_tags=download_tags)
+def download(date_array, tag='', inst_id='', data_path=None):
+    """Download NASA GOLD data.
+
+    This routine is intended to be used by pysat instrument modules supporting
+    a particular NASA CDAWeb dataset.
+
+    Parameters
+    ----------
+    date_array : array-like
+        Array of datetimes to download data for. Provided by pysat.
+    tag : str
+        Data product tag (default='')
+    inst_id : str
+        Instrument ID (default='')
+    data_path : str or NoneType
+        Path to data directory.  If None is specified, the value previously
+        set in Instrument.files.data_path is used.  (default=None)
+
+    """
+
+    if tag == 'tlimb':
+        cdw.download(date_array, tag=tag, inst_id=inst_id,
+                     supported_tags=download_tags, data_path=data_path)
+    else:
+        cdw.cdas_download(date_array, tag=tag, inst_id=inst_id,
+                          supported_tags=download_tags, data_path=data_path)
+
 
 # Set the list_remote_files routine
-list_remote_files = functools.partial(cdw.cdas_list_remote_files,
-                                      supported_tags=download_tags)
+def list_remote_files(tag='', inst_id='', start=None, stop=None,
+                      series_out=True):
+    """Return a list of every file for chosen remote data.
+
+    This routine is intended to be used by pysat instrument modules supporting
+    a particular NASA CDAWeb dataset.
+
+    Parameters
+    ----------
+    tag : str
+        Data product tag (default='')
+    inst_id : str
+        Instrument ID (default='')
+    start : dt.datetime or NoneType
+        Starting time for file list. A None value will start with the first
+        file found.
+        (default=None)
+    stop : dt.datetime or NoneType
+        Ending time for the file list.  A None value will stop with the last
+        file found.
+        (default=None)
+    supported_tags : dict
+        dict of dicts. Keys are supported tag names for download. Value is
+        a dict with 'remote_dir', 'fname'. Inteded to be
+        pre-set with functools.partial then assigned to new instrument code.
+        (default=None)
+    series_out : bool
+        boolean to determine output type. True for pandas series of file names,
+        and False for a list of the full web address.
+        (default=True)
+
+    Returns
+    -------
+    file_list : list
+        A list containing the verified available files
+
+    """
+
+    if tag == 'tlimb':
+        file_list = cdw.list_remote_files(tag=tag, inst_id=inst_id,
+                                          start=start, stop=stop,
+                                          supported_tags=download_tags)
+    else:
+        file_list = cdw.cdas_list_remote_files(tag=tag, inst_id=inst_id,
+                                               start=start, stop=stop,
+                                               supported_tags=download_tags,
+                                               series_out=series_out)
+    return file_list
 
 
 def load(fnames, tag='', inst_id=''):
