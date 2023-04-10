@@ -42,6 +42,7 @@ import datetime as dt
 import functools
 import numpy as np
 import pandas as pds
+import warnings
 
 import pysat
 from pysat.instruments.methods import general as mm_gen
@@ -207,7 +208,7 @@ def deprecated(func):
              'Please update your path to suppress this warning.',
              'This redirect will be removed in v0.1.0.'])
         # Triggered if OMMBV is not installed
-        pysat.logger.warn(warn_message, DeprecationWarning, stacklevel=2)
+        warnings.warn(warn_message, DeprecationWarning, stacklevel=2)
 
         return func(*args, **kwargs)
 
