@@ -127,13 +127,11 @@ list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags)
 
 # Set the download routine
-basic_tag = {'remote_dir': '/pub/data/icon/l2/l2-6_euv/{year:04d}/',
-             'fname': fname}
-download_tags = {'': {'': basic_tag}}
-download = functools.partial(cdw.download, supported_tags=download_tags)
+download_tags = {'': {'': 'ICON_L2-6_EUV'}}
+download = functools.partial(cdw.cdas_download, supported_tags=download_tags)
 
 # Set the list_remote_files routine
-list_remote_files = functools.partial(cdw.list_remote_files,
+list_remote_files = functools.partial(cdw.cdas_list_remote_files,
                                       supported_tags=download_tags)
 
 
@@ -214,8 +212,9 @@ def load(fnames, tag='', inst_id='', keep_original_names=False):
     """
     labels = {'units': ('Units', str), 'name': ('Long_Name', str),
               'notes': ('Var_Notes', str), 'desc': ('CatDesc', str),
-              'min_val': ('ValidMin', float),
-              'max_val': ('ValidMax', float), 'fill_val': ('FillVal', float)}
+              'min_val': ('ValidMin', (int, float)),
+              'max_val': ('ValidMax', (int, float)),
+              'fill_val': ('FillVal', (int, float))}
 
     meta_translation = {'FieldNam': 'plot'}
 

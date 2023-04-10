@@ -192,13 +192,12 @@ list_files = functools.partial(mm_gen.list_files,
 
 # Set the download routine
 dirstr = '/pub/data/icon/l2/l2-7_ivm-{id:s}/{{year:4d}}/'
-download_tags = {id: {'': {'remote_dir': dirstr.format(id=id),
-                           'fname': supported_tags[id]['']}}
-                 for id in ['a', 'b']}
-download = functools.partial(cdw.download, supported_tags=download_tags)
+download_tags = {'a': {'': 'ICON_L2-7_IVM-A'}, 'b': {'': 'ICON_L2-7_IVM-B'}}
+
+download = functools.partial(cdw.cdas_download, supported_tags=download_tags)
 
 # Set the list_remote_files routine
-list_remote_files = functools.partial(cdw.list_remote_files,
+list_remote_files = functools.partial(cdw.cdas_list_remote_files,
                                       supported_tags=download_tags)
 
 
@@ -273,8 +272,9 @@ def load(fnames, tag='', inst_id='', keep_original_names=False):
 
     labels = {'units': ('Units', str), 'name': ('Long_Name', str),
               'notes': ('Var_Notes', str), 'desc': ('CatDesc', str),
-              'min_val': ('ValidMin', float),
-              'max_val': ('ValidMax', float), 'fill_val': ('FillVal', float)}
+              'min_val': ('ValidMin', (int, float)),
+              'max_val': ('ValidMax', (int, float)),
+              'fill_val': ('FillVal', (int, float))}
 
     meta_translation = {'FieldNam': 'plot', 'LablAxis': 'axis',
                         'ScaleTyp': 'scale',

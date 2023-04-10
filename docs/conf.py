@@ -52,11 +52,12 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-zenodo = json.loads(open('../.zenodo.json').read())
 project = 'pysatNASA'
-author = ', '.join([creator['name'] for creator in zenodo['creators']])
-manual_copyright = ', '.join(['2021', author])
 title = '{:s} Documentation'.format(project)
+zenodo = json.loads(open('../.zenodo.json').read())
+author = ', '.join([creator['name'] for creator in zenodo['creators']])
+manual_copyright = ', '.join(['2023', author])
+category = 'Space Physics'
 description = 'Tools for NASA CDAWeb instruments.'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -148,8 +149,8 @@ man_pages = [(master_doc, project, title, [author], 1)]
 # Grouping the document tree into Texinfo files. List of tuples
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
-texinfo_documents = [(master_doc, project, title, author, project, description,
-                      'Space Physics')]
+texinfo_documents = [(master_doc, project, title, author, project,
+                      description, category)]
 
 
 # -- Options for Epub output ----------------------------------------------
