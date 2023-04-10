@@ -318,8 +318,9 @@ def load(fnames, tag='', inst_id='', keep_original_names=False):
     """
     labels = {'units': ('Units', str), 'name': ('Long_Name', str),
               'notes': ('Var_Notes', str), 'desc': ('CatDesc', str),
-              'min_val': ('ValidMin', float),
-              'max_val': ('ValidMax', float), 'fill_val': ('FillVal', float)}
+              'min_val': ('ValidMin', (int, float)),
+              'max_val': ('ValidMax', (int, float)),
+              'fill_val': ('FillVal', (int, float))}
 
     meta_translation = {'FieldNam': 'plot', 'LablAxis': 'axis',
                         'FIELDNAM': 'plot', 'LABLAXIS': 'axis',
