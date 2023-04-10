@@ -57,8 +57,7 @@ name = 'gold'
 tags = {'nmax': 'Level 2 Nmax data for the GOLD instrument',
         'tlimb': 'Level 2 Tlimb data for the GOLD instrument',
         'tdisk': 'Level 2 Tdisk data for the GOLD instrument',
-        'o2den': 'Level 2 O2den data for the GOLD instrument',
-        }
+        'o2den': 'Level 2 O2den data for the GOLD instrument'}
 inst_ids = {'': ['nmax', 'tlimb', 'tdisk', 'o2den']}
 
 pandas_format = False
@@ -66,10 +65,7 @@ pandas_format = False
 # ----------------------------------------------------------------------------
 # Instrument test attributes
 
-_test_dates = {'': {'nmax': dt.datetime(2020, 1, 1),
-                    'tlimb': dt.datetime(2020, 1, 1),
-                    'tdisk': dt.datetime(2020, 1, 1),
-                    'o2den': dt.datetime(2020, 1, 1)}}
+_test_dates = {'': {tag: dt.datetime(2020, 1, 1) for tag in tags.keys()}}
 
 # ----------------------------------------------------------------------------
 # Instrument methods
