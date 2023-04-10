@@ -17,7 +17,8 @@ tag
 
 Warnings
 --------
-The cleaning parameters for the instrument are still under development.
+- The cleaning parameters for the instrument are still under development.
+- Loading multiple days of data requires a bugfix in pysat 3.1.0 or higher.
 
 Note
 ----
