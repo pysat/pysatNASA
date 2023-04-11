@@ -25,12 +25,6 @@ data rate sampling of selected V-I curves for transmission to ground to verify
 or correct the inflight processed data. Time resolution was 0.5 seconds.
 
 
-References
-----------
-J. P. Krehbiel, L. H. Brace, R. F. Theis, W. H. Pinkus, and R. B. Kaplan,
-"The Dynamics Explorer 2 Langmuir Probe (LANG)", Space Sci. Instrum., 5,
-493-502, 1981.
-
 Properties
 ----------
 platform
@@ -47,6 +41,12 @@ Warnings
 --------
 - Currently no cleaning routine.
 
+
+References
+----------
+J. P. Krehbiel, L. H. Brace, R. F. Theis, W. H. Pinkus, and R. B. Kaplan,
+"The Dynamics Explorer 2 Langmuir Probe (LANG)", Space Sci. Instrum., 5,
+493-502, 1981.
 
 """
 
@@ -97,12 +97,9 @@ list_files = functools.partial(mm_gen.list_files,
 load = cdw.load
 
 # Set the download routine
-basic_tag = {'remote_dir': ''.join(('/pub/data/de/de2/plasma_lang',
-                                    '/plasma500ms_lang_cdaweb/{year:4d}/')),
-             'fname': fname}
-download_tags = {'': {'': basic_tag}}
-download = functools.partial(cdw.download, supported_tags=download_tags)
+download_tags = {'': {'': 'DE2_PLASMA500MS_LANG'}}
+download = functools.partial(cdw.cdas_download, supported_tags=download_tags)
 
 # Set the list_remote_files routine
-list_remote_files = functools.partial(cdw.list_remote_files,
+list_remote_files = functools.partial(cdw.cdas_list_remote_files,
                                       supported_tags=download_tags)

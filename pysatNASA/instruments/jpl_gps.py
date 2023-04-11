@@ -1,6 +1,11 @@
 # -*- coding: utf-8 -*-
 """Module for the JPL GPS data products.
 
+.. deprecated:: 0.0.5
+    This module is now included in igs_gps.py.
+    This instrument will be removed in 0.1.0+ to reduce redundancy.
+
+
 Supports ROTI data produced at JPL from International
 GNSS Service Total Electron Content (TEC)
 
@@ -16,16 +21,6 @@ GNSS data contributing to the ROTI computation are primarily collected from
 the global network of International GNSS Service and the regional network of
 Continuous Operating Reference Station (CORS).
 
-References
-----------
-Pi, X., A. J. Mannucci, U. J. Lindqwister, and C. M. Ho, Monitoring of global
-ionospheric irregularities using the worldwide GPS network, Geophys. Res.
-Lett., 24, 2283, 1997.
-
-Pi, X., F. J. Meyer, K. Chotoo, Anthony Freeman, R. G. Caton, and C. T.
-Bridgwood, Impact of ionospheric scintillation on Spaceborne SAR observations
-studied using GNSS, Proc. ION-GNSS, pp.1998-2006, 2012.
-
 
 Properties
 ----------
@@ -38,14 +33,27 @@ tag
 inst_id
     None supported
 
+
 Warnings
 --------
 - The cleaning parameters for the instrument are still under development.
+
+
+References
+----------
+Pi, X., A. J. Mannucci, U. J. Lindqwister, and C. M. Ho, Monitoring of global
+ionospheric irregularities using the worldwide GPS network, Geophys. Res.
+Lett., 24, 2283, 1997.
+
+Pi, X., F. J. Meyer, K. Chotoo, Anthony Freeman, R. G. Caton, and C. T.
+Bridgwood, Impact of ionospheric scintillation on Spaceborne SAR observations
+studied using GNSS, Proc. ION-GNSS, pp.1998-2006, 2012.
 
 """
 
 import datetime as dt
 import functools
+import warnings
 
 import pysat
 from pysat.instruments.methods import general as mm_gen
@@ -78,6 +86,10 @@ def init(self):
 
     """
 
+    warnings.warn(" ".join(["The instrument module `jpl_gps` has",
+                            "been deprecated and will be removed in 0.1.0+."]),
+                  DeprecationWarning, stacklevel=2)
+
     pysat.logger.info('')
     self.acknowledgements = mm_gps.ackn_str
     self.references = '\n'.join((mm_gps.refs['mission'],
@@ -104,11 +116,9 @@ list_files = functools.partial(mm_gen.list_files,
 load = functools.partial(cdw.load, pandas_format=pandas_format)
 
 # Set the download routine
-basic_tag = {'remote_dir': '/pub/data/gps/roti15min_jpl/{year:4d}/',
-             'fname': fname}
-download_tags = {'': {'roti': basic_tag}}
-download = functools.partial(cdw.download, supported_tags=download_tags)
+download_tags = {'': {'roti': 'GPS_ROTI15MIN_JPL'}}
+download = functools.partial(cdw.cdas_download, supported_tags=download_tags)
 
 # Set the list_remote_files routine
-list_remote_files = functools.partial(cdw.list_remote_files,
+list_remote_files = functools.partial(cdw.cdas_list_remote_files,
                                       supported_tags=download_tags)

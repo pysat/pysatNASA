@@ -10,13 +10,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: ["ubuntu-latest", "macos-latest", "windows-latest"]
         python-version: ["3.9", "3.10"]
-        numpy_ver: [latest]
+        numpy_ver: ["latest"]
         include:
           - python-version: "3.8"
-            numpy_ver: "1.20"
-            os: ubuntu-latest
+            numpy_ver: "1.21"
+            os: "ubuntu-latest"
 
     name: Python ${{ matrix.python-version }} on ${{ matrix.os }} with numpy ${{ matrix.numpy_ver }}
     runs-on: ${{ matrix.os }}
@@ -35,13 +35,11 @@ jobs:
       if: ${{ matrix.numpy_ver != 'latest'}}
       run: |
         pip install --no-binary :numpy: numpy==${{ matrix.numpy_ver }}
-        # Need to force a version of pandas compliant with NEP29
-        pip install "pandas<1.5"
+        pip install pysatCDF --no-binary=pysatCDF
 
     - name: Install standard dependencies
       run: |
         pip install -r requirements.txt
-        pip install pysatCDF --no-binary=pysatCDF
         pip install -r test_requirements.txt
 
     - name: Set up pysat
@@ -56,8 +54,7 @@ jobs:
       run: flake8 . --count --exit-zero --max-complexity=10 --statistics
 
     - name: Test with pytest
-      run: |
-        pytest -vs --cov=pysatNASA/
+      run: pytest -vs --cov=pysatNASA/
 
     - name: Publish results to coveralls
       env:

@@ -3,7 +3,8 @@ requests
 beautifulsoup4
 lxml
 cdflib>=0.4.4
-numpy<1.24
+numpy
 pandas
 pysat>=3.0.4
-xarray<2022.11
+cdasws
+xarray

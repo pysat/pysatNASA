@@ -2,23 +2,49 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
-## [0.0.5] - 2023-XX-XX
+## [0.X.X] - 2023-XX-XX
 * New Instruments
-  * TIMED GUVI
+  * ACE EPAM
+  * ACE MAG
+  * ACE SIS
+  * ACE SWEPAM
+  * DE2 Fabry-Perot Interferometer (FPI)
+  * DE2 Vector Electric Field Instrument (VEFI) and magnetometer
   * DMSP SSUSI EDR-Aurora data
+  * IGS GPS (TEC and ROTI)
+  * TIMED GUVI
+  * SES-14 GOLD -- tdisk, tlimb and o2den data products added
+  * TIMED GUVI
 * Add TIMED GUVI platform to support L1C intensity datasets.
   * Type of sensor source handled by inst_id with options of
     spectrograph, imaging
   * Resolution of dataset handled by tag with
     low, high
-* New Tags
-  * Added tlimb, tdisk, o2den tags into SES14-GOLD platform.
+* Added CDAWeb methods that can use cdasws to get the remote file list
 * Bug Fixes
   * Updated CDAWeb routines to allow for data stored by year/day-of-year
+  * Updated GOLD nmax to sort scans by time.
+  * Added 1 usec to GOLD nmax channel B times to ensure uniqueness
 * Documentation
   * Added TIMED-GUVI platform
+  * Added missing sub-module imports
+  * Added discussion of ICON constellation to docstrings, including caveats
+* Enhancements
+  * Updated platform methods to follow a consistent style and work with the
+    general `init` function
+  * Added unit tests for the different platform method attributes
+  * xarray support for TIMED SEE
+* Deprecations
+  * Deprecated jpl_gps instrtument module, moved roti instrument to igs_gps
 * Maintenance
-  * Added a version cap for numpy (required for cdf interface, revisit before release)
+  * Removed duplicate tests if pysatCDF not isntalled
+  * Only test pysatCDF on GitHub Actions for older numpy versions
+  * Updated actions and templates based on pysatEcosystem docs
+  * Remove pandas cap on NEP29 tests
+  * Updated dosctring style for consistency
+  * Removed version cap for xarray
+  * Added manual workflow to check that latest RC is installable through test pip
+  * Update meta label type for instruments
 
 ## [0.0.4] - 2022-11-07
 * Update instrument tests with new test class
