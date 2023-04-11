@@ -11,6 +11,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   * DE2 Fabry-Perot Interferometer (FPI)
   * DE2 Vector Electric Field Instrument (VEFI) and magnetometer
   * DMSP SSUSI EDR-Aurora data
+  * IGS GPS (TEC and ROTI)
   * SES-14 GOLD -- tdisk, tlimb and o2den data products added
   * TIMED GUVI
 * Add TIMED GUVI platform to support L1C intensity datasets.
@@ -32,6 +33,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
     general `init` function
   * Added unit tests for the different platform method attributes
   * xarray support for TIMED SEE
+* Deprecations
+  * Deprecated jpl_gps instrtument module, moved roti instrument to igs_gps
 * Maintenance
   * Removed duplicate tests if pysatCDF not isntalled
   * Only test pysatCDF on GitHub Actions for older numpy versions
