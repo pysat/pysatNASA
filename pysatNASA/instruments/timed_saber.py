@@ -68,7 +68,7 @@ multi_file_day = True
 
 # Set to False to specify using xarray (not using pandas)
 # Set to True if data will be returned via a pandas DataFrame
-pandas_format = True
+pandas_format = False
 
 # ----------------------------------------------------------------------------
 # Instrument test attributes
@@ -99,7 +99,8 @@ list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags)
 
 # Set the load routine
-load = cdw.load
+load = functools.partial(cdw.load, pandas_format=pandas_format,
+                         drop_dims='record0')
 
 # Set the download routine
 download_tags = {'': {'': 'TIMED_L2A_SABER'}}
