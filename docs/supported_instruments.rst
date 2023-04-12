@@ -154,6 +154,14 @@ ICON MIGHTI
 .. automodule:: pysatNASA.instruments.icon_mighti
    :members:
 
+.. _igs_gps:
+
+IGS GPS
+-------
+
+.. automodule:: pysatNASA.instruments.igs_gps
+   :members:
+
 .. _iss_fpmu:
 
 ISS FPMU
