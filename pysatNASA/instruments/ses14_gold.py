@@ -59,7 +59,7 @@ tags = {'nmax': 'Level 2 Nmax data for the GOLD instrument',
         'tdisk': 'Level 2 Tdisk data for the GOLD instrument',
         'o2den': 'Level 2 O2den data for the GOLD instrument',
         }
-inst_ids = {'': ['nmax', 'tlimb', 'tdisk','o2den']}
+inst_ids = {'': ['nmax', 'tlimb', 'tdisk', 'o2den']}
 
 pandas_format = False
 
