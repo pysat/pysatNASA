@@ -207,7 +207,7 @@ def load(fnames, tag='', inst_id=''):
             data['zdat'] = data['zdat'].isel(time=0)
 
         # Add time coordinate from utc_time
-        data['time'] = [dt.datetime.strptime(str(val), 
+        data['time'] = [dt.datetime.strptime(str(val),
                         "b'%Y-%m-%dT%H:%M:%S.%fZ'")
                         for val in data['time_utc'].values]
 
