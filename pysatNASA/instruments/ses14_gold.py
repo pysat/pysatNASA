@@ -40,7 +40,6 @@ Examples
 import datetime as dt
 import functools
 import numpy as np
-import xarray as xr
 
 from pysat.instruments.methods import general as ps_gen
 from pysat.utils.io import load_netcdf
