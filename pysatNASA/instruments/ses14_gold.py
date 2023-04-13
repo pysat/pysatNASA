@@ -223,6 +223,6 @@ def load(fnames, tag='', inst_id=''):
         meta['zret'] = {meta.labels.notes: ''.join(('Index for retrieval',
                                                     ' altitude values'))}
         meta['zdat'] = {meta.labels.notes: ''.join(('Index for data tangent',
-                                                     ' altitude values'))}
+                                                    ' altitude values'))}
 
     return data, meta
