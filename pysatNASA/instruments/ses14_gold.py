@@ -249,6 +249,7 @@ def load(fnames, tag='', inst_id=''):
     elif tag == 'o2den':
         epoch_name = 'nevents'
 
+    # TODO(#165): remove try/except notation once pysat 3.1.0 is released
     try:
         data, meta = load_netcdf(fnames, pandas_format=pandas_format,
                                  epoch_name=epoch_name, labels=labels,
