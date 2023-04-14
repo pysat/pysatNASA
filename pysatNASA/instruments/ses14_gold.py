@@ -57,7 +57,7 @@ tags = {'nmax': 'Level 2 max dens data for the GOLD instrument',
         'tlimb': 'Level 2 limb temp data for the GOLD instrument',
         'tdisk': 'Level 2 disk temp data for the GOLD instrument',
         'o2den': 'Level 2 O2 dens data for the GOLD instrument'}
-inst_ids = {'': [tag for tags in tags.keys()]}
+inst_ids = {'': [tag for tag in tags.keys()]}
 
 pandas_format = False
 
