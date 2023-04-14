@@ -55,11 +55,11 @@ from pysatNASA.instruments.methods import ses14 as mm_gold
 
 platform = 'ses14'
 name = 'gold'
-tags = {'nmax': 'Level 2 Nmax data for the GOLD instrument',
-        'tlimb': 'Level 2 Tlimb data for the GOLD instrument',
-        'tdisk': 'Level 2 Tdisk data for the GOLD instrument',
-        'o2den': 'Level 2 O2den data for the GOLD instrument'}
-inst_ids = {'': ['nmax', 'tlimb', 'tdisk', 'o2den']}
+tags = {'nmax': 'Level 2 max dens data for the GOLD instrument',
+        'tlimb': 'Level 2 limb temp data for the GOLD instrument',
+        'tdisk': 'Level 2 disk temp data for the GOLD instrument',
+        'o2den': 'Level 2 O2 dens data for the GOLD instrument'}
+inst_ids = {'': [tag for tag in tags.keys()]}
 
 pandas_format = False
 
