@@ -13,6 +13,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   * DMSP SSUSI EDR-Aurora data
   * IGS GPS (TEC and ROTI)
   * TIMED GUVI
+  * SES-14 GOLD -- tdisk, tlimb and o2den data products added
+  * TIMED GUVI
 * Add TIMED GUVI platform to support L1C intensity datasets.
   * Type of sensor source handled by inst_id with options of
     spectrograph, imaging

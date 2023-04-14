@@ -11,6 +11,9 @@ name
     'gold'
 tag
     'nmax'
+    'tlimb'
+    'tdisk'
+    'o2den'
 
 Warnings
 --------
@@ -50,15 +53,18 @@ from pysatNASA.instruments.methods import ses14 as mm_gold
 
 platform = 'ses14'
 name = 'gold'
-tags = {'nmax': 'Level 2 Nmax data for the GOLD instrument'}
-inst_ids = {'': ['nmax']}
+tags = {'nmax': 'Level 2 max dens data for the GOLD instrument',
+        'tlimb': 'Level 2 limb temp data for the GOLD instrument',
+        'tdisk': 'Level 2 disk temp data for the GOLD instrument',
+        'o2den': 'Level 2 O2 dens data for the GOLD instrument'}
+inst_ids = {'': [tag for tag in tags.keys()]}
 
 pandas_format = False
 
 # ----------------------------------------------------------------------------
 # Instrument test attributes
 
-_test_dates = {'': {'nmax': dt.datetime(2020, 1, 1)}}
+_test_dates = {'': {tag: dt.datetime(2020, 1, 1) for tag in tags.keys()}}
 
 # ----------------------------------------------------------------------------
 # Instrument methods
@@ -153,12 +159,19 @@ def load(fnames, tag='', inst_id=''):
                         'Valid_Max': 'Valid_Max', '_FillValue': 'fill',
                         'FillVal': 'fill', 'TIME_BASE': 'time_base'}
 
+    if tag in ['nmax', 'tdisk', 'tlimb']:
+        epoch_name = 'nscans'
+
+    elif tag == 'o2den':
+        epoch_name = 'nevents'
+
     data, meta = load_netcdf(fnames, pandas_format=pandas_format,
-                             epoch_name='nscans', labels=labels,
+                             epoch_name=epoch_name, labels=labels,
                              meta_translation=meta_translation,
+                             combine_by_coords=False,
                              drop_meta_labels='FILLVAL')
 
-    if tag == 'nmax':
+    if tag == ['nmax', 'tdisk', 'tlimb']:
         # Add time coordinate from scan_start_time.
         time = [dt.datetime.strptime(str(val), "b'%Y-%m-%dT%H:%M:%SZ'")
                 for val in data['scan_start_time'].values]
@@ -181,5 +194,31 @@ def load(fnames, tag='', inst_id=''):
         meta['nlats'] = {meta.labels.notes: 'Index for latitude values'}
         meta['nlons'] = {meta.labels.notes: 'Index for longitude values'}
         meta['nmask'] = {meta.labels.notes: 'Index for mask values'}
+
+    elif tag == 'o2den':
+
+        # Removing extra variables
+        if len(data['zret'].dims) > 1:
+            data['zret'] = data['zret'].isel(time=0)
+            data['zdat'] = data['zdat'].isel(time=0)
+
+        # Add time coordinate from utc_time
+        data['time'] = [dt.datetime.strptime(str(val),
+                        "b'%Y-%m-%dT%H:%M:%S.%fZ'")
+                        for val in data['time_utc'].values]
+
+        # Add retrieval altitude values and data tangent altitude values
+        data = data.swap_dims({"nzret": "zret", "nzdat": "zdat"})
+
+        # Update coordinates with dimensional data
+        data = data.assign_coords({'zret': data['zret'],
+                                   'zdat': data['zdat'],
+                                   'n_wavelength': data['n_wavelength'],
+                                   'channel': data['channel']})
+        meta['time'] = {meta.labels.notes: 'Converted from time_utc'}
+        meta['zret'] = {meta.labels.notes: ''.join(('Index for retrieval',
+                                                    ' altitude values'))}
+        meta['zdat'] = {meta.labels.notes: ''.join(('Index for data tangent',
+                                                    ' altitude values'))}
 
     return data, meta
