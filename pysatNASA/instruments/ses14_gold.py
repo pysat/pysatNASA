@@ -41,7 +41,6 @@ Examples
 import datetime as dt
 import functools
 import numpy as np
-import xarray as xr
 
 import pysat
 from pysat.instruments.methods import general as ps_gen
