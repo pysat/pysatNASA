@@ -151,11 +151,6 @@ def list_remote_files(tag='', inst_id='', start=None, stop=None,
         Ending time for the file list.  A None value will stop with the last
         file found.
         (default=None)
-    supported_tags : dict
-        dict of dicts. Keys are supported tag names for download. Value is
-        a dict with 'remote_dir', 'fname'. Inteded to be
-        pre-set with functools.partial then assigned to new instrument code.
-        (default=None)
     series_out : bool
         boolean to determine output type. True for pandas series of file names,
         and False for a list of the full web address.
