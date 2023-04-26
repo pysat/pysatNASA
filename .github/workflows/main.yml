@@ -35,7 +35,6 @@ jobs:
       if: ${{ matrix.numpy_ver != 'latest'}}
       run: |
         pip install --no-cache-dir numpy==${{ matrix.numpy_ver }}
-        pip install pysatCDF --no-cache-dir
 
     - name: Install standard dependencies
       run: |
