@@ -29,7 +29,9 @@ jobs:
       run: brew reinstall gcc
 
     - name: Install pysat RC
-      run: pip install -i https://test.pypi.org/simple/ --no-deps --pre pysat
+      run: |
+        pip install setuptools
+        pip install -i https://test.pypi.org/simple/ --no-deps --pre pysat
 
     - name: Install standard dependencies
       run: |
