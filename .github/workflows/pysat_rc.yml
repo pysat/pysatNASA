@@ -31,7 +31,7 @@ jobs:
     - name: Install pysat RC
       run: |
         pip install --upgrade pip
-        pip install -i https://test.pypi.org/simple/ --no-deps --pre pysat
+        pip install -i https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ --no-deps --pre pysat
 
     - name: Install standard dependencies
       run: |
