@@ -8,6 +8,7 @@ Imports test methods from pysat.tests.instrument_test_class
 
 import warnings
 
+import pysat
 import pytest
 
 # Make sure to import your instrument library here
@@ -15,6 +16,7 @@ import pysatNASA
 
 # Import the test classes from pysat
 from pysat.tests.classes import cls_instrument_library as clslib
+from pysat.utils import testing
 
 try:
     import pysatCDF  # noqa: F401
@@ -92,4 +94,49 @@ class TestInstruments(clslib.InstLibTests):
         else:
             pytest.skip("Download data not available.")
 
+        return
+
+
+class TestDeprecation(object):
+    """Unit test for deprecation warnings."""
+
+    def setup_method(self):
+        """Set up the unit test environment for each method."""
+
+        warnings.simplefilter("always", DeprecationWarning)
+        return
+
+    def teardown_method(self):
+        """Clean up the unit test environment after each method."""
+
+        return
+
+    @pytest.mark.parametrize("inst_module,tag", [('jpl_gps', 'roti')])
+    def test_deprecated_instruments(self, inst_module, tag):
+        """Check that instantiating old instruments raises a DeprecationWarning.
+
+        Parameters
+        ----------
+        inst_module : str
+            name of deprecated module.
+        tag : str
+            tag of depracted instrument.
+
+        """
+
+        with warnings.catch_warnings(record=True) as war:
+            pysat.Instrument(inst_module=getattr(pysatNASA.instruments,
+                                                 inst_module),
+                             tag=tag, use_header=True)
+
+        warn_msgs = [" ".join(["The instrument module",
+                               "`{:}`".format(inst_module),
+                               "has been deprecated and will be removed",
+                               "in 0.1.0+."])]
+
+        # Ensure the minimum number of warnings were raised.
+        assert len(war) >= len(warn_msgs)
+
+        # Test the warning messages, ensuring each attribute is present.
+        testing.eval_warnings(war, warn_msgs)
         return
