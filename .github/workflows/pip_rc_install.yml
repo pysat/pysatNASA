@@ -35,4 +35,6 @@ jobs:
         python -c "import pysat; pysat.params['data_dirs'] = 'pysatData'"
 
     - name: Check that install imports correctly
-      run: python -c "import pysatNASA; print(pysatNASA.__version__)"
+      run: |
+        cd ..
+        python -c "import pysatNASA; print(pysatNASA.__version__)"
