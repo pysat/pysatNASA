@@ -11,12 +11,15 @@ jobs:
       fail-fast: false
       matrix:
         os: ["ubuntu-latest", "macos-latest", "windows-latest"]
-        python-version: ["3.9", "3.10"]
+        python-version: ["3.10", "3.11"]
         numpy_ver: ["latest"]
         include:
-          - python-version: "3.8"
+          - python-version: "3.9"
             numpy_ver: "1.21"
-            os: "ubuntu-latest"
+            os: ubuntu-latest
+          - python-version: "3.6.8"
+            numpy_ver: "1.19.5"
+            os: "ubuntu-20.04"
 
     name: Python ${{ matrix.python-version }} on ${{ matrix.os }} with numpy ${{ matrix.numpy_ver }}
     runs-on: ${{ matrix.os }}
