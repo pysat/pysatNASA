@@ -48,6 +48,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   * Added manual workflow to check that latest RC is installable through test pip
   * Update meta label type for instruments
   * Updated Github Actions workflows for improved compliance with pip>=23.0
+  * Added .readthedocs.yml to configure settings there.
   * Use pyproject.toml to manage installation and metadata
 
 ## [0.0.4] - 2022-11-07
