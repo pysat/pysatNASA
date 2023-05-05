@@ -53,10 +53,10 @@ Installation Options
 
         pip install --user .
 
-   C. Install with the intent to develop locally::
+   C. Install with the intent to change the code::
 
 
-        pip install -e .
+        pip install --user -e .
 
 .. extras-require:: pysatcdf
     :pyproject:
