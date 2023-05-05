@@ -7,10 +7,10 @@ name = "pysatNASA"
 version = "0.0.5"
 description = "pysat support for NASA Instruments"
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.6"
 license = {file = "LICENSE"}
 authors = [
-    {name = "Jeff Klenzing, et al", email = "pysat.developers@gmail.com"},
+    {name = "Jeff Klenzing, et al.", email = "pysat.developers@gmail.com"},
 ]
 classifiers = [
   "Development Status :: 3 - Alpha",
