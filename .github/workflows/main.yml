@@ -37,9 +37,8 @@ jobs:
     - name: Install NEP29 dependencies
       if: ${{ matrix.numpy_ver != 'latest'}}
       run: |
-        pip install --no-binary :numpy: numpy==${{ matrix.numpy_ver }}
+        pip install --no-cache-dir numpy==${{ matrix.numpy_ver }}
         pip install --upgrade-strategy only-if-needed .[test]
-        pip install pysatCDF --no-binary=pysatCDF
 
     - name: Install standard dependencies
       if: ${{ matrix.numpy_ver == 'latest'}}
