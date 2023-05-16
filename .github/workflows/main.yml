@@ -34,8 +34,15 @@ jobs:
       if: ${{ matrix.os == 'macos-latest' }}
       run: brew reinstall gcc
 
+    - name: Install Operational dependencies
+      if: ${{ matrix.numpy_ver == "1.19.5"}}
+      run: |
+        pip install --no-cache-dir numpy==${{ matrix.numpy_ver }}
+        pip install -r requirements.txt
+        pip install -r test_requirements.txt
+
     - name: Install NEP29 dependencies
-      if: ${{ matrix.numpy_ver != 'latest'}}
+      if: ${{ matrix.numpy_ver == "1.21"}}
       run: |
         pip install --no-cache-dir numpy==${{ matrix.numpy_ver }}
         pip install --upgrade-strategy only-if-needed .[test]
