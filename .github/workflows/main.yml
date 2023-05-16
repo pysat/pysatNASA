@@ -38,14 +38,14 @@ jobs:
       run: brew reinstall gcc
 
     - name: Install Operational dependencies
-      if: ${{ matrix.test_config == "Ops"}}
+      if: ${{ matrix.test_config == 'Ops'}}
       run: |
         pip install --no-cache-dir numpy==${{ matrix.numpy_ver }}
         pip install -r requirements.txt
         pip install -r test_requirements.txt
 
     - name: Install NEP29 dependencies
-      if: ${{ matrix.test_config == "NEP29"}}
+      if: ${{ matrix.test_config == 'NEP29'}}
       run: |
         pip install --no-cache-dir numpy==${{ matrix.numpy_ver }}
         pip install --upgrade-strategy only-if-needed .[test]
