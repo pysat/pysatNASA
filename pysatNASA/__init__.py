@@ -6,10 +6,10 @@ portal.
 
 """
 
-import pkg_resources
+import importlib
 
 from pysatNASA import constellations  # noqa F401
 from pysatNASA import instruments  # noqa F401
 
 # set version
-__version__ = pkg_resources.get_distribution('pysatNASA').version
+__version__ = importlib.metadata.version('pysatNASA')
