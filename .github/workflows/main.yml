@@ -48,7 +48,7 @@ jobs:
     - name: Install NEP29 dependencies
       if: ${{ matrix.test_config == 'NEP29'}}
       run: |
-        pip install --no-cache-dir numpy==${{ matrix.numpy_ver }}
+        pip install numpy==${{ matrix.numpy_ver }}
         pip install --upgrade-strategy only-if-needed .[test]
 
     - name: Install standard dependencies
