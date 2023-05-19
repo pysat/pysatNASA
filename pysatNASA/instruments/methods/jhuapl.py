@@ -144,7 +144,7 @@ def expand_coords(data_list, mdata, dims_equal=False):
                         mdata.labels.label_type['fill_val'], ftype)
 
                 # Set the new data for output
-                new_dat = np.full(shape=new_shape, fill_value=)
+                new_dat = np.full(shape=new_shape, fill_value=fill_val)
                 new_dat[tuple(old_slice)] = sdata[dvar].values
                 new_data[dvar] = (sdata[dvar].dims, new_dat)
             else:
