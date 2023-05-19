@@ -133,9 +133,18 @@ def expand_coords(data_list, mdata, dims_equal=False):
                     idim = list(sdata[dvar].dims).index(dim)
                     new_shape[idim] = combo_dims[dim]
 
+                # Get the fill value
+                if dvar in mdata:
+                    # If available, take it from the metadata
+                    fill_val = mdata[dvar, mdata.labels.fill_val]
+                else:
+                    # Otherwise, use the data type
+                    ftype = type(sdata[dvar].values.flatten()[0])
+                    fill_val = mdata.labels.default_values_from_type(
+                        mdata.labels.label_type['fill_val'], ftype)
+
                 # Set the new data for output
-                new_dat = np.full(shape=new_shape, fill_value=mdata[
-                    dvar, mdata.labels.fill_val])
+                new_dat = np.full(shape=new_shape, fill_value=)
                 new_dat[tuple(old_slice)] = sdata[dvar].values
                 new_data[dvar] = (sdata[dvar].dims, new_dat)
             else:
