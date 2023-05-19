@@ -5,6 +5,7 @@ import datetime as dt
 import numpy as np
 import pandas as pds
 import xarray as xr
+import warnings
 
 from pysat.utils.io import load_netcdf
 
@@ -62,6 +63,11 @@ def build_dtimes(data, var, epoch=None, epoch_var='time'):
 def expand_coords(data_list, mdata, dims_equal=False):
     """Ensure that dimensions do not vary from file to file.
 
+    .. deprecated:: 0.0.5
+        This function is now included in `pysat.utils.coords` as
+        `expand_xarray_dims`, and so this function will be removed in
+        0.1.0+ to reduce redundancy
+
     Parameters
     ----------
     data_list : list-like
@@ -80,6 +86,12 @@ def expand_coords(data_list, mdata, dims_equal=False):
         when needed.
 
     """
+    warnings.warn("".join(["This function is now included in ",
+                           "`pysat.utils.coords` as `expand_xarray_dims`, and",
+                           " so this function will be removed in 0.1.0+ to ",
+                           "reduce redundancy"]),
+                  DeprecationWarning, stacklevel=2)
+
     # Get a list of all the dimensions
     if dims_equal:
         dims = list(data_list[0].dims.keys()) if len(data_list) > 0 else []
@@ -208,8 +220,11 @@ def load_edr_aurora(fnames, tag='', inst_id='', pandas_format=False):
         mdata[var] = {mdata.labels.fill_val: mdata.header.NO_DATA_IN_BIN_VALUE}
 
     # After loading all the data, determine which dimensions need to be
-    # expanded. Pad the data so that all dimensions are the same shape
-    single_data = expand_coords(single_data, mdata, dims_equal=False)
+    # expanded. Pad the data so that all dimensions are the same shape.
+    # TODO(#169): Remove warning catches after expand_coords is removed
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        single_data = expand_coords(single_data, mdata, dims_equal=False)
 
     # Combine all the data, indexing along time
     data = xr.combine_by_coords(single_data)
@@ -366,10 +381,13 @@ def load_sdr_aurora(fnames, tag='', inst_id='', pandas_format=False,
 
     # Combine all time dimensions
     if combine_times:
-        data_list = expand_coords([inners[dim] if dim == 'time' else
-                                   inners[dim].rename_dims({dim: 'time'})
-                                   for dim in time_dims], mdata,
-                                  dims_equal=False)
+        # TODO(#169): Remove warning catches after expand_coords is removed
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            data_list = expand_coords([inners[dim] if dim == 'time' else
+                                       inners[dim].rename_dims({dim: 'time'})
+                                       for dim in time_dims], mdata,
+                                      dims_equal=False)
     else:
         data_list = [inners[dim] for dim in time_dims]
 
