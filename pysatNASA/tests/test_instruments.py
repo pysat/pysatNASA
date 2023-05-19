@@ -87,7 +87,7 @@ class TestInstruments(clslib.InstLibTests):
                     assert UserWarning in categories
                 else:
                     # If error message does not match, raise error anyway
-                    raise(verr)
+                    raise ValueError(verr)
 
             # Make sure fake data is cleared
             assert target not in test_inst.data

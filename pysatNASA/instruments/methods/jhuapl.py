@@ -4,8 +4,8 @@
 import datetime as dt
 import numpy as np
 import pandas as pds
-import xarray as xr
 import warnings
+import xarray as xr
 
 from pysat.utils.io import load_netcdf
 
