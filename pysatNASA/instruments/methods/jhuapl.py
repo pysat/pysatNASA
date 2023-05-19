@@ -209,7 +209,7 @@ def load_edr_aurora(fnames, tag='', inst_id='', pandas_format=False):
 
     # After loading all the data, determine which dimensions need to be
     # expanded. Pad the data so that all dimensions are the same shape
-    single_data = expand_coords(single_data, mdata, dims_equal=True)
+    single_data = expand_coords(single_data, mdata, dims_equal=False)
 
     # Combine all the data, indexing along time
     data = xr.combine_by_coords(single_data)
