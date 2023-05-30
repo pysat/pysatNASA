@@ -41,13 +41,15 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   * Deprecated expand_coords function, as it was introduced to pysat
 * Maintenance
   * Removed duplicate tests if pysatCDF not isntalled
-  * Only test pysatCDF on GitHub Actions for older numpy versions
+  * Removed pysatCDF tests on GitHub Actions workflows (see #167)
   * Updated actions and templates based on pysatEcosystem docs
   * Remove pandas cap on NEP29 tests
   * Updated dosctring style for consistency
   * Removed version cap for xarray
   * Added manual workflow to check that latest RC is installable through test pip
   * Update meta label type for instruments
+  * Updated GitHub Actions workflows for improved compliance with pip>=23.0
+  * Added .readthedocs.yml to configure settings there.
 
 ## [0.0.4] - 2022-11-07
 * Update instrument tests with new test class
