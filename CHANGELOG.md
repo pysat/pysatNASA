@@ -38,7 +38,6 @@ This project adheres to [Semantic Versioning](https://semver.org/).
     be removed before attempting to merge.
 * Deprecations
   * Deprecated jpl_gps instrtument module, moved roti instrument to igs_gps
-  * Deprecated expand_coords function, as it was introduced to pysat
 * Maintenance
   * Removed duplicate tests if pysatCDF not isntalled
   * Only test pysatCDF on GitHub Actions for older numpy versions
