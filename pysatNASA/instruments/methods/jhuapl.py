@@ -4,9 +4,9 @@
 import datetime as dt
 import numpy as np
 import pandas as pds
-import warnings
 import xarray as xr
 
+from pysat.utils.coords import expand_xarray_dims
 from pysat.utils.io import load_netcdf
 
 
@@ -58,102 +58,6 @@ def build_dtimes(data, var, epoch=None, epoch_var='time'):
             for i, etime in enumerate(data[epoch_var].values)]
 
     return dtimes
-
-
-def expand_coords(data_list, mdata, dims_equal=False):
-    """Ensure that dimensions do not vary from file to file.
-
-    .. deprecated:: 0.0.5
-        This function is now included in `pysat.utils.coords` as
-        `expand_xarray_dims`, and so this function will be removed in
-        0.1.0+ to reduce redundancy
-
-    Parameters
-    ----------
-    data_list : list-like
-        List of xr.Dataset objects with the same dimensions and variables
-    mdata : pysat.Meta
-        Metadata for the data in `data_list`
-    dims_equal : bool
-        Assert that all xr.Dataset objects have the same dimensions if True
-        (default=False)
-
-    Returns
-    -------
-    out_list : list-like
-        List of xr.Dataset objects with the same dimensions and variables,
-        now with dimensions that all have the same values and data padded
-        when needed.
-
-    """
-    warnings.warn("".join(["This function is now included in ",
-                           "`pysat.utils.coords` as `expand_xarray_dims`, and",
-                           " so this function will be removed in 0.1.0+ to ",
-                           "reduce redundancy"]),
-                  DeprecationWarning, stacklevel=2)
-
-    # Get a list of all the dimensions
-    if dims_equal:
-        dims = list(data_list[0].dims.keys()) if len(data_list) > 0 else []
-    else:
-        dims = list()
-        for sdata in data_list:
-            if len(dims) == 0:
-                dims = list(sdata.dims.keys())
-            else:
-                for dim in list(sdata.dims.keys()):
-                    if dim not in dims:
-                        dims.append(dim)
-
-    # After loading all the data, determine which dimensions may need to be
-    # expanded, as they could differ in dimensions from file to file
-    combo_dims = {dim: max([sdata.dims[dim] for sdata in data_list
-                            if dim in sdata.dims]) for dim in dims}
-
-    # Expand the data so that all dimensions are the same shape
-    out_list = list()
-    for i, sdata in enumerate(data_list):
-        # Determine which dimensions need to be updated
-        fix_dims = [dim for dim in sdata.dims.keys()
-                    if sdata.dims[dim] < combo_dims[dim]]
-
-        new_data = {}
-        update_new = False
-        for dvar in sdata.data_vars.keys():
-            # See if any dimensions need to be updated
-            update_dims = list(set(sdata[dvar].dims) & set(fix_dims))
-
-            # Save the old data as is, or pad it to have the right dims
-            if len(update_dims) > 0:
-                update_new = True
-                new_shape = list(sdata[dvar].values.shape)
-                old_slice = [slice(0, ns) for ns in new_shape]
-
-                for dim in update_dims:
-                    idim = list(sdata[dvar].dims).index(dim)
-                    new_shape[idim] = combo_dims[dim]
-
-                # Get the fill value
-                if dvar in mdata:
-                    # If available, take it from the metadata
-                    fill_val = mdata[dvar, mdata.labels.fill_val]
-                else:
-                    # Otherwise, use the data type
-                    ftype = type(sdata[dvar].values.flatten()[0])
-                    fill_val = mdata.labels.default_values_from_type(
-                        mdata.labels.label_type['fill_val'], ftype)
-
-                # Set the new data for output
-                new_dat = np.full(shape=new_shape, fill_value=fill_val)
-                new_dat[tuple(old_slice)] = sdata[dvar].values
-                new_data[dvar] = (sdata[dvar].dims, new_dat)
-            else:
-                new_data[dvar] = sdata[dvar]
-
-        # Get the updated dataset
-        out_list.append(xr.Dataset(new_data) if update_new else sdata)
-
-    return out_list
 
 
 def load_edr_aurora(fnames, tag='', inst_id='', pandas_format=False):
@@ -230,10 +134,7 @@ def load_edr_aurora(fnames, tag='', inst_id='', pandas_format=False):
 
     # After loading all the data, determine which dimensions need to be
     # expanded. Pad the data so that all dimensions are the same shape.
-    # TODO(#169): Remove warning catches after expand_coords is removed
-    with warnings.catch_warnings():
-        warnings.simplefilter("ignore")
-        single_data = expand_coords(single_data, mdata, dims_equal=False)
+    single_data = expand_xarray_dims(single_data, mdata, dims_equal=False)
 
     # Combine all the data, indexing along time
     data = xr.combine_by_coords(single_data)
@@ -390,13 +291,10 @@ def load_sdr_aurora(fnames, tag='', inst_id='', pandas_format=False,
 
     # Combine all time dimensions
     if combine_times:
-        # TODO(#169): Remove warning catches after expand_coords is removed
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore")
-            data_list = expand_coords([inners[dim] if dim == 'time' else
-                                       inners[dim].rename_dims({dim: 'time'})
-                                       for dim in time_dims], mdata,
-                                      dims_equal=False)
+        data_list = expand_xarray_dims([inners[dim] if dim == 'time' else
+                                        inners[dim].rename_dims({dim: 'time'})
+                                        for dim in time_dims], mdata,
+                                       dims_equal=False)
     else:
         data_list = [inners[dim] for dim in time_dims]
 
