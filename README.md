@@ -1,6 +1,6 @@
 <div align="left">
         <img height="0" width="0px">
-        <img width="20%" src="https://raw.githubusercontent.com/pysat/pysatNASA/main/docs/figures/logo.png" alt="pysatNASA" title="pysatNASA" </img>
+        <img width="20%" src="https://raw.githubusercontent.com/pysat/pysatNASA/main/docs/figures/pysatnasa_logo.png" alt="pysatNASA" title="pysatNASA" </img>
 </div>
 
 # pysatNASA: pysat support for NASA Space Science instruments
@@ -20,14 +20,14 @@ some examples on how to use the routines
 
 pysatNASA uses common Python modules, as well as modules developed by
 and for the Space Physics community.  This module officially supports
-Python 3.8+.
+Python 3.6+.
 
 | Common modules   | Community modules | Optional Modules |
 | ---------------- | ----------------- |------------------|
 | beautifulsoup4   | cdflib            | pysatCDF         |
 | lxml             | pysat>=3.0.4      |                  |
 | netCDF4          |                   |                  |
-| numpy<1.24       |                   |                  |
+| numpy            |                   |                  |
 | pandas           |                   |                  |
 | requests         |                   |                  |
 | xarray           |                   |                  |
@@ -43,12 +43,12 @@ pip install pysatNASA
 git clone https://github.com/pysat/pysatNASA.git
 ```
 
-Change directories into the repository folder and run the setup.py file.  For
+Change directories into the repository folder and build the project.  For
 a local install use the "--user" flag after "install".
 
 ```
 cd pysatNASA/
-python setup.py install
+pip install .
 ```
 
 Note: pre-1.0.0 version
