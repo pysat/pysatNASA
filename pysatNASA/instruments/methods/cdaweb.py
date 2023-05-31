@@ -550,6 +550,7 @@ def download(date_array, tag='', inst_id='', supported_tags=None,
         except requests.exceptions.RequestException as exception:
             logger.info(' '.join((str(exception), '- File not available for',
                                   date.strftime('%d %B %Y'))))
+        # Pause to avoid excessive pings to server
         sleep(0.1)
     return
 
@@ -646,6 +647,7 @@ def cdas_download(date_array, tag='', inst_id='', supported_tags=None,
         except requests.exceptions.RequestException as exception:
             logger.info(' '.join((str(exception), '- File: "', file,
                                   '" Is not available')))
+        # Pause to avoid excessive pings to server
         sleep(0.1)
     return
 
