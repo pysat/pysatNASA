@@ -13,6 +13,7 @@ import numpy as np
 import os
 import pandas as pds
 import requests
+import time
 import warnings
 import xarray as xr
 
@@ -549,6 +550,7 @@ def download(date_array, tag='', inst_id='', supported_tags=None,
         except requests.exceptions.RequestException as exception:
             logger.info(' '.join((str(exception), '- File not available for',
                                   date.strftime('%d %B %Y'))))
+        time.sleep(0.1)
     return
 
 
@@ -644,6 +646,7 @@ def cdas_download(date_array, tag='', inst_id='', supported_tags=None,
         except requests.exceptions.RequestException as exception:
             logger.info(' '.join((str(exception), '- File: "', file,
                                   '" Is not available')))
+        time.sleep(0.1)
     return
 
 
