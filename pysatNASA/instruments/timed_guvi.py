@@ -193,7 +193,7 @@ def load(fnames, tag='', inst_id='', combine_times=False):
     else:
         data, meta = jhuapl.load_sdr_aurora(fnames, tag, inst_id,
                                             pandas_format=pandas_format,
-                                            combine_times=combine_times,
-                                            strict_dim_check=False)
+                                            strict_dim_check=False,
+                                            combine_times=combine_times)
 
     return data, meta

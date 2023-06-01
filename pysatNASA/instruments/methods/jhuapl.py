@@ -224,7 +224,7 @@ def load_edr_aurora(fnames, tag='', inst_id='', pandas_format=False,
 
 
 def load_sdr_aurora(fnames, tag='', inst_id='', pandas_format=False,
-                    combine_times=False):
+                    strict_dim_check=True, combine_times=False):
     """Load JHU APL SDR data and meta data.
 
     Parameters
@@ -238,6 +238,10 @@ def load_sdr_aurora(fnames, tag='', inst_id='', pandas_format=False,
         (default='')
     pandas_format : bool
         False for xarray format, True for pandas (default=False)
+    strict_dim_check : bool
+        Used for xarray data (`pandas_format` is False). If True, warn the user
+        that the desired epoch is not present in `xarray.dims`.  If False,
+        no warning is raised. (default=True)
     combine_times : bool
         For SDR data, optionally combine the different datetime coordinates
         into a single time coordinate (default=False)
