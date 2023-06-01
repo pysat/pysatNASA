@@ -188,10 +188,12 @@ def load(fnames, tag='', inst_id='', combine_times=False):
     """
     if tag == 'edr-aur':
         data, meta = jhuapl.load_edr_aurora(fnames, tag, inst_id,
-                                            pandas_format=pandas_format)
+                                            pandas_format=pandas_format,
+                                            strict_dim_check=False)
     else:
         data, meta = jhuapl.load_sdr_aurora(fnames, tag, inst_id,
                                             pandas_format=pandas_format,
-                                            combine_times=combine_times)
+                                            combine_times=combine_times,
+                                            strict_dim_check=False)
 
     return data, meta

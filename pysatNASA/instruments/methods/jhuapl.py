@@ -135,7 +135,8 @@ def expand_coords(data_list, mdata, dims_equal=False):
     return out_list
 
 
-def load_edr_aurora(fnames, tag='', inst_id='', pandas_format=False):
+def load_edr_aurora(fnames, tag='', inst_id='', pandas_format=False,
+                    strict_dim_check=True):
     """Load JHU APL EDR Aurora data and meta data.
 
     Parameters
@@ -149,6 +150,10 @@ def load_edr_aurora(fnames, tag='', inst_id='', pandas_format=False):
         (default='')
     pandas_format : bool
         False for xarray format, True for pandas (default=False)
+    strict_dim_check : bool
+        Used for xarray data (`pandas_format` is False). If True, warn the user
+        that the desired epoch is not present in `xarray.dims`.  If False,
+        no warning is raised. (default=True)
 
     Returns
     -------
@@ -180,7 +185,8 @@ def load_edr_aurora(fnames, tag='', inst_id='', pandas_format=False):
         # than a dimension or coordinate.  Additionally, no coordinates
         # are assigned.
         sdata, mdata = load_netcdf(fname, epoch_name='TIME', epoch_unit='s',
-                                   labels=labels, pandas_format=pandas_format)
+                                   labels=labels, pandas_format=pandas_format,
+                                   strict_dim_check=strict_dim_check)
 
         # Calculate the time for this data file. The pysat `load_netcdf` routine
         # converts the 'TIME' parameter (seconds of day) into datetime using
