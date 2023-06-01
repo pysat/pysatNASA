@@ -385,26 +385,6 @@ def load_xarray(fnames, tag='', inst_id='',
 
     all_vars = io.xarray_all_vars(data)
 
-    # Convert output epoch name to 'time' for pysat consistency
-    if epoch_name != 'time':
-        if 'time' not in all_vars:
-            if epoch_name in data.dims:
-                data = data.rename({epoch_name: 'time'})
-            elif epoch_name in all_vars:
-                data = data.rename({epoch_name: 'time'})
-                wstr = ''.join(['Epoch label: "', epoch_name, '"',
-                                ' is not a dimension.'])
-                pysat.logger.warning(wstr)
-            else:
-                estr = ''.join(['Epoch label: "', epoch_name, '"',
-                                ' not found in loaded data, ',
-                                repr(all_vars)])
-                raise ValueError(estr)
-
-        epoch_name = 'time'
-
-    all_vars = io.xarray_all_vars(data)
-
     meta = pysat.Meta(labels=labels)
 
     full_mdict = {}
@@ -421,8 +401,8 @@ def load_xarray(fnames, tag='', inst_id='',
 
     for key in all_vars:
         meta_dict = {}
-        for nc_key in data[key].attrs.keys():
-            meta_dict[nc_key] = data[key].attrs[nc_key]
+        for nc_key in ldata[0][key].attrs.keys():
+            meta_dict[nc_key] = ldata[0][key].attrs[nc_key]
         full_mdict[key] = meta_dict
         data[key].attrs = {}
 
@@ -456,6 +436,24 @@ def load_xarray(fnames, tag='', inst_id='',
     # Assign filtered metadata to pysat.Meta instance
     for key in filt_mdict:
         meta[key] = filt_mdict[key]
+
+    # Convert output epoch name to 'time' for pysat consistency
+    if epoch_name != 'time':
+        if 'time' not in all_vars:
+            if epoch_name in data.dims:
+                data = data.rename({epoch_name: 'time'})
+            elif epoch_name in all_vars:
+                data = data.rename({epoch_name: 'time'})
+                wstr = ''.join(['Epoch label: "', epoch_name, '"',
+                                ' is not a dimension.'])
+                pysat.logger.warning(wstr)
+            else:
+                estr = ''.join(['Epoch label: "', epoch_name, '"',
+                                ' not found in loaded data, ',
+                                repr(all_vars)])
+                raise ValueError(estr)
+
+        epoch_name = 'time'
 
     # Remove attributes from the data object
     data.attrs = {}
