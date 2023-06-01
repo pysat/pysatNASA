@@ -36,6 +36,9 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   * xarray support for TIMED SABER and SEE
   * Added `drop_dims` kwarg to `load_xarray` interface so that orphan dims can
     be removed before attempting to merge.
+  * Added `var_translation` kwarg to `load_xarray` interface so that variables can
+    be renamed before attempting to merge.
+  * Improved usage of cdflib for users in xarray instruments
 * Deprecations
   * Deprecated jpl_gps instrtument module, moved roti instrument to igs_gps
 * Maintenance
@@ -50,6 +53,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   * Updated GitHub Actions workflows for improved compliance with pip>=23.0
   * Added .readthedocs.yml to configure settings there.
   * Use pyproject.toml to manage installation and metadata
+  * Set use_cdflib=True for supported xarray instruments
 
 ## [0.0.4] - 2022-11-07
 * Update instrument tests with new test class

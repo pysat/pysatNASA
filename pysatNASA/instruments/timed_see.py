@@ -77,8 +77,8 @@ list_files = functools.partial(mm_gen.list_files,
                                file_cadence=pds.DateOffset(months=1))
 
 # Set the load routine
-load = functools.partial(cdw.load, pandas_format=pandas_format,
-                         file_cadence=pds.DateOffset(months=1))
+load = functools.partial(cdw.load, file_cadence=pds.DateOffset(months=1),
+                         pandas_format=pandas_format, use_cdflib=True)
 
 # Set the download routine
 download_tags = {'': {'': 'TIMED_L3A_SEE'}}
