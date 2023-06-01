@@ -5,6 +5,6 @@ lxml
 netCDF4
 numpy
 pandas
-pysat>=3.0.4
+pysat>=3.1.0
 requests
 xarray
