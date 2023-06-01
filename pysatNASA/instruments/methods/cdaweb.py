@@ -65,8 +65,8 @@ def try_inst_dict(inst_id, tag, supported_tags):
 
 def load(fnames, tag='', inst_id='', file_cadence=dt.timedelta(days=1),
          flatten_twod=True, pandas_format=True, epoch_name='Epoch',
-         drop_dims=None, meta_processor=None, meta_translation=None,
-         drop_meta_labels=None, use_cdflib=None):
+         drop_dims=None, var_translation=None, meta_processor=None,
+         meta_translation=None, drop_meta_labels=None, use_cdflib=None):
     """Load NASA CDAWeb CDF files.
 
     Parameters
@@ -98,6 +98,9 @@ def load(fnames, tag='', inst_id='', file_cadence=dt.timedelta(days=1),
         List of variable dimensions that should be dropped. Applied
         to data as loaded from the file. Used only from xarray Dataset.
         (default=None)
+    var_translation : dict or NoneType
+        Variables that should be renamed. Applied to data as loaded
+        from the file. Used only from xarray Dataset. (default=None)
     meta_processor : function or NoneType
         If not None, a dict containing all of the loaded metadata will be
         passed to `meta_processor` which should return a filtered version
@@ -149,6 +152,7 @@ def load(fnames, tag='', inst_id='', file_cadence=dt.timedelta(days=1),
         data, meta = load_xarray(fnames, tag=tag, inst_id=inst_id,
                                  epoch_name=epoch_name,
                                  drop_dims=drop_dims,
+                                 var_translation=var_translation,
                                  file_cadence=file_cadence,
                                  meta_processor=meta_processor,
                                  meta_translation=meta_translation,
@@ -267,11 +271,12 @@ def load_xarray(fnames, tag='', inst_id='',
                 file_cadence=dt.timedelta(days=1),
                 labels={'units': ('Units', str), 'name': ('Long_Name', str),
                         'notes': ('Var_Notes', str), 'desc': ('CatDesc', str),
-                        'min_val': ('ValidMin', float),
-                        'max_val': ('ValidMax', float),
-                        'fill_val': ('FillVal', float)},
-                epoch_name='Epoch', drop_dims=None, meta_processor=None,
-                meta_translation=None, drop_meta_labels=None):
+                        'min_val': ('ValidMin', (int, float)),
+                        'max_val': ('ValidMax', (int, float)),
+                        'fill_val': ('FillVal', (int, float))},
+                epoch_name='Epoch', drop_dims=None, var_translation=None,
+                meta_processor=None, meta_translation=None,
+                drop_meta_labels=None):
     """Load NASA CDAWeb CDF files into an xarray Dataset.
 
     Parameters
@@ -304,6 +309,9 @@ def load_xarray(fnames, tag='', inst_id='',
     drop_dims : list or NoneType
         List of variable dimensions that should be dropped. Applied
         to data as loaded from the file. (default=None)
+    var_translation : dict or NoneType
+        Variables that should be renamed. Applied to data as loaded
+        from the file. Used only from xarray Dataset. (default=None)
     meta_processor : function or NoneType
         If not None, a dict containing all of the loaded metadata will be
         passed to `meta_processor` which should return a filtered version
@@ -368,31 +376,14 @@ def load_xarray(fnames, tag='', inst_id='',
             temp_data = cdflib.cdf_to_xarray(lfname, to_datetime=True)
             if drop_dims:
                 temp_data = temp_data.drop_dims(drop_dims)
+            if var_translation:
+                temp_data = temp_data.rename(var_translation)
             ldata.append(temp_data)
 
         # Combine individual files together, concat along epoch
         if len(ldata) > 0:
-            data = xr.combine_nested(ldata, epoch_name)
-
-    all_vars = io.xarray_all_vars(data)
-
-    # Convert output epoch name to 'time' for pysat consistency
-    if epoch_name != 'time':
-        if 'time' not in all_vars:
-            if epoch_name in data.dims:
-                data = data.rename({epoch_name: 'time'})
-            elif epoch_name in all_vars:
-                data = data.rename({epoch_name: 'time'})
-                wstr = ''.join(['Epoch label: "', epoch_name, '"',
-                                ' is not a dimension.'])
-                pysat.logger.warning(wstr)
-            else:
-                estr = ''.join(['Epoch label: "', epoch_name, '"',
-                                ' not found in loaded data, ',
-                                repr(all_vars)])
-                raise ValueError(estr)
-
-        epoch_name = 'time'
+            data = xr.combine_nested(ldata, epoch_name,
+                                     combine_attrs='override')
 
     all_vars = io.xarray_all_vars(data)
 
@@ -447,6 +438,25 @@ def load_xarray(fnames, tag='', inst_id='',
     # Assign filtered metadata to pysat.Meta instance
     for key in filt_mdict:
         meta[key] = filt_mdict[key]
+
+    # Convert output epoch name to 'time' for pysat consistency
+    # This needs to be done last so that meta is updated properly
+    if epoch_name != 'time':
+        if 'time' not in all_vars:
+            if epoch_name in data.dims:
+                data = data.rename({epoch_name: 'time'})
+            elif epoch_name in all_vars:
+                data = data.rename({epoch_name: 'time'})
+                wstr = ''.join(['Epoch label: "', epoch_name, '"',
+                                ' is not a dimension.'])
+                pysat.logger.warning(wstr)
+            else:
+                estr = ''.join(['Epoch label: "', epoch_name, '"',
+                                ' not found in loaded data, ',
+                                repr(all_vars)])
+                raise ValueError(estr)
+
+        epoch_name = 'time'
 
     # Remove attributes from the data object
     data.attrs = {}
