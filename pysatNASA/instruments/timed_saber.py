@@ -99,8 +99,11 @@ list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags)
 
 # Set the load routine
+# Note that duplicate string and variables to Epoch are dropped to aid in
+# concatonation of files.
 load = functools.partial(cdw.load, pandas_format=pandas_format,
-                         drop_dims='record0')
+                         drop_dims='record0', drop_vars='time',
+                         use_cdflib=True)
 
 # Set the download routine
 download_tags = {'': {'': 'TIMED_L2A_SABER'}}
