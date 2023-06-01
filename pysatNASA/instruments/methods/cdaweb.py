@@ -381,7 +381,8 @@ def load_xarray(fnames, tag='', inst_id='',
 
         # Combine individual files together, concat along epoch
         if len(ldata) > 0:
-            data = xr.combine_nested(ldata, epoch_name)
+            data = xr.combine_nested(ldata, epoch_name,
+                                     combine_attrs='override')
 
     all_vars = io.xarray_all_vars(data)
 
@@ -401,8 +402,8 @@ def load_xarray(fnames, tag='', inst_id='',
 
     for key in all_vars:
         meta_dict = {}
-        for nc_key in ldata[0][key].attrs.keys():
-            meta_dict[nc_key] = ldata[0][key].attrs[nc_key]
+        for nc_key in data[key].attrs.keys():
+            meta_dict[nc_key] = data[key].attrs[nc_key]
         full_mdict[key] = meta_dict
         data[key].attrs = {}
 
@@ -438,6 +439,7 @@ def load_xarray(fnames, tag='', inst_id='',
         meta[key] = filt_mdict[key]
 
     # Convert output epoch name to 'time' for pysat consistency
+    # This needs to be done last so that meta is updated properly
     if epoch_name != 'time':
         if 'time' not in all_vars:
             if epoch_name in data.dims:
