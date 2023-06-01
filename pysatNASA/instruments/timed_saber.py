@@ -99,10 +99,11 @@ list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags)
 
 # Set the load routine
-# Note that duplicate string and variables to Epoch are dropped to aid in
-# concatonation of files.
+# Note that the time variable associated with tpaltitude is renamed to avoid
+# conflict with renaming Epoch.
 load = functools.partial(cdw.load, pandas_format=pandas_format,
-                         drop_dims='record0', drop_vars='time',
+                         drop_dims='record0',
+                         var_translation={'time': 'tp_time'},
                          use_cdflib=True)
 
 # Set the download routine
