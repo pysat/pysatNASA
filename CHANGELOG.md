@@ -36,6 +36,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   * xarray support for TIMED SABER and SEE
   * Added `drop_dims` kwarg to `load_xarray` interface so that orphan dims can
     be removed before attempting to merge.
+  * Improved usage of cdflib for users in xarray instruments
 * Deprecations
   * Deprecated jpl_gps instrtument module, moved roti instrument to igs_gps
 * Maintenance
