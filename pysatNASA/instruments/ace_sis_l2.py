@@ -87,7 +87,7 @@ meta_translation = {'CATDESC': 'desc', 'FILLVAL': 'fill',
                     'LABLAXIS': 'plot_label', 'VALIDMAX': 'value_max',
                     'VALIDMIN': 'value_min', 'VAR_NOTES': 'notes'}
 load = functools.partial(cdw.load, pandas_format=pandas_format,
-                         meta_translation=meta_translation)
+                         meta_translation=meta_translation, use_cdflib=True)
 
 # Set the download routine
 download_tags = {'256sec': {'base': 'AC_H1_SIS'},

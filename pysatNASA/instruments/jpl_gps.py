@@ -113,7 +113,8 @@ list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags)
 
 # Set the load routine
-load = functools.partial(cdw.load, pandas_format=pandas_format)
+load = functools.partial(cdw.load, pandas_format=pandas_format,
+                         use_cdflib=True)
 
 # Set the download routine
 download_tags = {'': {'roti': 'GPS_ROTI15MIN_JPL'}}
