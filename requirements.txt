@@ -1,6 +1,6 @@
 beautifulsoup4
 cdasws
-cdflib>=0.4.4
+cdflib>=0.4.4,<1.0
 lxml
 netCDF4
 numpy
