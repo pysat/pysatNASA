@@ -561,7 +561,7 @@ def download(date_array, tag='', inst_id='', supported_tags=None,
             logger.info(' '.join((str(exception), '- File not available for',
                                   date.strftime('%d %B %Y'))))
         # Pause to avoid excessive pings to server
-        sleep(0.1)
+        sleep(0.2)
     return
 
 
@@ -658,7 +658,7 @@ def cdas_download(date_array, tag='', inst_id='', supported_tags=None,
             logger.info(' '.join((str(exception), '- File: "', file,
                                   '" Is not available')))
         # Pause to avoid excessive pings to server
-        sleep(0.1)
+        sleep(0.2)
     return
 
 
