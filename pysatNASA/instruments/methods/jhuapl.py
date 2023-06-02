@@ -152,8 +152,8 @@ def load_edr_aurora(fnames, tag='', inst_id='', pandas_format=False,
         False for xarray format, True for pandas (default=False)
     strict_dim_check : bool
         Used for xarray data (`pandas_format` is False). If True, warn the user
-        that the desired epoch, NAME, is not present as a dimension in the NetCDF file.  If False,
-        no warning is raised. (default=True)
+        that the desired epoch, NAME, is not present as a dimension in the 
+        NetCDF file.  If False, no warning is raised. (default=True)
 
     Returns
     -------
