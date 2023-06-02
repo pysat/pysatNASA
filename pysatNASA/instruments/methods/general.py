@@ -29,10 +29,16 @@ def init(self, module, name):
 
     # Set references
     refs = getattr(module, 'refs')
+    try:
+        # See if there is a tag level reference
+        inst_refs = refs[name][self.tag]
+    except TypeError:
+        # No tag-level ref, use name-levele
+        inst_refs = refs[name]
     if 'mission' in refs.keys():
-        self.references = '\n'.join((refs['mission'], refs[name]))
+        self.references = '\n'.join((refs['mission'], inst_refs))
     else:
-        self.references = refs[name]
+        self.references = inst_refs
 
     return
 

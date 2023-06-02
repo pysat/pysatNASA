@@ -29,12 +29,11 @@ jobs:
       run: brew reinstall gcc
 
     - name: Install pysat RC
-      run: pip install --no-deps -i https://test.pypi.org/simple/ pysat
+      run: pip install --no-deps --pre -i https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ pysat
 
     - name: Install standard dependencies
       run: |
         pip install -r requirements.txt
-        pip install pysatCDF --no-binary=pysatCDF
         pip install -r test_requirements.txt
 
     - name: Set up pysat

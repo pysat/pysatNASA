@@ -27,4 +27,14 @@ jobs:
       run: pip install -r requirements.txt
 
     - name: Install pysatNASA RC
-      run: pip install --no-deps -i https://test.pypi.org/simple/ pysatNASA
+      run: pip install --no-deps --pre -i https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ pysatNASA
+
+    - name: Set up pysat
+      run: |
+        mkdir pysatData
+        python -c "import pysat; pysat.params['data_dirs'] = 'pysatData'"
+
+    - name: Check that install imports correctly
+      run: |
+        cd ..
+        python -c "import pysatNASA; print(pysatNASA.__version__)"

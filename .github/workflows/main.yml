@@ -11,12 +11,18 @@ jobs:
       fail-fast: false
       matrix:
         os: ["ubuntu-latest", "macos-latest", "windows-latest"]
-        python-version: ["3.9", "3.10"]
+        python-version: ["3.10", "3.11"]
         numpy_ver: ["latest"]
+        test_config: ["latest"]
         include:
-          - python-version: "3.8"
+          - python-version: "3.9"
             numpy_ver: "1.21"
-            os: "ubuntu-latest"
+            os: ubuntu-latest
+            test_config: "NEP29"
+          - python-version: "3.6.8"
+            numpy_ver: "1.19.5"
+            os: "ubuntu-20.04"
+            test_config: "Ops"
 
     name: Python ${{ matrix.python-version }} on ${{ matrix.os }} with numpy ${{ matrix.numpy_ver }}
     runs-on: ${{ matrix.os }}
@@ -31,16 +37,24 @@ jobs:
       if: ${{ matrix.os == 'macos-latest' }}
       run: brew reinstall gcc
 
-    - name: Install NEP29 dependencies
-      if: ${{ matrix.numpy_ver != 'latest'}}
+    - name: Install Operational dependencies
+      if: ${{ matrix.test_config == 'Ops'}}
       run: |
-        pip install --no-binary :numpy: numpy==${{ matrix.numpy_ver }}
-        pip install pysatCDF --no-binary=pysatCDF
-
-    - name: Install standard dependencies
-      run: |
+        pip install --no-cache-dir numpy==${{ matrix.numpy_ver }}
         pip install -r requirements.txt
         pip install -r test_requirements.txt
+        pip install .
+
+    - name: Install NEP29 dependencies
+      if: ${{ matrix.test_config == 'NEP29'}}
+      run: |
+        pip install numpy==${{ matrix.numpy_ver }}
+        pip install --upgrade-strategy only-if-needed .[test]
+
+    - name: Install standard dependencies
+      if: ${{ matrix.test_config == 'latest'}}
+      run: |
+        pip install .[test]
 
     - name: Set up pysat
       run: |
@@ -54,9 +68,9 @@ jobs:
       run: flake8 . --count --exit-zero --max-complexity=10 --statistics
 
     - name: Test with pytest
-      run: pytest -vs --cov=pysatNASA/
+      run: pytest
 
     - name: Publish results to coveralls
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: coveralls --rcfile=setup.cfg --service=github
+      run: coveralls --rcfile=pyproject.toml --service=github
