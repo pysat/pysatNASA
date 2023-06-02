@@ -91,8 +91,13 @@ class CDF(object):
         self.meta = {}
         self._dependencies = {}
 
-        self._variable_names = (self._cdf_info['rVariables']
-                                + self._cdf_info['zVariables'])
+        try:
+            self._variable_names = (self._cdf_info.rVariables
+                                    + self._cdf_info.zVariables)
+        except AttributeError:
+            # cdflib < 1.0 stores info as a dict
+            self._variable_names = (self._cdf_info['rVariables']
+                                    + self._cdf_info['zVariables'])
 
         self.load_variables()
 
@@ -156,8 +161,13 @@ class CDF(object):
 
         """
 
-        data_type_description = self._cdf_file.varinq(
-            x_axis_var)['Data_Type_Description']
+        try:
+            data_type_description = self._cdf_file.varinq(
+                x_axis_var).Data_Type_Description
+        except AttributeError:
+            # cdflib < 1.0 stores this as a dict
+            data_type_description = self._cdf_file.varinq(
+                x_axis_var)['Data_Type_Description']
 
         center_measurement = self._center_measurement
         cdf_file = self._cdf_file
@@ -298,7 +308,12 @@ class CDF(object):
             if not re.match(var_regex, variable_name):
                 # Skip this variable
                 continue
-            var_atts = self._cdf_file.varattsget(variable_name, to_np=True)
+            try:
+                var_atts = self._cdf_file.varattsget(variable_name, to_np=True)
+            except TypeError:
+                # cdflib 1.0+ drops to_np kwarg, assumes True
+                var_atts = self._cdf_file.varattsget(variable_name)
+
             for k in var_atts:
                 var_atts[k] = var_atts[k]  # [0]
 
@@ -319,13 +334,14 @@ class CDF(object):
                 continue
 
             if "FILLVAL" in var_atts:
-                if (var_properties['Data_Type_Description'] == 'CDF_FLOAT'
-                    or var_properties['Data_Type_Description']
-                    == 'CDF_REAL4'
-                    or var_properties['Data_Type_Description']
-                    == 'CDF_DOUBLE'
-                    or var_properties['Data_Type_Description']
-                        == 'CDF_REAL8'):
+                try:
+                    data_type_desc = var_properties.Data_Type_Description
+                except AttributeError:
+                    # cdflib < 1.0 stores this as a dict
+                    data_type_desc = var_properties['Data_Type_Description']
+
+                if data_type_desc in ['CDF_FLOAT', 'CDF_REAL4', 'CDF_DOUBLE',
+                                      'CDF_REAL8']:
 
                     if ydata[ydata == var_atts["FILLVAL"]].size != 0:
                         ydata[ydata == var_atts["FILLVAL"]] = np.nan
