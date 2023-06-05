@@ -2,7 +2,7 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
-## [0.X.X] - 2023-XX-XX
+## [0.0.5] - 2023-XX-XX
 * New Instruments
   * ACE EPAM
   * ACE MAG
@@ -25,6 +25,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   * Updated GOLD nmax to sort scans by time.
   * Added 1 usec to GOLD nmax channel B times to ensure uniqueness
   * Fixed multi-file loads for cdf xarray datasets.
+  * Adds a 0.1 sec delay between file downloads to avoid excessive calls
+    to servers.
 * Documentation
   * Added TIMED-GUVI platform
   * Added missing sub-module imports
@@ -55,6 +57,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   * Use pyproject.toml to manage installation and metadata
   * Set use_cdflib=True for supported xarray instruments
   * Set pysat 3.1.0 minimum
+  * Use pysat logger to raise non-deprecation warnings
 
 ## [0.0.4] - 2022-11-07
 * Update instrument tests with new test class

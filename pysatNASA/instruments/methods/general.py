@@ -1,7 +1,5 @@
 """General methods for NASA instruments."""
 
-import warnings
-
 import pysat
 
 
@@ -56,7 +54,7 @@ def clean_warn(self):
     'none'  No cleaning applied, routine not called in this case.
 
     """
-    warnings.warn(' '.join(('No cleaning routines available for',
-                            self.platform, self.name)))
+    pysat.logger.warn(' '.join(('No cleaning routines available for',
+                                self.platform, self.name)))
 
     return

@@ -13,7 +13,7 @@ import numpy as np
 import os
 import pandas as pds
 import requests
-import warnings
+from time import sleep
 import xarray as xr
 
 from bs4 import BeautifulSoup
@@ -146,7 +146,7 @@ def load(fnames, tag='', inst_id='', file_cadence=dt.timedelta(days=1),
     else:
         if not use_cdflib:
             estr = 'The `use_cdflib` option is not currently enabled for xarray'
-            warnings.warn(estr)
+            pysat.logger.warn(estr)
 
         data, meta = load_xarray(fnames, tag=tag, inst_id=inst_id,
                                  epoch_name=epoch_name,
@@ -559,6 +559,8 @@ def download(date_array, tag='', inst_id='', supported_tags=None,
         except requests.exceptions.RequestException as exception:
             logger.info(' '.join((str(exception), '- File not available for',
                                   date.strftime('%d %B %Y'))))
+        # Pause to avoid excessive pings to server
+        sleep(0.2)
     return
 
 
@@ -654,6 +656,8 @@ def cdas_download(date_array, tag='', inst_id='', supported_tags=None,
         except requests.exceptions.RequestException as exception:
             logger.info(' '.join((str(exception), '- File: "', file,
                                   '" Is not available')))
+        # Pause to avoid excessive pings to server
+        sleep(0.2)
     return
 
 
