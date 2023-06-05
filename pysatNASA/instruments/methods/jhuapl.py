@@ -310,7 +310,8 @@ def load_sdr_aurora(fnames, tag='', inst_id='', pandas_format=False,
         # than a dimension or coordinate.  Additionally, no coordinates
         # are assigned.
         sdata, mdata = load_netcdf(fname, epoch_name=load_time, epoch_unit='s',
-                                   labels=labels, pandas_format=pandas_format)
+                                   labels=labels, pandas_format=pandas_format,
+                                   strict_dim_check=strict_dim_check)
 
         # Calculate the time for this data file. The pysat `load_netcdf` routine
         # converts the 'TIME' parameter (seconds of day) into datetime using
