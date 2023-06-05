@@ -106,7 +106,8 @@ list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags)
 
 # Set the load routine
-load = functools.partial(jhuapl.load_edr_aurora, pandas_format=pandas_format)
+load = functools.partial(jhuapl.load_edr_aurora, pandas_format=pandas_format,
+                         strict_dim_check=False)
 
 # Set the download routine
 basic_tag = {'remote_dir': ''.join(('/pub/data/dmsp/dmsp{inst_id:s}/ssusi/',
