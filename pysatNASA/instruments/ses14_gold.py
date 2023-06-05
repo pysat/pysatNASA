@@ -244,7 +244,8 @@ def load(fnames, tag='', inst_id=''):
         epoch_name = 'nevents'
 
     data, meta = load_netcdf(fnames, pandas_format=pandas_format,
-                             epoch_name=epoch_name, labels=labels,
+                             epoch_name=epoch_name,
+                             meta_kwargs={'labels': labels},
                              meta_translation=meta_translation,
                              combine_by_coords=False,
                              drop_meta_labels='FILLVAL')
