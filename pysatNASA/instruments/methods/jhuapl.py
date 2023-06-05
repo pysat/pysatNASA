@@ -152,7 +152,7 @@ def load_edr_aurora(fnames, tag='', inst_id='', pandas_format=False,
         False for xarray format, True for pandas (default=False)
     strict_dim_check : bool
         Used for xarray data (`pandas_format` is False). If True, warn the user
-        that the desired epoch,'TIME', is not present as a dimension in the
+        that the desired epoch, 'TIME', is not present as a dimension in the
         NetCDF file.  If False, no warning is raised. (default=True)
 
     Returns
@@ -240,8 +240,8 @@ def load_sdr_aurora(fnames, tag='', inst_id='', pandas_format=False,
         False for xarray format, True for pandas (default=False)
     strict_dim_check : bool
         Used for xarray data (`pandas_format` is False). If True, warn the user
-        that the desired epoch is not present in `xarray.dims`.  If False,
-        no warning is raised. (default=True)
+        that the desired epoch, 'TIME_DAY', is not present as a dimension in the
+        NetCDF file.  If False, no warning is raised. (default=True)```
     combine_times : bool
         For SDR data, optionally combine the different datetime coordinates
         into a single time coordinate (default=False)
