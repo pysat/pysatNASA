@@ -14,7 +14,6 @@ import os
 import pandas as pds
 import requests
 from time import sleep
-import warnings
 import xarray as xr
 
 from bs4 import BeautifulSoup
@@ -147,7 +146,7 @@ def load(fnames, tag='', inst_id='', file_cadence=dt.timedelta(days=1),
     else:
         if not use_cdflib:
             estr = 'The `use_cdflib` option is not currently enabled for xarray'
-            warnings.warn(estr)
+            pysat.logger.warn(estr)
 
         data, meta = load_xarray(fnames, tag=tag, inst_id=inst_id,
                                  epoch_name=epoch_name,
