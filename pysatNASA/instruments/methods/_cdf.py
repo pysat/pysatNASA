@@ -91,7 +91,7 @@ class CDF(object):
         self.meta = {}
         self._dependencies = {}
 
-        if hasattr(self._cdf_info, 'rVariables') and hasattr(self._cdf_info, 'zVariables'):
+        if hasattr(self._cdf_info, 'rVariables'):
             self._variable_names = (self._cdf_info.rVariables
                                     + self._cdf_info.zVariables)
         else:
@@ -161,10 +161,10 @@ class CDF(object):
 
         """
 
-        try:
+        if hasattr(self._cdf_file.varinq(x_axis_var), 'Data_Type_Description'):
             data_type_description = self._cdf_file.varinq(
                 x_axis_var).Data_Type_Description
-        except AttributeError:
+        else:
             # cdflib < 1.0 stores this as a dict
             data_type_description = self._cdf_file.varinq(
                 x_axis_var)['Data_Type_Description']
@@ -334,9 +334,9 @@ class CDF(object):
                 continue
 
             if "FILLVAL" in var_atts:
-                try:
+                if hasattr(var_properties, 'Data_Type_Description'):
                     data_type_desc = var_properties.Data_Type_Description
-                except AttributeError:
+                else:
                     # cdflib < 1.0 stores this as a dict
                     data_type_desc = var_properties['Data_Type_Description']
 
