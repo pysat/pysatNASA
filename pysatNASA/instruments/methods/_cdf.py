@@ -91,10 +91,10 @@ class CDF(object):
         self.meta = {}
         self._dependencies = {}
 
-        try:
+        if hasattr(self._cdf_info, 'rVariables') and hasattr(self._cdf_info, 'zVariables'):
             self._variable_names = (self._cdf_info.rVariables
                                     + self._cdf_info.zVariables)
-        except AttributeError:
+        else:
             # cdflib < 1.0 stores info as a dict
             self._variable_names = (self._cdf_info['rVariables']
                                     + self._cdf_info['zVariables'])
