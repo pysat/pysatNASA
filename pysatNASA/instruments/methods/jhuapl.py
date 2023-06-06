@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pds
 import xarray as xr
 
+from pysat.utils.coords import expand_xarray_dims
 from pysat.utils.io import load_netcdf
 
 
@@ -59,83 +60,8 @@ def build_dtimes(data, var, epoch=None, epoch_var='time'):
     return dtimes
 
 
-def expand_coords(data_list, mdata, dims_equal=False):
-    """Ensure that dimensions do not vary from file to file.
-
-    Parameters
-    ----------
-    data_list : list-like
-        List of xr.Dataset objects with the same dimensions and variables
-    mdata : pysat.Meta
-        Metadata for the data in `data_list`
-    dims_equal : bool
-        Assert that all xr.Dataset objects have the same dimensions if True
-        (default=False)
-
-    Returns
-    -------
-    out_list : list-like
-        List of xr.Dataset objects with the same dimensions and variables,
-        now with dimensions that all have the same values and data padded
-        when needed.
-
-    """
-    # Get a list of all the dimensions
-    if dims_equal:
-        dims = list(data_list[0].dims.keys()) if len(data_list) > 0 else []
-    else:
-        dims = list()
-        for sdata in data_list:
-            if len(dims) == 0:
-                dims = list(sdata.dims.keys())
-            else:
-                for dim in list(sdata.dims.keys()):
-                    if dim not in dims:
-                        dims.append(dim)
-
-    # After loading all the data, determine which dimensions may need to be
-    # expanded, as they could differ in dimensions from file to file
-    combo_dims = {dim: max([sdata.dims[dim] for sdata in data_list
-                            if dim in sdata.dims]) for dim in dims}
-
-    # Expand the data so that all dimensions are the same shape
-    out_list = list()
-    for i, sdata in enumerate(data_list):
-        # Determine which dimensions need to be updated
-        fix_dims = [dim for dim in sdata.dims.keys()
-                    if sdata.dims[dim] < combo_dims[dim]]
-
-        new_data = {}
-        update_new = False
-        for dvar in sdata.data_vars.keys():
-            # See if any dimensions need to be updated
-            update_dims = list(set(sdata[dvar].dims) & set(fix_dims))
-
-            # Save the old data as is, or pad it to have the right dims
-            if len(update_dims) > 0:
-                update_new = True
-                new_shape = list(sdata[dvar].values.shape)
-                old_slice = [slice(0, ns) for ns in new_shape]
-
-                for dim in update_dims:
-                    idim = list(sdata[dvar].dims).index(dim)
-                    new_shape[idim] = combo_dims[dim]
-
-                # Set the new data for output
-                new_dat = np.full(shape=new_shape, fill_value=mdata[
-                    dvar, mdata.labels.fill_val])
-                new_dat[tuple(old_slice)] = sdata[dvar].values
-                new_data[dvar] = (sdata[dvar].dims, new_dat)
-            else:
-                new_data[dvar] = sdata[dvar]
-
-        # Get the updated dataset
-        out_list.append(xr.Dataset(new_data) if update_new else sdata)
-
-    return out_list
-
-
-def load_edr_aurora(fnames, tag='', inst_id='', pandas_format=False):
+def load_edr_aurora(fnames, tag='', inst_id='', pandas_format=False,
+                    strict_dim_check=True):
     """Load JHU APL EDR Aurora data and meta data.
 
     Parameters
@@ -149,6 +75,10 @@ def load_edr_aurora(fnames, tag='', inst_id='', pandas_format=False):
         (default='')
     pandas_format : bool
         False for xarray format, True for pandas (default=False)
+    strict_dim_check : bool
+        Used for xarray data (`pandas_format` is False). If True, warn the user
+        that the desired epoch, 'TIME', is not present as a dimension in the
+        NetCDF file.  If False, no warning is raised. (default=True)
 
     Returns
     -------
@@ -180,7 +110,8 @@ def load_edr_aurora(fnames, tag='', inst_id='', pandas_format=False):
         # than a dimension or coordinate.  Additionally, no coordinates
         # are assigned.
         sdata, mdata = load_netcdf(fname, epoch_name='TIME', epoch_unit='s',
-                                   labels=labels, pandas_format=pandas_format)
+                                   labels=labels, pandas_format=pandas_format,
+                                   strict_dim_check=strict_dim_check)
 
         # Calculate the time for this data file. The pysat `load_netcdf` routine
         # converts the 'TIME' parameter (seconds of day) into datetime using
@@ -208,8 +139,8 @@ def load_edr_aurora(fnames, tag='', inst_id='', pandas_format=False):
         mdata[var] = {mdata.labels.fill_val: mdata.header.NO_DATA_IN_BIN_VALUE}
 
     # After loading all the data, determine which dimensions need to be
-    # expanded. Pad the data so that all dimensions are the same shape
-    single_data = expand_coords(single_data, mdata, dims_equal=True)
+    # expanded. Pad the data so that all dimensions are the same shape.
+    single_data = expand_xarray_dims(single_data, mdata, dims_equal=False)
 
     # Combine all the data, indexing along time
     data = xr.combine_by_coords(single_data)
@@ -218,7 +149,7 @@ def load_edr_aurora(fnames, tag='', inst_id='', pandas_format=False):
 
 
 def load_sdr_aurora(fnames, tag='', inst_id='', pandas_format=False,
-                    combine_times=False):
+                    strict_dim_check=True, combine_times=False):
     """Load JHU APL SDR data and meta data.
 
     Parameters
@@ -232,6 +163,10 @@ def load_sdr_aurora(fnames, tag='', inst_id='', pandas_format=False,
         (default='')
     pandas_format : bool
         False for xarray format, True for pandas (default=False)
+    strict_dim_check : bool
+        Used for xarray data (`pandas_format` is False). If True, warn the user
+        that the desired epoch, 'TIME_DAY', is not present as a dimension in the
+        NetCDF file.  If False, no warning is raised. (default=True)```
     combine_times : bool
         For SDR data, optionally combine the different datetime coordinates
         into a single time coordinate (default=False)
@@ -300,7 +235,8 @@ def load_sdr_aurora(fnames, tag='', inst_id='', pandas_format=False,
         # than a dimension or coordinate.  Additionally, no coordinates
         # are assigned.
         sdata, mdata = load_netcdf(fname, epoch_name=load_time, epoch_unit='s',
-                                   labels=labels, pandas_format=pandas_format)
+                                   labels=labels, pandas_format=pandas_format,
+                                   strict_dim_check=strict_dim_check)
 
         # Calculate the time for this data file. The pysat `load_netcdf` routine
         # converts the 'TIME' parameter (seconds of day) into datetime using
@@ -366,10 +302,10 @@ def load_sdr_aurora(fnames, tag='', inst_id='', pandas_format=False,
 
     # Combine all time dimensions
     if combine_times:
-        data_list = expand_coords([inners[dim] if dim == 'time' else
-                                   inners[dim].rename_dims({dim: 'time'})
-                                   for dim in time_dims], mdata,
-                                  dims_equal=False)
+        data_list = expand_xarray_dims([inners[dim] if dim == 'time' else
+                                        inners[dim].rename_dims({dim: 'time'})
+                                        for dim in time_dims], mdata,
+                                       dims_equal=False)
     else:
         data_list = [inners[dim] for dim in time_dims]
 
