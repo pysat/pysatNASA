@@ -60,7 +60,8 @@ def build_dtimes(data, var, epoch=None, epoch_var='time'):
     return dtimes
 
 
-def load_edr_aurora(fnames, tag='', inst_id='', pandas_format=False):
+def load_edr_aurora(fnames, tag='', inst_id='', pandas_format=False,
+                    strict_dim_check=True):
     """Load JHU APL EDR Aurora data and meta data.
 
     Parameters
@@ -74,6 +75,10 @@ def load_edr_aurora(fnames, tag='', inst_id='', pandas_format=False):
         (default='')
     pandas_format : bool
         False for xarray format, True for pandas (default=False)
+    strict_dim_check : bool
+        Used for xarray data (`pandas_format` is False). If True, warn the user
+        that the desired epoch, 'TIME', is not present as a dimension in the
+        NetCDF file.  If False, no warning is raised. (default=True)
 
     Returns
     -------
@@ -105,7 +110,8 @@ def load_edr_aurora(fnames, tag='', inst_id='', pandas_format=False):
         # than a dimension or coordinate.  Additionally, no coordinates
         # are assigned.
         sdata, mdata = load_netcdf(fname, epoch_name='TIME', epoch_unit='s',
-                                   labels=labels, pandas_format=pandas_format)
+                                   labels=labels, pandas_format=pandas_format,
+                                   strict_dim_check=strict_dim_check)
 
         # Calculate the time for this data file. The pysat `load_netcdf` routine
         # converts the 'TIME' parameter (seconds of day) into datetime using
@@ -143,7 +149,7 @@ def load_edr_aurora(fnames, tag='', inst_id='', pandas_format=False):
 
 
 def load_sdr_aurora(fnames, tag='', inst_id='', pandas_format=False,
-                    combine_times=False):
+                    strict_dim_check=True, combine_times=False):
     """Load JHU APL SDR data and meta data.
 
     Parameters
@@ -157,6 +163,10 @@ def load_sdr_aurora(fnames, tag='', inst_id='', pandas_format=False,
         (default='')
     pandas_format : bool
         False for xarray format, True for pandas (default=False)
+    strict_dim_check : bool
+        Used for xarray data (`pandas_format` is False). If True, warn the user
+        that the desired epoch, 'TIME_DAY', is not present as a dimension in the
+        NetCDF file.  If False, no warning is raised. (default=True)```
     combine_times : bool
         For SDR data, optionally combine the different datetime coordinates
         into a single time coordinate (default=False)
@@ -225,7 +235,8 @@ def load_sdr_aurora(fnames, tag='', inst_id='', pandas_format=False,
         # than a dimension or coordinate.  Additionally, no coordinates
         # are assigned.
         sdata, mdata = load_netcdf(fname, epoch_name=load_time, epoch_unit='s',
-                                   labels=labels, pandas_format=pandas_format)
+                                   labels=labels, pandas_format=pandas_format,
+                                   strict_dim_check=strict_dim_check)
 
         # Calculate the time for this data file. The pysat `load_netcdf` routine
         # converts the 'TIME' parameter (seconds of day) into datetime using
