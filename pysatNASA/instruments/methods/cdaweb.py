@@ -7,7 +7,6 @@ Adding new CDAWeb datasets should only require mininal user intervention.
 
 """
 
-import cdflib
 import datetime as dt
 import numpy as np
 import os
@@ -25,6 +24,13 @@ from pysat import logger
 from pysat.utils import files as futils
 from pysat.utils import io
 from pysatNASA.instruments.methods import CDF as libCDF
+
+try:
+    # cdflib 1.0 syntax
+    from cdflib.xarray import cdf_to_xarray
+except ModuleNotFoundError:
+    # cdflib 0.4 syntax required for backwards compatibility
+    from cdflib import cdf_to_xarray
 
 try:
     import pysatCDF
@@ -372,7 +378,7 @@ def load_xarray(fnames, tag='', inst_id='',
             lfnames = fnames
 
         for lfname in lfnames:
-            temp_data = cdflib.cdf_to_xarray(lfname, to_datetime=True)
+            temp_data = cdf_to_xarray(lfname, to_datetime=True)
             if drop_dims:
                 temp_data = temp_data.drop_dims(drop_dims)
             if var_translation:

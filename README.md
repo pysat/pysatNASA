@@ -24,7 +24,7 @@ Python 3.6+.
 
 | Common modules   | Community modules | Optional Modules |
 | ---------------- | ----------------- |------------------|
-| beautifulsoup4   | cdflib            | pysatCDF         |
+| beautifulsoup4   | cdflib>=0.4.4     | pysatCDF         |
 | lxml             | pysat>=3.1.0      |                  |
 | netCDF4          |                   |                  |
 | numpy            |                   |                  |
