@@ -95,6 +95,22 @@ class TestInstruments(clslib.InstLibTests):
             pytest.skip("Download data not available.")
 
         return
+    @pytest.mark.second
+    @pytest.mark.parametrize("inst_dict", instruments['cdf'])
+    @pytest.mark.skipif(cdflib_only,
+                        reason=" ".join(("Additional load tests not required",
+                                         "when pysatCDF not installed")))
+    def test_meta_header(self, inst_dict):
+        """Test that instruments have header level metadata attached
+
+        Parameters
+        ----------
+        inst_dict : dict
+            Dictionary containing info to instnatiate a specific instrument.
+        """
+        test_inst, date = clslib.initialize_test_inst_and_date(inst_dict)
+        test_inst.load(date=date, use_header=True, use_cdflib=True)
+        assert test_inst.meta.to_dict() != {}
 
 
 class TestDeprecation(object):
