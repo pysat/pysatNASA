@@ -470,8 +470,8 @@ def load_xarray(fnames, tag='', inst_id='',
 
 
 # TODO(#103): Include support to unzip / untar files after download.
-def download(date_array, tag='', inst_id='', supported_tags=None,
-             remote_url='https://cdaweb.gsfc.nasa.gov', data_path=None):
+def download(date_array, data_path, tag='', inst_id='', supported_tags=None,
+             remote_url='https://cdaweb.gsfc.nasa.gov'):
     """Download NASA CDAWeb data.
 
     This routine is intended to be used by pysat instrument modules supporting
@@ -481,6 +481,8 @@ def download(date_array, tag='', inst_id='', supported_tags=None,
     ----------
     date_array : array-like
         Array of datetimes to download data for. Provided by pysat.
+    data_path : str
+        Path to data directory.
     tag : str
         Data product tag (default='')
     inst_id : str
@@ -493,9 +495,6 @@ def download(date_array, tag='', inst_id='', supported_tags=None,
     remote_url : str
         Remote site to download data from
         (default='https://cdaweb.gsfc.nasa.gov')
-    data_path : str or NoneType
-        Path to data directory.  If None is specified, the value previously
-        set in Instrument.files.data_path is used.  (default=None)
 
     Examples
     --------
@@ -570,8 +569,8 @@ def download(date_array, tag='', inst_id='', supported_tags=None,
     return
 
 
-def cdas_download(date_array, tag='', inst_id='', supported_tags=None,
-                  data_path=None):
+def cdas_download(date_array, data_path, tag='', inst_id='',
+                  supported_tags=None):
     """Download NASA CDAWeb CDF data using cdasws.
 
     This routine is intended to be used by pysat instrument modules supporting
@@ -581,6 +580,8 @@ def cdas_download(date_array, tag='', inst_id='', supported_tags=None,
     ----------
     date_array : array-like
         Array of datetimes to download data for. Provided by pysat.
+    data_path : str
+        Path to data directory.
     tag : str
         Data product tag (default='')
     inst_id : str
@@ -590,9 +591,6 @@ def cdas_download(date_array, tag='', inst_id='', supported_tags=None,
         a dict with 'remote_dir', 'fname'. Inteded to be pre-set with
         functools.partial then assigned to new instrument code.
         (default=None)
-    data_path : str or NoneType
-        Path to data directory.  If None is specified, the value previously
-        set in Instrument.files.data_path is used.  (default=None)
 
     Note
     ----
