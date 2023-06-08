@@ -19,6 +19,7 @@ class TestCDAWeb(object):
 
         self.download_tags = pysatNASA.instruments.timed_guvi.download_tags
         self.kwargs = {'tag': None, 'inst_id': None}
+        self.saved_path = pysat.params['data_dirs']
         return
 
     def teardown_method(self):
@@ -61,6 +62,7 @@ class TestCDAWeb(object):
         with pytest.raises(ValueError) as excinfo:
             cdw.download(supported_tags=self.download_tags,
                          date_array=date_array,
+                         data_path=self.saved_path,
                          tag=self.kwargs['tag'],
                          inst_id=self.kwargs['inst_id'])
         assert str(excinfo.value).find(err_msg) >= 0

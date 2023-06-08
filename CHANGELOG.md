@@ -44,6 +44,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 * Deprecations
   * Deprecated jpl_gps instrtument module, moved roti instrument to igs_gps
 * Maintenance
+  * Updated download functions to take data_path as an arg, not a kwarg
   * Removed duplicate tests if pysatCDF not isntalled
   * Removed pysatCDF tests on GitHub Actions workflows (see #167)
   * Updated actions and templates based on pysatEcosystem docs
