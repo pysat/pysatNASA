@@ -58,6 +58,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   * Set use_cdflib=True for supported xarray instruments
   * Set pysat 3.1.0 minimum
   * Use pysat logger to raise non-deprecation warnings
+  * Update syntax based on latest pysat deprecations to make the code compatible with pysat 3.2.0.
   * Updated syntax compliance with cdflib 1.0+
 
 ## [0.0.4] - 2022-11-07

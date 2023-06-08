@@ -221,7 +221,7 @@ def load(fnames, tag='', inst_id='', keep_original_names=False):
 
     data, meta = pysat.utils.io.load_netcdf(fnames, epoch_name='Epoch',
                                             pandas_format=pandas_format,
-                                            labels=labels,
+                                            meta_kwargs={'labels': labels},
                                             meta_processor=filter_metadata,
                                             meta_translation=meta_translation,
                                             drop_meta_labels=drop_labels)

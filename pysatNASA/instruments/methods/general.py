@@ -54,7 +54,7 @@ def clean_warn(self):
     'none'  No cleaning applied, routine not called in this case.
 
     """
-    pysat.logger.warn(' '.join(('No cleaning routines available for',
-                                self.platform, self.name)))
+    pysat.logger.warning(' '.join(('No cleaning routines available for',
+                                   self.platform, self.name)))
 
     return
