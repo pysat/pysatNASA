@@ -276,9 +276,9 @@ def load_xarray(fnames, tag='', inst_id='',
                 file_cadence=dt.timedelta(days=1),
                 labels={'units': ('Units', str), 'name': ('Long_Name', str),
                         'notes': ('Var_Notes', str), 'desc': ('CatDesc', str),
-                        'min_val': ('ValidMin', (float, int)),
-                        'max_val': ('ValidMax', (float, int)),
-                        'fill_val': ('FillVal', (float, int))},
+                        'min_val': ('ValidMin', (float, int, str)),
+                        'max_val': ('ValidMax', (float, int, str)),
+                        'fill_val': ('FillVal', (float, int, str))},
                 epoch_name='Epoch', drop_dims=None, var_translation=None,
                 meta_processor=None, meta_translation=None,
                 drop_meta_labels=None):
@@ -302,9 +302,9 @@ def load_xarray(fnames, tag='', inst_id='',
         that have the label values and value types in that order.
         (default={'units': ('Units', str), 'name': ('Long_Name', str),
         'notes': ('Var_Notes', str), 'desc': ('CatDesc', str),
-        'min_val': ('ValidMin', (float, int)),
-        'max_val': ('ValidMax', (float, int)),
-        'fill_val': ('FillVal', (float, int))})
+        'min_val': ('ValidMin', (float, int, str)),
+        'max_val': ('ValidMax', (float, int, str)),
+        'fill_val': ('FillVal', (float, int, str))})
     epoch_name : str
         Data key for epoch variable.  The epoch variable is expected to be an
         array of integer or float values denoting time elapsed from an origin
