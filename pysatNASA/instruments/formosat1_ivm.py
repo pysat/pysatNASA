@@ -74,8 +74,8 @@ def init(self):
     return
 
 
-# No cleaning, use standard warning function instead
-clean = mm_nasa.clean_warn
+# Use default clean
+clean = mm_nasa.clean
 
 # ----------------------------------------------------------------------------
 # Instrument functions
