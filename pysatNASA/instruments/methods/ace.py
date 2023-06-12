@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 """Provides non-instrument specific routines for ACE data."""
 
-import numpy as np
-
 from pysatNASA.instruments.methods import cdaweb as cdw
 
 ackn_str = ' '.join(("Please acknowledge the NASA National Space Science Data",
@@ -83,30 +81,3 @@ def load(fnames, tag='', inst_id='', to_pandas=False):
         data = data.to_pandas()
 
     return data, meta
-
-
-def clean(self):
-    """Clean ACE data to the specified level.
-
-    Note
-    ----
-    Basic cleaning to replace fill values with NaN
-
-    """
-
-    # Get a list of coords for the data
-    if self.pandas_format:
-        coords = [self.data.index.name]
-    else:
-        coords = [key for key in self.data.coords]
-
-    for key in self.variables:
-        # Skip over the coordinates when cleaning
-        if key not in coords:
-            fill = self.meta[key, self.meta.labels.fill_val]
-
-            # Replace fill with nan
-            fill_mask = self[key] == fill
-            self[key] = self.data[key].where(~fill_mask)
-            self.meta[key] = {self.meta.labels.fill_val: np.nan}
-    return
