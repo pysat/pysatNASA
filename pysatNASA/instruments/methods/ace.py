@@ -94,8 +94,15 @@ def clean(self):
 
     """
 
+    # Get a list of coords for the data
+    if self.pandas_format:
+        coords = [self.data.index.name]
+    else:
+        coords = [key for key in self.data.coords]
+
     for key in self.variables:
-        if key != 'time':
+        # Skip over the coordinates when cleaning
+        if key not in coords:
             fill = self.meta[key, self.meta.labels.fill_val]
 
             # Replace fill with nan
