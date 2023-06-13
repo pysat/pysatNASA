@@ -224,5 +224,6 @@ def load(fnames, tag='', inst_id='', keep_original_names=False):
                                             meta_kwargs={'labels': labels},
                                             meta_processor=filter_metadata,
                                             meta_translation=meta_translation,
-                                            drop_meta_labels=drop_labels)
+                                            drop_meta_labels=drop_labels,
+                                            decode_times=False)
     return data, meta

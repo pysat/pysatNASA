@@ -112,6 +112,7 @@ def load_edr_aurora(fnames, tag='', inst_id='', pandas_format=False,
         sdata, mdata = load_netcdf(fname, epoch_name='TIME', epoch_unit='s',
                                    meta_kwargs={'labels': labels},
                                    pandas_format=pandas_format,
+                                   decode_times=False,
                                    strict_dim_check=strict_dim_check)
 
         # Calculate the time for this data file. The pysat `load_netcdf` routine
@@ -238,6 +239,7 @@ def load_sdr_aurora(fnames, tag='', inst_id='', pandas_format=False,
         sdata, mdata = load_netcdf(fname, epoch_name=load_time, epoch_unit='s',
                                    meta_kwargs={'labels': labels},
                                    pandas_format=pandas_format,
+                                   decode_times=False,
                                    strict_dim_check=strict_dim_check)
 
         # Calculate the time for this data file. The pysat `load_netcdf` routine

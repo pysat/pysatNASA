@@ -225,7 +225,8 @@ def load(fnames, tag='', inst_id='', keep_original_names=False):
                                             meta_translation=meta_translation,
                                             drop_meta_labels=['Valid_Max',
                                                               'Valid_Min',
-                                                              '_FillValue'])
+                                                              '_FillValue'],
+                                            decode_times=False)
 
     # xarray can't merge if variable and dim names are the same
     if 'Altitude' in data.dims:
