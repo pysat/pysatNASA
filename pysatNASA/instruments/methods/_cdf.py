@@ -376,9 +376,9 @@ class CDF(object):
     def to_pysat(self, flatten_twod=True,
                  labels={'units': ('Units', str), 'name': ('Long_Name', str),
                          'notes': ('Var_Notes', str), 'desc': ('CatDesc', str),
-                         'min_val': ('ValidMin', (int, float)),
-                         'max_val': ('ValidMax', (int, float)),
-                         'fill_val': ('FillVal', (int, float))}):
+                         'min_val': ('ValidMin', (float, int, str)),
+                         'max_val': ('ValidMax', (float, int, str)),
+                         'fill_val': ('FillVal', (float, int, str))}):
         """Export loaded CDF data into data, meta for pysat module.
 
         Parameters
@@ -398,9 +398,9 @@ class CDF(object):
             that order.
             (default={'units': ('units', str), 'name': ('long_name', str),
                       'notes': ('notes', str), 'desc': ('desc', str),
-                      'min_val': ('value_min', (int, float)),
-                      'max_val': ('value_max', (int, float))
-                      'fill_val': ('fill', (int, float))})
+                      'min_val': ('value_min', (float, int, str)),
+                      'max_val': ('value_max', (float, int, str))
+                      'fill_val': ('fill', (float, int, str))})
 
         Returns
         -------

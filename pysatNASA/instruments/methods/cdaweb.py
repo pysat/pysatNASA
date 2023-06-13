@@ -276,9 +276,9 @@ def load_xarray(fnames, tag='', inst_id='',
                 file_cadence=dt.timedelta(days=1),
                 labels={'units': ('Units', str), 'name': ('Long_Name', str),
                         'notes': ('Var_Notes', str), 'desc': ('CatDesc', str),
-                        'min_val': ('ValidMin', (float, int)),
-                        'max_val': ('ValidMax', (float, int)),
-                        'fill_val': ('FillVal', (float, int))},
+                        'min_val': ('ValidMin', (float, int, str)),
+                        'max_val': ('ValidMax', (float, int, str)),
+                        'fill_val': ('FillVal', (float, int, str))},
                 epoch_name='Epoch', drop_dims=None, var_translation=None,
                 meta_processor=None, meta_translation=None,
                 drop_meta_labels=None):
@@ -300,11 +300,11 @@ def load_xarray(fnames, tag='', inst_id='',
     labels : dict
         Dict where keys are the label attribute names and the values are tuples
         that have the label values and value types in that order.
-        (default={'units': ('units', str), 'name': ('long_name', str),
-        'notes': ('notes', str), 'desc': ('desc', str),
-        'min_val': ('value_min', np.float64),
-        'max_val': ('value_max', np.float64),
-        'fill_val': ('fill', np.float64)})
+        (default={'units': ('Units', str), 'name': ('Long_Name', str),
+        'notes': ('Var_Notes', str), 'desc': ('CatDesc', str),
+        'min_val': ('ValidMin', (float, int, str)),
+        'max_val': ('ValidMax', (float, int, str)),
+        'fill_val': ('FillVal', (float, int, str))})
     epoch_name : str
         Data key for epoch variable.  The epoch variable is expected to be an
         array of integer or float values denoting time elapsed from an origin
