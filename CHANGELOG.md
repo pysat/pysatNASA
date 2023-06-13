@@ -61,6 +61,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   * Use pysat logger to raise non-deprecation warnings
   * Update syntax based on latest pysat deprecations to make the code compatible with pysat 3.2.0.
   * Updated syntax compliance with cdflib 1.0+
+  * Updated usage of `decode_times` kwarg to maintain usage in xarray
 
 ## [0.0.4] - 2022-11-07
 * Update instrument tests with new test class
