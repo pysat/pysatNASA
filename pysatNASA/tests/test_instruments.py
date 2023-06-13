@@ -98,9 +98,6 @@ class TestInstruments(clslib.InstLibTests):
 
     @pytest.mark.second
     @pytest.mark.parametrize("inst_dict", instruments['cdf'])
-    @pytest.mark.skipif(cdflib_only,
-                        reason=" ".join(("Additional load tests not required",
-                                         "when pysatCDF not installed")))
     def test_meta_header(self, inst_dict):
         """Test that instruments have header level metadata attached.
 
