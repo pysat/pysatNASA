@@ -58,7 +58,7 @@ def clean(self):
     if self.pandas_format:
         coords = [self.data.index.name]
     else:
-        coords = [key for key in self.data.coords]
+        coords = [key for key in self.data.coords.keys()]
 
     for key in self.variables:
         # Skip over the coordinates when cleaning
