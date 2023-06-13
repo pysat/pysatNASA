@@ -67,6 +67,27 @@ _test_dates = {id: {tag: dt.datetime(2022, 1, 1) for tag in inst_ids[id]}
 # Use standard init routine
 init = functools.partial(mm_nasa.init, module=mm_ace, name=name)
 
+
+def preprocess(self):
+    """Adjust dimensionality of metadata."""
+
+    # TODO(https://github.com/pysat/pysat/issues/1078): Update the metadata by
+    # removing value_min0, value_min1, etc, once possible
+    self.meta['BGSEc'] = {'value_min': min([self.meta['BGSEc']['value_min0'],
+                                            self.meta['BGSEc']['value_min1'],
+                                            self.meta['BGSEc']['value_min2']]),
+                          'value_max': max([self.meta['BGSEc']['value_max0'],
+                                            self.meta['BGSEc']['value_max1'],
+                                            self.meta['BGSEc']['value_max2']]),
+                          'SCALEMIN': min([self.meta['BGSEc']['SCALEMIN0'],
+                                           self.meta['BGSEc']['SCALEMIN1'],
+                                           self.meta['BGSEc']['SCALEMIN2']]),
+                          'SCALEMAX': max([self.meta['BGSEc']['SCALEMAX0'],
+                                           self.meta['BGSEc']['SCALEMAX1'],
+                                           self.meta['BGSEc']['SCALEMAX2']])}
+    return
+
+
 # Use default clean
 clean = mm_nasa.clean
 

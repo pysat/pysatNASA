@@ -35,7 +35,7 @@ refs = {'mission': ' '.join(('Stone, E., Frandsen, A., Mewaldt, R. et al.',
 
 
 def load(fnames, tag='', inst_id='', to_pandas=False):
-    """Load data via xarray and convert to pandas if needed.
+    """Load ACE data via xarray and convert to pandas if needed.
 
     This routine is called as needed by pysat. It is not intended
     for direct user interaction.
@@ -78,9 +78,9 @@ def load(fnames, tag='', inst_id='', to_pandas=False):
                           use_cdflib=True)
 
     if to_pandas:
-        try:
+        if hasattr(data, 'to_pandas'):
             data = data.to_pandas()
-        except AttributeError:
+        else:
             # xarray 0.16 support required for operational server
             data = data.to_dataframe()
 
