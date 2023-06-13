@@ -78,6 +78,10 @@ def load(fnames, tag='', inst_id='', to_pandas=False):
                           use_cdflib=True)
 
     if to_pandas:
-        data = data.to_pandas()
+        try:
+            data = data.to_pandas()
+        except AttributeError:
+            # xarray 0.16 support required for operational server
+            data = data.to_dataframe()
 
     return data, meta
