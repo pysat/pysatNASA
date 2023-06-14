@@ -42,6 +42,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   * Added `var_translation` kwarg to `load_xarray` interface so that variables can
     be renamed before attempting to merge.
   * Improved usage of cdflib for users in xarray instruments
+  * Added a generalized `clean` routine to replace fill vals with NaNs
 * Deprecations
   * Deprecated jpl_gps instrtument module, moved roti instrument to igs_gps
 * Maintenance
@@ -60,7 +61,9 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   * Set use_cdflib=True for supported xarray instruments
   * Set pysat 3.1.0 minimum
   * Use pysat logger to raise non-deprecation warnings
+  * Update syntax based on latest pysat deprecations to make the code compatible with pysat 3.2.0.
   * Updated syntax compliance with cdflib 1.0+
+  * Updated use of `decode_times` kwarg when loading xarray data to maintain current behaviour
 
 ## [0.0.4] - 2022-11-07
 * Update instrument tests with new test class

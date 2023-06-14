@@ -1,5 +1,7 @@
 """General methods for NASA instruments."""
 
+import numpy as np
+
 import pysat
 
 
@@ -43,6 +45,33 @@ def init(self, module, name):
     return
 
 
+def clean(self):
+    """Clean data to the specified level.
+
+    Note
+    ----
+    Basic cleaning to replace fill values with NaN
+
+    """
+
+    # Get a list of coords for the data
+    if self.pandas_format:
+        coords = [self.data.index.name]
+    else:
+        coords = [key for key in self.data.coords.keys()]
+
+    for key in self.variables:
+        # Skip over the coordinates when cleaning
+        if key not in coords:
+            fill = self.meta[key, self.meta.labels.fill_val]
+
+            # Replace fill with nan
+            fill_mask = self[key] == fill
+            self[key] = self.data[key].where(~fill_mask)
+            self.meta[key] = {self.meta.labels.fill_val: np.nan}
+    return
+
+
 def clean_warn(self):
     """Warn user that cleaning not yet available for this data set.
 
@@ -54,7 +83,7 @@ def clean_warn(self):
     'none'  No cleaning applied, routine not called in this case.
 
     """
-    pysat.logger.warn(' '.join(('No cleaning routines available for',
-                                self.platform, self.name)))
+    pysat.logger.warning(' '.join(('No cleaning routines available for',
+                                   self.platform, self.name)))
 
     return

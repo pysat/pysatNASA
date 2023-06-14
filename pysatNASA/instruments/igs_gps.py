@@ -99,8 +99,8 @@ _test_dates = {jj: {kk: dt.datetime(2013, 1, 1) for kk in inst_ids[jj]}
 init = functools.partial(mm_nasa.init, module=mm_igs, name=name)
 
 
-# No cleaning, use standard warning function instead
-clean = mm_nasa.clean_warn
+# Use default clean
+clean = mm_nasa.clean
 
 # ----------------------------------------------------------------------------
 # Instrument functions
