@@ -41,6 +41,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   * Added `var_translation` kwarg to `load_xarray` interface so that variables can
     be renamed before attempting to merge.
   * Improved usage of cdflib for users in xarray instruments
+  * Added a generalized `clean` routine to replace fill vals with NaNs
 * Deprecations
   * Deprecated jpl_gps instrtument module, moved roti instrument to igs_gps
 * Maintenance

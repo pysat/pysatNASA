@@ -88,8 +88,8 @@ def preprocess(self):
     return
 
 
-# Use default ace clean
-clean = mm_ace.clean
+# Use default clean
+clean = mm_nasa.clean
 
 # ----------------------------------------------------------------------------
 # Instrument functions

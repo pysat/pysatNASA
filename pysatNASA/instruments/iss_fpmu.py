@@ -26,12 +26,12 @@ Warnings
 
 import datetime as dt
 import functools
-import numpy as np
 
 from pysat.instruments.methods import general as mm_gen
 from pysat import logger
 
 from pysatNASA.instruments.methods import cdaweb as cdw
+from pysatNASA.instruments.methods import general as mm_nasa
 
 # ----------------------------------------------------------------------------
 # Instrument attributes
@@ -79,25 +79,8 @@ def init(self):
     return
 
 
-def clean(self):
-    """Clean ISS FPMU data to the specified level.
-
-    Note
-    ----
-    'clean' - Replace Te and Ni fill values with NaN
-    'dusty' - Same as clean
-    'dirty' - Same as clean
-    'none'  - Not applied, default fill values are preserved
-
-    """
-
-    # Replace Te data fill
-    self.data.replace(-999., np.nan, inplace=True)
-
-    # Replace Ne data fill
-    self.data.replace(-9.9999998e+30, np.nan, inplace=True)
-
-    return
+# Use default clean
+clean = mm_nasa.clean
 
 
 # ----------------------------------------------------------------------------

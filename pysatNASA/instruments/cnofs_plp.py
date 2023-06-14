@@ -60,7 +60,6 @@ doi:10.1016/j.jastp.2004.07.030.
 
 import datetime as dt
 import functools
-import numpy as np
 
 from pysat.instruments.methods import general as mm_gen
 
@@ -88,21 +87,8 @@ _test_dates = {'': {'': dt.datetime(2009, 1, 1)}}
 init = functools.partial(mm_nasa.init, module=mm_cnofs, name=name)
 
 
-def clean(self):
-    """Clean C/NOFS PLP data to the specified level.
-
-    Note
-    ----
-    Basic cleaning to find valid Epoch values
-
-    """
-
-    for key in self.data.columns:
-        if key != 'Epoch':
-            fill = self.meta[key, self.meta.labels.fill_val]
-            idx, = np.where(self[key] == fill)
-            self[idx, key] = np.nan
-    return
+# Use default clean
+clean = mm_nasa.clean
 
 
 # ----------------------------------------------------------------------------
