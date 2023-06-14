@@ -97,7 +97,7 @@ class TestInstruments(clslib.InstLibTests):
         return
 
     # TODO(https://github.com/pysat/pysat/issues/1020): This test should be
-    # removed when header level data is tested in version 3.3.0+ of pysat
+    # removed when header level data is tested in version 3.2.0+ of pysat
     @pytest.mark.second
     @pytest.mark.parametrize("inst_dict", instruments['cdf'])
     def test_meta_header(self, inst_dict):
