@@ -107,7 +107,20 @@ class TestInstruments(clslib.InstLibTests):
             Dictionary containing info to instnatiate a specific instrument.
         """
         test_inst, date = clslib.initialize_test_inst_and_date(inst_dict)
-        test_inst.load(date=date, use_header=True, use_cdflib=True)
+        try:
+            test_inst.load(date=date, use_header=True, use_cdflib=True)
+        except ValueError as verr:
+            # Check if instrument is failing due to strict time flag
+            if str(verr).find('Loaded data') > 0:
+                test_inst.strict_time_flag = False
+                with warnings.catch_warnings(record=True) as war:
+                    test_inst.load(date=date, use_header=True, use_cdflib=True)
+                assert len(war) >= 1
+                categories = [war[j].category for j in range(0, len(war))]
+                assert UserWarning in categories
+            else:
+                # If error message does not match, raise error anyway
+                raise(verr)
         assert test_inst.meta.to_dict() != {}
 
 
