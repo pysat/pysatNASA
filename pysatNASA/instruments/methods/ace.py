@@ -34,8 +34,6 @@ refs = {'mission': ' '.join(('Stone, E., Frandsen, A., Mewaldt, R. et al.',
         }
 
 
-# TODO(https://github.com/pysat/pysat/issues/1020): **kwargs can be removed
-# when header level meta is tested in version 3.3.0+ the core pysat
 def load(fnames, tag='', inst_id='', to_pandas=False, **kwargs):
     """Load ACE data via xarray and convert to pandas if needed.
 
