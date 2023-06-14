@@ -120,7 +120,7 @@ class TestInstruments(clslib.InstLibTests):
                 assert UserWarning in categories
             else:
                 # If error message does not match, raise error anyway
-                raise(verr)
+                raise (verr)
         assert test_inst.meta.to_dict() != {}
 
 
