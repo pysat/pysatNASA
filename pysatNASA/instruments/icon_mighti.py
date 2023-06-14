@@ -336,7 +336,8 @@ def load(fnames, tag='', inst_id='', keep_original_names=False):
                                                               'Valid_Min',
                                                               'Valid_Range',
                                                               '_Fillvalue',
-                                                              'ScaleTyp'])
+                                                              'ScaleTyp'],
+                                            decode_times=False)
 
     # xarray can't merge if variable and dim names are the same
     if 'Altitude' in data.dims:
