@@ -34,7 +34,7 @@ refs = {'mission': ' '.join(('Stone, E., Frandsen, A., Mewaldt, R. et al.',
         }
 
 
-def load(fnames, tag='', inst_id='', to_pandas=False):
+def load(fnames, tag='', inst_id='', to_pandas=False, **kwargs):
     """Load ACE data via xarray and convert to pandas if needed.
 
     This routine is called as needed by pysat. It is not intended

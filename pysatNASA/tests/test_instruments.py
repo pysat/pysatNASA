@@ -96,6 +96,35 @@ class TestInstruments(clslib.InstLibTests):
 
         return
 
+    # TODO(https://github.com/pysat/pysat/issues/1020): This test should be
+    # removed when header level data is tested in version 3.2.0+ of pysat
+    @pytest.mark.second
+    @pytest.mark.parametrize("inst_dict", instruments['cdf'])
+    def test_meta_header(self, inst_dict):
+        """Test that instruments have header level metadata attached.
+
+        Parameters
+        ----------
+        inst_dict : dict
+            Dictionary containing info to instnatiate a specific instrument.
+        """
+        test_inst, date = clslib.initialize_test_inst_and_date(inst_dict)
+        try:
+            test_inst.load(date=date, use_header=True, use_cdflib=True)
+        except ValueError as verr:
+            # Check if instrument is failing due to strict time flag
+            if str(verr).find('Loaded data') > 0:
+                test_inst.strict_time_flag = False
+                with warnings.catch_warnings(record=True) as war:
+                    test_inst.load(date=date, use_header=True, use_cdflib=True)
+                assert len(war) >= 1
+                categories = [war[j].category for j in range(0, len(war))]
+                assert UserWarning in categories
+            else:
+                # If error message does not match, raise error anyway
+                raise (verr)
+        assert test_inst.meta.to_dict() != {}
+
 
 class TestDeprecation(object):
     """Unit test for deprecation warnings."""

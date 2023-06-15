@@ -87,6 +87,7 @@ class CDF(object):
 
         self._cdf_file = cdflib.CDF(self._filename)
         self._cdf_info = self._cdf_file.cdf_info()
+        self.global_attrs = self._cdf_file.globalattsget()
         self.data = {}
         self.meta = {}
         self._dependencies = {}
@@ -423,7 +424,7 @@ class CDF(object):
         # and utilizing the attribute labels provided by the user
         meta = pysat.Meta(pds.DataFrame.from_dict(self.meta, orient='index'),
                           labels=labels)
-
+        meta.header = pysat.MetaHeader(header_data=self.global_attrs)
         cdata = self.data.copy()
         lower_names = [name.lower() for name in meta.keys()]
         for name, true_name in zip(lower_names, meta.keys()):

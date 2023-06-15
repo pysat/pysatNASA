@@ -21,6 +21,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
     low, high
 * Added CDAWeb methods that can use cdasws to get the remote file list
 * Bug Fixes
+  * Pandas datasets made with cdflib now have header level meta
   * Updated CDAWeb routines to allow for data stored by year/day-of-year
   * Updated GOLD nmax to sort scans by time.
   * Added 1 usec to GOLD nmax channel B times to ensure uniqueness
