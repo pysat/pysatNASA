@@ -2,7 +2,7 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
-## [0.0.5] - 2023-XX-XX
+## [0.0.5] - 2023-06-23
 * New Instruments
   * ACE EPAM
   * ACE MAG
@@ -14,11 +14,6 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   * IGS GPS (TEC and ROTI)
   * SES-14 GOLD -- tdisk, tlimb and o2den data products added
   * TIMED GUVI
-* Add TIMED GUVI platform to support L1C intensity datasets.
-  * Type of sensor source handled by inst_id with options of
-    spectrograph, imaging
-  * Resolution of dataset handled by tag with
-    low, high
 * Added CDAWeb methods that can use cdasws to get the remote file list
 * Bug Fixes
   * Pandas datasets made with cdflib now have header level meta
