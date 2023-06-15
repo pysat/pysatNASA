@@ -53,9 +53,9 @@ platform
     'de2'
 name
     'wats'
-inst_id
-    None Supported
 tag
+    None Supported
+inst_id
     None Supported
 
 

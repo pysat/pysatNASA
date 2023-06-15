@@ -31,9 +31,9 @@ platform
     'de2'
 name
     'lang'
-inst_id
-    None Supported
 tag
+    None Supported
+inst_id
     None Supported
 
 

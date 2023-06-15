@@ -56,9 +56,9 @@ platform
     'de2'
 name
     'nacs'
-inst_id
-    None Supported
 tag
+    None Supported
+inst_id
     None Supported
 
 

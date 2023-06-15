@@ -34,9 +34,9 @@ platform
     'de2'
 name
     'fpi'
-inst_id
-    None Supported
 tag
+    None Supported
+inst_id
     None Supported
 
 
