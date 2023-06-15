@@ -53,7 +53,7 @@ pip install .
 
 Note: pre-1.0.0 version
 -----------------------
-pysatNASA is currently in an initial development phase and requires pysat 3.0.4.  
+pysatNASA is currently in an initial development phase and requires pysat 3.1.0.  
 Feedback and contributions are appreciated.
 
 # Using with pysat

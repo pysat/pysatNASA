@@ -27,10 +27,10 @@ platform
     'de2'
 name
     'vefi'
-inst_id
-    None Supported
 tag
     'dca' or 'ac'
+inst_id
+    None Supported
 
 
 Warnings
