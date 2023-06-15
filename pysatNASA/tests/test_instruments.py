@@ -8,15 +8,16 @@ Imports test methods from pysat.tests.instrument_test_class
 
 import warnings
 
-import pysat
 import pytest
+
+# Import the test classes from pysat
+import pysat
+from pysat.tests.classes import cls_instrument_library as clslib
+from pysat.utils import testing
 
 # Make sure to import your instrument library here
 import pysatNASA
 
-# Import the test classes from pysat
-from pysat.tests.classes import cls_instrument_library as clslib
-from pysat.utils import testing
 
 try:
     import pysatCDF  # noqa: F401
