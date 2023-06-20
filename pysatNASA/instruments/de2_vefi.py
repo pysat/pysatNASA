@@ -56,12 +56,12 @@ name = 'vefi'
 tags = {'': '62 ms combination of Electric Field and Magnetometer',
         'dca': '500 ms cadence DC Averaged Electric Field data',
         'ac': '500 ms cadence AC Electric Field data'}
-inst_ids = {'': [tag for tag in tags]}
+inst_ids = {'': [tag for tag in tags.keys()]}
 
 # ----------------------------------------------------------------------------
 # Instrument test attributes
 
-_test_dates = {'': {tag: dt.datetime(1983, 1, 1) for tag in tags}}
+_test_dates = {'': {tag: dt.datetime(1983, 1, 1) for tag in tags.keys()}}
 
 
 # ----------------------------------------------------------------------------
@@ -85,7 +85,7 @@ fid = {'': '62ms_vefimagb',
        'dca': 'dca500ms_vefi'}
 fname = 'de2_{fid:s}_{datestr:s}.cdf'
 supported_tags = {'': {tag: fname.format(fid=fid[tag], datestr=datestr)
-                       for tag in tags}}
+                       for tag in tags.keys()}}
 list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags)
 
