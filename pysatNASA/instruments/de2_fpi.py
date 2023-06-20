@@ -67,12 +67,12 @@ from pysatNASA.instruments.methods import general as mm_nasa
 platform = 'de2'
 name = 'fpi'
 tags = {'': '8 s cadence Fabry-Perot Interferometer data'}
-inst_ids = {'': ['']}
+inst_ids = {'': [tag for tag in tags.keys()]}
 
 # ----------------------------------------------------------------------------
 # Instrument test attributes
 
-_test_dates = {'': {'': dt.datetime(1983, 1, 1)}}
+_test_dates = {'': {tag: dt.datetime(1983, 1, 1) for tag in tags.keys()}}
 
 # ----------------------------------------------------------------------------
 # Instrument methods
