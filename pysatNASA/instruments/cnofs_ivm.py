@@ -16,6 +16,27 @@ The DM directly measures the arrival angle of plasma. Using the reported
 motion of the satellite the angle is converted into ion motion along
 two orthogonal directions, perpendicular to the satellite track.
 
+
+Properties
+----------
+platform
+    'cnofs'
+name
+    'ivm'
+tag
+    None supported
+inst_id
+    None supported
+
+
+Warnings
+--------
+- The sampling rate of the instrument changes on July 29th, 2010.
+  The rate is attached to the instrument object as .sample_rate.
+
+- The cleaning parameters for the instrument are still under development.
+
+
 References
 ----------
 A brief discussion of the C/NOFS mission and instruments can be found at
@@ -32,25 +53,6 @@ Discussion of cleaning parameters for ion temperature can be found in:
 Hairston, M. R., W. R. Coley, and R. A. Heelis (2010), Mapping the
 duskside topside ionosphere with CINDI and DMSP, J. Geophys. Res.,115,
 A08324, doi:10.1029/2009JA015051.
-
-
-Properties
-----------
-platform
-    'cnofs'
-name
-    'ivm'
-tag
-    None supported
-inst_id
-    None supported
-
-Warnings
---------
-- The sampling rate of the instrument changes on July 29th, 2010.
-  The rate is attached to the instrument object as .sample_rate.
-
-- The cleaning parameters for the instrument are still under development.
 
 """
 
@@ -245,12 +247,9 @@ list_files = functools.partial(mm_gen.list_files,
 # Set the load routine
 load = cdw.load
 
-# Set the download routine
-basic_tag = {'remote_dir': '/pub/data/cnofs/cindi/ivm_500ms_cdf/{year:4d}/',
-             'fname': fname}
-download_tags = {'': {'': basic_tag}}
-download = functools.partial(cdw.download, supported_tags=download_tags)
+download_tags = {'': {'': 'CNOFS_CINDI_IVM_500MS'}}
+download = functools.partial(cdw.cdas_download, supported_tags=download_tags)
 
 # Set the list_remote_files routine
-list_remote_files = functools.partial(cdw.list_remote_files,
+list_remote_files = functools.partial(cdw.cdas_list_remote_files,
                                       supported_tags=download_tags)

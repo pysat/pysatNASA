@@ -50,10 +50,10 @@ import functools
 
 # CDAWeb methods prewritten for pysat
 from pysat.instruments.methods import general as mm_gen
-from pysat import logger
 
 from pysatNASA.instruments.methods import cdaweb as cdw
 from pysatNASA.instruments.methods import general as mm_nasa
+from pysatNASA.instruments.methods import timed as mm_timed
 
 # ----------------------------------------------------------------------------
 # Instrument attributes
@@ -68,7 +68,7 @@ multi_file_day = True
 
 # Set to False to specify using xarray (not using pandas)
 # Set to True if data will be returned via a pandas DataFrame
-pandas_format = True
+pandas_format = False
 
 # ----------------------------------------------------------------------------
 # Instrument test attributes
@@ -78,32 +78,17 @@ _test_dates = {'': {'': dt.datetime(2019, 1, 1)}}
 # ----------------------------------------------------------------------------
 # Instrument methods
 
-
-def init(self):
-    """Initialize the Instrument object with instrument specific values.
-
-    Runs once upon instantiation.
-
-    """
-
-    rules_url = 'https://saber.gats-inc.com/data_services.php'
-    ackn_str = ' '.join(('Please see the Rules of the Road at', rules_url))
-
-    logger.info(ackn_str)
-    self.acknowledgements = ackn_str
-    self.references = ''
-
-    return
-
+init = functools.partial(mm_nasa.init, module=mm_timed, name=name)
 
 # No cleaning, use standard warning function instead
 clean = mm_nasa.clean_warn
-
 
 # ----------------------------------------------------------------------------
 # Instrument functions
 #
 # Use the default CDAWeb and pysat methods
+
+# TODO(#104): Switch to netCDF4 files once unzip (#103) is supported.
 
 # Set the list_files routine
 fname = ''.join(('timed_l2a_saber_{year:04d}{month:02d}{day:02d}',
@@ -113,16 +98,17 @@ supported_tags = {'': {'': fname}}
 list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags)
 
-# Set the load routine
-load = cdw.load
+# Set the load routine. Note that the time variable associated with
+# tpaltitude is renamed to avoid conflict with renaming Epoch.
+load = functools.partial(cdw.load, pandas_format=pandas_format,
+                         drop_dims='record0',
+                         var_translation={'time': 'tp_time'},
+                         use_cdflib=True)
 
 # Set the download routine
-basic_tag = {'remote_dir': ''.join(('/pub/data/timed/saber/level2a_cdf',
-                                    '/{year:4d}/{month:02d}/')),
-             'fname': fname}
-download_tags = {'': {'': basic_tag}}
-download = functools.partial(cdw.download, supported_tags=download_tags)
+download_tags = {'': {'': 'TIMED_L2A_SABER'}}
+download = functools.partial(cdw.cdas_download, supported_tags=download_tags)
 
 # Set the list_remote_files routine
-list_remote_files = functools.partial(cdw.list_remote_files,
+list_remote_files = functools.partial(cdw.cdas_list_remote_files,
                                       supported_tags=download_tags)

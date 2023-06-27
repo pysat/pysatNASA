@@ -5,9 +5,8 @@
 import numpy as np
 import pandas as pds
 from scipy import stats
-import warnings
 
-from pysat import logger
+import pysat
 
 
 def time_shift_to_magnetic_poles(inst):
@@ -46,8 +45,8 @@ def time_shift_to_magnetic_poles(inst):
     time_x = inst['BSN_x'] * 6371.2 / -inst['Vx']
     idx, = np.where(np.isnan(time_x))
     if len(idx) > 0:
-        logger.info(time_x[idx])
-        logger.info(time_x)
+        pysat.logger.info(time_x[idx])
+        pysat.logger.info(time_x)
     time_x_offset = [pds.DateOffset(seconds=time)
                      for time in time_x.astype(int)]
     new_index = []
@@ -115,8 +114,10 @@ def calculate_imf_steadiness(inst, steady_window=15, min_window_frac=0.75,
     max_wnum = np.floor(steady_window / sample_rate)
     if max_wnum != steady_window / sample_rate:
         steady_window = max_wnum * sample_rate
-        logger.warning("sample rate is not a factor of the statistical window")
-        logger.warning("new statistical window is {:.1f}".format(steady_window))
+        pysat.logger.warning(" ".join(("sample rate is not a factor of the",
+                                       "statistical window")))
+        pysat.logger.warning(" ".join(("new statistical window is",
+                                       "{:.1f}".format(steady_window))))
 
     min_wnum = int(np.ceil(max_wnum * min_window_frac))
 
@@ -137,9 +138,9 @@ def calculate_imf_steadiness(inst, steady_window=15, min_window_frac=0.75,
                                                            kwargs=circ_kwargs,
                                                            raw=True)
     except TypeError:
-        warnings.warn(' '.join(['To automatically remove NaNs from the',
-                                'calculation, please upgrade to scipy 1.4 or',
-                                'newer']))
+        pysat.logger.warn(' '.join(['To automatically remove NaNs from the',
+                                    'calculation, please upgrade to scipy 1.4',
+                                    'or newer.']))
         circ_kwargs.pop('nan_policy')
         ca_std = \
             inst['clock_angle'].rolling(min_periods=min_wnum,

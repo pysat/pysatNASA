@@ -47,26 +47,28 @@ WATS_VOLDESC_SFDU_DE.DOC and WATS_FORMAT_SFDU_DE.DOC files. More information
 about the processing done at NSSDC is given in WATS_NSSDC_PRO_DE.DOC.
 
 
-References
-----------
-N. W. Spencer, L. E. Wharton, H. B. Niemann, A. E. Hedin, G. R. Carrignan,
-J. C. Maurer, "The Dynamics Explorer Wind and Temperature Spectrometer",
-Space Sci. Instrum., 5, 417-428, 1981.
-
 Properties
 ----------
 platform
     'de2'
 name
     'wats'
-inst_id
-    None Supported
 tag
     None Supported
+inst_id
+    None Supported
+
 
 Warnings
 --------
 - Currently no cleaning routine.
+
+
+References
+----------
+N. W. Spencer, L. E. Wharton, H. B. Niemann, A. E. Hedin, G. R. Carrignan,
+J. C. Maurer, "The Dynamics Explorer Wind and Temperature Spectrometer",
+Space Sci. Instrum., 5, 417-428, 1981.
 
 """
 
@@ -85,12 +87,12 @@ from pysatNASA.instruments.methods import general as mm_nasa
 platform = 'de2'
 name = 'wats'
 tags = {'': '2 s cadence Wind and Temperature Spectrometer data'}
-inst_ids = {'': ['']}
+inst_ids = {'': [tag for tag in tags.keys()]}
 
 # ----------------------------------------------------------------------------
 # Instrument test attributes
 
-_test_dates = {'': {'': dt.datetime(1983, 1, 1)}}
+_test_dates = {'': {tag: dt.datetime(1983, 1, 1) for tag in tags.keys()}}
 
 # ----------------------------------------------------------------------------
 # Instrument methods
@@ -99,8 +101,8 @@ _test_dates = {'': {'': dt.datetime(1983, 1, 1)}}
 # Use standard init routine
 init = functools.partial(mm_nasa.init, module=mm_de2, name=name)
 
-# No cleaning, use standard warning function instead
-clean = mm_nasa.clean_warn
+# Use default clean
+clean = mm_nasa.clean
 
 # ----------------------------------------------------------------------------
 # Instrument functions
@@ -117,12 +119,9 @@ list_files = functools.partial(mm_gen.list_files,
 load = cdw.load
 
 # Set the download routine
-basic_tag = {'remote_dir': ''.join(('/pub/data/de/de2/neutral_gas_wats',
-                                    '/wind2s_wats_cdaweb/{year:4d}/')),
-             'fname': fname}
-download_tags = {'': {'': basic_tag}}
-download = functools.partial(cdw.download, supported_tags=download_tags)
+download_tags = {'': {'': 'DE2_WIND2S_WATS'}}
+download = functools.partial(cdw.cdas_download, supported_tags=download_tags)
 
 # Set the list_remote_files routine
-list_remote_files = functools.partial(cdw.list_remote_files,
+list_remote_files = functools.partial(cdw.cdas_list_remote_files,
                                       supported_tags=download_tags)

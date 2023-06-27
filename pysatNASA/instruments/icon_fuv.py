@@ -13,6 +13,8 @@ name
     'fuv'
 tag
     None supported
+inst_id
+    None Supported
 
 Warnings
 --------
@@ -119,16 +121,13 @@ list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags)
 
 # Set the download routine
-basic_tag24 = {'remote_dir': '/pub/data/icon/l2/l2-4_fuv_day/{year:04d}/',
-               'fname': fname24}
-basic_tag25 = {'remote_dir': '/pub/data/icon/l2/l2-5_fuv_night/{year:04d}/',
-               'fname': fname25}
-download_tags = {'': {'day': basic_tag24, 'night': basic_tag25}}
+download_tags = {'': {'day': 'ICON_L2-4_FUV_DAY',
+                      'night': 'ICON_L2-5_FUV_NIGHT'}}
 
-download = functools.partial(cdw.download, supported_tags=download_tags)
+download = functools.partial(cdw.cdas_download, supported_tags=download_tags)
 
 # Set the list_remote_files routine
-list_remote_files = functools.partial(cdw.list_remote_files,
+list_remote_files = functools.partial(cdw.cdas_list_remote_files,
                                       supported_tags=download_tags)
 
 
@@ -211,8 +210,9 @@ def load(fnames, tag='', inst_id='', keep_original_names=False):
     """
     labels = {'units': ('Units', str), 'name': ('Long_Name', str),
               'notes': ('Var_Notes', str), 'desc': ('CatDesc', str),
-              'min_val': ('ValidMin', float),
-              'max_val': ('ValidMax', float), 'fill_val': ('FillVal', float)}
+              'min_val': ('ValidMin', (int, float)),
+              'max_val': ('ValidMax', (int, float)),
+              'fill_val': ('FillVal', (int, float))}
 
     meta_translation = {'FieldNam': 'plot', 'LablAxis': 'axis',
                         'FIELDNAM': 'plot', 'LABLAXIS': 'axis',
@@ -223,8 +223,9 @@ def load(fnames, tag='', inst_id='', keep_original_names=False):
 
     data, meta = pysat.utils.io.load_netcdf(fnames, epoch_name='Epoch',
                                             pandas_format=pandas_format,
-                                            labels=labels,
+                                            meta_kwargs={'labels': labels},
                                             meta_processor=filter_metadata,
                                             meta_translation=meta_translation,
-                                            drop_meta_labels=drop_labels)
+                                            drop_meta_labels=drop_labels,
+                                            decode_times=False)
     return data, meta

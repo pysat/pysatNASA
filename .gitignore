@@ -70,3 +70,6 @@ custom_lint.sh
 
 # IDEs
 .idea/
+
+# vscode
+.vscode

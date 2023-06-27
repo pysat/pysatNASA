@@ -87,12 +87,18 @@ class CDF(object):
 
         self._cdf_file = cdflib.CDF(self._filename)
         self._cdf_info = self._cdf_file.cdf_info()
+        self.global_attrs = self._cdf_file.globalattsget()
         self.data = {}
         self.meta = {}
         self._dependencies = {}
 
-        self._variable_names = (self._cdf_info['rVariables']
-                                + self._cdf_info['zVariables'])
+        if hasattr(self._cdf_info, 'rVariables'):
+            self._variable_names = (self._cdf_info.rVariables
+                                    + self._cdf_info.zVariables)
+        else:
+            # cdflib < 1.0 stores info as a dict
+            self._variable_names = (self._cdf_info['rVariables']
+                                    + self._cdf_info['zVariables'])
 
         self.load_variables()
 
@@ -156,8 +162,13 @@ class CDF(object):
 
         """
 
-        data_type_description = self._cdf_file.varinq(
-            x_axis_var)['Data_Type_Description']
+        if hasattr(self._cdf_file.varinq(x_axis_var), 'Data_Type_Description'):
+            data_type_description = self._cdf_file.varinq(
+                x_axis_var).Data_Type_Description
+        else:
+            # cdflib < 1.0 stores this as a dict
+            data_type_description = self._cdf_file.varinq(
+                x_axis_var)['Data_Type_Description']
 
         center_measurement = self._center_measurement
         cdf_file = self._cdf_file
@@ -298,7 +309,12 @@ class CDF(object):
             if not re.match(var_regex, variable_name):
                 # Skip this variable
                 continue
-            var_atts = self._cdf_file.varattsget(variable_name, to_np=True)
+            try:
+                var_atts = self._cdf_file.varattsget(variable_name, to_np=True)
+            except TypeError:
+                # cdflib 1.0+ drops to_np kwarg, assumes True
+                var_atts = self._cdf_file.varattsget(variable_name)
+
             for k in var_atts:
                 var_atts[k] = var_atts[k]  # [0]
 
@@ -319,13 +335,14 @@ class CDF(object):
                 continue
 
             if "FILLVAL" in var_atts:
-                if (var_properties['Data_Type_Description'] == 'CDF_FLOAT'
-                    or var_properties['Data_Type_Description']
-                    == 'CDF_REAL4'
-                    or var_properties['Data_Type_Description']
-                    == 'CDF_DOUBLE'
-                    or var_properties['Data_Type_Description']
-                        == 'CDF_REAL8'):
+                if hasattr(var_properties, 'Data_Type_Description'):
+                    data_type_desc = var_properties.Data_Type_Description
+                else:
+                    # cdflib < 1.0 stores this as a dict
+                    data_type_desc = var_properties['Data_Type_Description']
+
+                if data_type_desc in ['CDF_FLOAT', 'CDF_REAL4', 'CDF_DOUBLE',
+                                      'CDF_REAL8']:
 
                     if ydata[ydata == var_atts["FILLVAL"]].size != 0:
                         ydata[ydata == var_atts["FILLVAL"]] = np.nan
@@ -360,9 +377,9 @@ class CDF(object):
     def to_pysat(self, flatten_twod=True,
                  labels={'units': ('Units', str), 'name': ('Long_Name', str),
                          'notes': ('Var_Notes', str), 'desc': ('CatDesc', str),
-                         'min_val': ('ValidMin', float),
-                         'max_val': ('ValidMax', float),
-                         'fill_val': ('FillVal', float)}):
+                         'min_val': ('ValidMin', (float, int, str)),
+                         'max_val': ('ValidMax', (float, int, str)),
+                         'fill_val': ('FillVal', (float, int, str))}):
         """Export loaded CDF data into data, meta for pysat module.
 
         Parameters
@@ -382,9 +399,9 @@ class CDF(object):
             that order.
             (default={'units': ('units', str), 'name': ('long_name', str),
                       'notes': ('notes', str), 'desc': ('desc', str),
-                      'min_val': ('value_min', float),
-                      'max_val': ('value_max', float)
-                      'fill_val': ('fill', float)})
+                      'min_val': ('value_min', (float, int, str)),
+                      'max_val': ('value_max', (float, int, str))
+                      'fill_val': ('fill', (float, int, str))})
 
         Returns
         -------
@@ -407,7 +424,7 @@ class CDF(object):
         # and utilizing the attribute labels provided by the user
         meta = pysat.Meta(pds.DataFrame.from_dict(self.meta, orient='index'),
                           labels=labels)
-
+        meta.header = pysat.MetaHeader(header_data=self.global_attrs)
         cdata = self.data.copy()
         lower_names = [name.lower() for name in meta.keys()]
         for name, true_name in zip(lower_names, meta.keys()):

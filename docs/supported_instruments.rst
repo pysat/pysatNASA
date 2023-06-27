@@ -1,6 +1,38 @@
 Supported Instruments
 =====================
 
+.. _ace_epam:
+
+ACE EPAM
+--------
+
+.. automodule:: pysatNASA.instruments.ace_epam_l2
+   :members:
+
+.. _ace_mag:
+
+ACE MAG
+-------
+
+.. automodule:: pysatNASA.instruments.ace_mag_l2
+  :members:
+
+.. _ace_sis:
+
+ACE SIS
+-------
+
+.. automodule:: pysatNASA.instruments.ace_sis_l2
+   :members:
+
+.. _ace_swepam:
+
+ACE SWEPAM
+----------
+
+.. automodule:: pysatNASA.instruments.ace_swepam_l2
+  :members:
+
 .. _cnofs_ivm:
 
 C/NOFS IVM
@@ -23,6 +55,14 @@ C/NOFS VEFI
 -----------
 
 .. automodule:: pysatNASA.instruments.cnofs_vefi
+   :members:
+
+.. _de2_fpi:
+
+DE2 FPI
+--------
+
+.. automodule:: pysatNASA.instruments.de2_fpi
    :members:
 
 .. _de2_lang:
@@ -49,12 +89,28 @@ DE2 RPA
 .. automodule:: pysatNASA.instruments.de2_rpa
    :members:
 
+.. _de2_vefi:
+
+DE2 VEFI
+--------
+
+.. automodule:: pysatNASA.instruments.de2_vefi
+   :members:
+
 .. _de2_wats:
 
 DE2 WATS
 --------
 
 .. automodule:: pysatNASA.instruments.de2_wats
+   :members:
+
+.. _dmsp_ssusi:
+
+DMSP SSUSI
+----------
+
+.. automodule:: pysatNASA.instruments.dmsp_ssusi
    :members:
 
 .. _formosat1_ivm:
@@ -98,6 +154,14 @@ ICON MIGHTI
 .. automodule:: pysatNASA.instruments.icon_mighti
    :members:
 
+.. _igs_gps:
+
+IGS GPS
+-------
+
+.. automodule:: pysatNASA.instruments.igs_gps
+   :members:
+
 .. _iss_fpmu:
 
 ISS FPMU
@@ -128,6 +192,14 @@ SES14 GOLD
 ----------
 
 .. automodule:: pysatNASA.instruments.ses14_gold
+   :members:
+
+.. _timed_guvi:
+
+TIMED GUVI
+----------
+
+.. automodule:: pysatNASA.instruments.timed_guvi
    :members:
 
 .. _timed_saber:
