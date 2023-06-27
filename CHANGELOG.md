@@ -2,7 +2,7 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
-## [0.0.5] - 2023-06-23
+## [0.0.5] - 2023-06-27
 * New Instruments
   * ACE EPAM
   * ACE MAG
