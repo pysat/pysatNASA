@@ -38,9 +38,9 @@ platform
     'de2'
 name
     'rpa'
-inst_id
-    None Supported
 tag
+    None Supported
+inst_id
     None Supported
 
 
@@ -72,12 +72,12 @@ from pysatNASA.instruments.methods import general as mm_nasa
 platform = 'de2'
 name = 'rpa'
 tags = {'': '2 sec cadence RPA data'}
-inst_ids = {'': [tag for tag in tags]}
+inst_ids = {'': [tag for tag in tags.keys()]}
 
 # ----------------------------------------------------------------------------
 # Instrument test attributes
 
-_test_dates = {'': {tag: dt.datetime(1983, 1, 1) for tag in tags}}
+_test_dates = {'': {tag: dt.datetime(1983, 1, 1) for tag in tags.keys()}}
 
 # ----------------------------------------------------------------------------
 # Instrument methods
@@ -99,7 +99,7 @@ datestr = '{year:04d}{month:02d}{day:02d}_v{version:02d}'
 dataproduct = {'': 'ion2s'}
 fname = 'de2_{dp:s}_rpa_{datestr:s}.cdf'
 supported_tags = {'': {tag: fname.format(dp=dataproduct[tag], datestr=datestr)
-                       for tag in tags}}
+                       for tag in tags.keys()}}
 list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags)
 

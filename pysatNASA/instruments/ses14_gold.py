@@ -14,6 +14,8 @@ tag
     'tlimb'
     'tdisk'
     'o2den'
+inst_id
+    None Supported
 
 Warnings
 --------
@@ -131,7 +133,7 @@ def download(date_array, tag='', inst_id='', data_path=None):
 # Set the list_remote_files routine
 def list_remote_files(tag='', inst_id='', start=None, stop=None,
                       series_out=True):
-    """Return a list of every file for chosen remote data.
+    """List every file for remote GOLD data.
 
     This routine is intended to be used by pysat instrument modules supporting
     a particular NASA CDAWeb dataset.
