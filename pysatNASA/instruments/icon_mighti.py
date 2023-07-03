@@ -226,30 +226,23 @@ list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags)
 
 # Set the download routine
-dirstr1 = '/pub/data/icon/l2/l2-1_mighti-{{id:s}}_los-wind-{color:s}/'
-dirstr2 = '/pub/data/icon/l2/l2-2_mighti_vector-wind-{color:s}/'
-dirstr3 = '/pub/data/icon/l2/l2-3_mighti-{id:s}_temperature/'
-dirnames = {'los_wind_green': dirstr1.format(color='green'),
-            'los_wind_red': dirstr1.format(color='red'),
-            'vector_wind_green': dirstr2.format(color='green'),
-            'vector_wind_red': dirstr2.format(color='red'),
-            'temperature': dirstr3}
+download_tags = {'vector':
+                 {'vector_wind_green': 'ICON_L2-2_MIGHTI_VECTOR-WIND-GREEN',
+                  'vector_wind_red': 'ICON_L2-2_MIGHTI_VECTOR-WIND-RED'},
+                 'a':
+                 {'los_wind_green': 'ICON_L2-1_MIGHTI-A_LOS-WIND-GREEN',
+                  'los_wind_red': 'ICON_L2-1_MIGHTI-A_LOS-WIND-RED',
+                  'temperature': 'ICON_L2-3_MIGHTI-A_TEMPERATURE'},
+                 'b':
+                 {'los_wind_green': 'ICON_L2-1_MIGHTI-B_LOS-WIND-GREEN',
+                  'los_wind_red': 'ICON_L2-1_MIGHTI-B_LOS-WIND-RED',
+                  'temperature': 'ICON_L2-3_MIGHTI-B_TEMPERATURE'}}
 
-download_tags = {}
-for inst_id in supported_tags.keys():
-    download_tags[inst_id] = {}
-    for tag in supported_tags[inst_id].keys():
-        fname = supported_tags[inst_id][tag]
 
-        download_tags[inst_id][tag] = {
-            'remote_dir': ''.join((dirnames[tag].format(id=inst_id),
-                                   '{year:04d}/')),
-            'fname': fname}
-
-download = functools.partial(cdw.download, supported_tags=download_tags)
+download = functools.partial(cdw.cdas_download, supported_tags=download_tags)
 
 # Set the list_remote_files routine
-list_remote_files = functools.partial(cdw.list_remote_files,
+list_remote_files = functools.partial(cdw.cdas_list_remote_files,
                                       supported_tags=download_tags)
 
 
@@ -325,8 +318,9 @@ def load(fnames, tag='', inst_id='', keep_original_names=False):
     """
     labels = {'units': ('Units', str), 'name': ('Long_Name', str),
               'notes': ('Var_Notes', str), 'desc': ('CatDesc', str),
-              'min_val': ('ValidMin', float),
-              'max_val': ('ValidMax', float), 'fill_val': ('FillVal', float)}
+              'min_val': ('ValidMin', (int, float)),
+              'max_val': ('ValidMax', (int, float)),
+              'fill_val': ('FillVal', (int, float))}
 
     meta_translation = {'FieldNam': 'plot', 'LablAxis': 'axis',
                         'FIELDNAM': 'plot', 'LABLAXIS': 'axis',
@@ -335,14 +329,15 @@ def load(fnames, tag='', inst_id='', keep_original_names=False):
 
     data, meta = pysat.utils.io.load_netcdf(fnames, epoch_name='Epoch',
                                             pandas_format=pandas_format,
-                                            labels=labels,
+                                            meta_kwargs={'labels': labels},
                                             meta_processor=filter_metadata,
                                             meta_translation=meta_translation,
                                             drop_meta_labels=['Valid_Max',
                                                               'Valid_Min',
                                                               'Valid_Range',
                                                               '_Fillvalue',
-                                                              'ScaleTyp'])
+                                                              'ScaleTyp'],
+                                            decode_times=False)
 
     # xarray can't merge if variable and dim names are the same
     if 'Altitude' in data.dims:

@@ -26,21 +26,11 @@ of the ion drift velocity; the ion and electron concentration irregularity
 spectrum; and the concentration of H+, He+, O+, and Fe+, and of molecular ions
 near perigee.
 
-It includes the DUCT portion of the high resolutiondata from the Dynamics
-Explorer 2 (DE-2) Retarding Potential Analyzer (RPA) for the whole DE-2 mission
-time period in ASCII format. This version was generated at NSSDC from the
-PI-provided binary data (SPIO-00232). The DUCT files include RPA measurements
-ofthe total ion concentration every 64 times per second. Due to a failure in
-the instrument memory system RPA data are not available from 81317 06:26:40 UT
-to 82057 13:16:00 UT. This data set is based on the revised version of the RPA
-files that was submitted by the PI team in June of 1995. The revised RPA data
-include a correction to the spacecraft potential.
+Due to a failure in the instrument memory system RPA data are not available
+from 81317 06:26:40 UT to 82057 13:16:00 UT. This data set is based on the
+revised version of the RPA files that was submitted by the PI team in June of
+1995. The revised RPA data include a correction to the spacecraft potential.
 
-References
-----------
-W. B. Hanson, R. A. Heelis, R. A. Power, C. R. Lippincott, D. R. Zuccaro,
-B. J. Holt, L. H. Harmon, and S. Sanatani, “The retarding potential analyzer
-for dynamics explorer-B,” Space Sci. Instrum. 5, 503–510 (1981).
 
 Properties
 ----------
@@ -48,14 +38,22 @@ platform
     'de2'
 name
     'rpa'
-inst_id
-    None Supported
 tag
     None Supported
+inst_id
+    None Supported
+
 
 Warnings
 --------
 - Currently no cleaning routine.
+
+
+References
+----------
+W. B. Hanson, R. A. Heelis, R. A. Power, C. R. Lippincott, D. R. Zuccaro,
+B. J. Holt, L. H. Harmon, and S. Sanatani, “The retarding potential analyzer
+for dynamics explorer-B,” Space Sci. Instrum. 5, 503–510 (1981).
 
 """
 
@@ -73,13 +71,13 @@ from pysatNASA.instruments.methods import general as mm_nasa
 
 platform = 'de2'
 name = 'rpa'
-tags = {'': '2 sec cadence RPA data'}  # this is the default cadence
-inst_ids = {'': ['']}
+tags = {'': '2 sec cadence RPA data'}
+inst_ids = {'': [tag for tag in tags.keys()]}
 
 # ----------------------------------------------------------------------------
 # Instrument test attributes
 
-_test_dates = {'': {'': dt.datetime(1983, 1, 1)}}
+_test_dates = {'': {tag: dt.datetime(1983, 1, 1) for tag in tags.keys()}}
 
 # ----------------------------------------------------------------------------
 # Instrument methods
@@ -88,8 +86,8 @@ _test_dates = {'': {'': dt.datetime(1983, 1, 1)}}
 # Use standard init routine
 init = functools.partial(mm_nasa.init, module=mm_de2, name=name)
 
-# No cleaning, use standard warning function instead
-clean = mm_nasa.clean_warn
+# Use default clean
+clean = mm_nasa.clean
 
 # ----------------------------------------------------------------------------
 # Instrument functions
@@ -97,8 +95,11 @@ clean = mm_nasa.clean_warn
 # Use the default CDAWeb and pysat methods
 
 # Set the list_files routine
-fname = 'de2_ion2s_rpa_{year:04d}{month:02d}{day:02d}_v{version:02d}.cdf'
-supported_tags = {'': {'': fname}}
+datestr = '{year:04d}{month:02d}{day:02d}_v{version:02d}'
+dataproduct = {'': 'ion2s'}
+fname = 'de2_{dp:s}_rpa_{datestr:s}.cdf'
+supported_tags = {'': {tag: fname.format(dp=dataproduct[tag], datestr=datestr)
+                       for tag in tags.keys()}}
 list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags)
 
@@ -106,12 +107,9 @@ list_files = functools.partial(mm_gen.list_files,
 load = cdw.load
 
 # Set the download routine
-basic_tag = {'remote_dir': ''.join(('/pub/data/de/de2/plasma_rpa',
-                                    '/ion2s_cdaweb/{year:4d}/')),
-             'fname': fname}
-download_tags = {'': {'': basic_tag}}
-download = functools.partial(cdw.download, supported_tags=download_tags)
+download_tags = {'': {'': 'DE2_ION2S_RPA'}}
+download = functools.partial(cdw.cdas_download, supported_tags=download_tags)
 
 # Set the list_remote_files routine
-list_remote_files = functools.partial(cdw.list_remote_files,
+list_remote_files = functools.partial(cdw.cdas_list_remote_files,
                                       supported_tags=download_tags)

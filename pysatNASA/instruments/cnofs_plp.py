@@ -29,12 +29,6 @@ Probe.
 
 The data is PRELIMINARY, and as such, is intended for BROWSE PURPOSES ONLY.
 
-References
-----------
-A brief discussion of the C/NOFS mission and instruments can be found at
-de La Beaujardière, O., et al. (2004), C/NOFS: A mission to forecast
-scintillations, J. Atmos. Sol. Terr. Phys., 66, 1573–1591,
-doi:10.1016/j.jastp.2004.07.030.
 
 Properties
 ----------
@@ -54,11 +48,18 @@ Warnings
 - Currently no cleaning routine.
 - Module not written by PLP team.
 
+
+References
+----------
+A brief discussion of the C/NOFS mission and instruments can be found at
+de La Beaujardière, O., et al. (2004), C/NOFS: A mission to forecast
+scintillations, J. Atmos. Sol. Terr. Phys., 66, 1573–1591,
+doi:10.1016/j.jastp.2004.07.030.
+
 """
 
 import datetime as dt
 import functools
-import numpy as np
 
 from pysat.instruments.methods import general as mm_gen
 
@@ -86,21 +87,8 @@ _test_dates = {'': {'': dt.datetime(2009, 1, 1)}}
 init = functools.partial(mm_nasa.init, module=mm_cnofs, name=name)
 
 
-def clean(self):
-    """Clean C/NOFS PLP data to the specified level.
-
-    Note
-    ----
-    Basic cleaning to find valid Epoch values
-
-    """
-
-    for key in self.data.columns:
-        if key != 'Epoch':
-            fill = self.meta[key, self.meta.labels.fill_val]
-            idx, = np.where(self[key] == fill)
-            self[idx, key] = np.nan
-    return
+# Use default clean
+clean = mm_nasa.clean
 
 
 # ----------------------------------------------------------------------------
@@ -119,11 +107,9 @@ list_files = functools.partial(mm_gen.list_files,
 load = cdw.load
 
 # Set the download routine
-basic_tag = {'remote_dir': '/pub/data/cnofs/plp/plasma_1sec/{year:4d}/',
-             'fname': fname}
-download_tags = {'': {'': basic_tag}}
-download = functools.partial(cdw.download, supported_tags=download_tags)
+download_tags = {'': {'': 'CNOFS_PLP_PLASMA_1SEC'}}
+download = functools.partial(cdw.cdas_download, supported_tags=download_tags)
 
 # Set the list_remote_files routine
-list_remote_files = functools.partial(cdw.list_remote_files,
+list_remote_files = functools.partial(cdw.cdas_list_remote_files,
                                       supported_tags=download_tags)

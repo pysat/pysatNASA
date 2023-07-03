@@ -1,5 +1,11 @@
 # -*- coding: utf-8 -*-
-"""Provides non-instrument specific routines for JPL ROTI data."""
+"""Provides non-instrument specific routines for JPL ROTI data.
+
+.. deprecated:: 0.0.5
+    This module is now included in `methods.igs`.
+    This instrument will be removed in 0.1.0+ to reduce redundancy.
+
+"""
 
 ackn_str = ' '.join(("The GPS Total Electron Content (TEC) data",
                      "produced by the International Global Navigation",

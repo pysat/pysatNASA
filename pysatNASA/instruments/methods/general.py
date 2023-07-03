@@ -1,6 +1,6 @@
 """General methods for NASA instruments."""
 
-import warnings
+import numpy as np
 
 import pysat
 
@@ -23,15 +23,52 @@ def init(self, module, name):
 
     # Set acknowledgements
     self.acknowledgements = getattr(module, 'ackn_str')
+
+    if hasattr(module, 'rules_url'):
+        self.acknowledgements.format(getattr(module, 'rules_url')[name])
+
     pysat.logger.info(self.acknowledgements)
 
     # Set references
     refs = getattr(module, 'refs')
+    try:
+        # See if there is a tag level reference
+        inst_refs = refs[name][self.tag]
+    except TypeError:
+        # No tag-level ref, use name-levele
+        inst_refs = refs[name]
     if 'mission' in refs.keys():
-        self.references = '\n'.join((refs['mission'], refs[name]))
+        self.references = '\n'.join((refs['mission'], inst_refs))
     else:
-        self.references = refs[name]
+        self.references = inst_refs
 
+    return
+
+
+def clean(self):
+    """Clean data to the specified level.
+
+    Note
+    ----
+    Basic cleaning to replace fill values with NaN
+
+    """
+
+    # Get a list of coords for the data
+    if self.pandas_format:
+        coords = [self.data.index.name]
+    else:
+        coords = [key for key in self.data.coords.keys()]
+
+    for key in self.variables:
+        # Skip over the coordinates when cleaning
+        if key not in coords:
+            fill = self.meta[key, self.meta.labels.fill_val]
+
+            # Replace fill with nan
+            fill_mask = self[key] == fill
+            self[key] = self.data[key].where(~fill_mask)
+            self.meta[key] = {self.meta.labels.fill_val: np.nan}
     return
 
 
@@ -46,7 +83,7 @@ def clean_warn(self):
     'none'  No cleaning applied, routine not called in this case.
 
     """
-    warnings.warn(' '.join(('No cleaning routines available for',
-                            self.platform, self.name)))
+    pysat.logger.warning(' '.join(('No cleaning routines available for',
+                                   self.platform, self.name)))
 
     return

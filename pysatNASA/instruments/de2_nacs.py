@@ -50,26 +50,28 @@ between minimum (background) and maximum count rate for atomic nitrogen
 were lost between 12 March 1982 and 31 March 1982 when the counter overflowed.
 
 
-References
-----------
-G. R. Carrignan, B. P. Block, J. C. Maurer,  A. E. Hedin, C. A. Reber,
-N. W. Spencer, "The neutral mass spectrometer on Dynamics Explorer B",
-Space Sci. Instrum., 5, 429-441, 1981.
-
 Properties
 ----------
 platform
     'de2'
 name
     'nacs'
-inst_id
-    None Supported
 tag
     None Supported
+inst_id
+    None Supported
+
 
 Warnings
 --------
 - Currently no cleaning routine.
+
+
+References
+----------
+G. R. Carrignan, B. P. Block, J. C. Maurer,  A. E. Hedin, C. A. Reber,
+N. W. Spencer, "The neutral mass spectrometer on Dynamics Explorer B",
+Space Sci. Instrum., 5, 429-441, 1981.
 
 """
 
@@ -88,12 +90,12 @@ from pysatNASA.instruments.methods import general as mm_nasa
 platform = 'de2'
 name = 'nacs'
 tags = {'': '1 s cadence Neutral Atmosphere Composition Spectrometer data'}
-inst_ids = {'': ['']}
+inst_ids = {'': [tag for tag in tags.keys()]}
 
 # ----------------------------------------------------------------------------
 # Instrument test attributes
 
-_test_dates = {'': {'': dt.datetime(1983, 1, 1)}}
+_test_dates = {'': {tag: dt.datetime(1983, 1, 1) for tag in tags.keys()}}
 
 # ----------------------------------------------------------------------------
 # Instrument methods
@@ -102,8 +104,8 @@ _test_dates = {'': {'': dt.datetime(1983, 1, 1)}}
 # Use standard init routine
 init = functools.partial(mm_nasa.init, module=mm_de2, name=name)
 
-# No cleaning, use standard warning function instead
-clean = mm_nasa.clean_warn
+# Use default clean
+clean = mm_nasa.clean
 
 # ----------------------------------------------------------------------------
 # Instrument functions
@@ -120,12 +122,9 @@ list_files = functools.partial(mm_gen.list_files,
 load = cdw.load
 
 # Support download routine
-basic_tag = {'remote_dir': ''.join(('/pub/data/de/de2/neutral_gas_nacs',
-                                    '/neutral1s_nacs_cdaweb/{year:4d}/')),
-             'fname': fname}
-download_tags = {'': {'': basic_tag}}
-download = functools.partial(cdw.download, supported_tags=download_tags)
+download_tags = {'': {'': 'DE2_NEUTRAL1S_NACS'}}
+download = functools.partial(cdw.cdas_download, supported_tags=download_tags)
 
 # Support listing files currently on CDAWeb
-list_remote_files = functools.partial(cdw.list_remote_files,
+list_remote_files = functools.partial(cdw.cdas_list_remote_files,
                                       supported_tags=download_tags)
