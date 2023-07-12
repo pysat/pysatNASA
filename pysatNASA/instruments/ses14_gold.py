@@ -68,6 +68,9 @@ pandas_format = False
 # Instrument test attributes
 
 _test_dates = {'': {tag: dt.datetime(2020, 1, 1) for tag in tags.keys()}}
+_clean_warn = {inst_id: {tag: mm_nasa.clean_warnings
+                         for tag in inst_ids[inst_id]}
+               for inst_id in inst_ids.keys()}
 
 # ----------------------------------------------------------------------------
 # Instrument methods

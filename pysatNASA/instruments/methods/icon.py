@@ -100,6 +100,12 @@ refs = {'euv': ' '.join(('Stephan, A.W., Meier, R.R., England, S.L. et al.',
                              'https://doi.org/10.1007/s11214-017-0449-2\n'))}
 
 
+# Define clean warnigns for fuv
+fuv_clean_warnings = {level: [('logger', 'WARN',
+                               'Cleaning actions for ICON FUV are',
+                               level)] for level in ['clean', 'dusty', 'dirty']}
+
+
 def remove_preamble(inst):
     """Remove preambles in variable names.
 
