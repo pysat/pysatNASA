@@ -1,0 +1,88 @@
+[build-system]
+requires = ["setuptools", "pip >= 10"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pysatNASA"
+version = "0.0.5"
+description = "pysat support for NASA Instruments"
+readme = "README.md"
+requires-python = ">=3.6"
+license = {file = "LICENSE"}
+authors = [
+    {name = "Jeff Klenzing, et al.", email = "pysat.developers@gmail.com"},
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Topic :: Scientific/Engineering :: Astronomy",
+  "Topic :: Scientific/Engineering :: Physics",
+  "Topic :: Scientific/Engineering :: Atmospheric Science",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: BSD License",
+  "Natural Language :: English",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.6",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Operating System :: POSIX :: Linux",
+  "Operating System :: MacOS :: MacOS X",
+  "Operating System :: Microsoft :: Windows"
+]
+keywords = [
+  "pysat",
+  "ionosphere",
+  "magnetosphere",
+  "solar wind",
+  "thermosphere"
+]
+dependencies = [
+  "beautifulsoup4",
+  "cdasws",
+  "cdflib >= 0.4.4",
+  "lxml",
+  "netCDF4",
+  "numpy",
+  "pandas",
+  "pysat >= 3.1",
+  "requests",
+  "xarray"
+]
+
+[project.optional-dependencies]
+pysatcdf = ["pysatCDF"]
+test = [
+  "coveralls < 3.3",
+  "flake8",
+  "flake8-docstrings",
+  "hacking >= 1.0",
+  "pytest",
+  "pytest-cov",
+  "pytest-ordering"
+]
+doc = [
+  "extras_require",
+  "ipython",
+  "m2r2",
+  "numpydoc",
+  "sphinx",
+  "sphinx_rtd_theme"
+]
+
+[project.urls]
+Documentation = "https://pysatnasa.readthedocs.io/en/latest/"
+Source = "https://github.com/pysat/pysatNASA"
+
+[tool.coverage.report]
+omit = ["*/instruments/templates/"]
+
+[tool.pytest.ini_options]
+addopts = "-vs --cov=pysatNASA"
+markers = [
+  "all_inst",
+  "download",
+  "no_download",
+  "load_options",
+  "first",
+  "second"
+]
