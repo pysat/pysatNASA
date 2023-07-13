@@ -5,6 +5,12 @@ import numpy as np
 import pysat
 
 
+# Define standard clean warnings
+clean_warnings = {level: [('logger', 'WARN',
+                           'No cleaning routines available for',
+                           level)] for level in ['clean', 'dusty', 'dirty']}
+
+
 def init(self, module, name):
     """Initialize the Instrument object with instrument specific values.
 
