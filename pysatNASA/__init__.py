@@ -18,5 +18,3 @@ try:
 except AttributeError:
     # Python 3.6 requires a different version
     __version__ = importlib_metadata.version('pysatNASA')
-
-print(__version__)

@@ -42,7 +42,6 @@ jobs:
       run: |
         pip install --no-cache-dir numpy==${{ matrix.numpy_ver }}
         pip install "cdflib<1.0"
-        pip install importlib_metadata
         pip install -r requirements.txt
 
     - name: Install NEP29 dependencies
@@ -62,4 +61,4 @@ jobs:
     - name: Check that install imports correctly
       run: |
         cd ..
-        python -c "import pysatNASA; print(pysatNASA.__version__)"
+        python -c "import pysatNASA; print(pysatNASA.instruments)"
