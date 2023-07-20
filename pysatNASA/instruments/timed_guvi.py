@@ -224,9 +224,6 @@ def concat_data(self, new_data, combine_times=False, **kwargs):
 
             # Combine all the data, indexing along time
             self.data = xr.merge(data_list)
-
-            # Ensure the data is ordered correctly
-            self.data = self.data.sortby(self.index.name)
     return
 
 
