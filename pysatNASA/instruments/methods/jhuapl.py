@@ -175,7 +175,7 @@ def load_sdr_aurora(fnames, tag='', inst_id='', pandas_format=False,
     strict_dim_check : bool
         Used for xarray data (`pandas_format` is False). If True, warn the user
         that the desired epoch, 'TIME_DAY', is not present as a dimension in the
-        NetCDF file.  If False, no warning is raised. (default=True)```
+        NetCDF file.  If False, no warning is raised. (default=True)
     combine_times : bool
         For SDR data, optionally combine the different datetime coordinates
         into a single time coordinate (default=False)
@@ -203,7 +203,7 @@ def load_sdr_aurora(fnames, tag='', inst_id='', pandas_format=False,
     # Initialize the output
     mdata = pysat.Meta()
     data = xr.Dataset()
-    
+
     # Define the input variables and working variables
     labels = {mdata.labels.units: ('UNITS', str),
               mdata.labels.desc: ('TITLE', str)}
@@ -282,7 +282,7 @@ def load_sdr_aurora(fnames, tag='', inst_id='', pandas_format=False,
         for i, ntime in enumerate(build_dtimes(sdata, '_NIGHT')):
             if abs(ntime - ftime[i]).total_seconds() > 1.0:
                 raise ValueError('Day and night times differ')
- 
+
         # Remove redundant time variables and rname the 'nAlong' dimension
         sdata = sdata.drop_vars(time_vars).swap_dims({'nAlong': 'time'})
 
