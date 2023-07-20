@@ -106,7 +106,8 @@ def load_edr_aurora(fnames, tag='', inst_id='', pandas_format=False,
     data = xr.Dataset()
 
     # Define the input variables
-    labels = {'units': ('UNITS', str), 'desc': ('TITLE', str)}
+    labels = {mdata.labels.units: ('UNITS', str),
+              mdata.labels.desc: ('TITLE', str)}
 
     # CDAWeb stores these files in the NetCDF format instead of the CDF format
     single_data = list()
@@ -204,7 +205,8 @@ def load_sdr_aurora(fnames, tag='', inst_id='', pandas_format=False,
     data = xr.Dataset()
     
     # Define the input variables and working variables
-    labels = {'units': ('UNITS', str), 'desc': ('TITLE', str)}
+    labels = {mdata.labels.units: ('UNITS', str),
+              mdata.labels.desc: ('TITLE', str)}
     load_time = 'TIME_DAY'
     time_vars = ['YEAR_DAY', 'DOY_DAY', 'TIME_EPOCH_DAY', 'YEAR_NIGHT',
                  'DOY_NIGHT', 'TIME_NIGHT', 'TIME_EPOCH_NIGHT']
