@@ -92,8 +92,11 @@ _test_load_opt = {iid: {tag: {'combine_times': True}
                         for tag in inst_ids[iid]} for iid in ['high_res',
                                                               'low_res']}
 _clean_warn = {inst_id: {tag: mm_nasa.clean_warnings
-                         for tag in inst_ids[inst_id]}
+                         for tag in inst_ids[inst_id] if tag != 'sdr-imaging'}
                for inst_id in inst_ids.keys()}
+for inst_id in ['high_res', 'low_res']:
+    _clean_warn[inst_id]['sdr-imaging']['dirty'] = mm_nasa.clean_warnings[
+        'dirty']
 
 # ----------------------------------------------------------------------------
 # Instrument methods
@@ -101,8 +104,50 @@ _clean_warn = {inst_id: {tag: mm_nasa.clean_warnings
 # Use standard init routine
 init = functools.partial(mm_nasa.init, module=mm_timed, name=name)
 
-# No cleaning, use standard warning function instead
-clean = mm_nasa.clean_warn
+
+def clean(self):
+    """Clean TIMED GUVI imaging data.
+
+    Note
+    ----
+        Supports 'clean', 'dusty', 'dirty', 'none'. Method is
+        not called by pysat if clean_level is None or 'none'.
+
+    """
+
+    if self.tag == "sdr-imaging" and self.clean_level in ['clean', 'dusty']:
+        # Find the flag variables
+        dqi_vars = [var for var in self.variables if var.find('DQI') == 0] 
+
+        # Find the variables affected by each flag
+        dat_vars = {dqi: [var for var in self.variables if var.find(dqi) > 0]
+                    if dqi.find('AURORAL') >= 0 else
+                    [var for var in self.variables if var.find('AURORAL') < 0
+                     and  var.find(dqi) > 0] for dqi in dqi_vars}
+
+        for dqi in dqi_vars:
+            if self.clean_level == 'clean':
+                # For clean, require DQI of zero (MeV noise only)
+                dqi_bad = self.data[dqi].values > 0
+            else:
+                # For dusty, allow the SAA region as well
+                dqi_bad = self.data[dqi].values > 1
+
+            # Apply the DQI mask to the data, replacing bad values with
+            # appropriate fill values
+            for dat_var in dat_vars[dqi]:
+                if self.data[dat_var].shape == dqi_bad.shape:
+                    # Only apply to data with the correct dimensions
+                    fill_val = self.meta[dat_var, self.meta.labels.fill_val]
+                    self.data[dat_var].values[dqi_bad] = fill_val
+    else:
+        # Follow the same warning format as the general clean warning, but
+        # with additional information.
+        pysat.logger.warning(' '.join(['No cleaning routines available for',
+                                       self.platform, self.name, self.tag,
+                                       self.inst_id, 'at clean level',
+                                       self.clean_level]))
+    return
 
 # ----------------------------------------------------------------------------
 # Instrument functions
