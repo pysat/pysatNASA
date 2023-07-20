@@ -95,8 +95,8 @@ _clean_warn = {inst_id: {tag: mm_nasa.clean_warnings
                          for tag in inst_ids[inst_id] if tag != 'sdr-imaging'}
                for inst_id in inst_ids.keys()}
 for inst_id in ['high_res', 'low_res']:
-    _clean_warn[inst_id]['sdr-imaging']['dirty'] = mm_nasa.clean_warnings[
-        'dirty']
+    _clean_warn[inst_id]['sdr-imaging'] = {'dirty': mm_nasa.clean_warnings[
+        'dirty']}
 
 # ----------------------------------------------------------------------------
 # Instrument methods
