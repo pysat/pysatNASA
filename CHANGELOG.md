@@ -3,6 +3,11 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [0.X.X] - 2023-XX-XX
+* Bug Fixes
+  * Allow graceful failure with no files in jhuapl load functions
+* Enhancements
+  * Added custom `concat_data` method to TIMED-GUVI data
+  * Added cleaning to TIMED-GUVI SDR imaging data
 * Maintenance
   * Implemented unit tests for cleaning warnings
 
