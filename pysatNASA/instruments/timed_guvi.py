@@ -136,7 +136,8 @@ def clean(self):
             # Apply the DQI mask to the data, replacing bad values with
             # appropriate fill values
             for dat_var in dat_vars[dqi]:
-                if self.data[dat_var].shape == dqi_bad.shape:
+                if(self.data[dat_var].shape == dqi_bad.shape or
+                   self.data[dat_var].shape[:-1] == dqi_bad.shape):
                     # Only apply to data with the correct dimensions
                     fill_val = self.meta[dat_var, self.meta.labels.fill_val]
                     self.data[dat_var].values[dqi_bad] = fill_val
