@@ -316,6 +316,10 @@ def load_sdr_aurora(fnames, tag='', inst_id='', pandas_format=False,
         # Update the fill value, using information from the global header
         mdata[var] = {mdata.labels.fill_val: mdata.header.NO_DATA_IN_BIN_VALUE}
 
+    # Add metadata for 'time_auroral' and 'nCross' variables
+    mdata['time_auroral'] = {'desc': 'Auroral time index'}
+    mdata['nCross'] = {'desc': 'Number of cross-track observations'}
+
     # Combine all time dimensions
     if inners is not None:
         if combine_times:
