@@ -137,8 +137,8 @@ def clean(self):
             # Apply the DQI mask to the data, replacing bad values with
             # appropriate fill values
             for dat_var in dat_vars[dqi]:
-                if(self.data[dat_var].shape == dqi_bad.shape
-                   or self.data[dat_var].shape[:-1] == dqi_bad.shape):
+                if self.data[dat_var].shape == dqi_bad.shape or self.data[
+                        dat_var].shape[:-1] == dqi_bad.shape:
                     # Only apply to data with the correct dimensions
                     fill_val = self.meta[dat_var, self.meta.labels.fill_val]
                     self.data[dat_var].values[dqi_bad] = fill_val
@@ -201,7 +201,8 @@ def concat_data(self, new_data, combine_times=False, **kwargs):
             sv_keys = [val.name for val in ndata.values()
                        if 'single_var' in val.dims]
             singlevar_set = ndata.get(sv_keys)
-            inner_dat['time'] = xr.merge([inner_dat['time'], singlevar_set])
+            inner_dat[self.index.name] = xr.merge([inner_dat[self.index.name],
+                                                   singlevar_set])
 
             # Concatenate along desired dimension with previous data
             if inners is None:
