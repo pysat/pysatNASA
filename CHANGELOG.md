@@ -5,6 +5,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## [0.X.X] - 2023-XX-XX
 * Maintenance
   * Implemented unit tests for cleaning warnings
+  * Use pip install for readthedocs
 
 ## [0.0.5] - 2023-06-27
 * New Instruments
