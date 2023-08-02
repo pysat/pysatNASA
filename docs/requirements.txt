@@ -1,5 +1,0 @@
-extras_require
-m2r2
-numpydoc
-pysat
-pysatNASA
