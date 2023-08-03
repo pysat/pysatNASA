@@ -2,12 +2,12 @@
 """Module for the MAVEN kp instrument.
 Created by: Teresa Esman, NPP at GSFC
 Last editted: Jun 2, 2023
-    May 12, 2023 
+    May 12, 2023
 
 Supports the Key parameter (kp) data from multiple instruments onboard the Mars Atmosphere and Volatile Evolution (MAVEN) satellite.
 
 Accesses local data in CDF format.
-Downlaods from CDAWeb. 
+Downlaods from CDAWeb.
 
 Properties
 ----------
@@ -31,8 +31,8 @@ Examples
     import pysat
     from pysat.utils import registry
     registry.register_by_module(pysatNASA.instruments)
-    
-    
+
+
     kp = pysat.Instrument(platform='MAVEN', name='kp')
     kp.download(dt.datetime(2020, 1, 1), dt.datetime(2020, 1, 31))
     kp.load(2020, 1, use_header = True)
@@ -72,22 +72,6 @@ _test_load_opt = {'': {'': {'keep_original_names': True}}}
 init = functools.partial(mm_nasa.init, module=mm_mvn, name=name)
 
 
-def preprocess(self, keep_original_names=False):
-    """Adjust epoch timestamps to datetimes and remove variable preambles.
-
-    Parameters
-    ----------
-    keep_original_names : bool
-        if True then the names as given in the netCDF MAVEN file
-        will be used as is. If False, a preamble is removed. (default=False)
-
-    """
-
-    if not keep_original_names:
-        mm_gen.remove_leading_text(self, target='MAVEN_')
-    return
-
-
 def clean(self):
     """Clean MAVEN kp data to the specified level.
 
@@ -95,7 +79,7 @@ def clean(self):
     ----
         Supports 'clean', 'dusty', 'dirty', 'none'. Method is
         not called by pysat if clean_level is None or 'none'.
-        
+
 
     """
     return
@@ -340,63 +324,6 @@ def init(self):
 
     return
 
-def load(fnames, tag='', inst_id='', keep_original_names=False):
-    """Load MAVEN kp data into `xarray.Dataset` object and `pysat.Meta` objects.
-
-    This routine is called as needed by pysat. It is not intended
-    for direct user interaction.
-
-    Parameters
-    ----------
-    fnames : array-like
-        Iterable of filename strings, full path, to data files to be loaded.
-        This input is nominally provided by pysat itself.
-    tag : str
-        Tag name used to identify particular data set to be loaded.
-        This input is nominally provided by pysat itself. (default='')
-    inst_id : str
-        Instrument ID used to identify particular data set to be loaded.
-        This input is nominally provided by pysat itself. (default='')
-    keep_original_names : bool
-        If True then the names as given in the netCDF MAVEN file
-        will be used as is. If False, a preamble is removed. (default=False)
-
-    Returns
-    -------
-    data : xr.Dataset
-        An xarray Dataset with data prepared for the pysat.Instrument
-    meta : pysat.Meta
-        Metadata formatted for a pysat.Instrument object.
-
-    Note
-    ----
-    Any additional keyword arguments passed to pysat.Instrument
-    upon instantiation are passed along to this routine.
-
-    The 'Altitude' dimension is renamed as 'Alt' to avoid confusion with the
-    'Altitude' variable when performing xarray operations
-
-    Examples
-    --------
-    ::
-
-        inst = pysat.Instrument('mvn', 'kp')
-        inst.load(2020, 1)
-
-    """
-          
-          
-    data = cdflib.cdf_to_xarray(fnames[0])      
-
-    meta = []
-    
-    xdata = mm_mvn.scrub_mvn_kp(data)
-    #this switches type to xarray
-
-    # Add meta here
-    header_data = mm_mvn.generate_header_kp(data)
-    meta = mm_mvn.generate_metadata_kp(header_data,data)
-    
-    data = xdata
-
-    return data,meta
+# Set the load routine
+load = functools.partial(cdw.load, epoch_name='epoch',
+                         pandas_format=pandas_format, use_cdflib=True)
