@@ -386,9 +386,12 @@ def load_xarray(fnames, tag='', inst_id='',
             ldata.append(temp_data)
 
         # Combine individual files together, concat along epoch
-        if len(ldata) > 0:
+        if len(ldata) > 1:
             data = xr.combine_nested(ldata, epoch_name,
                                      combine_attrs='override')
+        else:
+            data = ldata[0]
+
 
     all_vars = io.xarray_all_vars(data)
 
