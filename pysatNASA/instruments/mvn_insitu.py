@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 """Module for the MAVEN kp instrument.
+
 Created by: Teresa Esman, NPP at GSFC
 Last editted: Jun 2, 2023
     May 12, 2023
 
-Supports the Key parameter (kp) data from multiple instruments onboard the Mars Atmosphere and Volatile Evolution (MAVEN) satellite.
+Supports the Key parameter (kp) data from multiple instruments 
+onboard the Mars Atmosphere and Volatile Evolution (MAVEN) satellite.
 
 Accesses local data in CDF format.
 Downlaods from CDAWeb.
@@ -39,8 +41,6 @@ Examples
 
 import datetime as dt
 import functools
-import numpy as np
-import cdflib
 import pysat
 from pysat.instruments.methods import general as mm_gen
 from pysatNASA.instruments.methods import cdaweb as cdw
@@ -69,6 +69,7 @@ _test_load_opt = {'': {'': {'keep_original_names': True}}}
 # Use standard init routine
 init = functools.partial(mm_nasa.init, module=mm_mvn, name=name)
 
+
 def clean(self):
     """Clean MAVEN kp data to the specified level.
 
@@ -92,7 +93,8 @@ supported_tags = {'': {'': fname}}
 list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags)
 # Set the download routine
-basic_tag = {'remote_dir': '/pub/data/maven/insitu/kp-4sec/cdfs/{year:04d}/{month:02d}',
+basic_tag = {'remote_dir': ''.join(('/pub/data/maven/insitu/kp-4sec/',
+                                    'cdfs/{year:04d}/{month:02d}')),
              'fname': fname}
 download_tags = {'': {'': basic_tag}}
 download = functools.partial(cdw.download, supported_tags=download_tags)
