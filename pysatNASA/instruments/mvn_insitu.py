@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
-"""Module for the MAVEN kp instrument.
+"""Module for the MAVEN insitu instrument.
 
 Created by: Teresa Esman, NPP at GSFC
-Last editted: Jun 2, 2023
-    May 12, 2023
 
-Supports the Key parameter (kp) data from multiple instruments 
+Supports the Key parameter (kp) data from multiple instruments
 onboard the Mars Atmosphere and Volatile Evolution (MAVEN) satellite.
 
 Accesses local data in CDF format.
@@ -34,9 +32,9 @@ Examples
     registry.register_by_module(pysatNASA.instruments)
 
 
-    kp = pysat.Instrument(platform='MAVEN', name='kp')
-    kp.download(dt.datetime(2020, 1, 1), dt.datetime(2020, 1, 31))
-    kp.load(2020, 1, use_header = True)
+    insitu = pysat.Instrument(platform='MAVEN', name='insitu')
+    insitu.download(dt.datetime(2020, 1, 1), dt.datetime(2020, 1, 31))
+    insitu.load(2020, 1, use_header = True)
 """
 
 import datetime as dt
@@ -71,7 +69,7 @@ init = functools.partial(mm_nasa.init, module=mm_mvn, name=name)
 
 
 def clean(self):
-    """Clean MAVEN kp data to the specified level.
+    """Clean MAVEN insitu kp data to the specified level.
 
     Note
     ----
@@ -102,9 +100,13 @@ download = functools.partial(cdw.download, supported_tags=download_tags)
 # Set the list_remote_files routine
 list_remote_files = functools.partial(cdw.list_remote_files,
                                       supported_tags=download_tags)
+
+
 def init(self):
     """Initialize the Instrument object with instrument specific values.
+
     Runs once upon instantiation.
+
     Parameters
     -----------
     self : pysat.Instrument
@@ -116,6 +118,7 @@ def init(self):
     self.references = mm_mvn.references
 
     return
+
 
 # Set the load routine
 load = functools.partial(cdw.load, epoch_name='epoch',
