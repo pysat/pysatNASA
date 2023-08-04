@@ -12,4 +12,3 @@ from pysatNASA.instruments.methods import jhuapl  # noqa F401
 from pysatNASA.instruments.methods import omni  # noqa F401
 from pysatNASA.instruments.methods import ses14  # noqa F401
 from pysatNASA.instruments.methods import timed  # noqa F401
-from pysatNASA.instruments.methods import mvn # noga F401

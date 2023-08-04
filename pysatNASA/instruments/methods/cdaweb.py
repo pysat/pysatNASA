@@ -392,7 +392,6 @@ def load_xarray(fnames, tag='', inst_id='',
         else:
             data = ldata[0]
 
-
     all_vars = io.xarray_all_vars(data)
 
     meta = pysat.Meta(labels=labels)
