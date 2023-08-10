@@ -44,7 +44,7 @@ import pysat
 from pysat.instruments.methods import general as mm_gen
 from pysatNASA.instruments.methods import cdaweb as cdw
 from pysatNASA.instruments.methods import general as mm_nasa
-from pysatNASA.instruments.methods import mvn as mm_mvn
+from pysatNASA.instruments.methods import maven as mm_mvn
 
 # ----------------------------------------------------------------------------
 # Instrument attributes
@@ -59,7 +59,7 @@ pandas_format = False
 # Instrument test attributes
 
 _test_dates = {'': {'': dt.datetime(2020, 1, 1)}}
-_test_load_opt = {'': {'': {'keep_original_names': True}}}
+
 # ----------------------------------------------------------------------------
 # Instrument methods
 
@@ -92,7 +92,6 @@ fname = ''.join(('mvn_mag_l2-sunstate-1sec_{year:04d}{month:02d}{day:02d}_',
 supported_tags = {'': {'': fname}}
 list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags)
-
 # Set the download routine
 basic_tag = {'remote_dir': ''.join(('/pub/data/maven/mag/l2/sunstate-1sec',
                                     '/cdfs/{year:04d}/{month:02d}')),
