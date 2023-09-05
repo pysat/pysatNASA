@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools", "pip >= 10"]
+requires = ["setuptools >= 38.6", "pip >= 10"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -66,7 +66,7 @@ doc = [
   "m2r2",
   "numpydoc",
   "sphinx",
-  "sphinx_rtd_theme"
+  "sphinx_rtd_theme >= 1.2.2"
 ]
 
 [project.urls]

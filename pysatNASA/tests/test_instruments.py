@@ -11,12 +11,13 @@ import warnings
 import pysat
 import pytest
 
-# Make sure to import your instrument library here
-import pysatNASA
-
 # Import the test classes from pysat
+import pysat
 from pysat.tests.classes import cls_instrument_library as clslib
 from pysat.utils import testing
+
+# Make sure to import your instrument library here
+import pysatNASA
 
 try:
     import pysatCDF  # noqa: F401
@@ -106,7 +107,8 @@ class TestInstruments(clslib.InstLibTests):
         Parameters
         ----------
         inst_dict : dict
-            Dictionary containing info to instnatiate a specific instrument.
+            Dictionary containing info to instantiate a specific instrument.
+
         """
         test_inst, date = clslib.initialize_test_inst_and_date(inst_dict)
         try:
@@ -117,6 +119,7 @@ class TestInstruments(clslib.InstLibTests):
                 test_inst.strict_time_flag = False
                 with warnings.catch_warnings(record=True) as war:
                     test_inst.load(date=date, use_header=True, use_cdflib=True)
+
                 assert len(war) >= 1
                 categories = [war[j].category for j in range(0, len(war))]
                 assert UserWarning in categories

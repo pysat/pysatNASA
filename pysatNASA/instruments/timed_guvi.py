@@ -91,6 +91,9 @@ _test_dates = {iid: {tag: dt.datetime(2005, 6, 28) for tag in inst_ids[iid]}
 _test_load_opt = {iid: {tag: {'combine_times': True}
                         for tag in inst_ids[iid]} for iid in ['high_res',
                                                               'low_res']}
+_clean_warn = {inst_id: {tag: mm_nasa.clean_warnings
+                         for tag in inst_ids[inst_id]}
+               for inst_id in inst_ids.keys()}
 
 # ----------------------------------------------------------------------------
 # Instrument methods
