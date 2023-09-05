@@ -8,7 +8,6 @@ Imports test methods from pysat.tests.instrument_test_class
 
 import warnings
 
-import pysat
 import pytest
 
 # Import the test classes from pysat
