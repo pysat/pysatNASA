@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 """Module for the MAVEN insitu instrument.
 
-Created by: Teresa Esman, NPP at GSFC
-
 Supports the Solar Energetic Particle (SEP) data from
 onboard the Mars Atmosphere and Volatile Evolution (MAVEN) satellite.
 
@@ -17,14 +15,14 @@ name
     'sep'
 tag
     's1','s2'
-
+inst_id
+    None supported
+    
 
 Examples
 --------
 ::
     import pysat
-    from pysat.utils import registry
-    registry.register_by_module(pysatNASA.instruments)
 
 
     insitu = pysat.Instrument(platform='MAVEN', name='insitu')
@@ -34,6 +32,7 @@ Examples
 
 import datetime as dt
 import functools
+
 import pysat
 from pysat.instruments.methods import general as mm_gen
 from pysatNASA.instruments.methods import cdaweb as cdw
@@ -62,18 +61,8 @@ _test_dates = {'': {'': dt.datetime(2020, 1, 1)}}
 init = functools.partial(mm_nasa.init, module=mm_mvn, name=name)
 
 
-def clean(self):
-    """Clean MAVEN mag data to the specified level.
-
-    Note
-    ----
-        Supports 'clean', 'dusty', 'dirty', 'none'. Method is
-        not called by pysat if clean_level is None or 'none'.
-
-
-    """
-
-    return
+# Use default clean
+clean = mm_nasa.clean
 
 
 # ----------------------------------------------------------------------------
@@ -116,22 +105,6 @@ list_remote_files = functools.partial(cdw.list_remote_files,
                                       supported_tags=download_tags)
 
 
-def init(self):
-    """Initialize the Instrument object with instrument specific values.
-
-    Runs once upon instantiation.
-
-    Parameters
-    -----------
-    self : pysat.Instrument
-        Instrument class object
-    """
-
-    pysat.logger.info(mm_mvn.ackn_str)
-    self.acknowledgements = mm_mvn.ackn_str
-    self.references = mm_mvn.references
-
-    return
 
 
 # Set the load routine

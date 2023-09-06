@@ -1,13 +1,11 @@
 # -*- coding: utf-8 -*-
 """Module for the MAVEN insitu instrument.
 
-Created by: Teresa Esman, NPP at GSFC
-
-Supports the Key parameter (kp) data from multiple instruments
+Supports the in situ Key Parameter (kp) data from multiple instruments
 onboard the Mars Atmosphere and Volatile Evolution (MAVEN) satellite.
 
 Accesses local data in CDF format.
-Downlaods from CDAWeb.
+Downloads from CDAWeb.
 
 Properties
 ----------
@@ -17,23 +15,25 @@ name
     'insitu'
 tag
     None supported
+inst_id
+    None supported
 
 
 Examples
 --------
 ::
     import pysat
-    from pysat.utils import registry
-    registry.register_by_module(pysatNASA.instruments)
 
 
-    insitu = pysat.Instrument(platform='MAVEN', name='insitu')
+    insitu = pysat.Instrument(platform='maven', name='insitu')
     insitu.download(dt.datetime(2020, 1, 1), dt.datetime(2020, 1, 31))
-    insitu.load(2020, 1, use_header = True)
+    insitu.load(2020, 1, use_header=True)
+
 """
 
 import datetime as dt
 import functools
+
 import pysat
 from pysat.instruments.methods import general as mm_gen
 from pysatNASA.instruments.methods import cdaweb as cdw
@@ -62,15 +62,8 @@ _test_dates = {'': {'': dt.datetime(2020, 1, 1)}}
 init = functools.partial(mm_nasa.init, module=mm_mvn, name=name)
 
 
-def clean(self):
-    """Clean MAVEN insitu kp data to the specified level.
-
-    Note
-    ----
-        Supports 'none'. Method is
-        not called by pysat if clean_level is None or 'none'.
-    """
-    return
+# Use default clean
+clean = mm_nasa.clean
 
 
 # ----------------------------------------------------------------------------
@@ -94,24 +87,6 @@ download = functools.partial(cdw.download, supported_tags=download_tags)
 # Set the list_remote_files routine
 list_remote_files = functools.partial(cdw.list_remote_files,
                                       supported_tags=download_tags)
-
-
-def init(self):
-    """Initialize the Instrument object with instrument specific values.
-
-    Runs once upon instantiation.
-
-    Parameters
-    -----------
-    self : pysat.Instrument
-        Instrument class object
-    """
-
-    pysat.logger.info(mm_mvn.ackn_str)
-    self.acknowledgements = mm_mvn.ackn_str
-    self.references = mm_mvn.references
-
-    return
 
 
 # Set the load routine
