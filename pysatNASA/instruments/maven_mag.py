@@ -24,8 +24,8 @@ Examples
 --------
 ::
     import pysat
-    
-    
+
+
     mag = pysat.Instrument(platform='maven', name='mag')
     mag.download(dt.datetime(2020, 1, 1), dt.datetime(2020, 1, 31))
     mag.load(2020, 1, use_header = True)

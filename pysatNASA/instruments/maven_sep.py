@@ -27,7 +27,6 @@ Examples
     insitu = pysat.Instrument(platform='MAVEN', name='insitu')
     insitu.download(dt.datetime(2020, 1, 1), dt.datetime(2020, 1, 31))
     insitu.load(2020, 1, use_header = True)
-    
 """
 
 import datetime as dt
