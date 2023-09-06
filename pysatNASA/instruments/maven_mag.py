@@ -23,6 +23,9 @@ Warnings
 Examples
 --------
 ::
+    import pysat
+    
+    
     mag = pysat.Instrument(platform='maven', name='mag')
     mag.download(dt.datetime(2020, 1, 1), dt.datetime(2020, 1, 31))
     mag.load(2020, 1, use_header = True)
@@ -32,7 +35,6 @@ Examples
 import datetime as dt
 import functools
 
-import pysat
 from pysat.instruments.methods import general as mm_gen
 from pysatNASA.instruments.methods import cdaweb as cdw
 from pysatNASA.instruments.methods import general as mm_nasa

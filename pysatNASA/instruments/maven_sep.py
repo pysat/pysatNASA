@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-"""Module for the MAVEN insitu instrument.
+"""Module for the MAVEN sep instrument.
 
 Supports the Solar Energetic Particle (SEP) data from
 onboard the Mars Atmosphere and Volatile Evolution (MAVEN) satellite.
 
 Accesses local data in CDF format.
-Downlaods from CDAWeb.
+Downloads from CDAWeb.
 
 Properties
 ----------
@@ -17,7 +17,6 @@ tag
     's1','s2'
 inst_id
     None supported
-    
 
 Examples
 --------
@@ -28,12 +27,12 @@ Examples
     insitu = pysat.Instrument(platform='MAVEN', name='insitu')
     insitu.download(dt.datetime(2020, 1, 1), dt.datetime(2020, 1, 31))
     insitu.load(2020, 1, use_header = True)
+    
 """
 
 import datetime as dt
 import functools
 
-import pysat
 from pysat.instruments.methods import general as mm_gen
 from pysatNASA.instruments.methods import cdaweb as cdw
 from pysatNASA.instruments.methods import general as mm_nasa
@@ -103,9 +102,6 @@ download = functools.partial(cdw.download, supported_tags=download_tags)
 # Set the list_remote_files routine
 list_remote_files = functools.partial(cdw.list_remote_files,
                                       supported_tags=download_tags)
-
-
-
 
 # Set the load routine
 load = functools.partial(cdw.load, epoch_name='epoch',
