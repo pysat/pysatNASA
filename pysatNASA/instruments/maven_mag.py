@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 """Module for the MAVEN mag instrument.
 
-Created by: Teresa Esman, NPP at GSFC
-
 Supports the Magnetometer (MAG) onboard the Mars Atmosphere
 and Volatile Evolution (MAVEN) satellite.
 Accesses local data in CDF format.
@@ -25,13 +23,7 @@ Warnings
 Examples
 --------
 ::
-
-    import pysat
-    from pysat.utils import registry
-    registry.register_by_module(pysatNASA.instruments)
-
-
-    mag = pysat.Instrument(platform='MAVEN', name='mag')
+    mag = pysat.Instrument(platform='maven', name='mag')
     mag.download(dt.datetime(2020, 1, 1), dt.datetime(2020, 1, 31))
     mag.load(2020, 1, use_header = True)
 
@@ -67,18 +59,8 @@ _test_dates = {'': {'': dt.datetime(2020, 1, 1)}}
 init = functools.partial(mm_nasa.init, module=mm_mvn, name=name)
 
 
-def clean(self):
-    """Clean MAVEN mag data to the specified level.
-
-    Note
-    ----
-        Supports 'clean', 'dusty', 'dirty', 'none'. Method is
-        not called by pysat if clean_level is None or 'none'.
-
-
-    """
-
-    return
+# Use default clean
+clean = mm_nasa.clean
 
 
 # ----------------------------------------------------------------------------
@@ -102,25 +84,6 @@ download = functools.partial(cdw.download, supported_tags=download_tags)
 # Set the list_remote_files routine
 list_remote_files = functools.partial(cdw.list_remote_files,
                                       supported_tags=download_tags)
-
-
-def init(self):
-    """Initialize the Instrument object with instrument specific values.
-
-    Runs once upon instantiation.
-
-    Parameters
-    -----------
-    self : pysat.Instrument
-        Instrument class object
-    """
-
-    pysat.logger.info(mm_mvn.ackn_str)
-    self.acknowledgements = mm_mvn.ackn_str
-    self.references = mm_mvn.references
-
-    return
-
 
 # Set the load routine
 load = functools.partial(cdw.load, epoch_name='epoch',
