@@ -53,7 +53,7 @@ metadata values required by the ITSP standards. Additionally, the
 ``export_pysat_info`` option is set to false here. This drops several internal
 pysat metadata values before writing to file.
 
-Other best practices for archival include adding the oprational software version
+Other best practices for archival include adding the operational software version
 to the metadata header before writing. The pysat version will be automatically
 written to the metadata.
 
