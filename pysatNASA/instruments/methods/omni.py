@@ -130,24 +130,11 @@ def calculate_imf_steadiness(inst, steady_window=15, min_window_frac=0.75,
 
     # Calculate the running circular standard deviation of the clock angle
     circ_kwargs = {'high': 360.0, 'low': 0.0, 'nan_policy': 'omit'}
-    try:
-        ca_std = \
-            inst['clock_angle'].rolling(min_periods=min_wnum,
-                                        window=steady_window,
-                                        center=True).apply(stats.circstd,
-                                                           kwargs=circ_kwargs,
-                                                           raw=True)
-    except TypeError:
-        pysat.logger.warn(' '.join(['To automatically remove NaNs from the',
-                                    'calculation, please upgrade to scipy 1.4',
-                                    'or newer.']))
-        circ_kwargs.pop('nan_policy')
-        ca_std = \
-            inst['clock_angle'].rolling(min_periods=min_wnum,
-                                        window=steady_window,
-                                        center=True).apply(stats.circstd,
-                                                           kwargs=circ_kwargs,
-                                                           raw=True)
+    ca_std = inst['clock_angle'].rolling(min_periods=min_wnum,
+                                         window=steady_window,
+                                         center=True).apply(stats.circstd,
+                                                            kwargs=circ_kwargs,
+                                                            raw=True)
     inst['clock_angle_std'] = pds.Series(ca_std, index=inst.data.index)
 
     # Determine how long the clock angle and IMF magnitude are steady
