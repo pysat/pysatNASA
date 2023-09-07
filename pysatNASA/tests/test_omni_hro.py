@@ -1,6 +1,7 @@
 """Unit tests for OMNI HRO special functions."""
 
 import datetime as dt
+import logging
 import numpy as np
 import warnings
 
@@ -177,6 +178,20 @@ class TestOMNICustom(object):
         assert (old_index[0] - self.test_inst.index[0]).seconds == 3600
         # Check new cadence
         assert (self.test_inst.index[1] - self.test_inst.index[0]).seconds == 60
+        return
+
+    def test_calculate_imf_steadiness_warnings(self, caplog):
+        """Test imf steadiness routine."""
+
+        omni.calculate_clock_angle(self.test_inst)
+        with caplog.at_level(logging.INFO, logger='pysat'):
+            omni.calculate_imf_steadiness(self.test_inst, steady_window=5.1,
+                                          min_window_frac=0.8)
+        captured = caplog.text
+        warn_msgs = ["sample rate is not a factor",
+                     "new statistical window"]
+        for msg in warn_msgs:
+            assert msg in captured
         return
 
 
