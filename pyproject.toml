@@ -46,6 +46,7 @@ dependencies = [
   "pandas",
   "pysat >= 3.1",
   "requests",
+  "scipy >= 1.4",
   "xarray"
 ]
 
