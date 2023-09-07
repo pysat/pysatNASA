@@ -69,7 +69,12 @@ def clean(self):
     for key in self.variables:
         # Check for symmetric dims
         # Indicates transformation matrix, xarray cannot broadcast
-        unique_dims = len(self[key].dims) == len(np.unique(self[key].dims))
+        if self.pands_format:
+            # True by default
+            unique_dims = True
+        else:
+            # Check for multiple dims
+            unique_dims = len(self[key].dims) == len(np.unique(self[key].dims))
         # Skip over the coordinates when cleaning
         if key not in coords and unique_dims:
             fill = self.meta[key, self.meta.labels.fill_val]
