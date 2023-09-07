@@ -53,7 +53,9 @@ metadata values required by the ITSP standards. Additionally, the
 ``export_pysat_info`` option is set to false here. This drops several internal
 pysat metadata values before writing to file.
 
-A full guide to SPDF metadata standards can be found `here <https://spdf.gsfc.nasa.gov/istp_guide/istp_guide.html>`_.
+A full guide to SPDF metadata standards can be found 
+`here <https://spdf.gsfc.nasa.gov/istp_guide/istp_guide.html>`_.
+
 Other best practices for archival include adding the operational software version
 to the metadata header before writing. The pysat version will be automatically
 written to the metadata.
