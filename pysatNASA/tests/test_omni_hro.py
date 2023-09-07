@@ -163,6 +163,22 @@ class TestOMNICustom(object):
         assert np.all(test_diff < 1.0e-6)
         return
 
+    def test_time_shift_to_magnetic_poles(self):
+        """Test the time shift routines."""
+
+        # Choose values to result in 1 hour shift
+        self.test_inst['Vx'] = 6371.2
+        self.test_inst['BSN_x'] = 3600.0
+
+        old_index = self.test_inst.index.copy()
+        omni.time_shift_to_magnetic_poles(self.test_inst)
+
+        # Check shifted index
+        assert (old_index[0] - self.test_inst.index[0]).seconds == 3600
+        # Check new cadence
+        assert (self.test_inst.index[1] - self.test_inst.index[0]).seconds == 60
+        return
+
 
 class TestDeprecation(object):
     """Unit tests for deprecation warnings in `pysat.instrument.omni_hro`."""
