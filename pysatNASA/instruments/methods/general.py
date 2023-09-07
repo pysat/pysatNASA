@@ -69,7 +69,7 @@ def clean(self):
     for key in self.variables:
         # Check for symmetric dims
         # Indicates transformation matrix, xarray cannot broadcast
-        if self.pands_format:
+        if self.pandas_format:
             # True by default
             unique_dims = True
         else:
