@@ -11,7 +11,9 @@ example of this is the REACH data, where netCDF4 files are generated for
 archival purposes as part of the `ops_reach` package, but can be accessed by
 the end user through pysatNASA.
 
-In general, a ``pysat.Instrument`` object can be constructed for any dataset. In
+In general, a ``pysat.Instrument`` object can be constructed for any dataset.
+Full instructions and conventions can be found
+`here <https://pysat.readthedocs.io/en/latest/new_instrument.html>`_.  In the
 case of the REACH data, the operational code reads in a series of csv files and
 updates the metadata according to user specifications. Once the file is loaded,
 it can be exported to a netCDF4 file via pysat. In the simplest case, this is
