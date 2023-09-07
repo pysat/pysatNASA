@@ -145,7 +145,7 @@ class TestOMNICustom(object):
         return
 
     def test_dayside_recon(self):
-        """Test the IMF steadiness standard deviation calculation."""
+        """Test the dayside reconnection calculation."""
 
         # Run the clock angle and steadiness routines
         omni.calculate_clock_angle(self.test_inst)
