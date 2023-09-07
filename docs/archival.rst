@@ -1,7 +1,7 @@
 Building data files for archival at NASA SPDF
 =============================================
 
-The codes and routines at pysatNASA are designed for end-users of NASA data
+The codes and routines at :py:mod:`pysatNASA` are designed for end-users of NASA data
 products. However, pysat in general has also been used to build operational
 instruments for generating archival data to be uploaded to the Space Physics
 Data Facility (SPDF) at NASA.
