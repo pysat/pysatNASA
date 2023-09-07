@@ -6,6 +6,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 * Maintenance
   * Implemented unit tests for cleaning warnings
   * Use pip install for readthedocs
+  * Add tests for omni hro routines
 
 ## [0.0.5] - 2023-06-27
 * New Instruments
