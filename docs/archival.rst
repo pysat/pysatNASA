@@ -8,11 +8,11 @@ Data Facility (SPDF) at NASA.
 
 In general, such instruments should include separate naming conventions. An
 example of this is the REACH data, where netCDF4 files are generated for
-archival purposes as part of the `ops_reach` package, but can be accessed by
-the end user through pysatNASA.
+archival purposes as part of the :py:mod:`ops_reach` package, but can be accessed by
+the end user through :py:mod:`pysatNASA`.
 
-In general, a ``pysat.Instrument`` object can be constructed for any dataset.
-Full instructions and conventions can be found
+In general, a :py:class:`pysat.Instrument` object can be constructed for any
+dataset. Full instructions and conventions can be found
 `here <https://pysat.readthedocs.io/en/latest/new_instrument.html>`_.  In the
 case of the REACH data, the operational code reads in a series of csv files and
 updates the metadata according to user specifications. Once the file is loaded,
@@ -50,8 +50,8 @@ preferred formats.  An example of this is
 
 In this case, note that the pysat 'name' label is output to three different
 metadata values required by the ITSP standards. Additionally, the
-``export_pysat_info`` option is set to false here. This drops several internal
-pysat metadata values before writing to file.
+:py:attr:`export_pysat_info` option is set to false here. This drops several
+internal :py:mod:`pysat` metadata values before writing to file.
 
 A full guide to SPDF metadata standards can be found 
 `here <https://spdf.gsfc.nasa.gov/istp_guide/istp_guide.html>`_.
