@@ -7,6 +7,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   * MAVEN mag
   * MAVEN SEP
   * MAVEN in situ
+* Bug Fixes
+  * Fix general clean routine to skip transformation matrices
 * Maintenance
   * Implemented unit tests for cleaning warnings
   * Use pip install for readthedocs
