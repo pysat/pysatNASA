@@ -44,7 +44,6 @@ import numpy as np
 import pandas as pds
 import warnings
 
-import pysat
 from pysat.instruments.methods import general as mm_gen
 
 from pysatNASA.instruments.methods import cdaweb as cdw
