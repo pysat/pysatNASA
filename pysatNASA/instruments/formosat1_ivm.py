@@ -26,9 +26,9 @@ import datetime as dt
 import functools
 
 from pysat.instruments.methods import general as mm_gen
-from pysat import logger
 
 from pysatNASA.instruments.methods import cdaweb as cdw
+from pysatNASA.instruments.methods import formosat as mm_formosat
 from pysatNASA.instruments.methods import general as mm_nasa
 
 # ----------------------------------------------------------------------------
@@ -47,31 +47,7 @@ _test_dates = {'': {'': dt.datetime(2002, 1, 1)}}
 # ----------------------------------------------------------------------------
 # Instrument methods
 
-
-def init(self):
-    """Initialize the Instrument object with instrument specific values.
-
-    Runs once upon instantiation.
-
-    """
-    self.acknowledgements = ' '.join(('Data provided through NASA CDAWeb',
-                                      'Key Parameters - Shin-Yi Su',
-                                      '(Institute of Space Science,',
-                                      'National Central University,',
-                                      'Taiwan, R.O.C.)'))
-    self.references = ' '.join(('Yeh, H.C., S.‐Y. Su, Y.C. Yeh, J.M. Wu,',
-                                'R. A. Heelis, and B. J. Holt, Scientific',
-                                'mission of the IPEI payload on board',
-                                'ROCSAT‐1, Terr. Atmos. Ocean. Sci., 9,',
-                                'suppl., 1999a.\n',
-                                'Yeh, H.C., S.‐Y. Su, R.A. Heelis, and',
-                                'J.M. Wu, The ROCSAT‐1 IPEI preliminary',
-                                'results, Vertical ion drift statistics,',
-                                'Terr. Atmos. Ocean. Sci., 10, 805,',
-                                '1999b.'))
-    logger.info(self.acknowledgements)
-
-    return
+init = functools.partial(mm_nasa.init, module=mm_formosat, name=name)
 
 
 # Use default clean
