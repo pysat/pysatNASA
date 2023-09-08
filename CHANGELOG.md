@@ -3,12 +3,15 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [0.X.X] - 2023-XX-XX
+* Bug Fix
+  * New window needs to be integer for calculate_imf_steadiness
 * Documentation
   * Added example of how to export data for archival
 * Maintenance
   * Implemented unit tests for cleaning warnings
   * Use pip install for readthedocs
   * Moved references and acknowledgements to methods files
+  * Added tests for OMNI HRO routines
 
 ## [0.0.5] - 2023-06-27
 * New Instruments
