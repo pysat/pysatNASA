@@ -181,7 +181,7 @@ JPL GPS
 .. _maven_insitu:
 
 MAVEN INSITU
---------
+------------
 
 .. automodule:: pysatNASA.instruments.maven_insitu
    :members:
@@ -189,7 +189,7 @@ MAVEN INSITU
 .. _maven_mag:
 
 MAVEN MAG
---------
+---------
 
 .. automodule:: pysatNASA.instruments.maven_mag
    :members:
@@ -197,7 +197,7 @@ MAVEN MAG
 .. _maven_sep:
 
 MAVEN SEP
---------
+---------
 
 .. automodules:: pysatNASA.instruments.maven_sep
    :members:

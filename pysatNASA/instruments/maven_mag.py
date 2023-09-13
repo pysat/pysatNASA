@@ -14,6 +14,8 @@ name
     'mag'
 tag
     None supported
+inst_id
+    None supported
 
 Warnings
 --------
@@ -24,7 +26,6 @@ Examples
 --------
 ::
     import pysat
-
 
     mag = pysat.Instrument(platform='maven', name='mag')
     mag.download(dt.datetime(2020, 1, 1), dt.datetime(2020, 1, 31))

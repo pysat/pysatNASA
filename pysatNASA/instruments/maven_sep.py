@@ -14,7 +14,7 @@ platform
 name
     'sep'
 tag
-    's1','s2'
+    ['', 's1', 's2']
 inst_id
     None supported
 
@@ -22,7 +22,6 @@ Examples
 --------
 ::
     import pysat
-
 
     insitu = pysat.Instrument(platform='MAVEN', name='insitu')
     insitu.download(dt.datetime(2020, 1, 1), dt.datetime(2020, 1, 31))
