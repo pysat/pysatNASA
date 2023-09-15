@@ -36,8 +36,8 @@ from pysat.instruments.methods import general as mm_gen
 from pysat.utils.io import load_netcdf
 
 from pysatNASA.instruments.methods import cdaweb as cdw
-from pysatNASA.instruments.methods import reach as mm_reach
 from pysatNASA.instruments.methods import general as mm_nasa
+from pysatNASA.instruments.methods import reach as mm_reach
 
 # ----------------------------------------------------------------------------
 # Instrument attributes
