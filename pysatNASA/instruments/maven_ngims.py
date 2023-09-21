@@ -32,7 +32,7 @@ import pandas as pds
 import pysat
 from pysat.instruments.methods import general as mm_gen
 from pysatNASA.instruments.methods import cdaweb as cdw
-from pysatNASA.instruments.methods import generl as mm_nasa
+from pysatNASA.instruments.methods import general as mm_nasa
 
 platform = 'maven'
 name = 'ngims'
@@ -60,7 +60,7 @@ list_files = functools.partial(mm_gen.list_files,
 # support download routine
 # use the default CDAWeb method modified for the PDS website
 basic_tag1 = {'remote_dir': ''.join(('/PDS/data/PDS4/MAVEN/ngims_bundle/l2/',
-                                     '{year:0exi4d}/{month:02d}/')),
+                                     '{year:04d}/{month:02d}/')),
               'fname': fname1}
 basic_tag2 = {'remote_dir': ''.join(('/PDS/data/PDS4/MAVEN/ngims_bundle/l2/',
                                      '{year:04d}/{month:02d}/')),
