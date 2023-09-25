@@ -14,9 +14,9 @@ platform
 name
     'sep'
 tag
-    ['', 's1', 's2']
-inst_id
     None supported
+inst_id
+    ['s1', 's2']
 
 Examples
 --------

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Module for the MAVEN insitu instrument.
+"""Module for the MAVEN insitu instruments.
 
 Supports the in situ Key Parameter (kp) data from multiple instruments
 onboard the Mars Atmosphere and Volatile Evolution (MAVEN) satellite.
@@ -12,7 +12,7 @@ Properties
 platform
     'maven'
 name
-    'insitu'
+    'insitu_kp'
 tag
     None supported
 inst_id
