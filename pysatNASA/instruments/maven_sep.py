@@ -23,7 +23,7 @@ Examples
 ::
     import pysat
 
-    insitu = pysat.Instrument(platform='MAVEN', name='insitu')
+    insitu = pysat.Instrument(platform='maven', name='sep', inst_id = 's1')
     insitu.download(dt.datetime(2020, 1, 1), dt.datetime(2020, 1, 31))
     insitu.load(2020, 1, use_header = True)
 """
@@ -42,7 +42,7 @@ from pysatNASA.instruments.methods import maven as mm_mvn
 platform = 'maven'
 name = 'sep'
 tags = {'': ''}
-inst_ids = {'': ['', 's1', 's2']}
+inst_ids = {'s1': [''], 's2': ['']}
 
 pandas_format = False
 
@@ -74,9 +74,8 @@ fname = ''.join(('mvn_sep_l2_s1-cal-svy-full_{year:04d}{month:02d}{day:02d}_',
 fname2 = ''.join(('mvn_sep_l2_s2-cal-svy-full_{year:04d}{month:02d}{day:02d}_',
                  'v{version:02d}_r{revision:02d}.cdf'))
 
-supported_tags = {'': {'': fname,
-                       's1': fname,
-                       's2': fname2}}
+supported_tags = {'s1': {'': fname},
+                  's2': {'': fname2}}
 
 list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags)
@@ -90,9 +89,8 @@ basic_tag2 = {'remote_dir': ''.join(('/pub/data/maven/sep/l2/s2-cal-svy-full',
                                     '/{year:04d}/{month:02d}')),
               'fname': fname2}
 
-download_tags = {'': {'': basic_tag,
-                      's1': basic_tag,
-                      's2': basic_tag2}}
+download_tags = {'s1': {'': basic_tag},
+                 's2': {'': basic_tag2}}
 
 # Set the download routine
 download = functools.partial(cdw.download, supported_tags=download_tags)
