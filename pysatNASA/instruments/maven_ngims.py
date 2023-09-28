@@ -76,23 +76,26 @@ list_remote_files = functools.partial(cdw.list_remote_files,
                                       supported_tags=supported_tags)
 
 
-def load(fnames, tag=None, inst_id=None):
+def load(fnames, tag=None, inst_id=None, species=None):
     """Load data files.
 
     Parameters
     ------------
-    fnames : (pandas.Series)
+    fnames : pandas.Series
         Series of filenames
-    tag : (str or NoneType)
+    tag : str
         tag or None (default=None)
-    sat_id : (str or NoneType)
+    sat_id : str
         satellite id or None (default=None)
+    species : str or float
+        Indicates which species to select for. If None, loads all species. Input
+        as a string for csn, float for ion.
 
     Returns
     ---------
-    data : (pandas.DataFrame)
+    data : pandas.DataFrame
         Object containing satellite data
-    meta : (pysat.Meta)
+    meta : pysat.Meta
         Object containing metadata such as column names and units
 
     Notes
