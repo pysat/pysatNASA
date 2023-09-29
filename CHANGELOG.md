@@ -5,11 +5,17 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## [0.X.X] - 2023-XX-XX
 * Bug Fixes
   * Allow graceful failure with no files in jhuapl load functions
+  * New window needs to be integer for calculate_imf_steadiness
 * Enhancements
   * Added custom `concat_data` method to TIMED-GUVI data
   * Added cleaning to TIMED-GUVI SDR imaging data
+* Documentation
+  * Added example of how to export data for archival
 * Maintenance
   * Implemented unit tests for cleaning warnings
+  * Use pip install for readthedocs
+  * Moved references and acknowledgements to methods files
+  * Added tests for OMNI HRO routines
 
 ## [0.0.5] - 2023-06-27
 * New Instruments

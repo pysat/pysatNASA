@@ -9,6 +9,17 @@ from scipy import stats
 import pysat
 
 
+ackn_str = ' '.join(('For full acknowledgement info, please see:',
+                     'https://omniweb.gsfc.nasa.gov/html/citing.html'))
+
+refs = {'hro': ' '.join(('J.H. King and N.E. Papitashvili, Solar',
+                         'wind spatial scales in and comparisons',
+                         'of hourly Wind and ACE plasma and',
+                         'magnetic field data, J. Geophys. Res.,',
+                         'Vol. 110, No. A2, A02209,',
+                         '10.1029/2004JA010649.'))}
+
+
 def time_shift_to_magnetic_poles(inst):
     """Shift OMNI times to intersection with the magnetic pole.
 
@@ -113,7 +124,7 @@ def calculate_imf_steadiness(inst, steady_window=15, min_window_frac=0.75,
     sample_rate = int(rates[inst.tag])
     max_wnum = np.floor(steady_window / sample_rate)
     if max_wnum != steady_window / sample_rate:
-        steady_window = max_wnum * sample_rate
+        steady_window = int(max_wnum * sample_rate)
         pysat.logger.warning(" ".join(("sample rate is not a factor of the",
                                        "statistical window")))
         pysat.logger.warning(" ".join(("new statistical window is",
@@ -130,24 +141,11 @@ def calculate_imf_steadiness(inst, steady_window=15, min_window_frac=0.75,
 
     # Calculate the running circular standard deviation of the clock angle
     circ_kwargs = {'high': 360.0, 'low': 0.0, 'nan_policy': 'omit'}
-    try:
-        ca_std = \
-            inst['clock_angle'].rolling(min_periods=min_wnum,
-                                        window=steady_window,
-                                        center=True).apply(stats.circstd,
-                                                           kwargs=circ_kwargs,
-                                                           raw=True)
-    except TypeError:
-        pysat.logger.warn(' '.join(['To automatically remove NaNs from the',
-                                    'calculation, please upgrade to scipy 1.4',
-                                    'or newer.']))
-        circ_kwargs.pop('nan_policy')
-        ca_std = \
-            inst['clock_angle'].rolling(min_periods=min_wnum,
-                                        window=steady_window,
-                                        center=True).apply(stats.circstd,
-                                                           kwargs=circ_kwargs,
-                                                           raw=True)
+    ca_std = inst['clock_angle'].rolling(min_periods=min_wnum,
+                                         window=steady_window,
+                                         center=True).apply(stats.circstd,
+                                                            kwargs=circ_kwargs,
+                                                            raw=True)
     inst['clock_angle_std'] = pds.Series(ca_std, index=inst.data.index)
 
     # Determine how long the clock angle and IMF magnitude are steady

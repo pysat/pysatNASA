@@ -30,6 +30,7 @@ Python 3.6+.
 | numpy            |                   |                  |
 | pandas           |                   |                  |
 | requests         |                   |                  |
+| scipy>=1.4.0     |                   |                  |
 | xarray           |                   |                  |
 
 ## PyPi Installation
