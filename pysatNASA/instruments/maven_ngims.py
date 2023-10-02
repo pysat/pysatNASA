@@ -33,6 +33,7 @@ import pysat
 from pysat.instruments.methods import general as mm_gen
 from pysatNASA.instruments.methods import cdaweb as cdw
 from pysatNASA.instruments.methods import general as mm_nasa
+from pysatNASA.instruments.methods import maven as mm_mvn
 
 platform = 'maven'
 name = 'ngims'
@@ -41,6 +42,17 @@ tags = {'csn': 'Neutral Composition Data',
 inst_ids = {'': ['csn', 'ion']}
 _test_dates = {'': {'csn': dt.datetime(2018, 8, 1),
                     'ion': dt.datetime(2018, 8, 1)}}
+
+# ----------------------------------------------------------------------------
+# Instrument methods
+
+# Use standard init routine
+init = functools.partial(mm_nasa.init, module=mm_mvn, name=name)
+
+
+# Use default clean
+clean = mm_nasa.clean
+
 
 # support list files routine
 # use the default CDAWeb method
@@ -114,13 +126,3 @@ def load(fnames, tag=None, inst_id=None):
     meta = pysat.Meta()
 
     return data, meta
-
-
-def init(self):
-    """Initialize."""
-
-    return
-
-
-# Use default clean
-clean = mm_nasa.clean
