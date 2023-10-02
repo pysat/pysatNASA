@@ -76,7 +76,7 @@ list_remote_files = functools.partial(cdw.list_remote_files,
                                       supported_tags=supported_tags)
 
 
-def load(fnames, tag=None, inst_id=None, species=None):
+def load(fnames, tag=None, inst_id=None):
     """Load data files.
 
     Parameters
@@ -87,9 +87,6 @@ def load(fnames, tag=None, inst_id=None, species=None):
         tag or None (default=None)
     sat_id : str
         satellite id or None (default=None)
-    species : str or float
-        Indicates which species to select for. If None, loads all species. Input
-        as a string for csn, float for ion.
 
     Returns
     ---------
@@ -105,9 +102,14 @@ def load(fnames, tag=None, inst_id=None, species=None):
 
     """
 
-    # TODO(JK): expand for all files, but needs to fix non-unique timestamps
-    # first.
-    data = pds.read_csv(fnames[0], index_col=0, parse_dates=True)
+    ldata = []
+    for fname in fnames:
+        ldata.append(pds.read_csv(fname, index_col=0, parse_dates=True))
+
+    if len(ldata) > 0:
+        data = pds.concat(ldata)
+    else:
+        data = pds.DataFrame()
 
     meta = pysat.Meta()
 
