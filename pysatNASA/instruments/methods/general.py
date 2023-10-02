@@ -65,7 +65,7 @@ def clean(self, skip_names=None):
 
     """
 
-    # Get a list of coords for the data
+    # Get a list of coords for the data. These should be skipped for cleaning.
     if self.pandas_format:
         skip_key = [self.data.index.name]
     else:
