@@ -67,13 +67,22 @@ init = functools.partial(mm_nasa.init, module=mm_reach, name=name)
 # Use default clean
 clean = mm_nasa.clean
 
+
+def preprocess(self):
+    """Update acknowledgement with info from file."""
+
+    self.acknowledgements = self.meta.header.Acknowledgement
+
+    return
+
+
 # ----------------------------------------------------------------------------
 # Instrument functions
 #
 # Use the default CDAWeb and pysat methods
 
 # Set the list_files routine
-datestr = '{year:4d}{month:02d}{day:02d}'
+datestr = '{year:04d}{month:02d}{day:02d}'
 fname = 'reach-vid-{inst_id}_dosimeter-l1c_{datestr}_v{{version:01d}}.nc'
 supported_tags = {iid: {'': fname.format(inst_id=iid, datestr=datestr)}
                   for iid in inst_ids.keys()}
