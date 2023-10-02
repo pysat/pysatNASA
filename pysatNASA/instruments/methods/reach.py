@@ -15,5 +15,4 @@ refs = {'dosimeter':
                    ' '.join(("Guild, T., O'Brien, T.P., Boyd, A.J., Mazur,",
                              "J.E. (2021)",
                              "REACH Maps and Indices for UDL: Version 1",
-                             "AEROSPACE REPORT NO. TOR-2021-01076"))
-                   ))}
+                             "AEROSPACE REPORT NO. TOR-2021-01076"))))}

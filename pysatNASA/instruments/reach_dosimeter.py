@@ -101,10 +101,10 @@ def load(fnames, tag=None, inst_id=None):
     fnames : array-like
         iterable of filename strings, full path, to data files to be loaded.
         This input is nominally provided by pysat itself.
-    tag : string
+    tag : str
         tag name used to identify particular data set to be loaded.
         This input is nominally provided by pysat itself.
-    inst_id : string
+    inst_id : str
         Satellite ID used to identify particular data set to be loaded.
         This input is nominally provided by pysat itself.
 
@@ -124,7 +124,7 @@ def load(fnames, tag=None, inst_id=None):
     --------
     ::
 
-        inst = pysat.Instrument('icon', 'ivm', inst_id='a', tag='')
+        inst = pysat.Instrument('reach', 'dosimeter', inst_id='101', tag='')
         inst.load(2020, 1)
 
     """
