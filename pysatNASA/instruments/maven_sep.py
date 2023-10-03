@@ -41,7 +41,7 @@ from pysatNASA.instruments.methods import maven as mm_mvn
 
 platform = 'maven'
 name = 'sep'
-tags = {'': ''}
+tags = {'': 'Level 2 Solar Energetic Particle data'}
 inst_ids = {'s1': [''], 's2': ['']}
 
 pandas_format = False
@@ -49,7 +49,7 @@ pandas_format = False
 # ----------------------------------------------------------------------------
 # Instrument test attributes
 
-_test_dates = {'': {'': dt.datetime(2020, 1, 1)}}
+_test_dates = {id: {'': dt.datetime(2020, 1, 1)} for id in inst_ids.keys()}
 
 # ----------------------------------------------------------------------------
 # Instrument methods

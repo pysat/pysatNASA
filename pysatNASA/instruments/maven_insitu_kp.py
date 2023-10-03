@@ -43,7 +43,7 @@ from pysatNASA.instruments.methods import maven as mm_mvn
 
 platform = 'maven'
 name = 'insitu_kp'
-tags = {'': ''}
+tags = {'': 'in situ Key Parameter data'}
 inst_ids = {'': ['']}
 
 pandas_format = False

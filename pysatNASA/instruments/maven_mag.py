@@ -46,7 +46,7 @@ from pysatNASA.instruments.methods import maven as mm_mvn
 
 platform = 'maven'
 name = 'mag'
-tags = {'': 'l2'}
+tags = {'': 'Level 2 magnetometer data'}
 inst_ids = {'': ['']}
 
 pandas_format = False
