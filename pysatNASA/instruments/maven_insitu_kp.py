@@ -61,7 +61,9 @@ init = functools.partial(mm_nasa.init, module=mm_mvn, name=name)
 
 
 # Use default clean
-clean = mm_nasa.clean
+clean = functools.partial(mm_nasa.clean,
+                          skip_names=['Rotation_matrix_IAU_MARS_MAVEN_MSO',
+                                      'Rotation_matrix_SPACECRAFT_MAVEN_MSO'])
 
 
 # ----------------------------------------------------------------------------

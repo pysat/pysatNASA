@@ -23,9 +23,10 @@ Examples
 ::
     import pysat
 
-    insitu = pysat.Instrument(platform='maven', name='sep', inst_id = 's1')
+    insitu = pysat.Instrument(platform='maven', name='sep', inst_id='s1')
     insitu.download(dt.datetime(2020, 1, 1), dt.datetime(2020, 1, 31))
-    insitu.load(2020, 1, use_header = True)
+    insitu.load(2020, 1, use_header=True)
+
 """
 
 import datetime as dt

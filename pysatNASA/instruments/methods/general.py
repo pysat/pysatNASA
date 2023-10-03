@@ -51,8 +51,13 @@ def init(self, module, name):
     return
 
 
-def clean(self):
+def clean(self, skip_names=None):
     """Clean data to the specified level.
+
+    Parameters
+    ----------
+    skip_names : list of str
+        List of names to skip for cleaning. (default=None)
 
     Note
     ----
@@ -60,23 +65,22 @@ def clean(self):
 
     """
 
-    # Get a list of coords for the data
+    # Get a list of coords for the data. These should be skipped for cleaning.
     if self.pandas_format:
-        coords = [self.data.index.name]
+        skip_key = [self.data.index.name]
     else:
-        coords = [key for key in self.data.coords.keys()]
+        skip_key = [key for key in self.data.coords.keys()]
+
+    if skip_names:
+        # Add additional variable names to skip
+        for key in skip_names:
+            skip_key.append(key)
 
     for key in self.variables:
         # Check for symmetric dims
         # Indicates transformation matrix, xarray cannot broadcast
-        if self.pandas_format:
-            # True by default
-            unique_dims = True
-        else:
-            # Check for multiple dims
-            unique_dims = len(self[key].dims) == len(np.unique(self[key].dims))
         # Skip over the coordinates when cleaning
-        if key not in coords and unique_dims:
+        if key not in skip_key:
             fill = self.meta[key, self.meta.labels.fill_val]
 
             # Replace fill with nan
