@@ -31,6 +31,7 @@ inst_id
 
 import datetime as dt
 import functools
+import numpy as np
 
 from pysat._meta import MetaHeader
 from pysat.instruments.methods import general as mm_gen
