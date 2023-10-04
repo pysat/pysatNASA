@@ -32,6 +32,7 @@ inst_id
 import datetime as dt
 import functools
 
+from pysat._meta import MetaHeader
 from pysat.instruments.methods import general as mm_gen
 from pysat.utils.io import load_netcdf
 
@@ -137,6 +138,17 @@ def load(fnames, tag=None, inst_id=None):
               'fill_val': ('_FillValue', (int, float))}
     data, meta = load_netcdf(fnames, epoch_name='Epoch',
                              meta_kwargs={'labels': labels})
+
+    # Update header variables
+    header = meta.header.to_dict()
+    new_header = {}
+    for key in header.keys():
+        new_key = key.replace('-', '_to_')
+        new_header[new_key] = header[key]
+    if np.isnan(new_header['Notes']):
+        new_header['Notes'] = ''
+
+    meta.header = MetaHeader(new_header)
 
     return data, meta
 
