@@ -472,7 +472,6 @@ def load_xarray(fnames, tag='', inst_id='',
     return data, meta
 
 
-# TODO(#103): Include support to unzip / untar files after download.
 def download(date_array, data_path, tag='', inst_id='', supported_tags=None,
              remote_url='https://cdaweb.gsfc.nasa.gov'):
     """Download NASA CDAWeb data.
@@ -579,7 +578,7 @@ def download(date_array, data_path, tag='', inst_id='', supported_tags=None,
         sleep(0.2)
 
     if zip_method:
-            # Cleanup temporary directory
+        # Cleanup temporary directory
         temp_dir.cleanup()
 
     return
