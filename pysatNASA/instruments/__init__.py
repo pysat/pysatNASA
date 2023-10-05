@@ -12,7 +12,7 @@ __all__ = ['ace_epam_l2', 'ace_mag_l2', 'ace_sis_l2', 'ace_swepam_l2',
            'dmsp_ssusi', 'formosat1_ivm',
            'icon_euv', 'icon_fuv', 'icon_ivm', 'icon_mighti',
            'igs_gps', 'iss_fpmu', 'jpl_gps', 'maven_insitu_kp',
-           'maven_mag', 'maven_sep', 'omni_hro',
+           'maven_mag', 'maven_sep', 'omni_hro', 'reach_dosimeter',
            'ses14_gold', 'timed_guvi', 'timed_saber', 'timed_see']
 
 for inst in __all__:

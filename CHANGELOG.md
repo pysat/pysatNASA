@@ -7,11 +7,17 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   * MAVEN mag
   * MAVEN SEP
   * MAVEN in situ key parameters
+  * REACH Dosimeter
 * Bug Fixes
   * Fix general clean routine to skip transformation matrices
+  * New window needs to be integer for calculate_imf_steadiness
+* Documentation
+  * Added example of how to export data for archival
 * Maintenance
   * Implemented unit tests for cleaning warnings
   * Use pip install for readthedocs
+  * Moved references and acknowledgements to methods files
+  * Added tests for OMNI HRO routines
 
 ## [0.0.5] - 2023-06-27
 * New Instruments
