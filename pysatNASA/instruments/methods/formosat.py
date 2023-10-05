@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Provides non-instrument specific routines for C/NOFS data."""
+"""Provides non-instrument specific routines for FORMOSAT data."""
 
 ackn_str = ' '.join(('Data provided through NASA CDAWeb Key Parameters -',
                      'Shin-Yi Su (Institute of Space Science, National Central',

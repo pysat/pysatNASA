@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Provides non-instrument specific routines for JPL ROTI data."""
+"""Provides non-instrument specific routines for IGS GPS data."""
 
 ackn_str = ' '.join(("The GPS Total Electron Content (TEC) data",
                      "produced by the International Global Navigation",

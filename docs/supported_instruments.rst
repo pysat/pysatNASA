@@ -186,6 +186,14 @@ OMNI HRO
 .. automodule:: pysatNASA.instruments.omni_hro
    :members: calculate_clock_angle, calculate_imf_steadiness, time_shift_to_magnetic_poles
 
+.. _reach_dosimeter:
+
+REACH DOSIMETER
+----------
+
+.. automodule:: pysatNASA.instruments.reach_dosimeter
+  :members:
+
 .. _ses14_gold:
 
 SES14 GOLD
