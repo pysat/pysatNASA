@@ -10,4 +10,4 @@ pytest
 pytest-cov
 pytest-ordering
 sphinx
-sphinx_rtd_theme
+sphinx_rtd_theme>=1.2.2

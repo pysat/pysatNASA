@@ -18,7 +18,6 @@ from pysat.utils import testing
 # Make sure to import your instrument library here
 import pysatNASA
 
-
 try:
     import pysatCDF  # noqa: F401
     # If this successfully imports, tests need to be run with both pysatCDF
