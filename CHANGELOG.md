@@ -6,7 +6,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 * New Instruments
   * MAVEN mag
   * MAVEN SEP
-  * MAVEN in situ
+  * MAVEN in situ key parameters
 * Bug Fixes
   * Fix general clean routine to skip transformation matrices
 * Maintenance

@@ -178,12 +178,12 @@ JPL GPS
 .. automodule:: pysatNASA.instruments.jpl_gps
    :members:
 
-.. _maven_insitu:
+.. _maven_insitu_kp:
 
-MAVEN INSITU
-------------
+MAVEN INSITU KP
+---------------
 
-.. automodule:: pysatNASA.instruments.maven_insitu
+.. automodule:: pysatNASA.instruments.maven_insitu_kp
    :members:
 
 .. _maven_mag:
