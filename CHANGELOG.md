@@ -7,6 +7,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   * REACH Dosimeter
 * Bug Fix
   * New window needs to be integer for calculate_imf_steadiness
+  * Fixed version import
 * Documentation
   * Added example of how to export data for archival
 * Maintenance
