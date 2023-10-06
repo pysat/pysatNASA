@@ -3,8 +3,15 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [0.X.X] - 2023-XX-XX
-* Bug Fix
+* New Instruments
+  * MAVEN mag
+  * MAVEN SEP
+  * MAVEN in situ key parameters
+  * REACH Dosimeter
+* Bug Fixes
+  * Fix general clean routine to skip transformation matrices
   * New window needs to be integer for calculate_imf_steadiness
+  * Fixed version import
 * Documentation
   * Added example of how to export data for archival
 * Maintenance

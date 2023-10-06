@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Provides non-instrument specific routines for C/NOFS data."""
+"""Provides non-instrument specific routines for ISS data."""
 
 ackn_str = ' '.join(("R.M. Suggs, S.L. Koontz, NASA Johnson Space Center",
                      "Contact Rob Suggs for support and use.",
