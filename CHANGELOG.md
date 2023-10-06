@@ -8,6 +8,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   * MAVEN SEP
   * MAVEN in situ key parameters
   * REACH Dosimeter
+* New Features
+  * All files to be unzipped after download
 * Bug Fixes
   * Fix general clean routine to skip transformation matrices
   * New window needs to be integer for calculate_imf_steadiness
