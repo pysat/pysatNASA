@@ -47,7 +47,7 @@ class TestCDAWeb(object):
 
         data, meta = cdw.load(fnames=[])
         assert len(data) == 0
-        assert meta is None
+        assert meta.empty
         return
 
     @pytest.mark.parametrize("bad_key,bad_val,err_msg",
