@@ -218,7 +218,7 @@ def load_pandas(fnames, tag='', inst_id='', file_cadence=dt.timedelta(days=1),
 
     # Load data from any files provided
     if len(fnames) <= 0:
-        return pds.DataFrame(None), None
+        return pds.DataFrame(None), pysat.Meta()
     else:
         if use_cdflib is not None:
             if use_cdflib:
@@ -268,6 +268,8 @@ def load_pandas(fnames, tag='', inst_id='', file_cadence=dt.timedelta(days=1),
         # Combine individual files together
         if len(ldata) > 0:
             data = pds.concat(ldata)
+        else:
+            data, meta = pds.DataFrame(None), pysat.Meta()
 
         return data, meta
 
