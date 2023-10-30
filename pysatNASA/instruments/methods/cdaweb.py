@@ -8,7 +8,6 @@ Adding new CDAWeb datasets should only require mininal user intervention.
 """
 
 import datetime as dt
-import gzip
 import numpy as np
 import os
 import pandas as pds
@@ -600,7 +599,7 @@ def get_file(remote_file, data_path, fname, temp_path=None, zip_method=None):
     temp_path : str
         Path to temporary directory. (Default=None)
     zip_method : str
-        The method used to zip the file. Supports 'gzip', 'zip', and None.
+        The method used to zip the file. Supports 'zip' and None.
         If None, downloads files directly. (default=None)
 
     """
@@ -617,13 +616,7 @@ def get_file(remote_file, data_path, fname, temp_path=None, zip_method=None):
         open_f.write(remote_file)
 
     # Unzip and move the files from the temporary directory.
-    if zip_method == 'gzip':
-        local_fname = os.path.join(data_path, fname).replace('.gz', '')
-        with gzip.open(dl_fname) as open_zip:
-            with open(local_fname, 'wb') as open_f:
-                open_f.write(open_zip.read())
-
-    elif zip_method == 'zip':
+    if zip_method == 'zip':
         with zipfile.ZipFile(dl_fname, 'r') as open_zip:
             open_zip.extractall(data_path)
 
