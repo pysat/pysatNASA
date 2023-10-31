@@ -73,7 +73,6 @@ class TestCDAWeb(object):
 
         return
 
-
     @pytest.mark.parametrize("bad_key,bad_val,err_msg",
                              [("tag", "badval", "inst_id / tag combo unknown."),
                               ("inst_id", "badval",
