@@ -515,6 +515,7 @@ def download(date_array, data_path, tag='', inst_id='', supported_tags=None,
 
     """
 
+    # Get information about remote data product location
     inst_dict = try_inst_dict(inst_id, tag, supported_tags)
 
     # Naming scheme for files on the CDAWeb server
