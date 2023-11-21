@@ -89,10 +89,51 @@ supported_tags = {'': {tag: fname.format(fid=fid[tag], datestr=datestr)
 list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags)
 
+
 # Set the load routine
-# Forcing use of cdflib as default since pysatCDF has a known issue with vefi
-# data.  See pysat/pysatCDF#48
-load = functools.partial(cdw.load, use_cdflib=True)
+def load(fnames, tag='', inst_id='', **kwargs):
+    """Load DE2 VEFI data.
+
+    This routine is called as needed by pysat. It is not intended
+    for direct user interaction.
+
+    Parameters
+    ----------
+    fnames : array-like
+        Iterable of filename strings, full path, to data files to be loaded.
+        This input is nominally provided by pysat itself.
+    tag : str
+        Tag name used to identify particular data set to be loaded.
+        This input is nominally provided by pysat itself. (default='')
+    inst_id : str
+        Instrument ID used to identify particular data set to be loaded.
+        This input is nominally provided by pysat itself. (default='')
+
+    Returns
+    -------
+    data : pds.DataFrame
+        A pandas DataFrame with data prepared for the `pysat.Instrument`.
+    meta : pysat.Meta
+        Metadata formatted for a pysat.Instrument object.
+
+    Note
+    ----
+    Several variables relating to time stored in different formats are dropped.
+    These are redundant and complicate the load procedure.
+
+    """
+
+    if tag == '':
+        # Drop E-field data
+        data, meta = cdw.load_xarray(fnames, tag=tag, inst_id=inst_id,
+                                     epoch_name='mtimeEpoch',
+                                     drop_dims='vtimeEpoch', **kwargs)
+        data = data.to_pandas()
+    else:
+        data, meta = cdw.load_pandas(fnames, tag=tag, inst_id=inst_id, **kwargs)
+
+    return data, meta
+
 
 # Set the download routine
 download_tags = {'': {'': 'DE2_62MS_VEFIMAGB',
