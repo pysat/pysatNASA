@@ -62,7 +62,6 @@ doi:10.1016/j.jastp.2004.07.030.
 
 import datetime as dt
 import functools
-import numpy as np
 
 from pysat.instruments.methods import general as mm_gen
 
@@ -91,21 +90,8 @@ _test_dates = {'': {'dc_b': dt.datetime(2009, 1, 1)}}
 init = functools.partial(mm_nasa.init, module=mm_cnofs, name=name)
 
 
-def clean(self):
-    """Clean VEFI data to the specified level.
-
-    Note
-    ----
-    'dusty' or 'clean' removes data when interpolation flag is set to 1
-    'dirty' is the same as 'none'
-
-    """
-
-    if (self.clean_level == 'dusty') | (self.clean_level == 'clean'):
-        idx, = np.where(self['B_flag'] == 0)
-        self.data = self[idx, :]
-
-    return
+# Use default clean
+clean = mm_nasa.clean
 
 
 # ----------------------------------------------------------------------------
