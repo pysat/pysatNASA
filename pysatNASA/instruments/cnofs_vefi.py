@@ -101,12 +101,13 @@ def clean(self):
 
     """
 
+    mm_nasa.clean(self)
+
+    # Apply legacy clean routine for version 5 data
     if 'B_flag' in self.variables:
         if (self.clean_level == 'dusty') | (self.clean_level == 'clean'):
             idx, = np.where(self['B_flag'] == 0)
             self.data = self[idx, :]
-    else:
-        mm_nasa.clean(self)
 
     return
 
