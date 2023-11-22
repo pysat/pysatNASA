@@ -12,7 +12,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   * Fix general clean routine to skip transformation matrices
   * New window needs to be integer for calculate_imf_steadiness
   * Fixed version import
-  * Fixed a bug when data fails to load for cdf pandas objects
+  * Fixed a bug when data fails to load for CDF pandas objects
 * Documentation
   * Added example of how to export data for archival
 * Maintenance
