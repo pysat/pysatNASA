@@ -1,8 +1,10 @@
 """Unit tests for the cdaweb instrument methods."""
 
 import datetime as dt
+import logging
 import pandas as pds
 import requests
+import tempfile
 
 import pytest
 
@@ -48,6 +50,27 @@ class TestCDAWeb(object):
         data, meta = cdw.load(fnames=[])
         assert len(data) == 0
         assert meta.empty
+        return
+
+    def test_bad_zip_warning_get_files(self, caplog):
+        """Test that warning is raised for unsupported zip method."""
+
+        # Specifiy small file to get
+        url = 'https://cdaweb.gsfc.nasa.gov/pub/000_readme.txt'
+        req = requests.get(url)
+
+        # Download to temporary location
+        temp_dir = tempfile.TemporaryDirectory()
+
+        with caplog.at_level(logging.WARNING, logger='pysat'):
+            cdw.get_file(req.content, '.', 'test.txt', temp_path=temp_dir.name,
+                         zip_method='badzip')
+        captured = caplog.text
+
+        # Check for appropriate warning
+        warn_msg = "not a recognized zip method"
+        assert warn_msg in captured
+
         return
 
     @pytest.mark.parametrize("bad_key,bad_val,err_msg",
