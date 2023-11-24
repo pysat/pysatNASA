@@ -75,4 +75,5 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         COVERALLS_SERVICE_JOB_ID: ${{ github.job }}
+        COVERALLS_SERVICE_NUMBER: $ {{ github.run_id}}
       run: coveralls --rcfile=pyproject.toml --service=github
