@@ -76,7 +76,5 @@ jobs:
     - name: Publish results to coveralls
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        COVERALLS_SERVICE_JOB_ID: ${{ github.job }}
-        COVERALLS_SERVICE_NUMBER: $ {{ github.run_id }}
       uses: coverallsapp/github-action@v2
       continue-on-error: true
