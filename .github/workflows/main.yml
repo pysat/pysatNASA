@@ -74,6 +74,7 @@ jobs:
     - uses: codecov/codecov-action@v3
 
     - name: Publish results to coveralls
+      if: ${{ matrix.os != 'macos-latest'}}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       uses: coverallsapp/github-action@v2
