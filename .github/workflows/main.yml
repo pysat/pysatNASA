@@ -77,4 +77,3 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       uses: coverallsapp/github-action@v2
-      continue-on-error: true
