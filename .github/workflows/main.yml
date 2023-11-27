@@ -75,15 +75,13 @@ jobs:
       if: ${{ matrix.os != 'macos-latest'}}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      uses: coverallsapp/github-action@v2
-      with:
-        parallel: true
+      run: coveralls --rcfile=pyproject.toml --service=github --parallel
 
   finish:
     needs: build
     runs-on: ubuntu-latest
     steps:
     - name: Coveralls Finished
-      uses: coverallsapp/github-action@v2
-      with:
-        parallel-finished: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: coveralls --service=github --finish
