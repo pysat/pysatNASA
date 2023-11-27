@@ -366,7 +366,7 @@ def load_xarray(fnames, tag='', inst_id='',
 
     # Load data from any files provided
     if len(fnames) <= 0:
-        return xr.Dataset()
+        return xr.Dataset(), pysat.Meta()
     else:
         # Using cdflib wrapper to load the CDF and format data and
         # metadata for pysat using some assumptions. Depending upon your needs
