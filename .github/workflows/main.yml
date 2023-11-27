@@ -72,10 +72,10 @@ jobs:
       run: pytest
 
     - name: Publish results to coveralls
-      if: ${{ matrix.os != 'macos-latest'}}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: coveralls --rcfile=pyproject.toml --service=github --parallel
+        COVERALLS_PARALLEL: true
+      run: coveralls --rcfile=pyproject.toml --service=github
 
   finish:
     needs: build
