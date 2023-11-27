@@ -14,6 +14,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   * Fix general clean routine to skip transformation matrices
   * New window needs to be integer for calculate_imf_steadiness
   * Fixed version import
+  * Fixed a bug when data fails to load for CDF pandas objects
 * Documentation
   * Added example of how to export data for archival
 * Maintenance
@@ -21,6 +22,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   * Use pip install for readthedocs
   * Moved references and acknowledgements to methods files
   * Added tests for OMNI HRO routines
+  * Use standard clean routine for C/NOFS VEFI mag data
 
 ## [0.0.5] - 2023-06-27
 * New Instruments
