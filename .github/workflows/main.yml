@@ -7,6 +7,7 @@ on: [push, pull_request]
 
 jobs:
   build:
+    name: Build and Test
     strategy:
       fail-fast: false
       matrix:
@@ -78,10 +79,13 @@ jobs:
       run: coveralls --rcfile=pyproject.toml --service=github
 
   finish:
+    name: Finish Coverage Analysis
     needs: build
     runs-on: ubuntu-latest
     steps:
     - name: Coveralls Finished
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: coveralls --service=github --finish
+      run: |
+        pip install --upgrade coveralls
+        coveralls --service=github --finish
