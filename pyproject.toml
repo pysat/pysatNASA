@@ -53,7 +53,7 @@ dependencies = [
 [project.optional-dependencies]
 pysatcdf = ["pysatCDF"]
 test = [
-  "coveralls < 3.3",
+  "coveralls",
   "flake8",
   "flake8-docstrings",
   "hacking >= 1.0",

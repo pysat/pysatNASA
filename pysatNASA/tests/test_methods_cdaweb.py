@@ -2,6 +2,7 @@
 
 import datetime as dt
 import logging
+import os
 import pandas as pds
 import requests
 import tempfile
@@ -44,12 +45,48 @@ class TestCDAWeb(object):
         assert str(excinfo.value).find('pysat -> Request potentially') > 0
         return
 
-    def test_load_with_empty_file_list(self):
-        """Test that empty data is returned if no files are requested."""
+    @pytest.mark.parametrize("pandas_format", [True, False])
+    def test_load_with_empty_file_list(self, pandas_format):
+        """Test that empty data is returned if no files are requested.
 
-        data, meta = cdw.load(fnames=[])
+        Parameters
+        ----------
+        pandas_format : bool
+            If True, pandas. If False, xarray
+        """
+
+        data, meta = cdw.load(fnames=[], pandas_format=pandas_format)
         assert len(data) == 0
-        assert meta is None
+        assert meta.empty
+        return
+
+    def test_bad_load_cdf_warning(self, caplog):
+        """Test that warning when cdf file does not have expected params."""
+
+        fpath = os.path.join(pysatNASA.test_data_path, 'empty.cdf')
+        with caplog.at_level(logging.WARNING, logger='pysat'):
+            data, meta = cdw.load(fnames=[fpath], pandas_format=True)
+
+        captured = caplog.text
+
+        # Check for appropriate warning
+        warn_msg = "unable to load"
+        assert warn_msg in captured
+
+        return
+
+    def test_bad_xarray_kwarg_warning(self, caplog):
+        """Test that warning is raised when xarray is used outside of cdflib."""
+
+        with caplog.at_level(logging.WARNING, logger='pysat'):
+            data, meta = cdw.load(fnames=[], pandas_format=False,
+                                  use_cdflib=False)
+        captured = caplog.text
+
+        # Check for appropriate warning
+        warn_msg = "`use_cdflib` option is not currently enabled"
+        assert warn_msg in captured
+
         return
 
     def test_bad_zip_warning_get_files(self, caplog):
