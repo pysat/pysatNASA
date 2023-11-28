@@ -126,7 +126,7 @@ def load(fnames, tag='', inst_id='', **kwargs):
     if tag == '':
         # Drop E-field data
         if 'use_cdflib' in kwargs.keys():
-            kwargs.drop('use_cdflib')
+            kwargs.pop('use_cdflib')
         data, meta = cdw.load_xarray(fnames, tag=tag, inst_id=inst_id,
                                      epoch_name='mtimeEpoch',
                                      drop_dims='vtimeEpoch', **kwargs)
