@@ -24,6 +24,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   * Moved references and acknowledgements to methods files
   * Added tests for OMNI HRO routines
   * Use standard clean routine for C/NOFS VEFI mag data
+  * Added version cap for sphinx_rtd_theme
 
 ## [0.0.5] - 2023-06-27
 * New Instruments
