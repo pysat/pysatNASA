@@ -17,6 +17,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   * Fixed a bug when data fails to load for CDF pandas objects
 * Documentation
   * Added example of how to export data for archival
+  * Updated documentation refs
 * Maintenance
   * Implemented unit tests for cleaning warnings
   * Use pip install for readthedocs
