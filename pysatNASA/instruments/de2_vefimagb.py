@@ -101,7 +101,7 @@ list_files = functools.partial(mm_gen.list_files,
 
 
 # Set the load routine
-def load(fnames, tag='', inst_id=''):
+def load(fnames, tag='', inst_id='', **kwargs):
     """Load DE2 VEFI data.
 
     This routine is called as needed by pysat. It is not intended
@@ -119,7 +119,8 @@ def load(fnames, tag='', inst_id=''):
         Instrument ID used to identify particular data set to be loaded.
         This input is nominally provided by pysat itself. (default='')
     kwargs : dict
-        Additional kwargs that may be supplied to the instrument. See also
+        Additional kwargs that may be supplied to the instrument during the
+        course of unit tests. Not implemented for this instrument.
 
     Returns
     -------
