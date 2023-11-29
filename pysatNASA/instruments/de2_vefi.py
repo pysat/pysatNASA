@@ -28,9 +28,9 @@ platform
 name
     'vefi'
 tag
-    'dca' or 'ac'
+    '', 'dca', 'ac'
 inst_id
-    None Supported
+    none supported
 
 
 Warnings
@@ -43,6 +43,7 @@ Warnings
 import datetime as dt
 import functools
 
+import pysat
 from pysat.instruments.methods import general as mm_gen
 from pysatNASA.instruments.methods import cdaweb as cdw
 from pysatNASA.instruments.methods import de2 as mm_de2
@@ -124,13 +125,20 @@ def load(fnames, tag='', inst_id='', **kwargs):
     """
 
     if tag == '':
+        # Warn user that e-field data is dropped.
+        estr = 'E-field data dropped'
+        pysat.logger.warn(estr)
         # Drop E-field data
         if 'use_cdflib' in kwargs.keys():
             kwargs.pop('use_cdflib')
         data, meta = cdw.load_xarray(fnames, tag=tag, inst_id=inst_id,
                                      epoch_name='mtimeEpoch',
                                      drop_dims='vtimeEpoch', **kwargs)
-        data = data.to_pandas()
+        if hasattr(data, 'to_pandas'):
+            data = data.to_pandas()
+        else:
+            # xarray 0.16 support required for operational server
+            data = data.to_dataframe()
     else:
         data, meta = cdw.load_pandas(fnames, tag=tag, inst_id=inst_id, **kwargs)
 
