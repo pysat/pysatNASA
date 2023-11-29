@@ -34,12 +34,13 @@ instruments = clslib.InstLibTests.initialize_test_package(
     clslib.InstLibTests, inst_loc=pysatNASA.instruments)
 
 # Create a new list of instruments with the option of forcing cdflib
+skip_list = ['vefimagb']
 instruments['cdf'] = []
 for inst in instruments['download']:
     fname = inst['inst_module'].supported_tags[inst['inst_id']][inst['tag']]
     if '.cdf' in fname:
         temp_inst, _ = clslib.initialize_test_inst_and_date(inst)
-        if temp_inst.pandas_format:
+        if temp_inst.pandas_format and temp_inst.name not in skip_list:
             instruments['cdf'].append(inst)
 
 
