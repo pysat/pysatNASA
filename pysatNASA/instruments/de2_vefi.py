@@ -1,7 +1,7 @@
 """Module for the DE2 VEFI instrument.
 
 .. deprecated:: 0.0.6
-    The '' tag is deprecated. This dataset is replaced by the de2_vefimagb
+    The '' tag is deprecated. This data set is replaced by the de2_vefimagb
     instrument. The '' tag will be removed in 0.1.0+ to reduce redundancy.
 
 From CDAWeb (adpated):
@@ -143,6 +143,7 @@ def load(fnames, tag='', inst_id='', **kwargs):
         # Warn user that e-field data is dropped.
         estr = 'E-field data dropped'
         pysat.logger.warn(estr)
+
         # Drop E-field data
         if 'use_cdflib' in kwargs.keys():
             kwargs.pop('use_cdflib')
