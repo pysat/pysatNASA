@@ -83,8 +83,8 @@ _test_dates = {'': {tag: dt.datetime(1983, 1, 1) for tag in tags.keys()}}
 # Use standard init routine
 init = functools.partial(mm_nasa.init, module=mm_de2, name='vefi')
 
-# Use default clean
-clean = mm_nasa.clean
+# No cleaning, use standard warning function instead
+clean = mm_nasa.clean_warn
 
 # ----------------------------------------------------------------------------
 # Instrument functions
@@ -118,6 +118,8 @@ def load(fnames, tag='', inst_id=''):
     inst_id : str
         Instrument ID used to identify particular data set to be loaded.
         This input is nominally provided by pysat itself. (default='')
+    kwargs : dict
+        Additional kwargs that may be supplied to the instrument. See also
 
     Returns
     -------
