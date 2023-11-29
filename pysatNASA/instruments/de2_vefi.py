@@ -1,5 +1,9 @@
 """Module for the DE2 VEFI instrument.
 
+.. deprecated:: 0.0.6
+    The '' tag is deprecated. This dataset is replaced by the de2_vefimagb
+    instrument. The '' tag will be removed in 0.1.0+ to reduce redundancy.
+
 From CDAWeb (adpated):
 This directory gathers data for the VEFI instrument that flew on the DE 2
 spacecraft which was launched on 3 August 1981 into an elliptical orbit with
@@ -42,6 +46,7 @@ Warnings
 
 import datetime as dt
 import functools
+import warnings
 
 import pysat
 from pysat.instruments.methods import general as mm_gen
@@ -68,8 +73,18 @@ _test_dates = {'': {tag: dt.datetime(1983, 1, 1) for tag in tags.keys()}}
 # ----------------------------------------------------------------------------
 # Instrument methods
 
-# Use standard init routine
-init = functools.partial(mm_nasa.init, module=mm_de2, name=name)
+def init(self):
+    """Initialize the Instrument object with instrument specific values."""
+
+    if self.tag == '':
+        warnings.warn(" ".join(["The '' tag for `de2_vefi` has been",
+                                "deprecated and will be removed in 0.1.0+."]),
+                      DeprecationWarning, stacklevel=2)
+
+    mm_nasa.init(self, module=mm_de2, name=self.name)
+
+    return
+
 
 # Use default clean
 clean = mm_nasa.clean

@@ -142,7 +142,8 @@ class TestDeprecation(object):
 
         return
 
-    @pytest.mark.parametrize("inst_module,tag", [('jpl_gps', 'roti')])
+    @pytest.mark.parametrize("inst_module,tag", [('jpl_gps', 'roti'),
+                                                 ('de2_vefi', '')])
     def test_deprecated_instruments(self, inst_module, tag):
         """Check that instantiating old instruments raises a DeprecationWarning.
 
@@ -160,9 +161,7 @@ class TestDeprecation(object):
                                                  inst_module),
                              tag=tag, use_header=True)
 
-        warn_msgs = [" ".join(["The instrument module",
-                               "`{:}`".format(inst_module),
-                               "has been deprecated and will be removed",
+        warn_msgs = [" ".join(["has been deprecated and will be removed",
                                "in 0.1.0+."])]
 
         # Ensure the minimum number of warnings were raised.
