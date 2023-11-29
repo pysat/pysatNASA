@@ -18,6 +18,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   * Fixed a bug when data fails to load for CDF pandas objects
 * Documentation
   * Added example of how to export data for archival
+  * Updated documentation refs
 * Deprecations
   * Deprecated '' tag for de2_vefi module, support moved to de2_vefimagb
 * Maintenance
@@ -26,6 +27,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   * Moved references and acknowledgements to methods files
   * Added tests for OMNI HRO routines
   * Use standard clean routine for C/NOFS VEFI mag data
+  * Added version cap for sphinx_rtd_theme
 
 ## [0.0.5] - 2023-06-27
 * New Instruments
