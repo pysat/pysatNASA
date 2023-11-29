@@ -97,6 +97,14 @@ DE2 VEFI
 .. automodule:: pysatNASA.instruments.de2_vefi
    :members:
 
+.. _de2_vefi:
+
+DE2 VEFIMAGB
+------------
+
+.. automodule:: pysatNASA.instruments.de2_vefimagb
+   :members:
+
 .. _de2_wats:
 
 DE2 WATS
