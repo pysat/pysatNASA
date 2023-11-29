@@ -102,7 +102,7 @@ list_files = functools.partial(mm_gen.list_files,
 
 
 # Set the load routine
-def load(fnames, tag='', inst_id='', **kwargs):
+def load(fnames, tag='', inst_id=''):
     """Load DE2 VEFI data.
 
     This routine is called as needed by pysat. It is not intended
@@ -142,15 +142,10 @@ def load(fnames, tag='', inst_id='', **kwargs):
         epoch_name = 'vtimeEpoch'
         drop_dims = 'mtimeEpoch'
 
-    # Cannot load data via pysatCDF, use_cdflib is disabled
-    if 'use_cdflib' in kwargs.keys():
-        pysat.logger.info("`use_cdflib` not supported for this instrument")
-        kwargs.pop('use_cdflib')
-
     # Load and drop appropriate data.
     data, meta = cdw.load_xarray(fnames, tag=tag, inst_id=inst_id,
                                  epoch_name=epoch_name,
-                                 drop_dims=drop_dims, **kwargs)
+                                 drop_dims=drop_dims)
     # Convert to pandas.
     if hasattr(data, 'to_pandas'):
         data = data.to_pandas()
