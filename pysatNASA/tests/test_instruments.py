@@ -33,14 +33,17 @@ except ImportError:
 instruments = clslib.InstLibTests.initialize_test_package(
     clslib.InstLibTests, inst_loc=pysatNASA.instruments)
 
+# Additional tests required for pandas instruments if pysatCDF installed
 # Create a new list of instruments with the option of forcing cdflib
-skip_list = ['vefimagb']
 instruments['cdf'] = []
+# Create list of pandas instruments where this is not needed
+skip_cdf_list = ['de2_vefimagb']
+
 for inst in instruments['download']:
     fname = inst['inst_module'].supported_tags[inst['inst_id']][inst['tag']]
     if '.cdf' in fname:
         temp_inst, _ = clslib.initialize_test_inst_and_date(inst)
-        if temp_inst.pandas_format and temp_inst.name not in skip_list:
+        if temp_inst.pandas_format and temp_inst.name not in skip_cdf_list:
             instruments['cdf'].append(inst)
 
 

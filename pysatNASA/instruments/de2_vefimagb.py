@@ -54,7 +54,6 @@ import datetime as dt
 import functools
 import os
 
-import pysat
 from pysat.instruments.methods import general as mm_gen
 from pysatNASA.instruments.methods import cdaweb as cdw
 from pysatNASA.instruments.methods import de2 as mm_de2
