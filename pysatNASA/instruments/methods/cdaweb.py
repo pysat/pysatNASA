@@ -12,8 +12,10 @@ import numpy as np
 import os
 import pandas as pds
 import requests
+import tempfile
 from time import sleep
 import xarray as xr
+import zipfile
 
 from bs4 import BeautifulSoup
 from cdasws import CdasWs
@@ -218,7 +220,7 @@ def load_pandas(fnames, tag='', inst_id='', file_cadence=dt.timedelta(days=1),
 
     # Load data from any files provided
     if len(fnames) <= 0:
-        return pds.DataFrame(None), None
+        return pds.DataFrame(None), pysat.Meta()
     else:
         if use_cdflib is not None:
             if use_cdflib:
@@ -268,6 +270,8 @@ def load_pandas(fnames, tag='', inst_id='', file_cadence=dt.timedelta(days=1),
         # Combine individual files together
         if len(ldata) > 0:
             data = pds.concat(ldata)
+        else:
+            data, meta = pds.DataFrame(None), pysat.Meta()
 
         return data, meta
 
@@ -362,7 +366,7 @@ def load_xarray(fnames, tag='', inst_id='',
 
     # Load data from any files provided
     if len(fnames) <= 0:
-        return xr.Dataset()
+        return xr.Dataset(), pysat.Meta()
     else:
         # Using cdflib wrapper to load the CDF and format data and
         # metadata for pysat using some assumptions. Depending upon your needs
@@ -386,9 +390,11 @@ def load_xarray(fnames, tag='', inst_id='',
             ldata.append(temp_data)
 
         # Combine individual files together, concat along epoch
-        if len(ldata) > 0:
+        if len(ldata) > 1:
             data = xr.combine_nested(ldata, epoch_name,
                                      combine_attrs='override')
+        else:
+            data = ldata[0]
 
     all_vars = io.xarray_all_vars(data)
 
@@ -469,7 +475,6 @@ def load_xarray(fnames, tag='', inst_id='',
     return data, meta
 
 
-# TODO(#103): Include support to unzip / untar files after download.
 def download(date_array, data_path, tag='', inst_id='', supported_tags=None,
              remote_url='https://cdaweb.gsfc.nasa.gov'):
     """Download NASA CDAWeb data.
@@ -512,6 +517,7 @@ def download(date_array, data_path, tag='', inst_id='', supported_tags=None,
 
     """
 
+    # Get information about remote data product location
     inst_dict = try_inst_dict(inst_id, tag, supported_tags)
 
     # Naming scheme for files on the CDAWeb server
@@ -523,6 +529,13 @@ def download(date_array, data_path, tag='', inst_id='', supported_tags=None,
                                      supported_tags=supported_tags,
                                      start=date_array[0],
                                      stop=date_array[-1])
+
+    # Create temproary directory if files need to be unzipped.
+    if 'zip_method' in inst_dict.keys():
+        zip_method = inst_dict['zip_method']
+        temp_dir = tempfile.TemporaryDirectory()
+    else:
+        zip_method = None
 
     # Download only requested files that exist remotely
     for date, fname in remote_files.items():
@@ -546,18 +559,19 @@ def download(date_array, data_path, tag='', inst_id='', supported_tags=None,
                                 formatted_remote_dir.strip('/'),
                                 fname))
 
-        saved_local_fname = os.path.join(data_path, fname)
-
         # Perform download
         logger.info(' '.join(('Attempting to download file for',
                               date.strftime('%d %B %Y'))))
         try:
             with requests.get(remote_path) as req:
                 if req.status_code != 404:
-                    with open(saved_local_fname, 'wb') as open_f:
-                        open_f.write(req.content)
-                    logger.info('Successfully downloaded {:}.'.format(
-                        saved_local_fname))
+                    if zip_method:
+                        get_file(req.content, data_path, fname,
+                                 temp_path=temp_dir.name, zip_method=zip_method)
+                    else:
+                        get_file(req.content, data_path, fname)
+                    logger.info(''.join(('Successfully downloaded ',
+                                         fname, '.')))
                 else:
                     logger.info(' '.join(('File not available for',
                                           date.strftime('%d %B %Y'))))
@@ -566,6 +580,52 @@ def download(date_array, data_path, tag='', inst_id='', supported_tags=None,
                                   date.strftime('%d %B %Y'))))
         # Pause to avoid excessive pings to server
         sleep(0.2)
+
+    if zip_method:
+        # Cleanup temporary directory
+        temp_dir.cleanup()
+
+    return
+
+
+def get_file(remote_file, data_path, fname, temp_path=None, zip_method=None):
+    """Retrieve a file, unzipping if necessary.
+
+    Parameters
+    ----------
+    remote_file : file content
+        File content retireved via requests.
+    data_path : str
+        Path to pysat archival directory.
+    fname : str
+        Name of file on the remote server.
+    temp_path : str
+        Path to temporary directory. (Default=None)
+    zip_method : str
+        The method used to zip the file. Supports 'zip' and None.
+        If None, downloads files directly. (default=None)
+
+    """
+
+    if zip_method:
+        # Use a temporary location.
+        dl_fname = os.path.join(temp_path, fname)
+    else:
+        # Use the pysat data directory.
+        dl_fname = os.path.join(data_path, fname)
+
+    # Download the file to desired destination.
+    with open(dl_fname, 'wb') as open_f:
+        open_f.write(remote_file)
+
+    # Unzip and move the files from the temporary directory.
+    if zip_method == 'zip':
+        with zipfile.ZipFile(dl_fname, 'r') as open_zip:
+            open_zip.extractall(data_path)
+
+    elif zip_method is not None:
+        logger.warning('{:} is not a recognized zip method'.format(zip_method))
+
     return
 
 

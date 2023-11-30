@@ -178,6 +178,30 @@ JPL GPS
 .. automodule:: pysatNASA.instruments.jpl_gps
    :members:
 
+.. _maven_insitu_kp:
+
+MAVEN INSITU KP
+---------------
+
+.. automodule:: pysatNASA.instruments.maven_insitu_kp
+   :members:
+
+.. _maven_mag:
+
+MAVEN MAG
+---------
+
+.. automodule:: pysatNASA.instruments.maven_mag
+   :members:
+
+.. _maven_sep:
+
+MAVEN SEP
+---------
+
+.. automodules:: pysatNASA.instruments.maven_sep
+   :members:
+
 .. _omni_hro:
 
 OMNI HRO
@@ -185,6 +209,14 @@ OMNI HRO
 
 .. automodule:: pysatNASA.instruments.omni_hro
    :members: calculate_clock_angle, calculate_imf_steadiness, time_shift_to_magnetic_poles
+
+.. _reach_dosimeter:
+
+REACH DOSIMETER
+----------
+
+.. automodule:: pysatNASA.instruments.reach_dosimeter
+  :members:
 
 .. _ses14_gold:
 

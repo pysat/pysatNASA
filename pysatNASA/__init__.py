@@ -6,15 +6,18 @@ portal.
 
 """
 
-import importlib
-import importlib_metadata
+try:
+    from importlib import metadata
+except ImportError:
+    import importlib_metadata as metadata
+
+import os
 
 from pysatNASA import constellations  # noqa F401
 from pysatNASA import instruments  # noqa F401
 
-# set version
-try:
-    __version__ = importlib.metadata.version('pysatNASA')
-except AttributeError:
-    # Python 3.6 requires a different version
-    __version__ = importlib_metadata.version('pysatNASA')
+__version__ = metadata.version('pysatNASA')
+
+# Set directory for test data
+here = os.path.abspath(os.path.dirname(__file__))
+test_data_path = os.path.join(here, 'tests', 'test_data')
