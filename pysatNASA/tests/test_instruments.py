@@ -33,13 +33,17 @@ except ImportError:
 instruments = clslib.InstLibTests.initialize_test_package(
     clslib.InstLibTests, inst_loc=pysatNASA.instruments)
 
+# Additional tests required for pandas instruments if pysatCDF installed
 # Create a new list of instruments with the option of forcing cdflib
 instruments['cdf'] = []
+# Create list of pandas instruments where this is not needed
+skip_cdf_list = ['de2_vefimagb']
+
 for inst in instruments['download']:
     fname = inst['inst_module'].supported_tags[inst['inst_id']][inst['tag']]
     if '.cdf' in fname:
         temp_inst, _ = clslib.initialize_test_inst_and_date(inst)
-        if temp_inst.pandas_format:
+        if temp_inst.pandas_format and temp_inst.name not in skip_cdf_list:
             instruments['cdf'].append(inst)
 
 
@@ -142,7 +146,8 @@ class TestDeprecation(object):
 
         return
 
-    @pytest.mark.parametrize("inst_module,tag", [('jpl_gps', 'roti')])
+    @pytest.mark.parametrize("inst_module,tag", [('jpl_gps', 'roti'),
+                                                 ('de2_vefi', '')])
     def test_deprecated_instruments(self, inst_module, tag):
         """Check that instantiating old instruments raises a DeprecationWarning.
 
@@ -160,9 +165,7 @@ class TestDeprecation(object):
                                                  inst_module),
                              tag=tag, use_header=True)
 
-        warn_msgs = [" ".join(["The instrument module",
-                               "`{:}`".format(inst_module),
-                               "has been deprecated and will be removed",
+        warn_msgs = [" ".join(["has been deprecated and will be removed",
                                "in 0.1.0+."])]
 
         # Ensure the minimum number of warnings were raised.

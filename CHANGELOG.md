@@ -4,6 +4,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [0.0.6] - 2023-XX-XX
 * New Instruments
+  * DE2 VEFIMAGB - electric and magnetic field on the same cadence
   * MAVEN mag
   * MAVEN SEP
   * MAVEN in situ key parameters
@@ -18,6 +19,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 * Documentation
   * Added example of how to export data for archival
   * Updated documentation refs
+* Deprecations
+  * Deprecated '' tag for de2_vefi module, support moved to de2_vefimagb
 * Maintenance
   * Implemented unit tests for cleaning warnings
   * Use pip install for readthedocs
