@@ -31,10 +31,8 @@ jobs:
     - name: Install pysat RC
       run: pip install --no-deps --pre -i https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ pysat
 
-    - name: Install standard dependencies
-      run: |
-        pip install -r requirements.txt
-        pip install -r test_requirements.txt
+    - name: Install with standard dependencies
+      run: pip install .[test]
 
     - name: Set up pysat
       run: |
@@ -42,9 +40,22 @@ jobs:
         python -c "import pysat; pysat.params['data_dirs'] = 'pysatData'"
 
     - name: Test with pytest
-      run: pytest -vs --cov=pysatNASA/
+      run: pytest
 
     - name: Publish results to coveralls
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: coveralls --rcfile=setup.cfg --service=github
+        COVERALLS_PARALLEL: true
+      run: coveralls --rcfile=pyproject.toml --service=github
+
+  finish:
+    name: Finish Coverage Analysis
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Coveralls Finished
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        pip install --upgrade coveralls
+        coveralls --service=github --finish
