@@ -36,6 +36,7 @@ instruments = clslib.InstLibTests.initialize_test_package(
 # Additional tests required for pandas instruments if pysatCDF installed
 # Create a new list of instruments with the option of forcing cdflib
 instruments['cdf'] = []
+
 # Create list of pandas instruments where this is not needed
 skip_cdf_list = ['de2_vefimagb']
 
