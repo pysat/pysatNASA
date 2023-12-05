@@ -35,9 +35,11 @@ except ModuleNotFoundError:
     from cdflib import cdf_to_xarray
 
 try:
+    # Use pysatCDF as default for pandas data sets
     import pysatCDF
     auto_CDF = pysatCDF.CDF
 except ImportError:
+    # Use cdflib as default for pandas data sets
     auto_CDF = libCDF
 
 

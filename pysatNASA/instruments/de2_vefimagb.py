@@ -1,24 +1,11 @@
 """Module for the DE2 VEFI instrument.
 
-.. deprecated:: 0.0.6
-    The '' tag is deprecated. This data set is replaced by the de2_vefimagb
-    instrument. The '' tag will be removed in 0.1.0+ to reduce redundancy.
-
 From CDAWeb (adpated):
-This directory gathers data for the VEFI instrument that flew on the DE 2
-spacecraft which was launched on 3 August 1981 into an elliptical orbit with
-an altitude range of 300 km to 1000 km and re-entered the atmosphere on
-19 February 1983.
+This directory gathers data for the VEFI and Magnetometer instruments that flew
+on the DE 2 spacecraft which was launched on 3 August 1981 into an elliptical
+orbit with an altitude range of 300 km to 1000 km and re-entered the atmosphere
+on 19 February 1983.
 
-dca   (NSSDC ID: 81-070B-02C)
-
-This data set contains the averaged (2 samples per second) DC electric fields in
-spacecraft coordinates and orbit information in ASCII format.
-
-ac   (NSSDC ID: 81-070B-02E)
-
-This data set contains the averaged AC electric field data (1 or 2 points per
-second) and orbit information.
 
 References
 ----------
@@ -30,25 +17,43 @@ Properties
 platform
     'de2'
 name
-    'vefi'
+    'vefimagb'
 tag
-    '', 'dca', 'ac'
+    'e', 'b'
 inst_id
     none supported
 
+Note
+----
+Electric and Magnetic fields have the same cadence, but different time indices.
+Currently loads one index per instrument. Files kept in the same directory to
+prevent duplication of downloads.
 
-Warnings
+Examples
 --------
-- Currently no cleaning routine.
+::
+
+    import datetime as dt
+    import pysat
+
+    # Set electric field instrument
+    vefi = pysat.Instrument(platform='de2', name='vefimagb', tag='e')
+    vefi.download(dt.datetime(1983, 1, 1))
+
+    # Set magnetic field instrument
+    mag = pysat.Instrument(platform='de2', name='vefimagb', tag='b')
+
+    # Both instruments can be loaded from the same download
+    vefi.load(1983, 1)
+    mag.load(1983, 1)
 
 
 """
 
 import datetime as dt
 import functools
-import warnings
+import os
 
-import pysat
 from pysat.instruments.methods import general as mm_gen
 from pysatNASA.instruments.methods import cdaweb as cdw
 from pysatNASA.instruments.methods import de2 as mm_de2
@@ -58,11 +63,13 @@ from pysatNASA.instruments.methods import general as mm_nasa
 # Instrument attributes
 
 platform = 'de2'
-name = 'vefi'
-tags = {'': '62 ms combination of Electric Field and Magnetometer',
-        'dca': '500 ms cadence DC Averaged Electric Field data',
-        'ac': '500 ms cadence AC Electric Field data'}
+name = 'vefimagb'
+tags = {'e': '62 ms cadence Electric Field data',
+        'b': '62 ms cadence Magnetometer data'}
 inst_ids = {'': [tag for tag in tags.keys()]}
+
+# Because both data products are stored in one file, tag not used
+directory_format = os.path.join('{platform}', '{name}', '{inst_id}')
 
 # ----------------------------------------------------------------------------
 # Instrument test attributes
@@ -73,21 +80,11 @@ _test_dates = {'': {tag: dt.datetime(1983, 1, 1) for tag in tags.keys()}}
 # ----------------------------------------------------------------------------
 # Instrument methods
 
-def init(self):
-    """Initialize the Instrument object with instrument specific values."""
+# Use standard init routine
+init = functools.partial(mm_nasa.init, module=mm_de2, name='vefi')
 
-    if self.tag == '':
-        warnings.warn(" ".join(["The '' tag for `de2_vefi` has been",
-                                "deprecated and will be removed in 0.1.0+."]),
-                      DeprecationWarning, stacklevel=2)
-
-    mm_nasa.init(self, module=mm_de2, name=self.name)
-
-    return
-
-
-# Use default clean
-clean = mm_nasa.clean
+# No cleaning, use standard warning function instead
+clean = mm_nasa.clean_warn
 
 # ----------------------------------------------------------------------------
 # Instrument functions
@@ -96,11 +93,8 @@ clean = mm_nasa.clean
 
 # Set the list_files routine
 datestr = '{year:04d}{month:02d}{day:02d}_v{version:02d}'
-fid = {'': '62ms_vefimagb',
-       'ac': 'ac500ms_vefi',
-       'dca': 'dca500ms_vefi'}
-fname = 'de2_{fid:s}_{datestr:s}.cdf'
-supported_tags = {'': {tag: fname.format(fid=fid[tag], datestr=datestr)
+fname = 'de2_62ms_vefimagb_{datestr:s}.cdf'
+supported_tags = {'': {tag: fname.format(datestr=datestr)
                        for tag in tags.keys()}}
 list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags)
@@ -124,6 +118,9 @@ def load(fnames, tag='', inst_id='', **kwargs):
     inst_id : str
         Instrument ID used to identify particular data set to be loaded.
         This input is nominally provided by pysat itself. (default='')
+    kwargs : dict
+        Additional kwargs that may be supplied to the instrument during the
+        course of unit tests. Not implemented for this instrument.
 
     Returns
     -------
@@ -139,32 +136,31 @@ def load(fnames, tag='', inst_id='', **kwargs):
 
     """
 
-    if tag == '':
-        # Warn user that e-field data is dropped.
-        estr = 'E-field data dropped'
-        pysat.logger.warn(estr)
+    # Select which epoch to use, drop the rest.
+    if tag == 'b':
+        epoch_name = 'mtimeEpoch'
+        drop_dims = 'vtimeEpoch'
+    elif tag == 'e':
+        epoch_name = 'vtimeEpoch'
+        drop_dims = 'mtimeEpoch'
 
-        # Drop E-field data
-        if 'use_cdflib' in kwargs.keys():
-            kwargs.pop('use_cdflib')
-        data, meta = cdw.load_xarray(fnames, tag=tag, inst_id=inst_id,
-                                     epoch_name='mtimeEpoch',
-                                     drop_dims='vtimeEpoch', **kwargs)
-        if hasattr(data, 'to_pandas'):
-            data = data.to_pandas()
-        else:
-            # xarray 0.16 support required for operational server
-            data = data.to_dataframe()
+    # Load and drop appropriate data.
+    data, meta = cdw.load_xarray(fnames, tag=tag, inst_id=inst_id,
+                                 epoch_name=epoch_name,
+                                 drop_dims=drop_dims)
+    # Convert to pandas.
+    if hasattr(data, 'to_pandas'):
+        data = data.to_pandas()
     else:
-        data, meta = cdw.load_pandas(fnames, tag=tag, inst_id=inst_id, **kwargs)
+        # xarray 0.16 support required for operational server
+        data = data.to_dataframe()
 
     return data, meta
 
 
 # Set the download routine
-download_tags = {'': {'': 'DE2_62MS_VEFIMAGB',
-                      'ac': 'DE2_AC500MS_VEFI',
-                      'dca': 'DE2_DCA500MS_VEFI'}}
+download_tags = {'': {'e': 'DE2_62MS_VEFIMAGB',
+                      'b': 'DE2_62MS_VEFIMAGB'}}
 download = functools.partial(cdw.cdas_download, supported_tags=download_tags)
 
 # Set the list_remote_files routine
