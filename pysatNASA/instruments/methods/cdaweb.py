@@ -691,9 +691,8 @@ def cdas_download(date_array, data_path, tag='', inst_id='',
                                      supported_tags=download_tags)
 
     """
-
-    start = date_array[0]
-    stop = date_array[-1]
+    start = pysat.utils.time.filter_datetime_input(date_array[0])
+    stop = pysat.utils.time.filter_datetime_input(date_array[-1])
     remote_files = cdas_list_remote_files(tag=tag, inst_id=inst_id,
                                           start=start, stop=stop,
                                           supported_tags=supported_tags,
@@ -961,10 +960,6 @@ def cdas_list_remote_files(tag='', inst_id='', start=None, stop=None,
         stop = start + dt.timedelta(days=1)
     elif start == stop:
         stop = start + dt.timedelta(days=1)
-
-    if isinstance(start, pds._libs.tslibs.timestamps.Timestamp):
-        start = start.tz_localize('utc')
-        stop = stop.tz_localize('utc')
 
     og_files = cdas.get_original_files(dataset=dataset, start=start, end=stop)
 
