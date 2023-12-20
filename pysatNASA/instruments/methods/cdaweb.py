@@ -964,9 +964,12 @@ def cdas_list_remote_files(tag='', inst_id='', start=None, stop=None,
     elif start == stop:
         stop = start + dt.timedelta(days=1)
 
-    if isinstance(start, pds._libs.tslibs.timestamps.Timestamp):
-        start = start.tz_localize('utc')
-        stop = stop.tz_localize('utc')
+    # Ensure that valid date types are used.
+    start = pysat.utils.time.filter_datetime_input(start)
+    stop = pysat.utils.time.filter_datetime_input(stop)
+
+    # CDAS WS needs a time for the stop date.
+    stop += dt.timedelta(seconds=86399)
 
     og_files = cdas.get_original_files(dataset=dataset, start=start, end=stop)
 
