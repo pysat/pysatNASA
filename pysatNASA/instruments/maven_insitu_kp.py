@@ -52,6 +52,8 @@ pandas_format = False
 # Instrument test attributes
 
 _test_dates = {'': {'': dt.datetime(2020, 1, 1)}}
+# TODO(#218, #222): Remove when compliant with multi-day load tests
+_test_new_tests = {'': {'': False}}
 
 # ----------------------------------------------------------------------------
 # Instrument methods
