@@ -80,7 +80,7 @@ inst_ids = {'': ['']}
 
 _test_dates = {'': {'': dt.datetime(2009, 1, 1)}}
 # TODO(#222): Remove when compliant with multi-day load tests
-_test_new_tests = {'': {'': False}}
+_new_tests = {'': {'': False}}
 
 # ----------------------------------------------------------------------------
 # Instrument methods
