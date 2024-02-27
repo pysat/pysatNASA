@@ -43,14 +43,15 @@ def build_dtimes(data, var, epoch=None, epoch_var='time'):
                 for i, sec in enumerate(data[skey].values)]
         secs = [int(np.floor((sec - hours[i] * 3600 - mins[i] * 60)))
                 for i, sec in enumerate(data[skey].values)]
+        microsecs = [int(np.floor((sec - hours[i] * 3600 - mins[i] * 60
+                                   - secs[i]) * 1.0e6))
+                     for i, sec in enumerate(data[skey].values)]
         dtimes = [
             dt.datetime.strptime(
-                "{:4d}-{:03d}-{:02d}-{:02d}-{:02d}-{:06.0f}".format(
+                "{:4d}-{:03d}-{:02d}-{:02d}-{:02d}-{:06d}".format(
                     int(data[ykey].values[i]), int(data[dkey].values[i]),
-                    hours[i], mins[i], secs[i],
-                    (sec - hours[i] * 3600 - mins[i] * 60 - secs[i]) * 1.0e6),
-                '%Y-%j-%H-%M-%S-%f')
-            for i, sec in enumerate(data[skey].values)]
+                    hours[i], mins[i], secs[i], microsec), '%Y-%j-%H-%M-%S-%f')
+            for i, microsec in enumerate(microsecs)]
     else:
         dtimes = [
             dt.datetime.strptime("{:4d}-{:03d}".format(
