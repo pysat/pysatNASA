@@ -29,6 +29,8 @@ name
     'ssusi'
 tag
     'edr-aurora'
+    'sdr-disk'
+    'sdr2-disk'
 inst_id
     'f16', 'f17', 'f18', 'f19'
 
@@ -67,7 +69,9 @@ name = 'ssusi'
 tags = {'edr-aurora': ''.join(['Electron energy flux and mean energy, auroral',
                                ' boundaries, identified discrete auroral arcs,',
                                ' hemispheric power, and magnetic field lines ',
-                               'traced to 4 Earth radii'])}
+                               'traced to 4 Earth radii']),
+        'sdr-disk': 'Fine resolution gridded disk radiances',
+        'sdr2-disk': 'Coarse resolution gridded disk radiances'}
 inst_ids = {sat_id: list(tags.keys())
             for sat_id in ['f16', 'f17', 'f18', 'f19']}
 
@@ -105,10 +109,6 @@ supported_tags = {sat_id: {tag: fname.format(tag=tag, inst_id=sat_id)
 list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags)
 
-# Set the load routine
-load = functools.partial(jhuapl.load_edr_aurora, pandas_format=pandas_format,
-                         strict_dim_check=False)
-
 # Set the download routine
 basic_tag = {'remote_dir': ''.join(('/pub/data/dmsp/dmsp{inst_id:s}/ssusi/',
                                     '/data/{tag:s}/{{year:4d}}/{{day:03d}}/')),
@@ -122,3 +122,11 @@ download = functools.partial(cdw.download, supported_tags=download_tags)
 # Set the list_remote_files routine
 list_remote_files = functools.partial(cdw.list_remote_files,
                                       supported_tags=download_tags)
+
+# Set the load routine
+def load():
+    """FIX THIS HERE"""
+    out = jhuapl.load_edr_aurora(pandas_format=pandas_format,
+                                 strict_dim_check=False)
+
+    return out
