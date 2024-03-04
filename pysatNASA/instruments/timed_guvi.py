@@ -88,7 +88,7 @@ multi_file_day = True
 # ----------------------------------------------------------------------------
 # Instrument test attributes
 
-_test_dates = {iid: {tag: dt.datetime(2005, 6, 28) for tag in inst_ids[iid]}
+_test_dates = {iid: {tag: dt.datetime(2007, 12, 13) for tag in inst_ids[iid]}
                for iid in inst_ids.keys()}
 _test_load_opt = {iid: {tag: {'combine_times': True}
                         for tag in inst_ids[iid]} for iid in ['high_res',
@@ -219,7 +219,8 @@ def concat_data(self, new_data, combine_times=False, **kwargs):
                 data_list = pysat.utils.coords.expand_xarray_dims(
                     [inners[dim] if dim == self.index.name else
                      inners[dim].rename_dims({dim: self.index.name})
-                     for dim in time_dims], self.meta, dims_equal=False)
+                     for dim in time_dims if len(inners[dim].dims) > 0],
+                    self.meta, dims_equal=False)
             else:
                 data_list = [inners[dim] for dim in time_dims]
 
