@@ -88,8 +88,10 @@ multi_file_day = True
 # ----------------------------------------------------------------------------
 # Instrument test attributes
 
-_test_dates = {iid: {tag: dt.datetime(2007, 12, 13) for tag in inst_ids[iid]}
-               for iid in inst_ids.keys()}
+_test_dates = {
+    iid: {tag: dt.datetime(2007 if tag.find('spectrograph') > 0 else 2005, 12,
+                           13) for tag in inst_ids[iid]}
+    for iid in inst_ids.keys()}
 _test_load_opt = {iid: {tag: {'combine_times': True}
                         for tag in inst_ids[iid]} for iid in ['high_res',
                                                               'low_res']}
