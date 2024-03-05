@@ -20,6 +20,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   * Fixed a bug when data fails to load for CDF pandas objects
   * Allow graceful failure with no files in jhuapl load functions
   * New window needs to be integer for calculate_imf_steadiness
+  * Fixed a bug where cdas_download may drop the requested end date file
 * Documentation
   * Added example of how to export data for archival
   * Updated documentation refs
@@ -32,6 +33,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   * Added tests for OMNI HRO routines
   * Use standard clean routine for C/NOFS VEFI mag data
   * Added version cap for sphinx_rtd_theme
+  * Include standard tests for ICON IVM-B
 
 ## [0.0.5] - 2023-06-27
 * New Instruments
