@@ -95,9 +95,6 @@ _test_dates = {
 _test_load_opt = {iid: {tag: {'combine_times': True}
                         for tag in inst_ids[iid]}
                   for iid in ['high_res', 'low_res']}
-# TODO(#218): Remove when compliant with multi-day load tests
-_new_tests = {iid: {tag: False for tag in inst_ids[iid]}
-              for iid in ['high_res', 'low_res']}
 _clean_warn = {inst_id: {tag: mm_nasa.clean_warnings
                          for tag in inst_ids[inst_id] if tag != 'sdr-imaging'}
                for inst_id in inst_ids.keys()}
