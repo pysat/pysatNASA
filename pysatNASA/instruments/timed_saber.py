@@ -18,6 +18,8 @@ inst_id : str
 
 Note
 ----
+Note on Temperature Errors: https://saber.gats-inc.com/temp_errors.php
+
 SABER "Rules of the Road" for DATA USE
 Users of SABER data are asked to respect the following guidelines
 
@@ -42,8 +44,6 @@ Warnings
 - No cleaning routine
 
 """
-
-# Note on Temperature Errors: https://saber.gats-inc.com/temp_errors.php
 
 import datetime as dt
 import functools
