@@ -968,7 +968,7 @@ def cdas_list_remote_files(tag='', inst_id='', start=None, stop=None,
     start = pysat.utils.time.filter_datetime_input(start)
     stop = pysat.utils.time.filter_datetime_input(stop)
 
-    # CDAS WS needs a time for the stop date.
+    # cdasws needs a time for the stop date.
     stop += dt.timedelta(seconds=86399)
 
     og_files = cdas.get_original_files(dataset=dataset, start=start, end=stop)
