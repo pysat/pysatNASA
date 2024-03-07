@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pds
 import xarray as xr
 
+import pysat
 from pysat.utils.coords import expand_xarray_dims
 from pysat.utils.io import load_netcdf
 
@@ -42,14 +43,15 @@ def build_dtimes(data, var, epoch=None, epoch_var='time'):
                 for i, sec in enumerate(data[skey].values)]
         secs = [int(np.floor((sec - hours[i] * 3600 - mins[i] * 60)))
                 for i, sec in enumerate(data[skey].values)]
+        microsecs = [int(np.floor((sec - hours[i] * 3600 - mins[i] * 60
+                                   - secs[i]) * 1.0e6))
+                     for i, sec in enumerate(data[skey].values)]
         dtimes = [
             dt.datetime.strptime(
-                "{:4d}-{:03d}-{:02d}-{:02d}-{:02d}-{:06.0f}".format(
+                "{:4d}-{:03d}-{:02d}-{:02d}-{:02d}-{:06d}".format(
                     int(data[ykey].values[i]), int(data[dkey].values[i]),
-                    hours[i], mins[i], secs[i],
-                    (sec - hours[i] * 3600 - mins[i] * 60 - secs[i]) * 1.0e6),
-                '%Y-%j-%H-%M-%S-%f')
-            for i, sec in enumerate(data[skey].values)]
+                    hours[i], mins[i], secs[i], microsec), '%Y-%j-%H-%M-%S-%f')
+            for i, microsec in enumerate(microsecs)]
     else:
         dtimes = [
             dt.datetime.strptime("{:4d}-{:03d}".format(
@@ -100,8 +102,13 @@ def load_edr_aurora(fnames, tag='', inst_id='', pandas_format=False,
         inst.load(2003, 1)
 
     """
+    # Initialize the output
+    mdata = pysat.Meta()
+    data = xr.Dataset()
+
     # Define the input variables
-    labels = {'units': ('UNITS', str), 'desc': ('TITLE', str)}
+    labels = {mdata.labels.units: ('UNITS', str),
+              mdata.labels.desc: ('TITLE', str)}
 
     # CDAWeb stores these files in the NetCDF format instead of the CDF format
     single_data = list()
@@ -140,12 +147,13 @@ def load_edr_aurora(fnames, tag='', inst_id='', pandas_format=False,
         # Update the fill value, using information from the global header
         mdata[var] = {mdata.labels.fill_val: mdata.header.NO_DATA_IN_BIN_VALUE}
 
-    # After loading all the data, determine which dimensions need to be
-    # expanded. Pad the data so that all dimensions are the same shape.
-    single_data = expand_xarray_dims(single_data, mdata, dims_equal=False)
+    if len(single_data) > 0:
+        # After loading all the data, determine which dimensions need to be
+        # expanded. Pad the data so that all dimensions are the same shape.
+        single_data = expand_xarray_dims(single_data, mdata, dims_equal=False)
 
-    # Combine all the data, indexing along time
-    data = xr.combine_by_coords(single_data)
+        # Combine all the data, indexing along time
+        data = xr.combine_by_coords(single_data)
 
     return data, mdata
 
@@ -168,7 +176,7 @@ def load_sdr_aurora(fnames, tag='', inst_id='', pandas_format=False,
     strict_dim_check : bool
         Used for xarray data (`pandas_format` is False). If True, warn the user
         that the desired epoch, 'TIME_DAY', is not present as a dimension in the
-        NetCDF file.  If False, no warning is raised. (default=True)```
+        NetCDF file.  If False, no warning is raised. (default=True)
     combine_times : bool
         For SDR data, optionally combine the different datetime coordinates
         into a single time coordinate (default=False)
@@ -193,8 +201,13 @@ def load_sdr_aurora(fnames, tag='', inst_id='', pandas_format=False,
         inst.load(2003, 1)
 
     """
+    # Initialize the output
+    mdata = pysat.Meta()
+    data = xr.Dataset()
+
     # Define the input variables and working variables
-    labels = {'units': ('UNITS', str), 'desc': ('TITLE', str)}
+    labels = {mdata.labels.units: ('UNITS', str),
+              mdata.labels.desc: ('TITLE', str)}
     load_time = 'TIME_DAY'
     time_vars = ['YEAR_DAY', 'DOY_DAY', 'TIME_EPOCH_DAY', 'YEAR_NIGHT',
                  'DOY_NIGHT', 'TIME_NIGHT', 'TIME_EPOCH_NIGHT']
@@ -304,32 +317,39 @@ def load_sdr_aurora(fnames, tag='', inst_id='', pandas_format=False,
         # Update the fill value, using information from the global header
         mdata[var] = {mdata.labels.fill_val: mdata.header.NO_DATA_IN_BIN_VALUE}
 
+    # Add metadata for 'time_auroral' and 'nCross' variables
+    mdata['time_auroral'] = {'desc': 'Auroral time index'}
+    mdata['nCross'] = {'desc': 'Number of cross-track observations'}
+
     # Combine all time dimensions
-    if combine_times:
-        data_list = expand_xarray_dims([inners[dim] if dim == 'time' else
-                                        inners[dim].rename_dims({dim: 'time'})
-                                        for dim in time_dims], mdata,
-                                       dims_equal=False)
-    else:
-        data_list = [inners[dim] for dim in time_dims]
+    if inners is not None:
+        if combine_times:
+            data_list = expand_xarray_dims(
+                [inners[dim] if dim == 'time' else
+                 inners[dim].rename_dims({dim: 'time'})
+                 for dim in time_dims], mdata, dims_equal=False)
+        else:
+            data_list = [inners[dim] for dim in time_dims]
 
-    # Combine all the data, indexing along time
-    data = xr.merge(data_list)
+        # Combine all the data, indexing along time
+        data = xr.merge(data_list)
 
-    # Set additional coordinates
-    data = data.set_coords(coords).assign_coords({'time': data['time']})
-    if tag == 'sdr-imaging':
-        data = data.assign_coords(
-            {'nchan': ["121.6nm", "130.4nm", "135.6nm", "LBHshort", "LBHlong"],
-             "nchanAur": ["121.6nm", "130.4nm", "135.6nm", "LBHshort",
-                          "LBHlong"],
-             "nCross": sdata.nCross.data,
-             "nCrossDayAur": sdata.nCrossDayAur.data})
-    elif tag == 'sdr-spectrograph':
-        data = data.assign_coords({"nchan": ["121.6nm", "130.4nm", "135.6nm",
-                                             "LBHshort", "LBHlong", "?"]})
+        # Set additional coordinates
+        data = data.set_coords(coords).assign_coords({'time': data['time']})
+        if tag == 'sdr-imaging':
+            data = data.assign_coords(
+                {'nchan': ["121.6nm", "130.4nm", "135.6nm", "LBHshort",
+                           "LBHlong"],
+                 "nchanAur": ["121.6nm", "130.4nm", "135.6nm", "LBHshort",
+                              "LBHlong"],
+                 "nCross": sdata.nCross.data,
+                 "nCrossDayAur": sdata.nCrossDayAur.data})
+        elif tag == 'sdr-spectrograph':
+            data = data.assign_coords({"nchan": ["121.6nm", "130.4nm",
+                                                 "135.6nm", "LBHshort",
+                                                 "LBHlong", "?"]})
 
-    # Ensure the data is ordered correctly
-    data = data.sortby('time')
+        # Ensure the data is ordered correctly
+        data = data.sortby('time')
 
     return data, mdata
