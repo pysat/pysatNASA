@@ -60,7 +60,9 @@ Example
 
 import datetime as dt
 import functools
+import xarray as xr
 
+import pysat
 from pysat.instruments.methods import general as mm_gen
 
 from pysatNASA.instruments.methods import cdaweb as cdw
@@ -86,14 +88,21 @@ multi_file_day = True
 # ----------------------------------------------------------------------------
 # Instrument test attributes
 
-_test_dates = {iid: {tag: dt.datetime(2005, 6, 28) for tag in inst_ids[iid]}
-               for iid in inst_ids.keys()}
+_test_dates = {
+    iid: {tag: dt.datetime(2007 if tag.find('spectrograph') > 0 else 2005, 12,
+                           13) for tag in inst_ids[iid]}
+    for iid in inst_ids.keys()}
 _test_load_opt = {iid: {tag: {'combine_times': True}
-                        for tag in inst_ids[iid]} for iid in ['high_res',
-                                                              'low_res']}
+                        for tag in inst_ids[iid]}
+                  for iid in ['high_res', 'low_res']}
+# TODO(#218): Remove when compliant with multi-day load tests
+_new_tests = {'high_res': {tag: False for tag in inst_ids['high_res']}}
 _clean_warn = {inst_id: {tag: mm_nasa.clean_warnings
-                         for tag in inst_ids[inst_id]}
+                         for tag in inst_ids[inst_id] if tag != 'sdr-imaging'}
                for inst_id in inst_ids.keys()}
+for inst_id in ['high_res', 'low_res']:
+    _clean_warn[inst_id]['sdr-imaging'] = {'dirty': mm_nasa.clean_warnings[
+        'dirty']}
 
 # ----------------------------------------------------------------------------
 # Instrument methods
@@ -101,8 +110,128 @@ _clean_warn = {inst_id: {tag: mm_nasa.clean_warnings
 # Use standard init routine
 init = functools.partial(mm_nasa.init, module=mm_timed, name=name)
 
-# No cleaning, use standard warning function instead
-clean = mm_nasa.clean_warn
+
+def clean(self):
+    """Clean TIMED GUVI imaging data.
+
+    Note
+    ----
+        Supports 'clean', 'dusty', 'dirty', 'none'. Method is
+        not called by pysat if clean_level is None or 'none'.
+
+    """
+    if self.tag == "sdr-imaging" and self.clean_level in ['clean', 'dusty']:
+        # Find the flag variables
+        dqi_vars = [var for var in self.variables if var.find('DQI') == 0]
+
+        # Find the variables affected by each flag
+        dat_vars = {dqi: [var for var in self.variables if var.find(dqi) > 0]
+                    if dqi.find('AURORAL') >= 0 else
+                    [var for var in self.variables if var.find('AURORAL') < 0
+                     and var.find(dqi) > 0] for dqi in dqi_vars}
+
+        for dqi in dqi_vars:
+            if self.clean_level == 'clean':
+                # For clean, require DQI of zero (MeV noise only)
+                dqi_bad = self.data[dqi].values > 0
+            else:
+                # For dusty, allow the SAA region as well
+                dqi_bad = self.data[dqi].values > 1
+
+            # Apply the DQI mask to the data, replacing bad values with
+            # appropriate fill values
+            for dat_var in dat_vars[dqi]:
+                if self.data[dat_var].shape == dqi_bad.shape or self.data[
+                        dat_var].shape[:-1] == dqi_bad.shape:
+                    # Only apply to data with the correct dimensions
+                    fill_val = self.meta[dat_var, self.meta.labels.fill_val]
+                    self.data[dat_var].values[dqi_bad] = fill_val
+    else:
+        # Follow the same warning format as the general clean warning, but
+        # with additional information.
+        pysat.logger.warning(' '.join(['No cleaning routines available for',
+                                       self.platform, self.name, self.tag,
+                                       self.inst_id, 'at clean level',
+                                       self.clean_level]))
+    return
+
+
+def concat_data(self, new_data, combine_times=False, **kwargs):
+    """Concatonate data to self.data for TIMED GUVI data.
+
+    Parameters
+    ----------
+    new_data : xarray.Dataset or list of such objects
+        New data objects to be concatonated
+    combine_times : bool
+        For SDR data, optionally combine the different datetime coordinates
+        into a single time coordinate (default=False)
+    **kwargs : dict
+        Optional keyword arguments passed to xr.concat
+
+    Note
+    ----
+    For xarray, `dim=Instrument.index.name` is passed along to xarray.concat
+    except if the user includes a value for dim as a keyword argument.
+
+    """
+    # Establish the time dimensions by data type
+    time_dims = [self.index.name]
+
+    if self.tag == 'sdr-imaging':
+        time_dims.append('time_auroral')
+    elif self.tag == 'sdr-spectrograph':
+        time_dims.extend(['time_gaim_day', 'time_gaim_night'])
+
+    # Concatonate using the appropriate method for the number of time
+    # dimensions
+    if len(time_dims) == 1:
+        # There is only one time dimensions, but other dimensions may
+        # need to be adjusted
+        new_data = pysat.utils.coords.expand_xarray_dims(
+            new_data, self.meta, exclude_dims=time_dims)
+
+        # Combine the data
+        self.data = xr.combine_by_coords(new_data, **kwargs)
+    else:
+        inners = None
+        for ndata in new_data:
+            # Separate into inner datasets
+            inner_keys = {dim: [key for key in ndata.keys()
+                                if dim in ndata[key].dims] for dim in time_dims}
+            inner_dat = {dim: ndata.get(inner_keys[dim]) for dim in time_dims}
+
+            # Add 'single_var's into 'time' dataset to keep track
+            sv_keys = [val.name for val in ndata.values()
+                       if 'single_var' in val.dims]
+            singlevar_set = ndata.get(sv_keys)
+            inner_dat[self.index.name] = xr.merge([inner_dat[self.index.name],
+                                                   singlevar_set])
+
+            # Concatenate along desired dimension with previous data
+            if inners is None:
+                # No previous data, assign the data separated by dimension
+                inners = dict(inner_dat)
+            else:
+                # Concatenate with existing data
+                inners = {dim: xr.concat([inners[dim], inner_dat[dim]],
+                                         dim=dim) for dim in time_dims}
+
+        # Combine all time dimensions
+        if inners is not None:
+            if combine_times:
+                data_list = pysat.utils.coords.expand_xarray_dims(
+                    [inners[dim] if dim == self.index.name else
+                     inners[dim].rename_dims({dim: self.index.name})
+                     for dim in time_dims if len(inners[dim].dims) > 0],
+                    self.meta, dims_equal=False)
+            else:
+                data_list = [inners[dim] for dim in time_dims]
+
+            # Combine all the data, indexing along time
+            self.data = xr.merge(data_list)
+    return
+
 
 # ----------------------------------------------------------------------------
 # Instrument functions
