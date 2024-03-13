@@ -399,9 +399,9 @@ def clean_by_dqi(inst):
 
     Note
     ----
-	0: MeV noise in pixel, (allowed at clean)
-	1: SAA, (allowed at dusty/dirty)
-	2: unknown mirror/bit position (allowed at none)
+        0: MeV noise in pixel, (allowed at clean)
+        1: SAA, (allowed at dusty/dirty)
+        2: unknown mirror/bit position (allowed at none)
         3: LBH Thresh exceeded (allowed at none)
 
     """
