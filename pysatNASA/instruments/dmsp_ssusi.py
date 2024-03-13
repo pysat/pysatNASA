@@ -83,6 +83,10 @@ multi_file_day = True
 
 _test_dates = {inst_id: {tag: dt.datetime(2015, 1, 1) for tag in tags.keys()}
                for inst_id in inst_ids.keys()}
+_clean_warn = {inst_id: {tag: mm_nasa.clean_warnings
+                         for tag in inst_ids[inst_id]
+                         if tag not in ['sdr-disk', 'sdr2-disk']}
+               for inst_id in inst_ids.keys()}
 
 # ----------------------------------------------------------------------------
 # Instrument methods
@@ -91,8 +95,27 @@ _test_dates = {inst_id: {tag: dt.datetime(2015, 1, 1) for tag in tags.keys()}
 # Use standard init routine
 init = functools.partial(mm_nasa.init, module=mm_dmsp, name=name)
 
-# No cleaning, use standard warning function instead
-clean = mm_nasa.clean_warn
+
+def clean(self):
+    """Clean DMSP SSUSI imaging data.
+
+    Note
+    ----
+        Supports 'clean', 'dusty', 'dirty', 'none'. Method is
+        not called by pysat if clean_level is None or 'none'.
+
+    """
+    if self.tag in ["sdr-disk", "sdr2-disk"]:
+        jhuapl.clean_by_dqi(self)
+    else:
+        # Follow the same warning format as the general clean warning, but
+        # with additional information.
+        pysat.logger.warning(' '.join(['No cleaning routines available for',
+                                       self.platform, self.name, self.tag,
+                                       self.inst_id, 'at clean level',
+                                       self.clean_level]))
+    return
+
 
 # ----------------------------------------------------------------------------
 # Instrument functions
@@ -123,10 +146,62 @@ download = functools.partial(cdw.download, supported_tags=download_tags)
 list_remote_files = functools.partial(cdw.list_remote_files,
                                       supported_tags=download_tags)
 
-# Set the load routine
-def load():
-    """FIX THIS HERE"""
-    out = jhuapl.load_edr_aurora(pandas_format=pandas_format,
-                                 strict_dim_check=False)
 
-    return out
+# Set the load routine
+def load(fnames, tag='', inst_id='', combine_times=False):
+    """Load DMSP SSUSI data into `xarray.DataSet` and `pysat.Meta` objects.
+
+    This routine is called as needed by pysat. It is not intended
+    for direct user interaction.
+
+    Parameters
+    ----------
+    fnames : array-like
+        Iterable of filename strings, full path, to data files to be loaded.
+        This input is nominally provided by pysat itself.
+    tag : str
+        Tag name used to identify particular data set to be loaded.
+        This input is nominally provided by pysat itself.
+    inst_id : str
+        Satellite ID used to identify particular data set to be loaded.
+        This input is nominally provided by pysat itself.
+    combine_times : bool
+        For SDR data, optionally combine the different datetime coordinates
+        into a single time coordinate (default=False)
+
+    Returns
+    -------
+    data : xr.DataSet
+        A xarray DataSet with data prepared for the pysat.Instrument
+    meta : pysat.Meta
+        Metadata formatted for a pysat.Instrument object.
+
+    Raises
+    ------
+    ValueError
+        If temporal dimensions are not consistent
+
+    Note
+    ----
+    Any additional keyword arguments passed to pysat.Instrument
+    upon instantiation are passed along to this routine.
+
+    Examples
+    --------
+    ::
+
+        inst = pysat.Instrument('dmsp', 'ssusi', tag='sdr-disk', inst_id='f16')
+        inst.load(2015, 1)
+
+    """
+    if tag == 'edr-aur':
+        data, meta = jhuapl.load_edr_aurora(fnames, name, tag, inst_id,
+                                            pandas_format=pandas_format,
+                                            strict_dim_check=False)
+    elif tag.find('disk') > 0:
+        data, meta = jhuapl.load_sdr_aurora(fnames, name, tag, inst_id,
+                                            pandas_format=pandas_format,
+                                            strict_dim_check=False,
+                                            combine_times=combine_times)
+
+    return data, meta
