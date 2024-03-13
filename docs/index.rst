@@ -9,7 +9,7 @@ routines to NASA space science data as pysat.Instrument objects through the
 CDAWeb interface.
 
 .. toctree::
-   :maxdepth: -1
+   :maxdepth: 2
 
    overview.rst
    installation.rst
