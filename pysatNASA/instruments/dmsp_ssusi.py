@@ -54,6 +54,7 @@ and Space Research IV, (30 January 2002); doi:10.1117/12.454268
 import datetime as dt
 import functools
 
+import pysat
 from pysat.instruments.methods import general as mm_gen
 
 from pysatNASA.instruments.methods import cdaweb as cdw
@@ -194,8 +195,8 @@ def load(fnames, tag='', inst_id='', combine_times=False):
         inst.load(2015, 1)
 
     """
-    if tag == 'edr-aur':
-        data, meta = jhuapl.load_edr_aurora(fnames, name, tag, inst_id,
+    if tag == 'edr-aurora':
+        data, meta = jhuapl.load_edr_aurora(fnames, tag, inst_id,
                                             pandas_format=pandas_format,
                                             strict_dim_check=False)
     elif tag.find('disk') > 0:
