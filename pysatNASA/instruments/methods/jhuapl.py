@@ -158,7 +158,7 @@ def load_edr_aurora(fnames, tag='', inst_id='', pandas_format=False,
     return data, mdata
 
 
-def load_sdr_aurora(fnames, tag='', inst_id='', pandas_format=False,
+def load_sdr_aurora(fnames, name='', tag='', inst_id='', pandas_format=False,
                     strict_dim_check=True, combine_times=False):
     """Load JHU APL SDR data and meta data.
 
@@ -166,6 +166,8 @@ def load_sdr_aurora(fnames, tag='', inst_id='', pandas_format=False,
     ----------
     fnames : array-like
         Iterable of filename strings, full path, to data files to be loaded.
+    name : str
+        Instrument name used to identify the data set to be loaded (default='')
     tag : str
         Tag name used to identify particular data set to be loaded (default='')
     inst_id : str
@@ -193,13 +195,6 @@ def load_sdr_aurora(fnames, tag='', inst_id='', pandas_format=False,
     Logger warning 'Epoch label: TIME is not a dimension.' is raised due to
     the data format and pysat file expectations.
 
-    Examples
-    --------
-    ::
-
-        inst = pysat.Instrument('timed', 'guvi', tag='edr-aur')
-        inst.load(2003, 1)
-
     """
     # Initialize the output
     mdata = pysat.Meta()
@@ -216,19 +211,29 @@ def load_sdr_aurora(fnames, tag='', inst_id='', pandas_format=False,
               'PIERCEPOINT_DAY_LATITUDE', 'PIERCEPOINT_DAY_LONGITUDE',
               'PIERCEPOINT_DAY_ALTITUDE', 'PIERCEPOINT_DAY_SZA']
     time_dims = ['time']
-    rename_dims = {'nAlongDay': 'nAlong', 'nAlongNight': 'nAlong'}
+    if name == 'guvi':
+        rename_dims = {'nAlongDay': 'nAlong', 'nAlongNight': 'nAlong'}
+        swap_dims = {'nAlong': 'time'}
+    else:
+        rename_dims = {}
+        swap_dims = {'nAlongDay': 'time'}
 
-    if tag == 'sdr-imaging':
+    if tag in ['sdr-imaging', 'sdr-disk', 'sdr2-disk']:
         time_vars.extend(["YEAR_DAY_AURORAL", "DOY_DAY_AURORAL",
                           "TIME_DAY_AURORAL", "TIME_EPOCH_DAY_AURORAL"])
         coords.extend(['PIERCEPOINT_DAY_LATITUDE_AURORAL',
                        'PIERCEPOINT_DAY_LONGITUDE_AURORAL',
                        'PIERCEPOINT_DAY_ALTITUDE_AURORAL',
                        'PIERCEPOINT_DAY_SZA_AURORAL'])
-        time_dims.append('time_auroral')
-        rename_dims['nCrossDay'] = 'nCross'
-        rename_dims['nCrossNight'] = 'nCross'
-        rename_dims['nAlongDayAur'] = 'time_auroral'
+        if name == 'guvi':
+            time_dims.append('time_auroral')
+            rename_dims['nCrossDay'] = 'nCross'
+            rename_dims['nCrossNight'] = 'nCross'
+            rename_dims['nAlongDayAur'] = 'time_auroral'
+        else:
+            time_dims.extend(['time_auroral_day', 'time_night'])
+            rename_dims['nAlongDayAur'] = 'time_auroral_day'
+            rename_dims['nAlongNight'] = 'time_night'
     elif tag == 'sdr-spectrograph':
         coords.extend(['PIERCEPOINT_NIGHT_ZENITH_ANGLE',
                        'PIERCEPOINT_NIGHT_SAZIMUTH',
@@ -260,18 +265,22 @@ def load_sdr_aurora(fnames, tag='', inst_id='', pandas_format=False,
         # the UNIX epoch as the date offset
         ftime = build_dtimes(sdata, '_DAY', dt.datetime(1970, 1, 1))
 
-        # Ensure identical day and night dimensions
-        if sdata.dims['nAlongDay'] != sdata.dims['nAlongNight']:
-            raise ValueError('Along-track day and night dimensions differ')
+        # Ensure identical day and night dimensions for GUVI
+        if name == 'guvi':
+            if sdata.dims['nAlongDay'] != sdata.dims['nAlongNight']:
+                raise ValueError('Along-track day and night dimensions differ')
 
-        if 'nCrossDay' in rename_dims.keys():
-            if sdata.dims['nCrossDay'] != sdata.dims['nCrossNight']:
-                raise ValueError('Cross-track day and night dimensions differ')
+            if 'nCrossDay' in rename_dims.keys():
+                if sdata.dims['nCrossDay'] != sdata.dims['nCrossNight']:
+                    raise ValueError(''.join([
+                        'Cross-track day and night dimensions differ ',
+                        '{:} != {:}'.format(sdata.dims['nCrossDay'],
+                                            sdata.dims['nCrossNight'])]))
 
-        # Combine identical dimensions and rename 'nAlong' to 'time'
+        # Combine identical dimensions and rename some time dimensions
         sdata = sdata.rename_dims(rename_dims)
 
-        if tag == 'sdr-imaging':
+        if tag in ['sdr-imaging', 'sdr-disk', 'sdr2-disk']:
             sdata = sdata.assign(time_auroral=build_dtimes(sdata,
                                                            '_DAY_AURORAL'))
         elif tag == 'sdr-spectrograph' and inst_id == 'low_res':
@@ -279,13 +288,18 @@ def load_sdr_aurora(fnames, tag='', inst_id='', pandas_format=False,
                 sdata, '_GAIM_DAY'), time_gaim_night=build_dtimes(
                     sdata, '_GAIM_NIGHT'))
 
-        # Test that day and night times are consistent to the nearest second
-        for i, ntime in enumerate(build_dtimes(sdata, '_NIGHT')):
-            if abs(ntime - ftime[i]).total_seconds() > 1.0:
-                raise ValueError('Day and night times differ')
+        # Test that day and night times are consistent
+        if name == 'guvi':
+            max_diff = 1.0
+            for i, ntime in enumerate(build_dtimes(sdata, '_NIGHT')):
+                diff_sec = abs(ntime - ftime[i]).total_seconds()
+                if diff_sec > max_diff:
+                    raise ValueError(''.join(['Day and night times differ by ',
+                                              '{:.3f} s >= {:.3f} s'.format(
+                                                  diff_sec, max_diff)]))
 
         # Remove redundant time variables and rname the 'nAlong' dimension
-        sdata = sdata.drop_vars(time_vars).swap_dims({'nAlong': 'time'})
+        sdata = sdata.drop_vars(time_vars).swap_dims(swap_dims)
 
         # Assign time as a coordinate for combining files indexing
         sdata['time'] = ftime
@@ -334,6 +348,26 @@ def load_sdr_aurora(fnames, tag='', inst_id='', pandas_format=False,
         # Combine all the data, indexing along time
         data = xr.merge(data_list)
 
+        if name == 'ssusi':
+            # Data may not contain both day and night values
+            bad_coords = [coord for coord in coords
+                          if coord not in data.data_vars.keys()]
+
+            if len(bad_coords) == 4:
+                # Ensure the time of day is consisent
+                tod = bad_coords[0].split("_")[1]
+                if np.any([coord.find(tod) < 0 for coord in bad_coords]):
+                    raise ValueError('Some {:} coordinates are missing'.format(
+                        tod))
+
+                coords = [coord for coord in coords if coord not in bad_coords]
+            elif len(bad_coords) == len(coords):
+                raise ValueError('All coordiantes are missing from data')
+            elif len(bad_coords) > 0:
+                raise ValueError(''.join(['Unexpected amount of coordinates ',
+                                          'missing from data: {:}'.format(
+                                              bad_coords)]))
+
         # Set additional coordinates
         data = data.set_coords(coords).assign_coords({'time': data['time']})
         if tag == 'sdr-imaging':
@@ -353,3 +387,56 @@ def load_sdr_aurora(fnames, tag='', inst_id='', pandas_format=False,
         data = data.sortby('time')
 
     return data, mdata
+
+
+def clean_by_dqi(inst):
+    """Clean JHU APL data using the DQI flags to different levels using the DQI.
+
+    Parameters
+    ----------
+    inst : pysat.Instrument
+        Object containing a JHU APL Instrument with data
+
+    Note
+    ----
+	0: MeV noise in pixel, (allowed at clean)
+	1: SAA, (allowed at dusty/dirty)
+	2: unknown mirror/bit position (allowed at none)
+        3: LBH Thresh exceeded (allowed at none)
+
+    """
+    # Find the flag variables
+    dqi_vars = [var for var in inst.variables if var.find('DQI') == 0]
+
+    # Find the variables affected by each flag
+    dat_vars = dict()
+    for dqi in dqi_vars:
+        dqi_dims = inst.data[dqi].dims
+        dat_vars[dqi] = [var for var in inst.variables
+                         if dqi_dims == inst.data[var].dims[:len(dqi_dims)]
+                         and var not in inst.data.coords.keys()
+                         and var.find("IN_SAA") < 0 and var not in dqi_vars]
+
+    for dqi in dqi_vars:
+        if inst.clean_level == 'clean':
+            # For clean, require DQI of zero (MeV noise only)
+            dqi_bad = inst.data[dqi].values > 0
+        elif inst.clean_level in ['dusty', 'dirty']:
+            # For dusty and dirty, allow the SAA region as well
+            dqi_bad = inst.data[dqi].values > 1
+        else:
+            # For none, allow all to pass
+            dqi_bad = np.full(inst.data[dqi].values.shape, False)
+
+        # Apply the DQI mask to the data, replacing bad values with
+        # appropriate fill values if there are bad values
+        if dqi_bad.any():
+            for dat_var in dat_vars[dqi]:
+                fill_val = inst.meta[dat_var, inst.meta.labels.fill_val]
+                try:
+                    inst.data[dat_var].values[dqi_bad] = fill_val
+                except ValueError:
+                    # Try again with NaN, a bad fill value was set
+                    inst.data[dat_var].values[dqi_bad] = np.nan
+                    inst.meta[dat_var] = {inst.meta.labels.fill_val: np.nan}
+    return
