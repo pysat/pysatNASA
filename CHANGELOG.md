@@ -2,13 +2,14 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
-## [0.0.6] - 2023-XX-XX
+## [0.0.6] - 2024-XX-XX
 * New Instruments
   * DE2 VEFIMAGB - electric and magnetic field on the same cadence
   * MAVEN mag
   * MAVEN SEP
   * MAVEN in situ key parameters
   * REACH Dosimeter
+  * DMSP SSUSI SDR-disk data
 * New Features
   * Allow files to be unzipped after download
   * Added custom `concat_data` method to TIMED-GUVI data
