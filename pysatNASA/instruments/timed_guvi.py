@@ -292,7 +292,7 @@ def load(fnames, tag='', inst_id='', combine_times=False):
 
     """
     if tag == 'edr-aur':
-        data, meta = jhuapl.load_edr_aurora(fnames, name, tag, inst_id,
+        data, meta = jhuapl.load_edr_aurora(fnames, tag, inst_id,
                                             pandas_format=pandas_format,
                                             strict_dim_check=False)
     else:
