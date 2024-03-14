@@ -125,22 +125,21 @@ class TestJHUAPL(object):
 
                 if var in self.var_list and clean_level != 'none':
                     # This variable will have been cleaned
+                    estr = "unmasked values in {:}".format(var)
                     if isnan:
-                        assert np.isnan(
-                            self.test_inst[var][:, self.out[
-                                clean_level]].values).all(), \
-                                "unmasked values in {:}".format(var)
+                        assert np.isnan(self.test_inst[var][:, self.out[
+                            clean_level]].values).all(), estr
                     else:
                         assert np.all(
                             self.test_inst[var][:, self.out[clean_level]].values
-                            == self.comp), "unmasked values in {:}".format(var)
+                            == self.comp), estr
                 else:
                     # This variable should not have any fill values
+                    estr = "masked values ({:}) in {:}".format(self.comp, var)
                     if isnan:
-                        assert not np.isnan(self.test_inst[var].values).all(), \
-                            "masked values ({:}) in {:}".format(self.comp, var)
+                        assert not np.isnan(
+                            self.test_inst[var].values).all(), estr
                     else:
                         assert not np.all(
-                            self.test_inst[var].values == self.comp), \
-                            "masked values ({:}) in {:}".format(self.comp, var)
+                            self.test_inst[var].values == self.comp), estr
         return
