@@ -1,5 +1,6 @@
 """Unit tests for the JHU APL instrument methods."""
 
+import datetime as dt
 import numpy as np
 import pandas as pds
 
@@ -20,6 +21,7 @@ class TestJHUAPL(object):
         self.var_list = ["images", "variable_profiles"]
         self.out = None
         self.comp = None
+        self.epoch_date = dt.datetime(1970, 1, 1)
         return
 
     def teardown_method(self):
@@ -42,12 +44,14 @@ class TestJHUAPL(object):
             shape=self.test_inst['time'].shape, fill_value=self.test_inst.doy)
         self.test_inst['TIME{:s}'.format(self.var_list[0])] = self.test_inst[
             'uts']
+        self.test_inst['EPOCH'] = [self.epoch_date + dt.timedelta(seconds=sec)
+                                   for sec in self.test_inst['uts'].values]
 
         # Add DQI masks for the multi-dim data variables
-        self.test_inst['DQI_Z'] = np.zeros(shape=(
-            self.test_inst.data.sizes['time'], self.test_inst.data.sizes['z']))
-        self.test_inst['DQI_X'] = np.zeros(shape=(
-            self.test_inst.data.sizes['time'], self.test_inst.data.sizes['x']))
+        self.test_inst['DQI_Z'] = (('time', 'z'), np.zeros(shape=(
+            self.test_inst.data.sizes['time'], self.test_inst.data.sizes['z'])))
+        self.test_inst['DQI_X'] = (('time', 'x'), np.zeros(shape=(
+            self.test_inst.data.sizes['time'], self.test_inst.data.sizes['x'])))
 
         # Set some bad values for the DQI data
         self.test_inst['DQI_Z'][:, 0] = 3
@@ -59,17 +63,12 @@ class TestJHUAPL(object):
 
         return
 
-    @pytest.mark.parametrize("epoch,epoch_var", [
-        (None, 'time'),
-        (pysat.instruments.pysat_ndtesting._test_dates[''][''], 'uts')])
-    def test_build_dtimes(self, epoch, epoch_var):
+    @pytest.mark.parametrize("epoch_var", ['time', 'EPOCH'])
+    def test_build_dtimes(self, epoch_var):
         """Test creation of datetime list from JHU APL times.
 
         Parameters
         ----------
-        epoch : dt.datetime or NoneType
-            Epoch to subtract from data or NoneType to get seconds of day from
-            `data`
         epoch_var : str
             Epoch variable containing time data that seconds of day will be
             obtained from if `epoch` != None
@@ -79,14 +78,13 @@ class TestJHUAPL(object):
         self.set_jhuapl()
 
         # Get the time list
+        epoch = None if epoch_var == 'time' else self.epoch_date
         self.out = jhuapl.build_dtimes(self.test_inst.data, self.var_list[0],
                                        epoch=epoch, epoch_var=epoch_var)
 
         # Get the comparison from the Instrument index
         self.comp = [pds.to_datetime(tval).to_pydatetime()
                      for tval in self.test_inst.index]
-        if epoch is not None:
-            self.comp = [tval - epoch for tval in self.test_inst.index]
 
         # Ensure the lists are equal
         pysat.utils.testing.assert_lists_equal(self.out, self.comp)
@@ -116,23 +114,33 @@ class TestJHUAPL(object):
         # places
         for var in self.test_inst.variables:
             # Get the fill value for this variable
-            self.comp = self.test_inst.meta[
-                var, self.test_inst.meta.labels.fill_val]
+            if var in self.test_inst.meta.keys():
+                self.comp = self.test_inst.meta[
+                    var, self.test_inst.meta.labels.fill_val]
 
-            if var in self.var_list and clean_level != 'none':
-                # This variable will have been cleaned
-                if np.isnan(self.comp):
-                    assert np.isnan(
-                        self.test_inst[var][:, self.out[
-                            clean_level]].values).all()
+                try:
+                    isnan = True if np.isnan(self.comp) else False
+                except TypeError:
+                    isnan = False
+
+                if var in self.var_list and clean_level != 'none':
+                    # This variable will have been cleaned
+                    if isnan:
+                        assert np.isnan(
+                            self.test_inst[var][:, self.out[
+                                clean_level]].values).all(), \
+                                "unmasked values in {:}".format(var)
+                    else:
+                        assert np.all(
+                            self.test_inst[var][:, self.out[clean_level]].values
+                            == self.comp), "unmasked values in {:}".format(var)
                 else:
-                    assert np.all(
-                        self.test_inst[var][:, self.out[clean_level]].values
-                        == self.comp)
-            else:
-                # This variable should not have any fill values
-                if np.isnan(self.comp):
-                    assert np.isnan(self.test_inst[var].values).all()
-                else:
-                    assert np.all(self.test_inst[var].values == self.comp)
+                    # This variable should not have any fill values
+                    if isnan:
+                        assert not np.isnan(self.test_inst[var].values).all(), \
+                            "masked values ({:}) in {:}".format(self.comp, var)
+                    else:
+                        assert not np.all(
+                            self.test_inst[var].values == self.comp), \
+                            "masked values ({:}) in {:}".format(self.comp, var)
         return
