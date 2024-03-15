@@ -370,7 +370,7 @@ def load_sdr_aurora(fnames, name='', tag='', inst_id='', pandas_format=False,
 
         # Set additional coordinates
         data = data.set_coords(coords).assign_coords({'time': data['time']})
-        if tag == 'sdr-imaging':
+        if tag in ['sdr-imaging', 'sdr-disk', 'sdr2-disk']:
             data = data.assign_coords(
                 {'nchan': ["121.6nm", "130.4nm", "135.6nm", "LBHshort",
                            "LBHlong"],
