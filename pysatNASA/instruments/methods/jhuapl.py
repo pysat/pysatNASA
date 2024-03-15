@@ -371,13 +371,18 @@ def load_sdr_aurora(fnames, name='', tag='', inst_id='', pandas_format=False,
         # Set additional coordinates
         data = data.set_coords(coords).assign_coords({'time': data['time']})
         if tag in ['sdr-imaging', 'sdr-disk', 'sdr2-disk']:
-            data = data.assign_coords(
-                {'nchan': ["121.6nm", "130.4nm", "135.6nm", "LBHshort",
+            # Get the additional coordinates to assign
+            add_coords = {'nchan': ["121.6nm", "130.4nm", "135.6nm", "LBHshort",
                            "LBHlong"],
-                 "nchanAur": ["121.6nm", "130.4nm", "135.6nm", "LBHshort",
-                              "LBHlong"],
-                 "nCross": sdata.nCross.data,
-                 "nCrossDayAur": sdata.nCrossDayAur.data})
+                          "nchanAur": ["121.6nm", "130.4nm", "135.6nm",
+                                       "LBHshort", "LBHlong"]}
+            for dvar in sdata.data_vars.keys():
+                if dvar.find('nCross') == 0:
+                    # Identify all cross-track variables
+                    add_coords[dvar] = sdata[dvar].data
+
+            # Assign the additional coordinates
+            data = data.assign_coords(add_coords)
         elif tag == 'sdr-spectrograph':
             data = data.assign_coords({"nchan": ["121.6nm", "130.4nm",
                                                  "135.6nm", "LBHshort",
