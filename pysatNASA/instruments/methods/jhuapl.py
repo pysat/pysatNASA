@@ -372,7 +372,7 @@ def load_sdr_aurora(fnames, name='', tag='', inst_id='', pandas_format=False,
         if tag in ['sdr-imaging', 'sdr-disk', 'sdr2-disk']:
             # Get the additional coordinates to assign
             add_coords = {'nchan': ["121.6nm", "130.4nm", "135.6nm", "LBHshort",
-                           "LBHlong"],
+                                    "LBHlong"],
                           "nchanAur": ["121.6nm", "130.4nm", "135.6nm",
                                        "LBHshort", "LBHlong"]}
             for dvar in sdata.data_vars.keys():
