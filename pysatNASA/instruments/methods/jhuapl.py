@@ -225,14 +225,13 @@ def load_sdr_aurora(fnames, name='', tag='', inst_id='', pandas_format=False,
                        'PIERCEPOINT_DAY_LONGITUDE_AURORAL',
                        'PIERCEPOINT_DAY_ALTITUDE_AURORAL',
                        'PIERCEPOINT_DAY_SZA_AURORAL'])
+        time_dims.append('time_auroral')
+        rename_dims['nAlongDayAur'] = 'time_auroral'
         if name == 'guvi':
-            time_dims.append('time_auroral')
             rename_dims['nCrossDay'] = 'nCross'
             rename_dims['nCrossNight'] = 'nCross'
-            rename_dims['nAlongDayAur'] = 'time_auroral'
         else:
-            time_dims.extend(['time_auroral_day', 'time_night'])
-            rename_dims['nAlongDayAur'] = 'time_auroral_day'
+            time_dims.append('time_night')
             rename_dims['nAlongNight'] = 'time_night'
     elif tag == 'sdr-spectrograph':
         coords.extend(['PIERCEPOINT_NIGHT_ZENITH_ANGLE',
