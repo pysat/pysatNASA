@@ -29,6 +29,8 @@ name
     'ssusi'
 tag
     'edr-aurora'
+    'sdr-disk'
+    'sdr2-disk'
 inst_id
     'f16', 'f17', 'f18', 'f19'
 
@@ -52,6 +54,7 @@ and Space Research IV, (30 January 2002); doi:10.1117/12.454268
 import datetime as dt
 import functools
 
+import pysat
 from pysat.instruments.methods import general as mm_gen
 
 from pysatNASA.instruments.methods import cdaweb as cdw
@@ -67,7 +70,9 @@ name = 'ssusi'
 tags = {'edr-aurora': ''.join(['Electron energy flux and mean energy, auroral',
                                ' boundaries, identified discrete auroral arcs,',
                                ' hemispheric power, and magnetic field lines ',
-                               'traced to 4 Earth radii'])}
+                               'traced to 4 Earth radii']),
+        'sdr-disk': 'Fine resolution gridded disk radiances',
+        'sdr2-disk': 'Coarse resolution gridded disk radiances'}
 inst_ids = {sat_id: list(tags.keys())
             for sat_id in ['f16', 'f17', 'f18', 'f19']}
 
@@ -79,6 +84,10 @@ multi_file_day = True
 
 _test_dates = {inst_id: {tag: dt.datetime(2015, 1, 1) for tag in tags.keys()}
                for inst_id in inst_ids.keys()}
+_clean_warn = {inst_id: {tag: mm_nasa.clean_warnings
+                         for tag in inst_ids[inst_id]
+                         if tag not in ['sdr-disk', 'sdr2-disk']}
+               for inst_id in inst_ids.keys()}
 
 # ----------------------------------------------------------------------------
 # Instrument methods
@@ -87,8 +96,27 @@ _test_dates = {inst_id: {tag: dt.datetime(2015, 1, 1) for tag in tags.keys()}
 # Use standard init routine
 init = functools.partial(mm_nasa.init, module=mm_dmsp, name=name)
 
-# No cleaning, use standard warning function instead
-clean = mm_nasa.clean_warn
+
+def clean(self):
+    """Clean DMSP SSUSI imaging data.
+
+    Note
+    ----
+        Supports 'clean', 'dusty', 'dirty', 'none'. Method is
+        not called by pysat if clean_level is None or 'none'.
+
+    """
+    if self.tag in ["sdr-disk", "sdr2-disk"]:
+        jhuapl.clean_by_dqi(self)
+    else:
+        # Follow the same warning format as the general clean warning, but
+        # with additional information.
+        pysat.logger.warning(' '.join(['No cleaning routines available for',
+                                       self.platform, self.name, self.tag,
+                                       self.inst_id, 'at clean level',
+                                       self.clean_level]))
+    return
+
 
 # ----------------------------------------------------------------------------
 # Instrument functions
@@ -105,10 +133,6 @@ supported_tags = {sat_id: {tag: fname.format(tag=tag, inst_id=sat_id)
 list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags)
 
-# Set the load routine
-load = functools.partial(jhuapl.load_edr_aurora, pandas_format=pandas_format,
-                         strict_dim_check=False)
-
 # Set the download routine
 basic_tag = {'remote_dir': ''.join(('/pub/data/dmsp/dmsp{inst_id:s}/ssusi/',
                                     '/data/{tag:s}/{{year:4d}}/{{day:03d}}/')),
@@ -122,3 +146,63 @@ download = functools.partial(cdw.download, supported_tags=download_tags)
 # Set the list_remote_files routine
 list_remote_files = functools.partial(cdw.list_remote_files,
                                       supported_tags=download_tags)
+
+
+# Set the load routine
+def load(fnames, tag='', inst_id='', combine_times=False):
+    """Load DMSP SSUSI data into `xarray.DataSet` and `pysat.Meta` objects.
+
+    This routine is called as needed by pysat. It is not intended
+    for direct user interaction.
+
+    Parameters
+    ----------
+    fnames : array-like
+        Iterable of filename strings, full path, to data files to be loaded.
+        This input is nominally provided by pysat itself.
+    tag : str
+        Tag name used to identify particular data set to be loaded.
+        This input is nominally provided by pysat itself.
+    inst_id : str
+        Satellite ID used to identify particular data set to be loaded.
+        This input is nominally provided by pysat itself.
+    combine_times : bool
+        For SDR data, optionally combine the different datetime coordinates
+        into a single time coordinate (default=False)
+
+    Returns
+    -------
+    data : xr.DataSet
+        A xarray DataSet with data prepared for the pysat.Instrument
+    meta : pysat.Meta
+        Metadata formatted for a pysat.Instrument object.
+
+    Raises
+    ------
+    ValueError
+        If temporal dimensions are not consistent
+
+    Note
+    ----
+    Any additional keyword arguments passed to pysat.Instrument
+    upon instantiation are passed along to this routine.
+
+    Examples
+    --------
+    ::
+
+        inst = pysat.Instrument('dmsp', 'ssusi', tag='sdr-disk', inst_id='f16')
+        inst.load(2015, 1)
+
+    """
+    if tag == 'edr-aurora':
+        data, meta = jhuapl.load_edr_aurora(fnames, tag, inst_id,
+                                            pandas_format=pandas_format,
+                                            strict_dim_check=False)
+    elif tag.find('disk') > 0:
+        data, meta = jhuapl.load_sdr_aurora(fnames, name, tag, inst_id,
+                                            pandas_format=pandas_format,
+                                            strict_dim_check=False,
+                                            combine_times=combine_times)
+
+    return data, meta
