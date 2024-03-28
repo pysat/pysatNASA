@@ -174,7 +174,7 @@ epub_exclude_files = ['search.html']
 
 
 # Example configuration for intersphinx: refer to the Python standard library.
-intersphinx_mapping = {'https://docs.python.org/': None}
+intersphinx_mapping = {'<name>': ('https://docs.python.org/', None)}
 
 # Links to ignore, as they require human interaction
 linkcheck_ignore = [r'https://saber.gats-inc.com/temp_errors.php']
