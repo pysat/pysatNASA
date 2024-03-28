@@ -20,7 +20,7 @@ CDAWeb interface.
    develop_guide.rst
    archival.rst
    migration_guide.rst
-   acnkowledgements.rst
+   acknowledgements.rst
    history.rst
 
 
