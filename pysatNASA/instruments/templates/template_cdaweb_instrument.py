@@ -1,7 +1,17 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+# Full license can be found in License.md
+# Full author list can be found in .zenodo.json file
+# DOI:10.5281/zenodo.3986131
+#
+# DISTRIBUTION STATEMENT A: Approved for public release. Distribution is
+# unlimited.
+# ----------------------------------------------------------------------------
 """Template for a pysat.Instrument support file that utilizes CDAWeb methods.
 
 Copy and modify this file as needed when adding a new Instrument to pysat.
+
+DO NOT include the NRL distribution statement in your new file.
 
 This is a good area to introduce the instrument, provide background
 on the mission, operations, instrumenation, and measurements.
