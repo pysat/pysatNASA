@@ -24,6 +24,10 @@ CDAWeb interface.
    history.rst
 
 
+.. admonition:: DISTRIBUTION STATEMENT A: Approved for public release.
+		Distribution is unlimited.
+
+
 Indices and tables
 ==================
 
