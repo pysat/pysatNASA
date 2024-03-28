@@ -25,6 +25,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 * Documentation
   * Added example of how to export data for archival
   * Updated documentation refs
+  * Add keywords to zenodo
 * Deprecations
   * Deprecated '' tag for de2_vefi module, support moved to de2_vefimagb
 * Maintenance
@@ -35,6 +36,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   * Use standard clean routine for C/NOFS VEFI mag data
   * Added version cap for sphinx_rtd_theme
   * Include standard tests for ICON IVM-B
+  * Update NEP29 standards for Apr 2024
 
 ## [0.0.5] - 2023-06-27
 * New Instruments
