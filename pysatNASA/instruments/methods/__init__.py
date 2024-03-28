@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """Methods for pysatNASA instruments."""
 
 from pysatNASA.instruments.methods._cdf import CDF  # noqa F401

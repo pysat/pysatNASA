@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """Interface for pysatNASA to manage and analyze multiple pysat instruments.
 
 Each instrument is contained within a subpackage of the pysatNASA.instruments

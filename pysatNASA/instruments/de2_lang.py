@@ -1,4 +1,13 @@
+#!/usr/bin/env python
+# Full license can be found in License.md
+# Full author list can be found in .zenodo.json file
+# DOI:10.5281/zenodo.3986131
+#
+# DISTRIBUTION STATEMENT A: Approved for public release. Distribution is
+# unlimited.
+# ----------------------------------------------------------------------------
 # -*- coding: utf-8 -*-
+
 """Module for the DE2 LANG instrument.
 
 Supports the Langmuir Probe (LANG) instrument on Dynamics Explorer 2 (DE2).

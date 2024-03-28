@@ -1,4 +1,13 @@
+#!/usr/bin/env python
+# Full license can be found in License.md
+# Full author list can be found in .zenodo.json file
+# DOI:10.5281/zenodo.3986131
+#
+# DISTRIBUTION STATEMENT A: Approved for public release. Distribution is
+# unlimited.
+# ----------------------------------------------------------------------------
 # -*- coding: utf-8 -*-
+
 """Template for a pysat.Instrument support file that utilizes CDAWeb methods.
 
 Copy and modify this file as needed when adding a new Instrument to pysat.

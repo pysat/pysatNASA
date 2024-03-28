@@ -1,10 +1,14 @@
+#!/usr/bin/env python
+# Full license can be found in License.md
+# Full author list can be found in .zenodo.json file
+# DOI:10.5281/zenodo.3986131
+#
+# DISTRIBUTION STATEMENT A: Approved for public release. Distribution is
+# unlimited.
+# ----------------------------------------------------------------------------
 # -*- coding: utf-8 -*-
-"""Provides non-instrument specific routines for MAVEN data.
 
-Created on Thu Jul 13 11:21:01 2023
-
-@author: tesman
-"""
+"""Provides non-instrument specific routines for MAVEN data."""
 
 ackn_str = ''.join(('Jakosky, B.M., Lin, R.P., Grebowsky, J.M. et al.',
                     ' The Mars Atmosphere and Volatile Evolution',
