@@ -95,6 +95,9 @@ _clean_warn = {inst_id: {tag: mm_nasa.clean_warnings
 
 # Use standard init routine
 init = functools.partial(mm_nasa.init, module=mm_dmsp, name=name)
+# TODO(#218, #222): Remove when compliant with multi-day load tests
+_new_tests = {inst_id: {tag: False for tag in tags.keys()}
+              for inst_id in inst_ids.keys()}
 
 
 def clean(self):
