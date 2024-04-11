@@ -84,10 +84,11 @@ multi_file_day = True
 
 _test_dates = {inst_id: {tag: dt.datetime(2015, 1, 1) for tag in tags.keys()}
                for inst_id in inst_ids.keys()}
-_clean_warn = {inst_id: {tag: mm_nasa.clean_warnings
-                         for tag in inst_ids[inst_id]
-                         if tag not in ['sdr-disk', 'sdr2-disk']}
-               for inst_id in inst_ids.keys()}
+# TODO(pysat#1196): Un-comment when pysat bug is fixed and released
+# _clean_warn = {inst_id: {tag: mm_nasa.clean_warnings
+#                          for tag in inst_ids[inst_id]
+#                          if tag not in ['sdr-disk', 'sdr2-disk']}
+#                for inst_id in inst_ids.keys()}
 
 # ----------------------------------------------------------------------------
 # Instrument methods
