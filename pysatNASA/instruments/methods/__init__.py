@@ -15,3 +15,4 @@ from pysatNASA.instruments.methods import omni  # noqa F401
 from pysatNASA.instruments.methods import reach  # noqa F401
 from pysatNASA.instruments.methods import ses14  # noqa F401
 from pysatNASA.instruments.methods import timed  # noqa F401
+from pysatNASA.instruments.methods import mgs  # noqa F401
