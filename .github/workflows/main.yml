@@ -47,6 +47,7 @@ jobs:
         cd ..
         git clone https://github.com/pysat/pysat.git
         cd pysat
+        git checkout pip_install_rc
         pip install .
         cd ../pysatNASA
         pip install .
