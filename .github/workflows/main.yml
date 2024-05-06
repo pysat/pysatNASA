@@ -44,6 +44,11 @@ jobs:
         pip install "cdflib<1.0"
         pip install -r requirements.txt
         pip install -r test_requirements.txt
+        cd ..
+        git clone https://github.com/pysat/pysat.git
+        cd pysat
+        pip install .
+        cd ../pysatNASA
         pip install .
 
     - name: Install NEP29 dependencies
