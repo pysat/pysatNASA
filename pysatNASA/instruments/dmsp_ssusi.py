@@ -89,7 +89,8 @@ _clean_warn = {inst_id: {tag: mm_nasa.clean_warnings
                          if tag not in ['sdr-disk', 'sdr2-disk']}
                for inst_id in inst_ids.keys()}
 # TODO(#218): Remove when compliant with multi-day load tests
-_new_tests = {inst_id: {'sdr-disk': False} for inst_id in inst_ids.keys()}
+_new_tests = {inst_id: {'sdr-disk': False, 'sdr2-dist': False}
+              for inst_id in inst_ids.keys()}
 _clean_warn = {inst_id: {tag: mm_nasa.clean_warnings
                          for tag in inst_ids[inst_id]
                          if tag not in ['sdr-disk', 'sdr2-disk']}
