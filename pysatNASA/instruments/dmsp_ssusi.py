@@ -84,21 +84,17 @@ multi_file_day = True
 
 _test_dates = {inst_id: {tag: dt.datetime(2015, 1, 1) for tag in tags.keys()}
                for inst_id in inst_ids.keys()}
-_clean_warn = {inst_id: {tag: mm_nasa.clean_warnings
-                         for tag in inst_ids[inst_id]
-                         if tag not in ['sdr-disk', 'sdr2-disk']}
-               for inst_id in inst_ids.keys()}
-# TODO(#218): Remove when compliant with multi-day load tests
-_new_tests = {inst_id: {'sdr-disk': False, 'sdr2-dist': False}
+# TODO(#218, #222): Remove when compliant with multi-day load tests
+_new_tests = {inst_id: {tag: False for tag in tags.keys()}
               for inst_id in inst_ids.keys()}
-_clean_warn = {inst_id: {tag: mm_nasa.clean_warnings
-                         for tag in inst_ids[inst_id]
-                         if tag not in ['sdr-disk', 'sdr2-disk']}
-               for inst_id in inst_ids.keys()}
+# TODO(pysat#1196): Un-comment when pysat bug is fixed and released
+# _clean_warn = {inst_id: {tag: mm_nasa.clean_warnings
+#                          for tag in inst_ids[inst_id]
+#                          if tag not in ['sdr-disk', 'sdr2-disk']}
+#                for inst_id in inst_ids.keys()}
 
 # ----------------------------------------------------------------------------
 # Instrument methods
-
 
 # Use standard init routine
 init = functools.partial(mm_nasa.init, module=mm_dmsp, name=name)

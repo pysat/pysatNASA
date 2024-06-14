@@ -96,9 +96,10 @@ _test_load_opt = {iid: {tag: {'combine_times': True}
                   for iid in ['high_res', 'low_res']}
 # TODO(#218): Remove when compliant with multi-day load tests
 _new_tests = {'high_res': {tag: False for tag in inst_ids['high_res']}}
-_clean_warn = {inst_id: {tag: mm_nasa.clean_warnings
-                         for tag in inst_ids[inst_id] if tag != 'sdr-imaging'}
-               for inst_id in inst_ids.keys()}
+# TODO(pysat#1196): Un-comment when pysat bug is fixed and released
+# _clean_warn = {inst_id: {tag: mm_nasa.clean_warnings
+#                          for tag in inst_ids[inst_id] if tag != 'sdr-imaging'}
+#                for inst_id in inst_ids.keys()}
 
 # ----------------------------------------------------------------------------
 # Instrument methods
