@@ -86,6 +86,8 @@ jobs:
 
   finish:
     name: Finish Coverage Analysis
+    needs: build
+    if: always()
     runs-on: ubuntu-latest
     steps:
     - name: Coveralls Finished
