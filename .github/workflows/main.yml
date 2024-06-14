@@ -68,6 +68,7 @@ jobs:
       run: |
         mkdir pysatData
         python -c "import pysat; pysat.params['data_dirs'] = 'pysatData'"
+      continue-on-error: true
 
     - name: Test PEP8 compliance
       run: flake8 . --count --select=D,E,F,H,W --show-source --statistics
