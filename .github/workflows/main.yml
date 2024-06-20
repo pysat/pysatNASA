@@ -110,10 +110,9 @@ jobs:
     needs: build
     runs-on: "ubuntu-latest"
     if: always()
-    steps:
-      env:
-        COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
-        COVERALLS_PARALLEL: true
-      run: |
-        curl -sL https://coveralls.io/coveralls-linux.tar.gz | tar -xz
-        ./coveralls done --build-number ${{ github.run_number }}
+    env:
+      COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+      COVERALLS_PARALLEL: true
+    run: |
+      curl -sL https://coveralls.io/coveralls-linux.tar.gz | tar -xz
+      ./coveralls done --build-number ${{ github.run_number }}
