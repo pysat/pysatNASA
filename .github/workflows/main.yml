@@ -104,8 +104,8 @@ jobs:
       run: |
         brew tap coverallsapp/coveralls --quiet
         brew install coveralls --quiet
-	ls -lh .coverage
-	ls -lh cov.xml
+        ls -lh .coverage
+        ls -lh cov.xml
         coveralls report -f cov.xml --verbose --parallel --repo-token=${{ secrets.COVERALLS_REPO_TOKEN }} --build-number ${{ github.run_number }}
 
   finish:
