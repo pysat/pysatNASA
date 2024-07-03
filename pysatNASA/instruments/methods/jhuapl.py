@@ -38,7 +38,8 @@ def build_dtimes(data, var, epoch=None, epoch_var='time'):
     skey = 'TIME{:s}'.format(var)
 
     if epoch is None:
-        hours = [int(np.floor(sec / 3600.0)) for sec in data[skey].values]
+        hours = np.array([int(np.floor(sec / 3600.0))
+                          for sec in data[skey].values])
         mins = [int(np.floor((sec - hours[i] * 3600) / 60.0))
                 for i, sec in enumerate(data[skey].values)]
         secs = [int(np.floor((sec - hours[i] * 3600 - mins[i] * 60)))
@@ -46,11 +47,18 @@ def build_dtimes(data, var, epoch=None, epoch_var='time'):
         microsecs = [int(np.floor((sec - hours[i] * 3600 - mins[i] * 60
                                    - secs[i]) * 1.0e6))
                      for i, sec in enumerate(data[skey].values)]
+        days = np.array([int(dval) for dval in data[dkey].values])
+
+        # Ensure hours are within a realistic range. Datetime can handle day of
+        # roll-over for non-leap years.
+        days[hours >= 24] += 1
+        hours[hours >= 24] -= 24
+
         dtimes = [
             dt.datetime.strptime(
                 "{:4d}-{:03d}-{:02d}-{:02d}-{:02d}-{:06d}".format(
-                    int(data[ykey].values[i]), int(data[dkey].values[i]),
-                    hours[i], mins[i], secs[i], microsec), '%Y-%j-%H-%M-%S-%f')
+                    int(data[ykey].values[i]), days[i], hours[i], mins[i],
+                    secs[i], microsec), '%Y-%j-%H-%M-%S-%f')
             for i, microsec in enumerate(microsecs)]
     else:
         dtimes = [
