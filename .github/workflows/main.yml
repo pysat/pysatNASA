@@ -16,7 +16,7 @@ jobs:
         test_config: ["latest"]
         include:
           - python-version: "3.10"
-            numpy_ver: "1.23"
+            numpy_ver: "1.24"
             os: ubuntu-latest
             test_config: "NEP29"
           - python-version: "3.6.8"

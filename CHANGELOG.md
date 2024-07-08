@@ -36,7 +36,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   * Use standard clean routine for C/NOFS VEFI mag data
   * Added version cap for sphinx_rtd_theme
   * Include standard tests for ICON IVM-B
-  * Update NEP29 standards for Apr 2024
+  * Update NEP29 standards for Jun 2024
 
 ## [0.0.5] - 2023-06-27
 * New Instruments
