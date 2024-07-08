@@ -22,9 +22,9 @@ classifiers = [
   "Natural Language :: English",
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3.6",
-  "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
   "Operating System :: POSIX :: Linux",
   "Operating System :: MacOS :: MacOS X",
   "Operating System :: Microsoft :: Windows"
@@ -78,7 +78,7 @@ Source = "https://github.com/pysat/pysatNASA"
 omit = ["*/instruments/templates/"]
 
 [tool.pytest.ini_options]
-addopts = "--cov=pysatNASA"
+addopts = "--cov=pysatNASA --cov-report xml"
 markers = [
   "all_inst",
   "download",
