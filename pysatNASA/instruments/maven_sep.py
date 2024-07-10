@@ -59,6 +59,9 @@ pandas_format = False
 # Instrument test attributes
 
 _test_dates = {id: {'': dt.datetime(2020, 1, 1)} for id in inst_ids.keys()}
+# TODO(#218, #222): Remove when compliant with multi-day load tests
+_new_tests = {inst_id: {tag: False for tag in tags.keys()}
+              for inst_id in inst_ids.keys()}
 
 # ----------------------------------------------------------------------------
 # Instrument methods
