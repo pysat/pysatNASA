@@ -20,7 +20,12 @@ CDAWeb interface.
    develop_guide.rst
    archival.rst
    migration_guide.rst
+   acknowledgements.rst
    history.rst
+
+
+.. admonition:: DISTRIBUTION STATEMENT A: Approved for public release.
+		Distribution is unlimited.
 
 
 Indices and tables

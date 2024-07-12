@@ -1,22 +1,23 @@
 Building data files for archival at NASA SPDF
 =============================================
 
-The codes and routines at :py:mod:`pysatNASA` are designed for end-users of NASA data
-products. However, pysat in general has also been used to build operational
-instruments for generating archival data to be uploaded to the Space Physics
-Data Facility (SPDF) at NASA.
+The codes and routines at :py:mod:`pysatNASA` are designed for end-users of
+NASA data products. However, pysat in general has also been used to build
+operational instruments for generating archival data to be uploaded to the
+Space Physics Data Facility (SPDF) at NASA.
 
 In general, such instruments should include separate naming conventions. An
 example of this is the REACH data, where netCDF4 files are generated for
-archival purposes as part of the :py:mod:`ops_reach` package, but can be accessed by
-the end user through :py:mod:`pysatNASA`.
+archival purposes as part of the :py:mod:`ops_reach` package, but can be
+accessed by the end user through :py:mod:`pysatNASA`.
 
 In general, a :py:class:`pysat.Instrument` object can be constructed for any
 dataset. Full instructions and conventions can be found
-`here <https://pysat.readthedocs.io/en/latest/new_instrument.html>`_.  In the
-case of the REACH data, the operational code reads in a series of csv files and
-updates the metadata according to user specifications. Once the file is loaded,
-it can be exported to a netCDF4 file via pysat. In the simplest case, this is
+`at ReadTheDocs <https://pysat.readthedocs.io/en/latest/new_instrument.html>`_.
+In the case of the REACH data, the operational code reads in a series of CSV
+files and updates the metadata according to user specifications. Once the file
+is loaded, it can be exported to a netCDF4 file via pysat. In the simplest case,
+this is:
 
 ::
 
@@ -25,7 +26,7 @@ it can be exported to a netCDF4 file via pysat. In the simplest case, this is
 
 
 However, there are additional options when translating pysat metadata to SPDF
-preferred formats.  An example of this is
+preferred formats.  An example of this is:
 
 ::
 
@@ -54,11 +55,11 @@ metadata values required by the ITSP standards. Additionally, the
 internal :py:mod:`pysat` metadata values before writing to file.
 
 A full guide to SPDF metadata standards can be found 
-`here <https://spdf.gsfc.nasa.gov/istp_guide/istp_guide.html>`_.
+`at SPDF <https://spdf.gsfc.nasa.gov/istp_guide/istp_guide.html>`_.
 
-Other best practices for archival include adding the operational software version
-to the metadata header before writing. The pysat version will be automatically
-written to the metadata.
+Other best practices for archival include adding the operational software
+version to the metadata header before writing. The pysat version will be
+automatically written to the metadata.
 
 ::
 

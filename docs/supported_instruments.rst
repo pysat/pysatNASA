@@ -97,7 +97,7 @@ DE2 VEFI
 .. automodule:: pysatNASA.instruments.de2_vefi
    :members:
 
-.. _de2_vefi:
+.. _de2_vefimag:
 
 DE2 VEFIMAGB
 ------------
@@ -207,7 +207,7 @@ MAVEN MAG
 MAVEN SEP
 ---------
 
-.. automodules:: pysatNASA.instruments.maven_sep
+.. automodule:: pysatNASA.instruments.maven_sep
    :members:
 
 .. _omni_hro:
@@ -221,7 +221,7 @@ OMNI HRO
 .. _reach_dosimeter:
 
 REACH DOSIMETER
-----------
+---------------
 
 .. automodule:: pysatNASA.instruments.reach_dosimeter
   :members:
