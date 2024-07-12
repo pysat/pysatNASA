@@ -4,10 +4,6 @@ The following institutions, missions, and programs have provided funding
 for pysatNASA development.
 
 Institutions
-------------
-- Alphabetical list of institutions
-
-Missions
 --------
 - The Catholic University of America (CUA)
 - Cosmic Studio
@@ -17,7 +13,7 @@ Missions
 - National Science Foundation (NSF)
 - Office of Naval Research (ONR)
 
-Programs
+Missions
 --------
 - NASA Ionospheric Connections Explorer (ICON)
 - NASA Scintillation Observations and Response of the Ionosphere to
