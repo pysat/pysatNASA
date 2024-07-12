@@ -84,6 +84,9 @@ multi_file_day = True
 
 _test_dates = {inst_id: {tag: dt.datetime(2015, 1, 1) for tag in tags.keys()}
                for inst_id in inst_ids.keys()}
+# TODO(#218, #222): Remove when compliant with multi-day load tests
+_new_tests = {inst_id: {tag: False for tag in tags.keys()}
+              for inst_id in inst_ids.keys()}
 # TODO(pysat#1196): Un-comment when pysat bug is fixed and released
 # _clean_warn = {inst_id: {tag: mm_nasa.clean_warnings
 #                          for tag in inst_ids[inst_id]
@@ -93,12 +96,8 @@ _test_dates = {inst_id: {tag: dt.datetime(2015, 1, 1) for tag in tags.keys()}
 # ----------------------------------------------------------------------------
 # Instrument methods
 
-
 # Use standard init routine
 init = functools.partial(mm_nasa.init, module=mm_dmsp, name=name)
-# TODO(#218, #222): Remove when compliant with multi-day load tests
-_new_tests = {inst_id: {tag: False for tag in tags.keys()}
-              for inst_id in inst_ids.keys()}
 
 
 def clean(self):
@@ -119,6 +118,38 @@ def clean(self):
                                        self.platform, self.name, self.tag,
                                        self.inst_id, 'at clean level',
                                        self.clean_level]))
+    return
+
+
+def concat_data(self, new_data, combine_times=False, **kwargs):
+    """Concatonate data to self.data for DMSP SSUSI data.
+
+    Parameters
+    ----------
+    new_data : xarray.Dataset or list of such objects
+        New data objects to be concatonated
+    combine_times : bool
+        For SDR data, optionally combine the different datetime coordinates
+        into a single time coordinate (default=False)
+    **kwargs : dict
+        Optional keyword arguments passed to xr.concat
+
+    Note
+    ----
+    For xarray, `dim=Instrument.index.name` is passed along to xarray.concat
+    except if the user includes a value for dim as a keyword argument.
+
+    """
+    # Establish the time dimensions by data type
+    time_dims = [self.index.name]
+
+    if self.tag in ['sdr-disk', 'sdr2-dist']:
+        time_dims.append('time_auroral')
+
+    # Concatonate using the appropriate method for the number of time
+    # dimensions
+    jhuapl.concat_data(self, time_dims, new_data, combine_times=combine_times,
+                       **kwargs)
     return
 
 
