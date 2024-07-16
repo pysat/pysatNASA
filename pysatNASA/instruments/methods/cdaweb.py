@@ -164,7 +164,7 @@ def load(fnames, tag='', inst_id='', file_cadence=dt.timedelta(days=1),
     else:
         if not use_cdflib:
             estr = 'The `use_cdflib` option is not currently enabled for xarray'
-            pysat.logger.warn(estr)
+            pysat.logger.warning(estr)
 
         data, meta = load_xarray(fnames, tag=tag, inst_id=inst_id,
                                  epoch_name=epoch_name,
@@ -264,8 +264,8 @@ def load_pandas(fnames, tag='', inst_id='', file_cadence=dt.timedelta(days=1),
                         tdata = tdata.loc[date:date2, :]
                         ldata.append(tdata)
                     except ValueError as verr:
-                        logger.warn("unable to load {:}: {:}".format(fname,
-                                                                     str(verr)))
+                        logger.warning(
+                            "unable to load {:}: {:}".format(fname, str(verr)))
             else:
                 # Basic data return
                 with CDF(lfname) as cdf:
@@ -274,8 +274,8 @@ def load_pandas(fnames, tag='', inst_id='', file_cadence=dt.timedelta(days=1),
                             flatten_twod=flatten_twod)
                         ldata.append(temp_data)
                     except ValueError as verr:
-                        logger.warn("unable to load {:}: {:}".format(lfname,
-                                                                     str(verr)))
+                        logger.warning(
+                            "unable to load {:}: {:}".format(lfname, str(verr)))
 
         # Combine individual files together
         if len(ldata) > 0:
