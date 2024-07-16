@@ -282,15 +282,15 @@ def load_sdr_aurora(fnames, name='', tag='', inst_id='', pandas_format=False,
 
         # Ensure identical day and night dimensions for GUVI
         if name == 'guvi':
-            if sdata.dims['nAlongDay'] != sdata.dims['nAlongNight']:
+            if sdata.sizes['nAlongDay'] != sdata.sizes['nAlongNight']:
                 raise ValueError('Along-track day and night dimensions differ')
 
             if 'nCrossDay' in rename_dims.keys():
-                if sdata.dims['nCrossDay'] != sdata.dims['nCrossNight']:
+                if sdata.sizes['nCrossDay'] != sdata.sizes['nCrossNight']:
                     raise ValueError(''.join([
                         'Cross-track day and night dimensions differ ',
-                        '{:} != {:}'.format(sdata.dims['nCrossDay'],
-                                            sdata.dims['nCrossNight'])]))
+                        '{:} != {:}'.format(sdata.sizes['nCrossDay'],
+                                            sdata.sizes['nCrossNight'])]))
 
         # Combine identical dimensions and rename some time dimensions
         sdata = sdata.rename_dims(rename_dims)
