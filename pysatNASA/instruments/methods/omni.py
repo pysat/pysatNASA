@@ -164,12 +164,14 @@ def calculate_imf_steadiness(inst, steady_window=15, min_window_frac=0.75,
         if steady:
             del_min = int((inst.data.index[i]
                            - inst.data.index[i - 1]).total_seconds() / 60.0)
-            if np.isnan(cv) or np.isnan(ca_std[i]) or del_min > sample_rate:
+            if np.any([np.isnan(cv),
+                       np.isnan(ca_std.iloc[i]),
+                       del_min > sample_rate]):
                 # Reset the steadiness flag if fill values are encountered, or
                 # if an entry is missing
                 steady = False
 
-        if cv <= max_bmag_cv and ca_std[i] <= max_clock_angle_std:
+        if cv <= max_bmag_cv and ca_std.iloc[i] <= max_clock_angle_std:
             # Steadiness conditions have been met
             if steady:
                 imf_steady[i] = imf_steady[i - 1]
