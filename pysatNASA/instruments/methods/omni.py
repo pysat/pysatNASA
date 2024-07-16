@@ -59,7 +59,7 @@ def time_shift_to_magnetic_poles(inst):
     inst['BSN_x'] = inst['BSN_x'].fillna(method='pad')
 
     # Make sure there are no gaps larger than a minute.
-    inst.data = inst.data.resample('1T').interpolate('time')
+    inst.data = inst.data.resample('1min').interpolate('time')
 
     time_x = inst['BSN_x'] * 6371.2 / -inst['Vx']
     idx, = np.where(np.isnan(time_x))
