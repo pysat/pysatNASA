@@ -51,12 +51,12 @@ def time_shift_to_magnetic_poles(inst):
 
     # Need to fill in Vx to get an estimate of what is going on.
     inst['Vx'] = inst['Vx'].interpolate('nearest')
-    inst['Vx'] = inst['Vx'].fillna(method='backfill')
-    inst['Vx'] = inst['Vx'].fillna(method='pad')
+    inst['Vx'] = inst['Vx'].bfill()
+    inst['Vx'] = inst['Vx'].ffill()
 
     inst['BSN_x'] = inst['BSN_x'].interpolate('nearest')
-    inst['BSN_x'] = inst['BSN_x'].fillna(method='backfill')
-    inst['BSN_x'] = inst['BSN_x'].fillna(method='pad')
+    inst['BSN_x'] = inst['BSN_x'].bfill()
+    inst['BSN_x'] = inst['BSN_x'].ffill()
 
     # Make sure there are no gaps larger than a minute.
     inst.data = inst.data.resample('1min').interpolate('time')
