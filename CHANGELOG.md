@@ -38,6 +38,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   * Added version cap for sphinx_rtd_theme
   * Include standard tests for ICON IVM-B
   * Update NEP29 standards for Jun 2024
+  * Updated standards for pandas, numpy, and pysat
 
 ## [0.0.5] - 2023-06-27
 * New Instruments
