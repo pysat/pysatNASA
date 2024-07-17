@@ -151,7 +151,7 @@ def load(fnames, tag='', inst_id='', **kwargs):
     if tag == '':
         # Warn user that e-field data is dropped.
         estr = 'E-field data dropped'
-        pysat.logger.warn(estr)
+        pysat.logger.warning(estr)
 
         # Drop E-field data
         if 'use_cdflib' in kwargs.keys():
