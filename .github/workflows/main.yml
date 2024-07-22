@@ -76,7 +76,7 @@ jobs:
       run: flake8 . --count --exit-zero --max-complexity=10 --statistics
 
     - name: Test with pytest
-      run: pytest
+      run: pytest -v --showlocals
 
     - name: Coveralls Parallel (Ubuntu)
       if: startsWith(matrix.os, 'ubuntu')
