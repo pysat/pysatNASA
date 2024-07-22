@@ -96,16 +96,17 @@ jobs:
         curl -L https://github.com/coverallsapp/coverage-reporter/releases/latest/download/coveralls-windows.exe -o coveralls.exe
         ./coveralls.exe report --parallel --repo-token=${{ secrets.COVERALLS_REPO_TOKEN }} --build-number ${{ github.run_number }}
 
+    - name: Install Coveralls on MacOS
+      if: startswith(matrix.os, 'macos')
+      run: |
+        pip install coveralls
+
     - name: Coveralls Parallel (MacOS)
       if: startsWith(matrix.os, 'macos')
       env:
         COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
         COVERALLS_PARALLEL: true
       run: |
-        brew tap coverallsapp/coveralls --quiet
-        brew install coveralls --quiet
-        ls -lh .coverage
-        ls -lh coverage.xml
         coveralls report coverage.xml --format=cobertura --verbose --parallel --repo-token=${{ secrets.COVERALLS_REPO_TOKEN }} --build-number ${{ github.run_number }} --debug --dry-run
 
   finish:
