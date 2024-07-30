@@ -52,23 +52,19 @@ jobs:
         python setup.py develop
         cd ../pysatNASA
         pip install .
-
     - name: Install NEP29 dependencies
       if: ${{ matrix.test_config == 'NEP29'}}
       run: |
         pip install numpy==${{ matrix.numpy_ver }}
         pip install --upgrade-strategy only-if-needed .[test]
-
     - name: Install standard dependencies
       if: ${{ matrix.test_config == 'latest'}}
       run: |
         pip install .[test]
-
     - name: Set up pysat
       run: |
         mkdir pysatData
         python -c "import pysat; pysat.params['data_dirs'] = 'pysatData'"
-
     - name: Test PEP8 compliance
       run: flake8 . --count --select=D,E,F,H,W --show-source --statistics
 
@@ -76,7 +72,7 @@ jobs:
       run: flake8 . --count --exit-zero --max-complexity=10 --statistics
 
     - name: Test with pytest
-      run: pytest -v --showlocals
+      run: pytest
 
     - name: Coveralls Parallel (Ubuntu)
       if: startsWith(matrix.os, 'ubuntu')
@@ -86,7 +82,6 @@ jobs:
       run: |
         curl -sL https://coveralls.io/coveralls-linux.tar.gz | tar -xz
         ./coveralls report --parallel --repo-token=${{ secrets.COVERALLS_REPO_TOKEN }} --build-number ${{ github.run_number }}
-
     - name: Coveralls Parallel (Windows)
       if: startsWith(matrix.os, 'windows')
       env:
@@ -95,20 +90,17 @@ jobs:
       run: |
         curl -L https://github.com/coverallsapp/coverage-reporter/releases/latest/download/coveralls-windows.exe -o coveralls.exe
         ./coveralls.exe report --parallel --repo-token=${{ secrets.COVERALLS_REPO_TOKEN }} --build-number ${{ github.run_number }}
-
-    - name: Install Coveralls on MacOS
-      if: startswith(matrix.os, 'macos')
-      run: |
-        pip install coveralls
-
     - name: Coveralls Parallel (MacOS)
       if: startsWith(matrix.os, 'macos')
       env:
         COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
         COVERALLS_PARALLEL: true
       run: |
+        brew tap coverallsapp/coveralls --quiet
+        brew install coveralls --quiet
+        ls -lh .coverage
+        ls -lh coverage.xml
         coveralls report coverage.xml --format=cobertura --verbose --parallel --repo-token=${{ secrets.COVERALLS_REPO_TOKEN }} --build-number ${{ github.run_number }} --debug --dry-run
-
   finish:
     name: Finish Coverage Analysis
     needs: build
