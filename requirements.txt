@@ -1,5 +1,5 @@
 beautifulsoup4
-cdasws<=1.8.2
+cdasws
 cdflib>=0.4.4
 lxml
 netCDF4
