@@ -981,7 +981,9 @@ def cdas_list_remote_files(tag='', inst_id='', start=None, stop=None,
 
     og_files = cdas.get_original_files(dataset=dataset, start=start, end=stop)
 
-    if series_out:
+    if og_files[1] is None:
+        file_list = pds.Series(dtype=str) if series_out else []
+    elif series_out:
         name_list = [os.path.basename(f['Name']) for f in og_files[1]]
         t_stamp = [pds.Timestamp(f['StartTime'][:10]) for f in og_files[1]]
         file_list = pds.Series(data=name_list, index=t_stamp)
