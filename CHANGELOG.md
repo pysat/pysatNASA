@@ -28,6 +28,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   * Added example of how to export data for archival
   * Updated documentation refs
   * Add keywords to zenodo
+  * Fixed broken links
 * Deprecations
   * Deprecated '' tag for de2_vefi module, support moved to de2_vefimagb
 * Maintenance
