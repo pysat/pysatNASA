@@ -44,7 +44,7 @@ dependencies = [
   "netCDF4",
   "numpy",
   "pandas",
-  "pysat >= 3.1",
+  "pysat >= 3.2",
   "requests",
   "scipy >= 1.4",
   "xarray"

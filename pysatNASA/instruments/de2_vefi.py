@@ -43,7 +43,7 @@ name
 tag
     '', 'dca', 'ac'
 inst_id
-    none supported
+    None supported
 
 
 Warnings
@@ -133,7 +133,9 @@ def load(fnames, tag='', inst_id='', **kwargs):
     inst_id : str
         Instrument ID used to identify particular data set to be loaded.
         This input is nominally provided by pysat itself. (default='')
-
+    **kwargs : unpacked dict
+        Optional kwargs that will be passed to the
+        `pysatNASA.instruments.methods.cdaweb.load_xarray` function
     Returns
     -------
     data : pds.DataFrame
@@ -145,6 +147,10 @@ def load(fnames, tag='', inst_id='', **kwargs):
     ----
     Several variables relating to time stored in different formats are dropped.
     These are redundant and complicate the load procedure.
+
+    See Also
+    --------
+    pysatNASA.instruments.methods.cdaweb.load_xarray
 
     """
 

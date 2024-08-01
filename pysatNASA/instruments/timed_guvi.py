@@ -138,12 +138,12 @@ def clean(self):
 
 
 def concat_data(self, new_data, combine_times=False, **kwargs):
-    """Concatonate data to self.data for TIMED GUVI data.
+    """Concatenate data to self.data for TIMED GUVI data.
 
     Parameters
     ----------
     new_data : xarray.Dataset or list of such objects
-        New data objects to be concatonated
+        New data objects to be concatenated
     combine_times : bool
         For SDR data, optionally combine the different datetime coordinates
         into a single time coordinate (default=False)
@@ -164,7 +164,7 @@ def concat_data(self, new_data, combine_times=False, **kwargs):
     elif self.tag == 'sdr-spectrograph':
         time_dims.extend(['time_gaim_day', 'time_gaim_night'])
 
-    # Concatonate using the appropriate method for the number of time
+    # Concatenate using the appropriate method for the number of time
     # dimensions
     jhuapl.concat_data(self, time_dims, new_data, combine_times=combine_times,
                        **kwargs)

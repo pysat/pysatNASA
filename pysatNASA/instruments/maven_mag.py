@@ -7,7 +7,7 @@
 # DISTRIBUTION STATEMENT A: Approved for public release. Distribution is
 # unlimited.
 # ----------------------------------------------------------------------------
-"""Module for the MAVEN mag instrument.
+"""Module for the MAVEN magnetometer.
 
 Supports the Magnetometer (MAG) onboard the Mars Atmosphere
 and Volatile Evolution (MAVEN) satellite.

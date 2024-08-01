@@ -188,8 +188,8 @@ JPL GPS
 
 .. _maven_insitu_kp:
 
-MAVEN INSITU KP
----------------
+MAVEN IN SITU KP
+----------------
 
 .. automodule:: pysatNASA.instruments.maven_insitu_kp
    :members:

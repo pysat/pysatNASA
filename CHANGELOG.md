@@ -5,7 +5,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## [0.0.6] - 2024-07-31
 * New Instruments
   * DE2 VEFIMAGB - electric and magnetic field on the same cadence
-  * MAVEN mag
+  * MAVEN MAG
   * MAVEN SEP
   * MAVEN in situ key parameters
   * REACH Dosimeter

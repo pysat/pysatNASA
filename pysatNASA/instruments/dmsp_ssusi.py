@@ -130,12 +130,12 @@ def clean(self):
 
 
 def concat_data(self, new_data, combine_times=False, **kwargs):
-    """Concatonate data to self.data for DMSP SSUSI data.
+    """Concatenate data to self.data for DMSP SSUSI data.
 
     Parameters
     ----------
     new_data : xarray.Dataset or list of such objects
-        New data objects to be concatonated
+        New data objects to be concatenated
     combine_times : bool
         For SDR data, optionally combine the different datetime coordinates
         into a single time coordinate (default=False)
@@ -154,7 +154,7 @@ def concat_data(self, new_data, combine_times=False, **kwargs):
     if self.tag in ['sdr-disk', 'sdr2-dist']:
         time_dims.append('time_auroral')
 
-    # Concatonate using the appropriate method for the number of time
+    # Concatenate using the appropriate method for the number of time
     # dimensions
     jhuapl.concat_data(self, time_dims, new_data, combine_times=combine_times,
                        **kwargs)

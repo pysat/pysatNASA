@@ -7,9 +7,9 @@
 # DISTRIBUTION STATEMENT A: Approved for public release. Distribution is
 # unlimited.
 # ----------------------------------------------------------------------------
-"""Module for the MAVEN insitu instruments.
+"""Module for the MAVEN in situ instruments.
 
-Supports the in situ Key Parameter (kp) data from multiple instruments
+Supports the in situ Key Parameter (KP) data from multiple instruments
 onboard the Mars Atmosphere and Volatile Evolution (MAVEN) satellite.
 
 Accesses local data in CDF format.
@@ -32,9 +32,9 @@ Examples
 ::
     import pysat
 
-    insitu = pysat.Instrument(platform='maven', name='insitu_kp')
-    insitu.download(dt.datetime(2020, 1, 1), dt.datetime(2020, 1, 31))
-    insitu.load(2020, 1, use_header=True)
+    insitukp = pysat.Instrument(platform='maven', name='insitu_kp')
+    insitukp.download(dt.datetime(2020, 1, 1), dt.datetime(2020, 1, 31))
+    insitukp.load(2020, 1, use_header=True)
 
 """
 
