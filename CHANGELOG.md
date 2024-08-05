@@ -23,11 +23,13 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   * Allow graceful failure with no files in jhuapl load functions
   * New window needs to be integer for calculate_imf_steadiness
   * Fixed a bug where cdas_download may drop the requested end date file
+  * Reverted the coveralls integration to the GitHub service for MacOS runs
   * Fixed a bug where cdas_list_remote_files errored without remote data
 * Documentation
   * Added example of how to export data for archival
   * Updated documentation refs
   * Add keywords to zenodo
+  * Fixed broken links
 * Deprecations
   * Deprecated '' tag for de2_vefi module, support moved to de2_vefimagb
 * Maintenance
