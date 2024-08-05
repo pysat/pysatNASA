@@ -91,6 +91,7 @@ def preprocess(self):
 #
 # Use the default CDAWeb and pysat methods
 
+
 # Set the list_files routine
 datestr = '{year:04d}{month:02d}{day:02d}'
 fname = 'reach-vid-{inst_id}_dosimeter-l1c_{datestr}_v{{version:01d}}.nc'
@@ -98,6 +99,16 @@ supported_tags = {iid: {'': fname.format(inst_id=iid, datestr=datestr)}
                   for iid in inst_ids.keys()}
 list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags)
+
+
+# Support download routine
+download_tags = {iid: {'': 'REACH-VID-{iid}_DOSIMETER-L1C'.format(iid=iid)}
+                 for iid in inst_ids.keys()}
+download = functools.partial(cdw.cdas_download, supported_tags=download_tags)
+
+# Support listing files currently on CDAWeb
+list_remote_files = functools.partial(cdw.cdas_list_remote_files,
+                                      supported_tags=download_tags)
 
 
 def load(fnames, tag=None, inst_id=None):
@@ -160,13 +171,3 @@ def load(fnames, tag=None, inst_id=None):
     meta.header = MetaHeader(new_header)
 
     return data, meta
-
-
-# Support download routine
-download_tags = {iid: {'': 'REACH-VID-{iid}_DOSIMETER-L1C'.format(iid=iid)}
-                 for iid in inst_ids.keys()}
-download = functools.partial(cdw.cdas_download, supported_tags=download_tags)
-
-# Support listing files currently on CDAWeb
-list_remote_files = functools.partial(cdw.cdas_list_remote_files,
-                                      supported_tags=download_tags)
