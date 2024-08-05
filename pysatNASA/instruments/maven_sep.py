@@ -7,7 +7,7 @@
 # DISTRIBUTION STATEMENT A: Approved for public release. Distribution is
 # unlimited.
 # ----------------------------------------------------------------------------
-"""Module for the MAVEN sep instrument.
+"""Module for the MAVEN Solar Energetic Particle instrument.
 
 Supports the Solar Energetic Particle (SEP) data from
 onboard the Mars Atmosphere and Volatile Evolution (MAVEN) satellite.
@@ -31,9 +31,9 @@ Examples
 ::
     import pysat
 
-    insitu = pysat.Instrument(platform='maven', name='sep', inst_id='s1')
-    insitu.download(dt.datetime(2020, 1, 1), dt.datetime(2020, 1, 31))
-    insitu.load(2020, 1, use_header=True)
+    sep = pysat.Instrument(platform='maven', name='sep', inst_id='s1')
+    sep.download(dt.datetime(2020, 1, 1), dt.datetime(2020, 1, 31))
+    sep.load(2020, 1, use_header=True)
 
 """
 

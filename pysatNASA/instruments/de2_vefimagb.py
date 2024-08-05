@@ -111,7 +111,7 @@ list_files = functools.partial(mm_gen.list_files,
 
 # Set the load routine
 def load(fnames, tag='', inst_id='', **kwargs):
-    """Load DE2 VEFI data.
+    """Load DE2 VEFI MAG B-field data.
 
     This routine is called as needed by pysat. It is not intended
     for direct user interaction.

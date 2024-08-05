@@ -14,7 +14,7 @@ Commercially Hosted (REACH) mission.
 
 The Responsive Environmental Assessment Commercially Hosted (REACH)
 constellation is collection of 32 small sensors hosted on six orbital planes of
-the Iridium-Next space vehicles in low earth orbit. Each sensor contains two
+the Iridium-Next space vehicles in Low Earth Orbit. Each sensor contains two
 micro-dosimeters sensitive to the passage of charged particles from the Earth's
 radiation belts. There are six distinct dosimeter types spread among the 64
 individual sensors, which are unique in shielding and electronic threshold.
@@ -33,8 +33,6 @@ inst_id
     '101', '102', '105', '108', '113', '114', '115', '116', '133', '134', '135',
     '136', '137', '138', '139', '140', '148', '149', '162', '163', '164', '165',
     '166', '169', '170', '171', '172', '173', '175', '176', '180', '181'
-
-
 """
 
 import datetime as dt
@@ -69,8 +67,6 @@ _test_dates = {iid: {tag: dt.datetime(2019, 12, 1) for tag in tags.keys()}
 
 # ----------------------------------------------------------------------------
 # Instrument methods
-
-
 # Use standard init routine
 init = functools.partial(mm_nasa.init, module=mm_reach, name=name)
 
@@ -84,8 +80,6 @@ def preprocess(self):
     self.acknowledgements = self.meta.header.Acknowledgement
 
     return
-
-
 # ----------------------------------------------------------------------------
 # Instrument functions
 #

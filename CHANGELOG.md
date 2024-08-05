@@ -2,10 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
-## [0.0.6] - 2024-XX-XX
+## [0.0.6] - 2024-07-31
 * New Instruments
   * DE2 VEFIMAGB - electric and magnetic field on the same cadence
-  * MAVEN mag
+  * MAVEN MAG
   * MAVEN SEP
   * MAVEN in situ key parameters
   * REACH Dosimeter
@@ -40,6 +40,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   * Added version cap for sphinx_rtd_theme
   * Include standard tests for ICON IVM-B
   * Update NEP29 standards for Jun 2024
+  * Updated standards for pandas, numpy, and pysat
+  * Updated versions in GitHub Actions
 
 ## [0.0.5] - 2023-06-27
 * New Instruments

@@ -51,15 +51,15 @@ def time_shift_to_magnetic_poles(inst):
 
     # Need to fill in Vx to get an estimate of what is going on.
     inst['Vx'] = inst['Vx'].interpolate('nearest')
-    inst['Vx'] = inst['Vx'].fillna(method='backfill')
-    inst['Vx'] = inst['Vx'].fillna(method='pad')
+    inst['Vx'] = inst['Vx'].bfill()
+    inst['Vx'] = inst['Vx'].ffill()
 
     inst['BSN_x'] = inst['BSN_x'].interpolate('nearest')
-    inst['BSN_x'] = inst['BSN_x'].fillna(method='backfill')
-    inst['BSN_x'] = inst['BSN_x'].fillna(method='pad')
+    inst['BSN_x'] = inst['BSN_x'].bfill()
+    inst['BSN_x'] = inst['BSN_x'].ffill()
 
     # Make sure there are no gaps larger than a minute.
-    inst.data = inst.data.resample('1T').interpolate('time')
+    inst.data = inst.data.resample('1min').interpolate('time')
 
     time_x = inst['BSN_x'] * 6371.2 / -inst['Vx']
     idx, = np.where(np.isnan(time_x))
@@ -164,12 +164,14 @@ def calculate_imf_steadiness(inst, steady_window=15, min_window_frac=0.75,
         if steady:
             del_min = int((inst.data.index[i]
                            - inst.data.index[i - 1]).total_seconds() / 60.0)
-            if np.isnan(cv) or np.isnan(ca_std[i]) or del_min > sample_rate:
+            if np.any([np.isnan(cv),
+                       np.isnan(ca_std.iloc[i]),
+                       del_min > sample_rate]):
                 # Reset the steadiness flag if fill values are encountered, or
                 # if an entry is missing
                 steady = False
 
-        if cv <= max_bmag_cv and ca_std[i] <= max_clock_angle_std:
+        if cv <= max_bmag_cv and ca_std.iloc[i] <= max_clock_angle_std:
             # Steadiness conditions have been met
             if steady:
                 imf_steady[i] = imf_steady[i - 1]
