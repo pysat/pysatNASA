@@ -14,6 +14,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   * Allow files to be unzipped after download
   * Added custom `concat_data` method to JHUAPL methods, for TIMED-GUVI and
     DMSP-SSUSI data
+  * Added time-dependent, file format function for DMSP SSUSI to DMSP methods
   * Added cleaning to TIMED-GUVI SDR imaging data
 * Bug Fixes
   * Fix general clean routine to skip transformation matrices
