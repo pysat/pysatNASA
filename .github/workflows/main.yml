@@ -78,7 +78,7 @@ jobs:
     - name: Test with pytest
       run: pytest
 
-      - name: Coveralls Parallel
+    - name: Coveralls Parallel
       uses: coverallsapp/github-action@v2
       with:
         flag-name: run-${{ join(matrix.*, '-') }}
