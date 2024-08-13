@@ -78,42 +78,20 @@ jobs:
     - name: Test with pytest
       run: pytest
 
-    - name: Coveralls Parallel (Ubuntu)
-      if: startsWith(matrix.os, 'ubuntu')
-      env:
-        COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
-        COVERALLS_PARALLEL: true
-      run: |
-        curl -sL https://coveralls.io/coveralls-linux.tar.gz | tar -xz
-        ./coveralls report --parallel --repo-token=${{ secrets.COVERALLS_REPO_TOKEN }} --build-number ${{ github.run_number }}
+      - name: Coveralls Parallel
+      uses: coverallsapp/github-action@v2
+      with:
+        flag-name: run-${{ join(matrix.*, '-') }}
+        parallel: true
 
-    - name: Coveralls Parallel (Windows)
-      if: startsWith(matrix.os, 'windows')
-      env:
-        COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
-        COVERALLS_PARALLEL: true
-      run: |
-        curl -L https://github.com/coverallsapp/coverage-reporter/releases/latest/download/coveralls-windows.exe -o coveralls.exe
-        ./coveralls.exe report --parallel --repo-token=${{ secrets.COVERALLS_REPO_TOKEN }} --build-number ${{ github.run_number }}
-
-    - name: Publish results to coveralls (MacOS)
-      if: startsWith(matrix.os, 'macos')
-      env:
-        COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
-        COVERALLS_PARALLEL: true
-      run: |
-        coveralls --rcfile=pyproject.toml --service=github
-        
   finish:
     name: Finish Coverage Analysis
     needs: build
-    if: always()
-    runs-on: "ubuntu-latest"
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
     steps:
-      - name: Coveralls Finish
-        env:
-          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
-          COVERALLS_PARALLEL: true
-        run: |
-          curl -sL https://coveralls.io/coveralls-linux.tar.gz | tar -xz
-          ./coveralls done --build-number ${{ github.run_number }}
+    - name: Coveralls Finished
+      uses: coverallsapp/github-action@v2
+      with:
+        parallel-finished: true
+
