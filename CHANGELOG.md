@@ -2,7 +2,7 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
-## [0.0.6] - 2024-07-31
+## [0.0.6] - 2024-08-26
 * New Instruments
   * DE2 VEFIMAGB - electric and magnetic field on the same cadence
   * MAVEN MAG
@@ -44,6 +44,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   * Update NEP29 standards for Jun 2024
   * Updated standards for pandas, numpy, and pysat
   * Updated versions in GitHub Actions
+  * Implement coveralls app in GitHub Actions
 
 ## [0.0.5] - 2023-06-27
 * New Instruments
