@@ -44,7 +44,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   * Update NEP29 standards for Jun 2024
   * Updated standards for pandas, numpy, and pysat
   * Updated versions in GitHub Actions
-  * Implement coveralls app in GitHUb Actions
+  * Implement coveralls app in GitHub Actions
 
 ## [0.0.5] - 2023-06-27
 * New Instruments
