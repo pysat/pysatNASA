@@ -45,13 +45,6 @@ jobs:
         pip install "cdflib<1.0"
         pip install -r requirements.txt
         pip install -r test_requirements.txt
-        cd ..
-        git clone https://github.com/pysat/pysat.git
-        cd pysat
-        git checkout pip_rc_install
-        python setup.py develop
-        cd ../pysatNASA
-        pip install .
 
     - name: Install NEP29 dependencies
       if: ${{ matrix.test_config == 'NEP29'}}
