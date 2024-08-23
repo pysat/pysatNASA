@@ -88,14 +88,11 @@ supported_tags = {'': {'': fname}}
 list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags)
 # Set the download routine
-basic_tag = {'remote_dir': ''.join(('/pub/data/maven/insitu/kp-4sec/',
-                                    'cdfs/{year:04d}/{month:02d}')),
-             'fname': fname}
-download_tags = {'': {'': basic_tag}}
-download = functools.partial(cdw.download, supported_tags=download_tags)
+download_tags = {'': {'': 'MVN_INSITU_KP-4SEC'}}
+download = functools.partial(cdw.cdas_download, supported_tags=download_tags)
 
 # Set the list_remote_files routine
-list_remote_files = functools.partial(cdw.list_remote_files,
+list_remote_files = functools.partial(cdw.cdas_list_remote_files,
                                       supported_tags=download_tags)
 
 

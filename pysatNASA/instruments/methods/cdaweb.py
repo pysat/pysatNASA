@@ -610,7 +610,8 @@ def get_file(remote_file, data_path, fname, temp_path=None, zip_method=None):
     fname : str
         Name of file on the remote server.
     temp_path : str
-        Path to temporary directory. (Default=None)
+        Path to temporary directory. Must be specified if zip_method is True.
+        (Default=None)
     zip_method : str
         The method used to zip the file. Supports 'zip' and None.
         If None, downloads files directly. (default=None)
