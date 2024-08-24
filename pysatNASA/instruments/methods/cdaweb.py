@@ -18,6 +18,7 @@ Adding new CDAWeb datasets should only require mininal user intervention.
 import datetime as dt
 import numpy as np
 import os
+from packaging.version import Version as pack_ver
 import pandas as pds
 import requests
 import tempfile
@@ -846,9 +847,15 @@ def list_remote_files(tag='', inst_id='', start=None, stop=None,
         if 'year' in search_dir['keys']:
             url_list = []
             if 'month' in search_dir['keys']:
+                # TODO(#242): remove if/else once support for older pandas is
+                # dropped.
+                if pack_ver(pds.__version__) >= pack_ver('2.2.0'):
+                    freq_key = 'ME'
+                else:
+                    freq_key = 'M'
                 search_times = pds.date_range(start,
                                               stop + pds.DateOffset(months=1),
-                                              freq='ME')
+                                              freq=freq_key)
                 for time in search_times:
                     subdir = format_dir.format(year=time.year, month=time.month)
                     url_list.append('/'.join((remote_url, subdir)))
@@ -858,9 +865,16 @@ def list_remote_files(tag='', inst_id='', start=None, stop=None,
                                                   + pds.DateOffset(days=1),
                                                   freq='D')
                 else:
+
+                    # TODO(#242): remove if/else once support for older pandas
+                    # is dropped.
+                    if pack_ver(pds.__version__) >= pack_ver('2.2.0'):
+                        freq_key = 'YE'
+                    else:
+                        freq_key = 'Y'
                     search_times = pds.date_range(start, stop
                                                   + pds.DateOffset(years=1),
-                                                  freq='YE')
+                                                  freq=freq_key)
                 for time in search_times:
                     doy = int(time.strftime('%j'))
                     subdir = format_dir.format(year=time.year, day=doy)
