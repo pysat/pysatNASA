@@ -47,6 +47,8 @@ instruments = clslib.InstLibTests.initialize_test_package(
 instruments['cdf'] = []
 
 # Create list of pandas instruments where this is not needed
+# In general, this is for xarray instruments that are not supported
+# by pysatCDF
 skip_cdf_list = ['de2_vefimagb']
 
 for inst in instruments['download']:
