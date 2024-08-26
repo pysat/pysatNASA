@@ -125,6 +125,8 @@ DMSP SSUSI
 
 FORMOSAT-1 IVM
 --------------
+Note that the Ion Velocity Meter data product is managed here since the repository is
+at CDAWeb. For other FORMOSAT-X data products, please see pysatCDAAC.
 
 .. automodule:: pysatNASA.instruments.formosat1_ivm
   :members:
