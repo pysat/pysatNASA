@@ -49,6 +49,8 @@ inst_id
 Warnings
 --------
 - Currently no cleaning routine.
+- The deprecated '' tag will drop the E-field data. To use this data
+  product, please use the new de2_vefimagb instrument.
 
 
 """
