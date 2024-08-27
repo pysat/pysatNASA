@@ -56,7 +56,7 @@ internal :py:mod:`pysat` metadata values before writing to file. Note that
 this includes the default acknowledgements and references objects. These
 are set manually to avoid conflicts between the original dataset and the
 new dataset, as well as keeping in line with requirements with potentially
-different data servers. An example can be found in the sample script below.
+different data servers. An example can be found in the [REACH Operational Software](https://github.com/jklenzing/ops_reach/blob/main/ops_reach/instruments/methods/reach.py).
 
 A full guide to SPDF metadata standards can be found 
 `at SPDF <https://spdf.gsfc.nasa.gov/istp_guide/istp_guide.html>`_.
