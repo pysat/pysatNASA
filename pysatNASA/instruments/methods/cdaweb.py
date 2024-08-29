@@ -542,6 +542,7 @@ def download(date_array, data_path, tag='', inst_id='', supported_tags=None,
                                      stop=date_array[-1])
 
     # Create temproary directory if files need to be unzipped.
+    # Use one temp dir for all files if needed.
     if 'zip_method' in inst_dict.keys():
         zip_method = inst_dict['zip_method']
         temp_dir = tempfile.TemporaryDirectory()
@@ -577,10 +578,11 @@ def download(date_array, data_path, tag='', inst_id='', supported_tags=None,
             with requests.get(remote_path) as req:
                 if req.status_code != 404:
                     if zip_method:
-                        get_file(req.content, data_path, fname,
-                                 temp_path=temp_dir.name, zip_method=zip_method)
+                        _get_file(req.content, data_path, fname,
+                                  temp_path=temp_dir.name,
+                                  zip_method=zip_method)
                     else:
-                        get_file(req.content, data_path, fname)
+                        _get_file(req.content, data_path, fname)
                     logger.info(''.join(('Successfully downloaded ',
                                          fname, '.')))
                 else:
@@ -599,7 +601,7 @@ def download(date_array, data_path, tag='', inst_id='', supported_tags=None,
     return
 
 
-def get_file(remote_file, data_path, fname, temp_path=None, zip_method=None):
+def _get_file(remote_file, data_path, fname, temp_path=None, zip_method=None):
     """Retrieve a file, unzipping if necessary.
 
     Parameters
@@ -617,11 +619,18 @@ def get_file(remote_file, data_path, fname, temp_path=None, zip_method=None):
         The method used to zip the file. Supports 'zip' and None.
         If None, downloads files directly. (default=None)
 
+    Raises
+    ------
+    ValueError if temp_path not specified for zip_method
+
     """
 
     if zip_method:
         # Use a temporary location.
-        dl_fname = os.path.join(temp_path, fname)
+        if temp_path:
+            dl_fname = os.path.join(temp_path, fname)
+        else:
+            raise ValueError('Temp path needs to be set if unzipping')
     else:
         # Use the pysat data directory.
         dl_fname = os.path.join(data_path, fname)

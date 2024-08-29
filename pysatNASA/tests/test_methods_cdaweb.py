@@ -109,14 +109,22 @@ class TestCDAWeb(object):
         temp_dir = tempfile.TemporaryDirectory()
 
         with caplog.at_level(logging.WARNING, logger='pysat'):
-            cdw.get_file(req.content, '.', 'test.txt', temp_path=temp_dir.name,
-                         zip_method='badzip')
+            cdw._get_file(req.content, '.', 'test.txt', temp_path=temp_dir.name,
+                          zip_method='badzip')
         captured = caplog.text
 
         # Check for appropriate warning
         warn_msg = "not a recognized zip method"
         assert warn_msg in captured
 
+        return
+
+    def test_get_file_unzip_without_temp_path(self):
+        """Test that warning when cdf file does not have expected params."""
+
+        with pytest.raises(ValueError) as excinfo:
+            cdw._get_file('remote_file', 'fake_path', 'fname', zip_method='zip')
+        assert str(excinfo.value).find('Temp path needs') >= 0
         return
 
     @pytest.mark.parametrize("bad_key,bad_val,err_msg",
