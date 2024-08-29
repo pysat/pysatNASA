@@ -11,7 +11,8 @@
 
 Copy and modify this file as needed when adding a new Instrument to pysat.
 
-DO NOT include the NRL distribution statement in your new file.
+DO NOT include the NRL distribution statement in your new file. Statements for new
+files will have to be approved by NRL separately before the versioned release.
 
 This is a good area to introduce the instrument, provide background
 on the mission, operations, instrumenation, and measurements.
