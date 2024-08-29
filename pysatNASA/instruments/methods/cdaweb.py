@@ -619,9 +619,9 @@ def _get_file(remote_file, data_path, fname, temp_path=None, zip_method=None):
         The method used to zip the file. Supports 'zip' and None.
         If None, downloads files directly. (default=None)
 
-    Warnings
-    --------
-    - Warns if temp_path not set when unzipping.
+    Raises
+    ------
+    ValueError if temp_path not specified for zip_method
 
     """
 
