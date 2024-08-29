@@ -19,6 +19,7 @@ Missions
 - NASA Scintillation Observations and Response of the Ionosphere to
   Electrodynamics (SORTIE)
 - NASA Scintillation Prediction Observations Research Task (SPORT)
+- NOAA Constellation Observing System for Meteorology Ionosphere and Climate (COSMIC-2)
 
 Disclaimers
 ===========
