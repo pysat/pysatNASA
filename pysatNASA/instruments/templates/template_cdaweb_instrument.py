@@ -11,8 +11,9 @@
 
 Copy and modify this file as needed when adding a new Instrument to pysat.
 
-DO NOT include the NRL distribution statement in your new file. Statements for new
-files will have to be approved by NRL separately before the versioned release.
+DO NOT include the NRL distribution statement in your new file. Statements for
+new files will have to be approved by NRL separately before the versioned
+release.
 
 This is a good area to introduce the instrument, provide background
 on the mission, operations, instrumenation, and measurements.
@@ -64,7 +65,8 @@ from pysatNASA.instruments.methods import cdaweb as cdw
 # The platform and name strings associated with this instrument
 # need to be defined at the top level.
 # These attributes will be copied over to the Instrument object by pysat.
-# The strings used here should also be used to name this file `platform_name.py`
+# The strings used here should also be used to name this file
+# `platform_name.py`
 platform = ''
 name = ''
 
