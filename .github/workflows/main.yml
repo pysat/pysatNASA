@@ -40,7 +40,6 @@ jobs:
     - name: Install Operational dependencies
       if: ${{ matrix.test_config == 'Ops'}}
       run: |
-        sudo apt-get install libhdf5-serial-dev netcdf-bin libnetcdf-dev
         pip install --no-cache-dir numpy==${{ matrix.numpy_ver }}
         pip install --upgrade-strategy only-if-needed .[test]
 
