@@ -19,8 +19,8 @@ jobs:
             numpy_ver: "1.24"
             os: ubuntu-latest
             test_config: "NEP29"
-          - python-version: "3.6.8"
-            numpy_ver: "1.19.5"
+          - python-version: "3.9"
+            numpy_ver: "1.23.5"
             os: "ubuntu-20.04"
             test_config: "Ops"
 
@@ -42,9 +42,7 @@ jobs:
       run: |
         sudo apt-get install libhdf5-serial-dev netcdf-bin libnetcdf-dev
         pip install --no-cache-dir numpy==${{ matrix.numpy_ver }}
-        pip install "cdflib<1.0"
-        pip install -r requirements.txt
-        pip install -r test_requirements.txt
+        pip install --upgrade-strategy only-if-needed .[test]
 
     - name: Install NEP29 dependencies
       if: ${{ matrix.test_config == 'NEP29'}}
