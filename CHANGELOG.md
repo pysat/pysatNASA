@@ -45,6 +45,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   * Updated standards for pandas, numpy, and pysat
   * Updated versions in GitHub Actions
   * Implement coveralls app in GitHub Actions
+  * Cycled Operational Environment testing
 
 ## [0.0.5] - 2023-06-27
 * New Instruments
