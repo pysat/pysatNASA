@@ -4,6 +4,8 @@
 # Full author list can be found in .zenodo.json file
 # DOI:10.5281/zenodo.3986131
 #
+# Review Status for Classified or Controlled Information by NRL
+# -------------------------------------------------------------
 # DISTRIBUTION STATEMENT A: Approved for public release. Distribution is
 # unlimited.
 # ----------------------------------------------------------------------------
@@ -12,8 +14,8 @@
 Copy and modify this file as needed when adding a new Instrument to pysat.
 
 DO NOT include the NRL distribution statement in your new file. Contributions
-by NRL developers will need to be cleared for classified or controlled information 
-separately from the pysat pull request process.
+by NRL developers will need to be cleared for classified or controlled 
+information separately from the pysat pull request process.
 
 This is a good area to introduce the instrument, provide background
 on the mission, operations, instrumenation, and measurements.
