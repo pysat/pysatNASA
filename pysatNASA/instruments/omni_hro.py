@@ -1,4 +1,12 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+# Full license can be found in License.md
+# Full author list can be found in .zenodo.json file
+# DOI:10.5281/zenodo.3986131
+#
+# DISTRIBUTION STATEMENT A: Approved for public release. Distribution is
+# unlimited.
+# ----------------------------------------------------------------------------
 """Module for the OMNI HRO instrument.
 
 Supports OMNI Combined, Definitive, IMF and Plasma Data, and Energetic
@@ -44,10 +52,10 @@ import numpy as np
 import pandas as pds
 import warnings
 
-import pysat
 from pysat.instruments.methods import general as mm_gen
 
 from pysatNASA.instruments.methods import cdaweb as cdw
+from pysatNASA.instruments.methods import general as mm_nasa
 from pysatNASA.instruments.methods import omni as mm_omni
 
 # ----------------------------------------------------------------------------
@@ -68,25 +76,7 @@ _test_dates = {'': {'1min': dt.datetime(2009, 1, 1),
 # ----------------------------------------------------------------------------
 # Instrument methods
 
-
-def init(self):
-    """Initialize the Instrument object with instrument specific values.
-
-    Runs once upon instantiation.
-
-    """
-
-    ackn_str = ''.join(('For full acknowledgement info, please see: ',
-                        'https://omniweb.gsfc.nasa.gov/html/citing.html'))
-    self.acknowledgements = ackn_str
-    self.references = ' '.join(('J.H. King and N.E. Papitashvili, Solar',
-                                'wind spatial scales in and comparisons',
-                                'of hourly Wind and ACE plasma and',
-                                'magnetic field data, J. Geophys. Res.,',
-                                'Vol. 110, No. A2, A02209,',
-                                '10.1029/2004JA010649.'))
-    pysat.logger.info(ackn_str)
-    return
+init = functools.partial(mm_nasa.init, module=mm_omni, name=name)
 
 
 def clean(self):

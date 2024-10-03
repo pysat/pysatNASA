@@ -18,9 +18,9 @@ jobs:
     name: Python ${{ matrix.python-version }} on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
 
@@ -31,10 +31,8 @@ jobs:
     - name: Install pysat RC
       run: pip install --no-deps --pre -i https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ pysat
 
-    - name: Install standard dependencies
-      run: |
-        pip install -r requirements.txt
-        pip install -r test_requirements.txt
+    - name: Install with standard dependencies
+      run: pip install .[test]
 
     - name: Set up pysat
       run: |
@@ -42,9 +40,22 @@ jobs:
         python -c "import pysat; pysat.params['data_dirs'] = 'pysatData'"
 
     - name: Test with pytest
-      run: pytest -vs --cov=pysatNASA/
+      run: pytest
 
-    - name: Publish results to coveralls
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: coveralls --rcfile=setup.cfg --service=github
+    - name: Coveralls Parallel
+      uses: coverallsapp/github-action@v2
+      with:
+        flag-name: run-${{ join(matrix.*, '-') }}
+        parallel: true
+
+  finish:
+    name: Finish Coverage Analysis
+    needs: build
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    steps:
+    - name: Coveralls Finished
+      uses: coverallsapp/github-action@v2
+      with:
+        parallel-finished: true
+

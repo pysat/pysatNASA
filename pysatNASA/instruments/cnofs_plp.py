@@ -1,4 +1,12 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+# Full license can be found in License.md
+# Full author list can be found in .zenodo.json file
+# DOI:10.5281/zenodo.3986131
+#
+# DISTRIBUTION STATEMENT A: Approved for public release. Distribution is
+# unlimited.
+# ----------------------------------------------------------------------------
 """Module for the C/NOFS PLP instrument.
 
 Supports the Planar Langmuir Probe (PLP) onboard the Communication
@@ -79,6 +87,8 @@ inst_ids = {'': ['']}
 # Instrument test attributes
 
 _test_dates = {'': {'': dt.datetime(2009, 1, 1)}}
+# TODO(#222): Remove when compliant with multi-day load tests
+_new_tests = {'': {'': False}}
 
 # ----------------------------------------------------------------------------
 # Instrument methods

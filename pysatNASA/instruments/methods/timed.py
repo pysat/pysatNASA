@@ -1,4 +1,12 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+# Full license can be found in License.md
+# Full author list can be found in .zenodo.json file
+# DOI:10.5281/zenodo.3986131
+#
+# DISTRIBUTION STATEMENT A: Approved for public release. Distribution is
+# unlimited.
+# ----------------------------------------------------------------------------
 """Provides non-instrument specific routines for the TIMED data."""
 
 rules_url = {'guvi': 'http://guvitimed.jhuapl.edu/home_guvi-datausage',
@@ -23,7 +31,18 @@ refs = {'guvi': ''.join(['Larry J. Paxton, Andrew B. Christensen, David C. ',
                          'and Instrumentation for Atmospheric and Space ',
                          'Research III, (20 October 1999); ',
                          'doi:10.1117/12.366380']),
-        'saber': '',
+        'saber': ' '.join(['Esplin, R., Mlynczak, M. G., Russell, J., Gordley,',
+                           'L., & The SABER Team. (2023). Sounding of the',
+                           'Atmosphere using Broadband Emission Radiometry',
+                           '(SABER): Instrument and science measurement',
+                           'description. Earth and Space Science, 10,',
+                           'e2023EA002999.',
+                           'https://doi.org/10.1029/2023EA002999.\n',
+                           'Overview of the SABER experiment and preliminary',
+                           'calibration results (1999). J. M. Russell III, M.',
+                           'G. Mlynczak, L. L. Gordley, J. J. Tansock, Jr.,',
+                           'and R. W. Esplin, Proc. SPIE 3756, 277,',
+                           'DOI:10.1117/12.366382']),
         'see': ' '.join(('Woods, T. N., Eparvier, F. G., Bailey,',
                          'S. M., Chamberlin, P. C., Lean, J.,',
                          'Rottman, G. J., Solomon, S. C., Tobiska,',

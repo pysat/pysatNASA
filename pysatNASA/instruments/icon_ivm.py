@@ -1,4 +1,12 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+# Full license can be found in License.md
+# Full author list can be found in .zenodo.json file
+# DOI:10.5281/zenodo.3986131
+#
+# DISTRIBUTION STATEMENT A: Approved for public release. Distribution is
+# unlimited.
+# ----------------------------------------------------------------------------
 """Module for the ICON IVM instrument.
 
 Supports the Ion Velocity Meter (IVM) onboard the Ionospheric Connections
@@ -68,9 +76,7 @@ multi_file_day = True
 # Instrument test attributes
 
 _test_dates = {'a': {'': dt.datetime(2020, 1, 1)},
-               'b': {'': dt.datetime(2020, 1, 1)}}  # IVM-B not yet engaged
-_test_download = {'b': {kk: False for kk in tags.keys()}}
-_password_req = {'b': {kk: True for kk in tags.keys()}}
+               'b': {'': dt.datetime(2021, 6, 15)}}
 _test_load_opt = {jj: {'': {'keep_original_names': True}}
                   for jj in inst_ids.keys()}
 

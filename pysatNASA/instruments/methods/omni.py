@@ -1,4 +1,12 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+# Full license can be found in License.md
+# Full author list can be found in .zenodo.json file
+# DOI:10.5281/zenodo.3986131
+#
+# DISTRIBUTION STATEMENT A: Approved for public release. Distribution is
+# unlimited.
+# ----------------------------------------------------------------------------
 """Module for the OMNI HRO supporting functions."""
 
 
@@ -7,6 +15,17 @@ import pandas as pds
 from scipy import stats
 
 import pysat
+
+
+ackn_str = ' '.join(('For full acknowledgement info, please see:',
+                     'https://omniweb.gsfc.nasa.gov/html/citing.html'))
+
+refs = {'hro': ' '.join(('J.H. King and N.E. Papitashvili, Solar',
+                         'wind spatial scales in and comparisons',
+                         'of hourly Wind and ACE plasma and',
+                         'magnetic field data, J. Geophys. Res.,',
+                         'Vol. 110, No. A2, A02209,',
+                         '10.1029/2004JA010649.'))}
 
 
 def time_shift_to_magnetic_poles(inst):
@@ -32,15 +51,15 @@ def time_shift_to_magnetic_poles(inst):
 
     # Need to fill in Vx to get an estimate of what is going on.
     inst['Vx'] = inst['Vx'].interpolate('nearest')
-    inst['Vx'] = inst['Vx'].fillna(method='backfill')
-    inst['Vx'] = inst['Vx'].fillna(method='pad')
+    inst['Vx'] = inst['Vx'].bfill()
+    inst['Vx'] = inst['Vx'].ffill()
 
     inst['BSN_x'] = inst['BSN_x'].interpolate('nearest')
-    inst['BSN_x'] = inst['BSN_x'].fillna(method='backfill')
-    inst['BSN_x'] = inst['BSN_x'].fillna(method='pad')
+    inst['BSN_x'] = inst['BSN_x'].bfill()
+    inst['BSN_x'] = inst['BSN_x'].ffill()
 
     # Make sure there are no gaps larger than a minute.
-    inst.data = inst.data.resample('1T').interpolate('time')
+    inst.data = inst.data.resample('1min').interpolate('time')
 
     time_x = inst['BSN_x'] * 6371.2 / -inst['Vx']
     idx, = np.where(np.isnan(time_x))
@@ -113,7 +132,7 @@ def calculate_imf_steadiness(inst, steady_window=15, min_window_frac=0.75,
     sample_rate = int(rates[inst.tag])
     max_wnum = np.floor(steady_window / sample_rate)
     if max_wnum != steady_window / sample_rate:
-        steady_window = max_wnum * sample_rate
+        steady_window = int(max_wnum * sample_rate)
         pysat.logger.warning(" ".join(("sample rate is not a factor of the",
                                        "statistical window")))
         pysat.logger.warning(" ".join(("new statistical window is",
@@ -130,24 +149,11 @@ def calculate_imf_steadiness(inst, steady_window=15, min_window_frac=0.75,
 
     # Calculate the running circular standard deviation of the clock angle
     circ_kwargs = {'high': 360.0, 'low': 0.0, 'nan_policy': 'omit'}
-    try:
-        ca_std = \
-            inst['clock_angle'].rolling(min_periods=min_wnum,
-                                        window=steady_window,
-                                        center=True).apply(stats.circstd,
-                                                           kwargs=circ_kwargs,
-                                                           raw=True)
-    except TypeError:
-        pysat.logger.warn(' '.join(['To automatically remove NaNs from the',
-                                    'calculation, please upgrade to scipy 1.4',
-                                    'or newer.']))
-        circ_kwargs.pop('nan_policy')
-        ca_std = \
-            inst['clock_angle'].rolling(min_periods=min_wnum,
-                                        window=steady_window,
-                                        center=True).apply(stats.circstd,
-                                                           kwargs=circ_kwargs,
-                                                           raw=True)
+    ca_std = inst['clock_angle'].rolling(min_periods=min_wnum,
+                                         window=steady_window,
+                                         center=True).apply(stats.circstd,
+                                                            kwargs=circ_kwargs,
+                                                            raw=True)
     inst['clock_angle_std'] = pds.Series(ca_std, index=inst.data.index)
 
     # Determine how long the clock angle and IMF magnitude are steady
@@ -158,12 +164,14 @@ def calculate_imf_steadiness(inst, steady_window=15, min_window_frac=0.75,
         if steady:
             del_min = int((inst.data.index[i]
                            - inst.data.index[i - 1]).total_seconds() / 60.0)
-            if np.isnan(cv) or np.isnan(ca_std[i]) or del_min > sample_rate:
+            if np.any([np.isnan(cv),
+                       np.isnan(ca_std.iloc[i]),
+                       del_min > sample_rate]):
                 # Reset the steadiness flag if fill values are encountered, or
                 # if an entry is missing
                 steady = False
 
-        if cv <= max_bmag_cv and ca_std[i] <= max_clock_angle_std:
+        if cv <= max_bmag_cv and ca_std.iloc[i] <= max_clock_angle_std:
             # Steadiness conditions have been met
             if steady:
                 imf_steady[i] = imf_steady[i - 1]

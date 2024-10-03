@@ -1,4 +1,12 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+# Full license can be found in License.md
+# Full author list can be found in .zenodo.json file
+# DOI:10.5281/zenodo.3986131
+#
+# DISTRIBUTION STATEMENT A: Approved for public release. Distribution is
+# unlimited.
+# ----------------------------------------------------------------------------
 """Module for the TIMED GUVI instrument.
 
 Supports the Global UltraViolet Imager (GUVI) instrument on the Thermosphere
@@ -61,6 +69,7 @@ Example
 import datetime as dt
 import functools
 
+import pysat
 from pysat.instruments.methods import general as mm_gen
 
 from pysatNASA.instruments.methods import cdaweb as cdw
@@ -86,11 +95,19 @@ multi_file_day = True
 # ----------------------------------------------------------------------------
 # Instrument test attributes
 
-_test_dates = {iid: {tag: dt.datetime(2005, 6, 28) for tag in inst_ids[iid]}
-               for iid in inst_ids.keys()}
+_test_dates = {
+    iid: {tag: dt.datetime(2007 if tag.find('spectrograph') > 0 else 2005, 12,
+                           13) for tag in inst_ids[iid]}
+    for iid in inst_ids.keys()}
 _test_load_opt = {iid: {tag: {'combine_times': True}
-                        for tag in inst_ids[iid]} for iid in ['high_res',
-                                                              'low_res']}
+                        for tag in inst_ids[iid]}
+                  for iid in ['high_res', 'low_res']}
+# TODO(#218): Remove when compliant with multi-day load tests
+_new_tests = {'high_res': {tag: False for tag in inst_ids['high_res']}}
+# TODO(pysat#1196): Un-comment when pysat bug is fixed and released
+# _clean_warn = {inst_id: {tag: mm_nasa.clean_warnings
+#                          for tag in inst_ids[inst_id] if tag != 'sdr-imaging'}
+#                for inst_id in inst_ids.keys()}
 
 # ----------------------------------------------------------------------------
 # Instrument methods
@@ -98,8 +115,61 @@ _test_load_opt = {iid: {tag: {'combine_times': True}
 # Use standard init routine
 init = functools.partial(mm_nasa.init, module=mm_timed, name=name)
 
-# No cleaning, use standard warning function instead
-clean = mm_nasa.clean_warn
+
+def clean(self):
+    """Clean TIMED GUVI imaging data.
+
+    Note
+    ----
+        Supports 'clean', 'dusty', 'dirty', 'none'. Method is
+        not called by pysat if clean_level is None or 'none'.
+
+    """
+    if self.tag == "sdr-imaging":
+        jhuapl.clean_by_dqi(self)
+    else:
+        # Follow the same warning format as the general clean warning, but
+        # with additional information.
+        pysat.logger.warning(' '.join(['No cleaning routines available for',
+                                       self.platform, self.name, self.tag,
+                                       self.inst_id, 'at clean level',
+                                       self.clean_level]))
+    return
+
+
+def concat_data(self, new_data, combine_times=False, **kwargs):
+    """Concatenate data to self.data for TIMED GUVI data.
+
+    Parameters
+    ----------
+    new_data : xarray.Dataset or list of such objects
+        New data objects to be concatenated
+    combine_times : bool
+        For SDR data, optionally combine the different datetime coordinates
+        into a single time coordinate (default=False)
+    **kwargs : dict
+        Optional keyword arguments passed to xr.concat
+
+    Note
+    ----
+    For xarray, `dim=Instrument.index.name` is passed along to xarray.concat
+    except if the user includes a value for dim as a keyword argument.
+
+    """
+    # Establish the time dimensions by data type
+    time_dims = [self.index.name]
+
+    if self.tag == 'sdr-imaging':
+        time_dims.append('time_auroral')
+    elif self.tag == 'sdr-spectrograph':
+        time_dims.extend(['time_gaim_day', 'time_gaim_night'])
+
+    # Concatenate using the appropriate method for the number of time
+    # dimensions
+    jhuapl.concat_data(self, time_dims, new_data, combine_times=combine_times,
+                       **kwargs)
+    return
+
 
 # ----------------------------------------------------------------------------
 # Instrument functions
@@ -191,7 +261,7 @@ def load(fnames, tag='', inst_id='', combine_times=False):
                                             pandas_format=pandas_format,
                                             strict_dim_check=False)
     else:
-        data, meta = jhuapl.load_sdr_aurora(fnames, tag, inst_id,
+        data, meta = jhuapl.load_sdr_aurora(fnames, name, tag, inst_id,
                                             pandas_format=pandas_format,
                                             strict_dim_check=False,
                                             combine_times=combine_times)

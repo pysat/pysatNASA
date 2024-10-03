@@ -1,4 +1,12 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+# Full license can be found in License.md
+# Full author list can be found in .zenodo.json file
+# DOI:10.5281/zenodo.3986131
+#
+# DISTRIBUTION STATEMENT A: Approved for public release. Distribution is
+# unlimited.
+# ----------------------------------------------------------------------------
 """Module for the ICON EUV instrument.
 
 Supports the Extreme Ultraviolet (EUV) imager onboard the Ionospheric
@@ -65,6 +73,8 @@ pandas_format = False
 # Instrument test attributes
 
 _test_dates = {'': {'': dt.datetime(2020, 1, 1)}}
+# TODO(#218, #222): Remove when compliant with multi-day load tests
+_new_tests = {'': {'': False}}
 _test_load_opt = {'': {'': {'keep_original_names': True}}}
 
 # ----------------------------------------------------------------------------

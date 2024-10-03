@@ -1,3 +1,12 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# Full license can be found in License.md
+# Full author list can be found in .zenodo.json file
+# DOI:10.5281/zenodo.3986131
+#
+# DISTRIBUTION STATEMENT A: Approved for public release. Distribution is
+# unlimited.
+# ----------------------------------------------------------------------------
 """Unit and Integration Tests for each instrument module.
 
 Note
@@ -18,7 +27,6 @@ from pysat.utils import testing
 # Make sure to import your instrument library here
 import pysatNASA
 
-
 try:
     import pysatCDF  # noqa: F401
     # If this successfully imports, tests need to be run with both pysatCDF
@@ -34,14 +42,22 @@ except ImportError:
 instruments = clslib.InstLibTests.initialize_test_package(
     clslib.InstLibTests, inst_loc=pysatNASA.instruments)
 
+# Additional tests required for pandas instruments if pysatCDF installed
 # Create a new list of instruments with the option of forcing cdflib
 instruments['cdf'] = []
+
+# Create list of pandas instruments where this is not needed
+# In general, this is for xarray instruments that are not supported
+# by pysatCDF
+skip_cdf_list = ['de2_vefimagb']
+
 for inst in instruments['download']:
-    fname = inst['inst_module'].supported_tags[inst['inst_id']][inst['tag']]
-    if '.cdf' in fname:
-        temp_inst, _ = clslib.initialize_test_inst_and_date(inst)
-        if temp_inst.pandas_format:
-            instruments['cdf'].append(inst)
+    if hasattr(inst['inst_module'], 'supported_tags'):
+        fname = inst['inst_module'].supported_tags[inst['inst_id']][inst['tag']]
+        if '.cdf' in fname:
+            temp_inst, _ = clslib.initialize_test_inst_and_date(inst)
+            if temp_inst.pandas_format and temp_inst.name not in skip_cdf_list:
+                instruments['cdf'].append(inst)
 
 
 class TestInstruments(clslib.InstLibTests):
@@ -76,13 +92,13 @@ class TestInstruments(clslib.InstLibTests):
             target = 'Fake Data to be cleared'
             test_inst.data = [target]
             try:
-                test_inst.load(date=date, use_header=True, use_cdflib=True)
+                test_inst.load(date=date, use_cdflib=True)
             except ValueError as verr:
                 # Check if instrument is failing due to strict time flag
                 if str(verr).find('Loaded data') > 0:
                     test_inst.strict_time_flag = False
                     with warnings.catch_warnings(record=True) as war:
-                        test_inst.load(date=date, use_header=True)
+                        test_inst.load(date=date)
                     assert len(war) >= 1
                     categories = [war[j].category for j in range(0, len(war))]
                     assert UserWarning in categories
@@ -143,7 +159,8 @@ class TestDeprecation(object):
 
         return
 
-    @pytest.mark.parametrize("inst_module,tag", [('jpl_gps', 'roti')])
+    @pytest.mark.parametrize("inst_module,tag", [('jpl_gps', 'roti'),
+                                                 ('de2_vefi', '')])
     def test_deprecated_instruments(self, inst_module, tag):
         """Check that instantiating old instruments raises a DeprecationWarning.
 
@@ -161,9 +178,7 @@ class TestDeprecation(object):
                                                  inst_module),
                              tag=tag, use_header=True)
 
-        warn_msgs = [" ".join(["The instrument module",
-                               "`{:}`".format(inst_module),
-                               "has been deprecated and will be removed",
+        warn_msgs = [" ".join(["has been deprecated and will be removed",
                                "in 0.1.0+."])]
 
         # Ensure the minimum number of warnings were raised.

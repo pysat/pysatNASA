@@ -9,7 +9,7 @@ routines to NASA space science data as pysat.Instrument objects through the
 CDAWeb interface.
 
 .. toctree::
-   :maxdepth: -1
+   :maxdepth: 2
 
    overview.rst
    installation.rst
@@ -18,8 +18,14 @@ CDAWeb interface.
    supported_constellations.rst
    examples.rst
    develop_guide.rst
+   archival.rst
    migration_guide.rst
+   acknowledgements.rst
    history.rst
+
+
+.. admonition:: DISTRIBUTION STATEMENT A: Approved for public release.
+		Distribution is unlimited.
 
 
 Indices and tables

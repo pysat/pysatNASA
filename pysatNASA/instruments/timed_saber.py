@@ -1,4 +1,12 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+# Full license can be found in License.md
+# Full author list can be found in .zenodo.json file
+# DOI:10.5281/zenodo.3986131
+#
+# DISTRIBUTION STATEMENT A: Approved for public release. Distribution is
+# unlimited.
+# ----------------------------------------------------------------------------
 """The TIMED SABER instrument.
 
 Supports the Sounding of the Atmosphere using Broadband Emission Radiometry
@@ -74,6 +82,9 @@ pandas_format = False
 # Instrument test attributes
 
 _test_dates = {'': {'': dt.datetime(2019, 1, 1)}}
+_clean_warn = {inst_id: {tag: mm_nasa.clean_warnings
+                         for tag in inst_ids[inst_id]}
+               for inst_id in inst_ids.keys()}
 
 # ----------------------------------------------------------------------------
 # Instrument methods

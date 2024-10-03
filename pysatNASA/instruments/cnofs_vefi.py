@@ -1,4 +1,12 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+# Full license can be found in License.md
+# Full author list can be found in .zenodo.json file
+# DOI:10.5281/zenodo.3986131
+#
+# DISTRIBUTION STATEMENT A: Approved for public release. Distribution is
+# unlimited.
+# ----------------------------------------------------------------------------
 """Module for the C/NOFS VEFI instrument.
 
 Supports the Vector Electric Field Instrument (VEFI)
@@ -15,7 +23,7 @@ sec with a range of .. 45,000 nT.  Its primary objective on the CNOFS
 spacecraft is to enable an accurate V x B measurement along the spacecraft
 trajectory.  In order to provide an in-flight calibration of the magnetic field
 data, we compare the most recent POMME model (the POtsdam Magnetic Model of the
-Earth, https://geomag.us/models/pomme5.html) with the actual magnetometer
+Earth, https://geomag.org/models/pomme5.html) with the actual magnetometer
 measurements to help determine a set of calibration parameters for the gains,
 offsets, and non-orthogonality matrix of the sensor axes.  The calibrated
 magnetic field measurements are provided in the data file here. The VEFI
@@ -101,9 +109,13 @@ def clean(self):
 
     """
 
-    if (self.clean_level == 'dusty') | (self.clean_level == 'clean'):
-        idx, = np.where(self['B_flag'] == 0)
-        self.data = self[idx, :]
+    mm_nasa.clean(self)
+
+    # Apply legacy clean routine for version 5 data
+    if 'B_flag' in self.variables:
+        if (self.clean_level == 'dusty') | (self.clean_level == 'clean'):
+            idx, = np.where(self['B_flag'] == 0)
+            self.data = self[idx, :]
 
     return
 

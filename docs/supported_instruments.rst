@@ -97,6 +97,14 @@ DE2 VEFI
 .. automodule:: pysatNASA.instruments.de2_vefi
    :members:
 
+.. _de2_vefimag:
+
+DE2 VEFIMAGB
+------------
+
+.. automodule:: pysatNASA.instruments.de2_vefimagb
+   :members:
+
 .. _de2_wats:
 
 DE2 WATS
@@ -117,6 +125,8 @@ DMSP SSUSI
 
 FORMOSAT-1 IVM
 --------------
+Note that the Ion Velocity Meter data product is managed here since the repository is
+at CDAWeb. For other FORMOSAT-X data products, please see pysatCDAAC.
 
 .. automodule:: pysatNASA.instruments.formosat1_ivm
   :members:
@@ -178,6 +188,30 @@ JPL GPS
 .. automodule:: pysatNASA.instruments.jpl_gps
    :members:
 
+.. _maven_insitu_kp:
+
+MAVEN IN SITU KP
+----------------
+
+.. automodule:: pysatNASA.instruments.maven_insitu_kp
+   :members:
+
+.. _maven_mag:
+
+MAVEN MAG
+---------
+
+.. automodule:: pysatNASA.instruments.maven_mag
+   :members:
+
+.. _maven_sep:
+
+MAVEN SEP
+---------
+
+.. automodule:: pysatNASA.instruments.maven_sep
+   :members:
+
 .. _omni_hro:
 
 OMNI HRO
@@ -185,6 +219,14 @@ OMNI HRO
 
 .. automodule:: pysatNASA.instruments.omni_hro
    :members: calculate_clock_angle, calculate_imf_steadiness, time_shift_to_magnetic_poles
+
+.. _reach_dosimeter:
+
+REACH DOSIMETER
+---------------
+
+.. automodule:: pysatNASA.instruments.reach_dosimeter
+  :members:
 
 .. _ses14_gold:
 

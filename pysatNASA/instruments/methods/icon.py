@@ -1,4 +1,12 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+# Full license can be found in License.md
+# Full author list can be found in .zenodo.json file
+# DOI:10.5281/zenodo.3986131
+#
+# DISTRIBUTION STATEMENT A: Approved for public release. Distribution is
+# unlimited.
+# ----------------------------------------------------------------------------
 """Provides non-instrument specific routines for ICON data."""
 
 from pysat.instruments.methods import general as mm_gen
@@ -98,6 +106,12 @@ refs = {'euv': ' '.join(('Stephan, A.W., Meier, R.R., England, S.L. et al.',
                              'Mission Goals and Design. Space Sci Rev 214, 13',
                              '(2018).',
                              'https://doi.org/10.1007/s11214-017-0449-2\n'))}
+
+
+# Define clean warnigns for fuv
+fuv_clean_warnings = {level: [('logger', 'WARN',
+                               'Cleaning actions for ICON FUV are',
+                               level)] for level in ['clean', 'dusty', 'dirty']}
 
 
 def remove_preamble(inst):

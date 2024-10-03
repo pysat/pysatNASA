@@ -1,3 +1,12 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# Full license can be found in License.md
+# Full author list can be found in .zenodo.json file
+# DOI:10.5281/zenodo.3986131
+#
+# DISTRIBUTION STATEMENT A: Approved for public release. Distribution is
+# unlimited.
+# ----------------------------------------------------------------------------
 """Module for the SES14 GOLD instrument.
 
 Supports the Nmax data product from the Global Observations of the Limb and
@@ -68,6 +77,9 @@ pandas_format = False
 # Instrument test attributes
 
 _test_dates = {'': {tag: dt.datetime(2020, 1, 1) for tag in tags.keys()}}
+_clean_warn = {inst_id: {tag: mm_nasa.clean_warnings
+                         for tag in inst_ids[inst_id]}
+               for inst_id in inst_ids.keys()}
 
 # ----------------------------------------------------------------------------
 # Instrument methods
@@ -146,21 +158,19 @@ def list_remote_files(tag='', inst_id='', start=None, stop=None,
         Instrument ID (default='')
     start : dt.datetime or NoneType
         Starting time for file list. A None value will start with the first
-        file found.
-        (default=None)
+        file found. (default=None)
     stop : dt.datetime or NoneType
         Ending time for the file list.  A None value will stop with the last
-        file found.
-        (default=None)
+        file found. (default=None)
     series_out : bool
-        boolean to determine output type. True for pandas series of file names,
-        and False for a list of the full web address.
-        (default=True)
+        Boolean to determine output type. True for pandas series of file names,
+        and False for a list of the full web address. (default=True)
 
     Returns
     -------
-    file_list : list
-        A list containing the verified available files
+    file_list : pds.Series or list
+        A Series or list (if tag is not 'tlimb' and `series_out` is False)
+        containing the verified available files
 
     """
 

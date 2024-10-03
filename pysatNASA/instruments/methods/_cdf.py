@@ -1,4 +1,12 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+# Full license can be found in License.md
+# Full author list can be found in .zenodo.json file
+# DOI:10.5281/zenodo.3986131
+#
+# DISTRIBUTION STATEMENT A: Approved for public release. Distribution is
+# unlimited.
+# ----------------------------------------------------------------------------
 """Provides CDF class to parse cdaweb CDF files."""
 
 import datetime as dt
@@ -437,13 +445,14 @@ class CDF(object):
         index = None
         for varname, df in cdata.items():
             if varname not in ('Epoch', 'DATE'):
-                if type(df) == pds.Series:
+                if isinstance(df, pds.Series):
                     data[varname] = df
 
                     # CDF data Series are saved using a mix of Range and
                     # Datetime Indexes. This requires that the user specify
                     # the desired index when creating a DataFrame
-                    if type(df.index) == pds.DatetimeIndex and index is None:
+                    if isinstance(df.index,
+                                  pds.DatetimeIndex) and index is None:
                         index = df.index
 
         if index is None:

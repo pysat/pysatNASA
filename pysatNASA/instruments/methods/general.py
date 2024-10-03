@@ -1,8 +1,23 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# Full license can be found in License.md
+# Full author list can be found in .zenodo.json file
+# DOI:10.5281/zenodo.3986131
+#
+# DISTRIBUTION STATEMENT A: Approved for public release. Distribution is
+# unlimited.
+# ----------------------------------------------------------------------------
 """General methods for NASA instruments."""
 
 import numpy as np
 
 import pysat
+
+
+# Define standard clean warnings
+clean_warnings = {level: [('logger', 'WARN',
+                           'No cleaning routines available for',
+                           level)] for level in ['clean', 'dusty', 'dirty']}
 
 
 def init(self, module, name):
@@ -45,8 +60,13 @@ def init(self, module, name):
     return
 
 
-def clean(self):
+def clean(self, skip_names=None):
     """Clean data to the specified level.
+
+    Parameters
+    ----------
+    skip_names : list of str
+        List of names to skip for cleaning. (default=None)
 
     Note
     ----
@@ -54,15 +74,22 @@ def clean(self):
 
     """
 
-    # Get a list of coords for the data
+    # Get a list of coords for the data. These should be skipped for cleaning.
     if self.pandas_format:
-        coords = [self.data.index.name]
+        skip_key = [self.data.index.name]
     else:
-        coords = [key for key in self.data.coords.keys()]
+        skip_key = [key for key in self.data.coords.keys()]
+
+    if skip_names:
+        # Add additional variable names to skip
+        for key in skip_names:
+            skip_key.append(key)
 
     for key in self.variables:
+        # Check for symmetric dims
+        # Indicates transformation matrix, xarray cannot broadcast
         # Skip over the coordinates when cleaning
-        if key not in coords:
+        if key not in skip_key:
             fill = self.meta[key, self.meta.labels.fill_val]
 
             # Replace fill with nan

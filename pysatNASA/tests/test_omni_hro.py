@@ -1,6 +1,16 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# Full license can be found in License.md
+# Full author list can be found in .zenodo.json file
+# DOI:10.5281/zenodo.3986131
+#
+# DISTRIBUTION STATEMENT A: Approved for public release. Distribution is
+# unlimited.
+# ----------------------------------------------------------------------------
 """Unit tests for OMNI HRO special functions."""
 
 import datetime as dt
+import logging
 import numpy as np
 import warnings
 
@@ -145,7 +155,7 @@ class TestOMNICustom(object):
         return
 
     def test_dayside_recon(self):
-        """Test the IMF steadiness standard deviation calculation."""
+        """Test the dayside reconnection calculation."""
 
         # Run the clock angle and steadiness routines
         omni.calculate_clock_angle(self.test_inst)
@@ -161,6 +171,36 @@ class TestOMNICustom(object):
 
         assert test_diff.shape[0] == 12
         assert np.all(test_diff < 1.0e-6)
+        return
+
+    def test_time_shift_to_magnetic_poles(self):
+        """Test the time shift routines."""
+
+        # Choose values to result in 1 hour shift
+        self.test_inst['Vx'] = 6371.2
+        self.test_inst['BSN_x'] = 3600.0
+
+        old_index = self.test_inst.index.copy()
+        omni.time_shift_to_magnetic_poles(self.test_inst)
+
+        # Check shifted index
+        assert (old_index[0] - self.test_inst.index[0]).seconds == 3600
+        # Check new cadence
+        assert (self.test_inst.index[1] - self.test_inst.index[0]).seconds == 60
+        return
+
+    def test_calculate_imf_steadiness_warnings(self, caplog):
+        """Test imf steadiness routine."""
+
+        omni.calculate_clock_angle(self.test_inst)
+        with caplog.at_level(logging.INFO, logger='pysat'):
+            omni.calculate_imf_steadiness(self.test_inst, steady_window=5.1,
+                                          min_window_frac=0.8)
+        captured = caplog.text
+        warn_msgs = ["sample rate is not a factor",
+                     "new statistical window"]
+        for msg in warn_msgs:
+            assert msg in captured
         return
 
 
