@@ -7,7 +7,7 @@
 # DISTRIBUTION STATEMENT A: Approved for public release. Distribution is
 # unlimited.
 # ----------------------------------------------------------------------------
-"""Module for the MAVEN sep instrument.
+"""Module for the MAVEN Solar Energetic Particle instrument.
 
 Supports the Solar Energetic Particle (SEP) data from
 onboard the Mars Atmosphere and Volatile Evolution (MAVEN) satellite.
@@ -31,9 +31,9 @@ Examples
 ::
     import pysat
 
-    insitu = pysat.Instrument(platform='maven', name='sep', inst_id='s1')
-    insitu.download(dt.datetime(2020, 1, 1), dt.datetime(2020, 1, 31))
-    insitu.load(2020, 1, use_header=True)
+    sep = pysat.Instrument(platform='maven', name='sep', inst_id='s1')
+    sep.download(dt.datetime(2020, 1, 1), dt.datetime(2020, 1, 31))
+    sep.load(2020, 1, use_header=True)
 
 """
 
@@ -93,22 +93,14 @@ list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags)
 
 # Set the download routine
-basic_tag = {'remote_dir': ''.join(('/pub/data/maven/sep/l2/s1-cal-svy-full',
-                                    '/{year:04d}/{month:02d}')),
-             'fname': fname}
-
-basic_tag2 = {'remote_dir': ''.join(('/pub/data/maven/sep/l2/s2-cal-svy-full',
-                                    '/{year:04d}/{month:02d}')),
-              'fname': fname2}
-
-download_tags = {'s1': {'': basic_tag},
-                 's2': {'': basic_tag2}}
+download_tags = {'s1': {'': 'MVN_SEP_L2_S1-CAL-SVY-FULL'},
+                 's2': {'': 'MVN_SEP_L2_S2-CAL-SVY-FULL'}}
 
 # Set the download routine
-download = functools.partial(cdw.download, supported_tags=download_tags)
+download = functools.partial(cdw.cdas_download, supported_tags=download_tags)
 
 # Set the list_remote_files routine
-list_remote_files = functools.partial(cdw.list_remote_files,
+list_remote_files = functools.partial(cdw.cdas_list_remote_files,
                                       supported_tags=download_tags)
 
 # Set the load routine

@@ -7,9 +7,9 @@
 # DISTRIBUTION STATEMENT A: Approved for public release. Distribution is
 # unlimited.
 # ----------------------------------------------------------------------------
-"""Module for the MAVEN insitu instruments.
+"""Module for the MAVEN in situ instruments.
 
-Supports the in situ Key Parameter (kp) data from multiple instruments
+Supports the in situ Key Parameter (KP) data from multiple instruments
 onboard the Mars Atmosphere and Volatile Evolution (MAVEN) satellite.
 
 Accesses local data in CDF format.
@@ -32,9 +32,9 @@ Examples
 ::
     import pysat
 
-    insitu = pysat.Instrument(platform='maven', name='insitu_kp')
-    insitu.download(dt.datetime(2020, 1, 1), dt.datetime(2020, 1, 31))
-    insitu.load(2020, 1, use_header=True)
+    insitukp = pysat.Instrument(platform='maven', name='insitu_kp')
+    insitukp.download(dt.datetime(2020, 1, 1), dt.datetime(2020, 1, 31))
+    insitukp.load(2020, 1, use_header=True)
 
 """
 
@@ -88,14 +88,11 @@ supported_tags = {'': {'': fname}}
 list_files = functools.partial(mm_gen.list_files,
                                supported_tags=supported_tags)
 # Set the download routine
-basic_tag = {'remote_dir': ''.join(('/pub/data/maven/insitu/kp-4sec/',
-                                    'cdfs/{year:04d}/{month:02d}')),
-             'fname': fname}
-download_tags = {'': {'': basic_tag}}
-download = functools.partial(cdw.download, supported_tags=download_tags)
+download_tags = {'': {'': 'MVN_INSITU_KP-4SEC'}}
+download = functools.partial(cdw.cdas_download, supported_tags=download_tags)
 
 # Set the list_remote_files routine
-list_remote_files = functools.partial(cdw.list_remote_files,
+list_remote_files = functools.partial(cdw.cdas_list_remote_files,
                                       supported_tags=download_tags)
 
 

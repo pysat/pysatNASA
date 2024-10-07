@@ -18,6 +18,7 @@ Adding new CDAWeb datasets should only require mininal user intervention.
 import datetime as dt
 import numpy as np
 import os
+from packaging.version import Version as pack_ver
 import pandas as pds
 import requests
 import tempfile
@@ -164,7 +165,7 @@ def load(fnames, tag='', inst_id='', file_cadence=dt.timedelta(days=1),
     else:
         if not use_cdflib:
             estr = 'The `use_cdflib` option is not currently enabled for xarray'
-            pysat.logger.warn(estr)
+            pysat.logger.warning(estr)
 
         data, meta = load_xarray(fnames, tag=tag, inst_id=inst_id,
                                  epoch_name=epoch_name,
@@ -264,8 +265,8 @@ def load_pandas(fnames, tag='', inst_id='', file_cadence=dt.timedelta(days=1),
                         tdata = tdata.loc[date:date2, :]
                         ldata.append(tdata)
                     except ValueError as verr:
-                        logger.warn("unable to load {:}: {:}".format(fname,
-                                                                     str(verr)))
+                        logger.warning(
+                            "unable to load {:}: {:}".format(fname, str(verr)))
             else:
                 # Basic data return
                 with CDF(lfname) as cdf:
@@ -274,8 +275,8 @@ def load_pandas(fnames, tag='', inst_id='', file_cadence=dt.timedelta(days=1),
                             flatten_twod=flatten_twod)
                         ldata.append(temp_data)
                     except ValueError as verr:
-                        logger.warn("unable to load {:}: {:}".format(lfname,
-                                                                     str(verr)))
+                        logger.warning(
+                            "unable to load {:}: {:}".format(lfname, str(verr)))
 
         # Combine individual files together
         if len(ldata) > 0:
@@ -541,6 +542,7 @@ def download(date_array, data_path, tag='', inst_id='', supported_tags=None,
                                      stop=date_array[-1])
 
     # Create temproary directory if files need to be unzipped.
+    # Use one temp dir for all files if needed.
     if 'zip_method' in inst_dict.keys():
         zip_method = inst_dict['zip_method']
         temp_dir = tempfile.TemporaryDirectory()
@@ -576,10 +578,11 @@ def download(date_array, data_path, tag='', inst_id='', supported_tags=None,
             with requests.get(remote_path) as req:
                 if req.status_code != 404:
                     if zip_method:
-                        get_file(req.content, data_path, fname,
-                                 temp_path=temp_dir.name, zip_method=zip_method)
+                        _get_file(req.content, data_path, fname,
+                                  temp_path=temp_dir.name,
+                                  zip_method=zip_method)
                     else:
-                        get_file(req.content, data_path, fname)
+                        _get_file(req.content, data_path, fname)
                     logger.info(''.join(('Successfully downloaded ',
                                          fname, '.')))
                 else:
@@ -598,7 +601,7 @@ def download(date_array, data_path, tag='', inst_id='', supported_tags=None,
     return
 
 
-def get_file(remote_file, data_path, fname, temp_path=None, zip_method=None):
+def _get_file(remote_file, data_path, fname, temp_path=None, zip_method=None):
     """Retrieve a file, unzipping if necessary.
 
     Parameters
@@ -610,16 +613,24 @@ def get_file(remote_file, data_path, fname, temp_path=None, zip_method=None):
     fname : str
         Name of file on the remote server.
     temp_path : str
-        Path to temporary directory. (Default=None)
+        Path to temporary directory. Must be specified if zip_method is True.
+        (Default=None)
     zip_method : str
         The method used to zip the file. Supports 'zip' and None.
         If None, downloads files directly. (default=None)
+
+    Raises
+    ------
+    ValueError if temp_path not specified for zip_method
 
     """
 
     if zip_method:
         # Use a temporary location.
-        dl_fname = os.path.join(temp_path, fname)
+        if temp_path:
+            dl_fname = os.path.join(temp_path, fname)
+        else:
+            raise ValueError('Temp path needs to be set if unzipping')
     else:
         # Use the pysat data directory.
         dl_fname = os.path.join(data_path, fname)
@@ -845,9 +856,15 @@ def list_remote_files(tag='', inst_id='', start=None, stop=None,
         if 'year' in search_dir['keys']:
             url_list = []
             if 'month' in search_dir['keys']:
+                # TODO(#242): remove if/else once support for older pandas is
+                # dropped.
+                if pack_ver(pds.__version__) >= pack_ver('2.2.0'):
+                    freq_key = 'ME'
+                else:
+                    freq_key = 'M'
                 search_times = pds.date_range(start,
                                               stop + pds.DateOffset(months=1),
-                                              freq='M')
+                                              freq=freq_key)
                 for time in search_times:
                     subdir = format_dir.format(year=time.year, month=time.month)
                     url_list.append('/'.join((remote_url, subdir)))
@@ -857,9 +874,16 @@ def list_remote_files(tag='', inst_id='', start=None, stop=None,
                                                   + pds.DateOffset(days=1),
                                                   freq='D')
                 else:
+
+                    # TODO(#242): remove if/else once support for older pandas
+                    # is dropped.
+                    if pack_ver(pds.__version__) >= pack_ver('2.2.0'):
+                        freq_key = 'YE'
+                    else:
+                        freq_key = 'Y'
                     search_times = pds.date_range(start, stop
                                                   + pds.DateOffset(years=1),
-                                                  freq='Y')
+                                                  freq=freq_key)
                 for time in search_times:
                     doy = int(time.strftime('%j'))
                     subdir = format_dir.format(year=time.year, day=doy)
@@ -981,7 +1005,9 @@ def cdas_list_remote_files(tag='', inst_id='', start=None, stop=None,
 
     og_files = cdas.get_original_files(dataset=dataset, start=start, end=stop)
 
-    if series_out:
+    if og_files[1] is None:
+        file_list = pds.Series(dtype=str) if series_out else []
+    elif series_out:
         name_list = [os.path.basename(f['Name']) for f in og_files[1]]
         t_stamp = [pds.Timestamp(f['StartTime'][:10]) for f in og_files[1]]
         file_list = pds.Series(data=name_list, index=t_stamp)

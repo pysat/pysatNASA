@@ -19,17 +19,17 @@ jobs:
             numpy_ver: "1.24"
             os: ubuntu-latest
             test_config: "NEP29"
-          - python-version: "3.6.8"
-            numpy_ver: "1.19.5"
+          - python-version: "3.9"
+            numpy_ver: "1.23.5"
             os: "ubuntu-20.04"
             test_config: "Ops"
 
     name: Python ${{ matrix.python-version }} on ${{ matrix.os }} with numpy ${{ matrix.numpy_ver }}
     runs-on: ${{ matrix.os }}
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
 
@@ -40,18 +40,8 @@ jobs:
     - name: Install Operational dependencies
       if: ${{ matrix.test_config == 'Ops'}}
       run: |
-        sudo apt-get install libhdf5-serial-dev netcdf-bin libnetcdf-dev
         pip install --no-cache-dir numpy==${{ matrix.numpy_ver }}
-        pip install "cdflib<1.0"
-        pip install -r requirements.txt
-        pip install -r test_requirements.txt
-        cd ..
-        git clone https://github.com/pysat/pysat.git
-        cd pysat
-        git checkout pip_rc_install
-        python setup.py develop
-        cd ../pysatNASA
-        pip install .
+        pip install --upgrade-strategy only-if-needed .[test]
 
     - name: Install NEP29 dependencies
       if: ${{ matrix.test_config == 'NEP29'}}
@@ -78,46 +68,20 @@ jobs:
     - name: Test with pytest
       run: pytest
 
-    - name: Coveralls Parallel (Ubuntu)
-      if: startsWith(matrix.os, 'ubuntu')
-      env:
-        COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
-        COVERALLS_PARALLEL: true
-      run: |
-        curl -sL https://coveralls.io/coveralls-linux.tar.gz | tar -xz
-        ./coveralls report --parallel --repo-token=${{ secrets.COVERALLS_REPO_TOKEN }} --build-number ${{ github.run_number }}
-
-    - name: Coveralls Parallel (Windows)
-      if: startsWith(matrix.os, 'windows')
-      env:
-        COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
-        COVERALLS_PARALLEL: true
-      run: |
-        curl -L https://github.com/coverallsapp/coverage-reporter/releases/latest/download/coveralls-windows.exe -o coveralls.exe
-        ./coveralls.exe report --parallel --repo-token=${{ secrets.COVERALLS_REPO_TOKEN }} --build-number ${{ github.run_number }}
-
-    - name: Coveralls Parallel (MacOS)
-      if: startsWith(matrix.os, 'macos')
-      env:
-        COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
-        COVERALLS_PARALLEL: true
-      run: |
-        brew tap coverallsapp/coveralls --quiet
-        brew install coveralls --quiet
-        ls -lh .coverage
-        ls -lh coverage.xml
-        coveralls report coverage.xml --format=cobertura --verbose --parallel --repo-token=${{ secrets.COVERALLS_REPO_TOKEN }} --build-number ${{ github.run_number }} --debug --dry-run
+    - name: Coveralls Parallel
+      uses: coverallsapp/github-action@v2
+      with:
+        flag-name: run-${{ join(matrix.*, '-') }}
+        parallel: true
 
   finish:
     name: Finish Coverage Analysis
     needs: build
-    if: always()
-    runs-on: "ubuntu-latest"
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
     steps:
-      - name: Coveralls Finish
-        env:
-          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
-          COVERALLS_PARALLEL: true
-        run: |
-          curl -sL https://coveralls.io/coveralls-linux.tar.gz | tar -xz
-          ./coveralls done --build-number ${{ github.run_number }}
+    - name: Coveralls Finished
+      uses: coverallsapp/github-action@v2
+      with:
+        parallel-finished: true
+

@@ -158,21 +158,19 @@ def list_remote_files(tag='', inst_id='', start=None, stop=None,
         Instrument ID (default='')
     start : dt.datetime or NoneType
         Starting time for file list. A None value will start with the first
-        file found.
-        (default=None)
+        file found. (default=None)
     stop : dt.datetime or NoneType
         Ending time for the file list.  A None value will stop with the last
-        file found.
-        (default=None)
+        file found. (default=None)
     series_out : bool
-        boolean to determine output type. True for pandas series of file names,
-        and False for a list of the full web address.
-        (default=True)
+        Boolean to determine output type. True for pandas series of file names,
+        and False for a list of the full web address. (default=True)
 
     Returns
     -------
-    file_list : list
-        A list containing the verified available files
+    file_list : pds.Series or list
+        A Series or list (if tag is not 'tlimb' and `series_out` is False)
+        containing the verified available files
 
     """
 

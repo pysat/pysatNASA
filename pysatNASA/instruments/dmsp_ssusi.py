@@ -61,6 +61,7 @@ and Space Research IV, (30 January 2002); doi:10.1117/12.454268
 
 import datetime as dt
 import functools
+import pandas as pds
 
 import pysat
 from pysat.instruments.methods import general as mm_gen
@@ -130,12 +131,12 @@ def clean(self):
 
 
 def concat_data(self, new_data, combine_times=False, **kwargs):
-    """Concatonate data to self.data for DMSP SSUSI data.
+    """Concatenate data to self.data for DMSP SSUSI data.
 
     Parameters
     ----------
     new_data : xarray.Dataset or list of such objects
-        New data objects to be concatonated
+        New data objects to be concatenated
     combine_times : bool
         For SDR data, optionally combine the different datetime coordinates
         into a single time coordinate (default=False)
@@ -154,7 +155,7 @@ def concat_data(self, new_data, combine_times=False, **kwargs):
     if self.tag in ['sdr-disk', 'sdr2-dist']:
         time_dims.append('time_auroral')
 
-    # Concatonate using the appropriate method for the number of time
+    # Concatenate using the appropriate method for the number of time
     # dimensions
     jhuapl.concat_data(self, time_dims, new_data, combine_times=combine_times,
                        **kwargs)
@@ -163,32 +164,157 @@ def concat_data(self, new_data, combine_times=False, **kwargs):
 
 # ----------------------------------------------------------------------------
 # Instrument functions
-#
-# Use the default CDAWeb and pysat methods
+remote_dir = ''.join(('/pub/data/dmsp/dmsp{inst_id:s}/ssusi/',
+                      '/data/{tag:s}/{{year:4d}}/{{day:03d}}/'))
+
 
 # Set the list_files routine
-fname = ''.join(['dmsp{inst_id:s}_ssusi_{tag:s}_{{year:04d}}{{day:03d}}T',
-                 '{{hour:02d}}{{minute:02d}}{{second:02d}}-???????T??????-REV',
-                 '?????_vA{{version:1d}}.?.?r{{cycle:03d}}.nc'])
-supported_tags = {sat_id: {tag: fname.format(tag=tag, inst_id=sat_id)
-                           for tag in tags.keys()}
-                  for sat_id in inst_ids.keys()}
-list_files = functools.partial(mm_gen.list_files,
-                               supported_tags=supported_tags)
+def list_files(tag='', inst_id='', data_path='', **kwargs):
+    """Return a Pandas Series of every file for DMSP SSUSI data.
+
+    Parameters
+    ----------
+    tag : str
+        Tag name used to identify particular data set to be loaded.
+        This input is nominally provided by pysat itself. (default='')
+    inst_id : str
+        Instrument ID used to identify particular data set to be loaded.
+        This input is nominally provided by pysat itself. (default='')
+    data_path : str
+        Path to data directory. This input is nominally provided by pysat
+        itself. (default='')
+    **kwargs : dict
+        Dict of kwargs allowed by `pysat.instruments.general.list_files`
+
+    Returns
+    -------
+    out : pds.Series
+        A Series containing the verified available files
+
+    See Also
+    --------
+    pysat.Files.from_os, pysat.instruments.general.list_files
+
+    """
+    # There are two potential file formats for DMSP SSUSI data, check both
+    file_fmts = mm_dmsp.ssusi_fname(
+        [mm_dmsp.fmt_swap_time - dt.timedelta(days=1), mm_dmsp.fmt_swap_time],
+        tag=tag, inst_id=inst_id)
+
+    out_list = list()
+    for file_fmt in file_fmts:
+        supported_tags = {inst_id: {tag: file_fmt}}
+        out_list.append(mm_gen.list_files(tag=tag, inst_id=inst_id,
+                                          data_path=data_path,
+                                          supported_tags=supported_tags,
+                                          **kwargs))
+
+    # Combine the outputs
+    out = pds.concat(out_list)
+    return out
+
 
 # Set the download routine
-basic_tag = {'remote_dir': ''.join(('/pub/data/dmsp/dmsp{inst_id:s}/ssusi/',
-                                    '/data/{tag:s}/{{year:4d}}/{{day:03d}}/')),
-             'fname': fname}
-download_tags = {
-    sat_id: {tag: {btag: basic_tag[btag].format(tag=tag, inst_id=sat_id)
-                   for btag in basic_tag.keys()} for tag in tags.keys()}
-    for sat_id in inst_ids.keys()}
-download = functools.partial(cdw.download, supported_tags=download_tags)
+def download(date_array, tag='', inst_id='', data_path=None):
+    """Download DMSP SSUSI data.
+
+    Parameters
+    ----------
+    date_array : array-like
+        Array of datetimes to download data for. Provided by pysat.
+    tag : str
+        Data product tag (default='')
+    inst_id : str
+        Instrument ID (default='')
+    data_path : str or NoneType
+        Path to data directory.  If None is specified, the value previously
+        set in Instrument.files.data_path is used.  (default=None)
+
+    """
+    # Initalize the supported tags kwarg
+    supported_tags = {inst_id: {tag: {'remote_dir': remote_dir.format(
+        tag=tag, inst_id=inst_id)}}}
+
+    # Determine the filename format for the desired period of time
+    file_fmts = mm_dmsp.ssusi_fname([date_array[0], date_array[-1]], tag,
+                                    inst_id)
+
+    # Proceed differently if there are one or two potential file formats
+    supported_tags[inst_id][tag]['fname'] = file_fmts[0]
+    if file_fmts[0] == file_fmts[1]:
+        cdw.download(date_array, data_path, tag=tag, inst_id=inst_id,
+                     supported_tags=supported_tags)
+    else:
+        # Get a mask for the time array
+        swap_mask = date_array < mm_dmsp.fmt_swap_time
+
+        # Download the first set of data
+        cdw.download(date_array[swap_mask], data_path, tag=tag, inst_id=inst_id,
+                     supported_tags=supported_tags)
+
+        # Download the second set of data
+        supported_tags[inst_id][tag]['fname'] = file_fmts[1]
+        cdw.download(date_array[~swap_mask], data_path, tag=tag,
+                     inst_id=inst_id, supported_tags=supported_tags)
+    return
+
 
 # Set the list_remote_files routine
-list_remote_files = functools.partial(cdw.list_remote_files,
-                                      supported_tags=download_tags)
+def list_remote_files(tag='', inst_id='', start=None, stop=None):
+    """List every file for remote DMSP SSUSI data.
+
+    Parameters
+    ----------
+    tag : str
+        Data product tag (default='')
+    inst_id : str
+        Instrument ID (default='')
+    start : dt.datetime or NoneType
+        Starting time for file list. A None value will start with the first
+        file found. (default=None)
+    stop : dt.datetime or NoneType
+        Ending time for the file list.  A None value will stop with the last
+        file found. (default=None)
+
+    Returns
+    -------
+    file_list : pds.Series
+        A Series containing the verified available files
+
+    """
+    # Initalize the supported tags kwarg
+    supported_tags = {inst_id: {tag: {'remote_dir': remote_dir.format(
+        tag=tag, inst_id=inst_id)}}}
+
+    # Determine the filename format for the desired period of time
+    start_time = dt.datetime(1900, 1, 1) if start is None else start
+    stop_time = dt.datetime.now(tz=dt.timezone.utc) if stop is None else stop
+    file_fmts = mm_dmsp.ssusi_fname([start_time, stop_time], tag, inst_id)
+
+    # Proceed differently if there are one or two potential file formats
+    supported_tags[inst_id][tag]['fname'] = file_fmts[0]
+    if file_fmts[0] == file_fmts[1]:
+        file_list = cdw.list_remote_files(tag=tag, inst_id=inst_id, start=start,
+                                          stop=stop,
+                                          supported_tags=supported_tags)
+    else:
+        # Get the first set of files
+        file_list_start = cdw.list_remote_files(tag=tag, inst_id=inst_id,
+                                                start=start,
+                                                stop=mm_dmsp.fmt_swap_time,
+                                                supported_tags=supported_tags)
+
+        # Get the second set of files
+        supported_tags[inst_id][tag]['fname'] = file_fmts[1]
+        file_list_stop = cdw.list_remote_files(tag=tag, inst_id=inst_id,
+                                               start=mm_dmsp.fmt_swap_time,
+                                               stop=stop,
+                                               supported_tags=supported_tags)
+
+        # Join the two file lists
+        file_list = pds.concat([file_list_start, file_list_stop])
+
+    return file_list
 
 
 # Set the load routine

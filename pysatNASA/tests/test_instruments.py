@@ -47,14 +47,17 @@ instruments = clslib.InstLibTests.initialize_test_package(
 instruments['cdf'] = []
 
 # Create list of pandas instruments where this is not needed
+# In general, this is for xarray instruments that are not supported
+# by pysatCDF
 skip_cdf_list = ['de2_vefimagb']
 
 for inst in instruments['download']:
-    fname = inst['inst_module'].supported_tags[inst['inst_id']][inst['tag']]
-    if '.cdf' in fname:
-        temp_inst, _ = clslib.initialize_test_inst_and_date(inst)
-        if temp_inst.pandas_format and temp_inst.name not in skip_cdf_list:
-            instruments['cdf'].append(inst)
+    if hasattr(inst['inst_module'], 'supported_tags'):
+        fname = inst['inst_module'].supported_tags[inst['inst_id']][inst['tag']]
+        if '.cdf' in fname:
+            temp_inst, _ = clslib.initialize_test_inst_and_date(inst)
+            if temp_inst.pandas_format and temp_inst.name not in skip_cdf_list:
+                instruments['cdf'].append(inst)
 
 
 class TestInstruments(clslib.InstLibTests):
@@ -89,13 +92,13 @@ class TestInstruments(clslib.InstLibTests):
             target = 'Fake Data to be cleared'
             test_inst.data = [target]
             try:
-                test_inst.load(date=date, use_header=True, use_cdflib=True)
+                test_inst.load(date=date, use_cdflib=True)
             except ValueError as verr:
                 # Check if instrument is failing due to strict time flag
                 if str(verr).find('Loaded data') > 0:
                     test_inst.strict_time_flag = False
                     with warnings.catch_warnings(record=True) as war:
-                        test_inst.load(date=date, use_header=True)
+                        test_inst.load(date=date)
                     assert len(war) >= 1
                     categories = [war[j].category for j in range(0, len(war))]
                     assert UserWarning in categories

@@ -52,7 +52,11 @@ preferred formats.  An example of this is:
 In this case, note that the pysat 'name' label is output to three different
 metadata values required by the ITSP standards. Additionally, the
 :py:attr:`export_pysat_info` option is set to false here. This drops several
-internal :py:mod:`pysat` metadata values before writing to file.
+internal :py:mod:`pysat` metadata values before writing to file. Note that
+this includes the default acknowledgements and references objects. These
+are set manually to avoid conflicts between the original dataset and the
+new dataset, as well as keeping in line with requirements with potentially
+different data servers. An example can be found in the [REACH Operational Software](https://github.com/jklenzing/ops_reach/blob/main/ops_reach/instruments/methods/reach.py).
 
 A full guide to SPDF metadata standards can be found 
 `at SPDF <https://spdf.gsfc.nasa.gov/istp_guide/istp_guide.html>`_.

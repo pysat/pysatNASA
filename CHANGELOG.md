@@ -2,10 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
-## [0.0.6] - 2024-XX-XX
+## [0.0.6] - 2024-10-03
 * New Instruments
   * DE2 VEFIMAGB - electric and magnetic field on the same cadence
-  * MAVEN mag
+  * MAVEN MAG
   * MAVEN SEP
   * MAVEN in situ key parameters
   * REACH Dosimeter
@@ -14,6 +14,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   * Allow files to be unzipped after download
   * Added custom `concat_data` method to JHUAPL methods, for TIMED-GUVI and
     DMSP-SSUSI data
+  * Added time-dependent, file format function for DMSP SSUSI to DMSP methods
   * Added cleaning to TIMED-GUVI SDR imaging data
 * Bug Fixes
   * Fix general clean routine to skip transformation matrices
@@ -23,10 +24,13 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   * Allow graceful failure with no files in jhuapl load functions
   * New window needs to be integer for calculate_imf_steadiness
   * Fixed a bug where cdas_download may drop the requested end date file
+  * Reverted the coveralls integration to the GitHub service for MacOS runs
+  * Fixed a bug where cdas_list_remote_files errored without remote data
 * Documentation
   * Added example of how to export data for archival
   * Updated documentation refs
   * Add keywords to zenodo
+  * Fixed broken links
 * Deprecations
   * Deprecated '' tag for de2_vefi module, support moved to de2_vefimagb
 * Maintenance
@@ -38,6 +42,10 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   * Added version cap for sphinx_rtd_theme
   * Include standard tests for ICON IVM-B
   * Update NEP29 standards for Jun 2024
+  * Updated standards for pandas, numpy, and pysat
+  * Updated versions in GitHub Actions
+  * Implement coveralls app in GitHub Actions
+  * Cycled Operational Environment testing
 
 ## [0.0.5] - 2023-06-27
 * New Instruments

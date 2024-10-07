@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pysatNASA"
-version = "0.0.5"
+version = "0.0.6"
 description = "pysat support for NASA Instruments"
 readme = "README.md"
 requires-python = ">=3.6"
@@ -44,7 +44,7 @@ dependencies = [
   "netCDF4",
   "numpy",
   "pandas",
-  "pysat >= 3.1",
+  "pysat >= 3.2",
   "requests",
   "scipy >= 1.4",
   "xarray"
@@ -53,7 +53,6 @@ dependencies = [
 [project.optional-dependencies]
 pysatcdf = ["pysatCDF"]
 test = [
-  "coveralls",
   "flake8",
   "flake8-docstrings",
   "hacking >= 1.0",
@@ -84,6 +83,7 @@ markers = [
   "download",
   "no_download",
   "load_options",
+  "new_tests",
   "first",
   "second"
 ]

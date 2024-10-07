@@ -4,6 +4,8 @@
 # Full author list can be found in .zenodo.json file
 # DOI:10.5281/zenodo.3986131
 #
+# Review Status for Classified or Controlled Information by NRL
+# -------------------------------------------------------------
 # DISTRIBUTION STATEMENT A: Approved for public release. Distribution is
 # unlimited.
 # ----------------------------------------------------------------------------
@@ -11,7 +13,9 @@
 
 Copy and modify this file as needed when adding a new Instrument to pysat.
 
-DO NOT include the NRL distribution statement in your new file.
+DO NOT include the NRL distribution statement in your new file. Contributions
+by NRL developers will need to be cleared for classified or controlled
+information separately from the pysat pull request process.
 
 This is a good area to introduce the instrument, provide background
 on the mission, operations, instrumenation, and measurements.
@@ -63,7 +67,8 @@ from pysatNASA.instruments.methods import cdaweb as cdw
 # The platform and name strings associated with this instrument
 # need to be defined at the top level.
 # These attributes will be copied over to the Instrument object by pysat.
-# The strings used here should also be used to name this file `platform_name.py`
+# The strings used here should also be used to name this file
+# `platform_name.py`
 platform = ''
 name = ''
 
