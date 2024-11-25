@@ -19,7 +19,7 @@ jobs:
             numpy_ver: "1.24"
             pandas_ver: "2.0"
             scipy_ver: "1.10"
-            xarray_ver: "2020.12"
+            xarray_ver: "2020.12.0"
             pysat_ver: "3.2"
             cdflib_ver: "1.0"
             os: ubuntu-latest
