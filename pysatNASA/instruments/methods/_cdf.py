@@ -100,12 +100,8 @@ class CDF(object):
         self.meta = {}
         self._dependencies = {}
 
-        if hasattr(self._cdf_info, 'rVariables'):
-            self._variable_names = (self._cdf_info.rVariables
-                                    + self._cdf_info.zVariables)
-        else:
-            self._variable_names = (self._cdf_info['rVariables']
-                                    + self._cdf_info['zVariables'])
+        self._variable_names = (self._cdf_info.rVariables
+                                + self._cdf_info.zVariables)
 
         self.load_variables()
 
@@ -311,7 +307,7 @@ class CDF(object):
             if not re.match(var_regex, variable_name):
                 # Skip this variable
                 continue
-            var_atts = self._cdf_file.varattsget(variable_name, to_np=True)
+            var_atts = self._cdf_file.varattsget(variable_name)
 
             for k in var_atts:
                 var_atts[k] = var_atts[k]  # [0]
