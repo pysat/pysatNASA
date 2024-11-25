@@ -11,14 +11,19 @@ jobs:
       fail-fast: false
       matrix:
         os: ["ubuntu-latest", "macos-latest", "windows-latest"]
-        python-version: ["3.11", "3.12"]
+        python-version: ["3.12", "3.13"]
         numpy_ver: ["latest"]
         test_config: ["latest"]
         include:
-          - python-version: "3.10"
+          - python-version: "3.11"
             numpy_ver: "1.24"
+            pandas_ver: "2.0"
+            scipy_ver: "1.4"
+            xarray_ver: "2020.12"
+            pysat_ver: "3.2"
+            cdflib_ver: "1.0"
             os: ubuntu-latest
-            test_config: "NEP29"
+            test_config: "SPEC0"
           - python-version: "3.9"
             numpy_ver: "1.23.5"
             os: "ubuntu-20.04"
@@ -43,10 +48,15 @@ jobs:
         pip install --no-cache-dir numpy==${{ matrix.numpy_ver }}
         pip install --upgrade-strategy only-if-needed .[test]
 
-    - name: Install NEP29 dependencies
-      if: ${{ matrix.test_config == 'NEP29'}}
+    - name: Install SPEC0 dependencies
+      if: ${{ matrix.test_config == 'SPEC0'}}
       run: |
         pip install numpy==${{ matrix.numpy_ver }}
+        pip install pandas==${{ matrix.pandas_ver }}
+        pip install scipy==${{ matrix.scipy_ver }}
+        pip install xarray==${{ matrix.xarray_ver }}
+        pip install pysat==${{ matrix.pysat_ver }}
+        pip install cdflib==${{ matrix.cdflib_ver }}
         pip install --upgrade-strategy only-if-needed .[test]
 
     - name: Install standard dependencies
