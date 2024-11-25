@@ -104,7 +104,6 @@ class CDF(object):
             self._variable_names = (self._cdf_info.rVariables
                                     + self._cdf_info.zVariables)
         else:
-            # cdflib < 1.0 stores info as a dict
             self._variable_names = (self._cdf_info['rVariables']
                                     + self._cdf_info['zVariables'])
 
@@ -170,13 +169,8 @@ class CDF(object):
 
         """
 
-        if hasattr(self._cdf_file.varinq(x_axis_var), 'Data_Type_Description'):
-            data_type_description = self._cdf_file.varinq(
-                x_axis_var).Data_Type_Description
-        else:
-            # cdflib < 1.0 stores this as a dict
-            data_type_description = self._cdf_file.varinq(
-                x_axis_var)['Data_Type_Description']
+        data_type_description = self._cdf_file.varinq(
+            x_axis_var).Data_Type_Description
 
         center_measurement = self._center_measurement
         cdf_file = self._cdf_file
@@ -317,11 +311,7 @@ class CDF(object):
             if not re.match(var_regex, variable_name):
                 # Skip this variable
                 continue
-            try:
-                var_atts = self._cdf_file.varattsget(variable_name, to_np=True)
-            except TypeError:
-                # cdflib 1.0+ drops to_np kwarg, assumes True
-                var_atts = self._cdf_file.varattsget(variable_name)
+            var_atts = self._cdf_file.varattsget(variable_name, to_np=True)
 
             for k in var_atts:
                 var_atts[k] = var_atts[k]  # [0]
@@ -343,11 +333,7 @@ class CDF(object):
                 continue
 
             if "FILLVAL" in var_atts:
-                if hasattr(var_properties, 'Data_Type_Description'):
-                    data_type_desc = var_properties.Data_Type_Description
-                else:
-                    # cdflib < 1.0 stores this as a dict
-                    data_type_desc = var_properties['Data_Type_Description']
+                data_type_desc = var_properties.Data_Type_Description
 
                 if data_type_desc in ['CDF_FLOAT', 'CDF_REAL4', 'CDF_DOUBLE',
                                       'CDF_REAL8']:

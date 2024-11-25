@@ -36,12 +36,7 @@ from pysat.utils import files as futils
 from pysat.utils import io
 from pysatNASA.instruments.methods import CDF as libCDF
 
-try:
-    # cdflib 1.0 syntax
-    from cdflib.xarray import cdf_to_xarray
-except ModuleNotFoundError:
-    # cdflib 0.4 syntax required for backwards compatibility
-    from cdflib import cdf_to_xarray
+from cdflib.xarray import cdf_to_xarray
 
 try:
     # Use pysatCDF as default for pandas data sets
