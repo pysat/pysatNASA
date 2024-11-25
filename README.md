@@ -20,12 +20,12 @@ some examples on how to use the routines
 
 pysatNASA uses common Python modules, as well as modules developed by
 and for the Space Physics community.  This module officially supports
-Python 3.6+.
+Python 3.9+.
 
 | Common modules   | Community modules | Optional Modules |
 | ---------------- | ----------------- |------------------|
-| beautifulsoup4   | cdflib>=0.4.4     | pysatCDF         |
-| lxml             | pysat>=3.1.0      |                  |
+| beautifulsoup4   | cdflib>=1.0.2     | pysatCDF         |
+| lxml             | pysat>=3.2.0      |                  |
 | netCDF4          |                   |                  |
 | numpy            |                   |                  |
 | pandas           |                   |                  |
@@ -54,7 +54,7 @@ pip install .
 
 Note: pre-1.0.0 version
 -----------------------
-pysatNASA is currently in an initial development phase and requires pysat 3.1.0.  
+pysatNASA is currently in an initial development phase and requires pysat 3.2.0.
 Feedback and contributions are appreciated.
 
 # Using with pysat
@@ -68,7 +68,7 @@ from pysatNASA.instruments import icon_ivm
 ivm = pysat.Instrument(inst_module=icon_ivm, inst_id='a')
 ```
 Another way to use the instruments in an external repository is to register the
-instruments.  This only needs to be done the first time you load an instrument.  
+instruments.  This only needs to be done the first time you load an instrument.
 Afterward, pysat will identify them using the `platform` and `name` keywords.
 
 ```
@@ -81,10 +81,10 @@ ivm = pysat.Instrument('icon', 'ivm', inst_id='a')
 # CDF Integration
 For data products stored as CDF files, this package can use either `cdflib` or
 `pysatCDF`.  Note that `cdflib` is a pure python package and more readily
-deployable across systems, whereas `pysatCDF` interfaces with the fortran.  
-This is a faster approach for loading data, but may not install on all systems.  
+deployable across systems, whereas `pysatCDF` interfaces with the fortran.
+This is a faster approach for loading data, but may not install on all systems.
 There are known issues with `numpy`>=1.24. Therefore, `pysatCDF` is optional
-rather than required.  
+rather than required.
 
 You can specify which load routine to use via the optional `use_cdflib` kwarg.
 If no kwarg is specified, `pysatNASA` will default to `pysatCDF` if it is
