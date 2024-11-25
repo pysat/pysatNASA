@@ -18,7 +18,7 @@ jobs:
           - python-version: "3.11"
             numpy_ver: "1.24"
             pandas_ver: "2.0"
-            scipy_ver: "1.4"
+            scipy_ver: "1.10"
             xarray_ver: "2020.12"
             pysat_ver: "3.2"
             cdflib_ver: "1.0"
