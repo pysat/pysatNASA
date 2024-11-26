@@ -21,7 +21,7 @@ jobs:
             scipy_ver: "1.10"
             xarray_ver: "2022.12.0"
             pysat_ver: "3.2"
-            cdflib_ver: "1.0.3"
+            cdflib_ver: "1.0.4"
             os: ubuntu-latest
             test_config: "SPEC0"
           - python-version: "3.9"
