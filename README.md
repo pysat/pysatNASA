@@ -24,13 +24,13 @@ Python 3.9+.
 
 | Common modules   | Community modules | Optional Modules |
 | ---------------- | ----------------- |------------------|
-| beautifulsoup4   | cdflib>=1.0.2     | pysatCDF         |
-| lxml             | pysat>=3.2.0      |                  |
-| netCDF4          |                   |                  |
+| beautifulsoup4   | cdasws>=1.7.42    | pysatCDF         |
+| lxml             | cdflib>=1.0.4     |                  |
+| netCDF4>=1.6     | pysat>=3.2.0      |                  |
 | numpy            |                   |                  |
 | pandas           |                   |                  |
 | requests         |                   |                  |
-| scipy>=1.4.0     |                   |                  |
+| scipy>=1.10.0    |                   |                  |
 | xarray           |                   |                  |
 
 ## PyPi Installation

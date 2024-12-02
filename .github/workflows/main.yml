@@ -15,19 +15,21 @@ jobs:
         numpy_ver: ["latest"]
         test_config: ["latest"]
         include:
-          - python-version: "3.11"
+          - test_config: "SPEC0"
+            python-version: "3.11"
             numpy_ver: "1.24"
             pandas_ver: "2.0"
             scipy_ver: "1.10"
             xarray_ver: "2022.12.0"
-            pysat_ver: "3.2"
+            cdasws_ver: "1.7.42"
             cdflib_ver: "1.0.4"
+            netcdf_ver: "1.6"
+            pysat_ver: "3.2"
             os: ubuntu-latest
-            test_config: "SPEC0"
-          - python-version: "3.9"
+          - test_config: "Ops"
+            python-version: "3.9"
             numpy_ver: "1.23.5"
             os: "ubuntu-20.04"
-            test_config: "Ops"
 
     name: Python ${{ matrix.python-version }} on ${{ matrix.os }} with numpy ${{ matrix.numpy_ver }}
     runs-on: ${{ matrix.os }}
@@ -55,8 +57,10 @@ jobs:
         pip install pandas==${{ matrix.pandas_ver }}
         pip install scipy==${{ matrix.scipy_ver }}
         pip install xarray==${{ matrix.xarray_ver }}
-        pip install pysat==${{ matrix.pysat_ver }}
+        pip install cdasws==${{ matrix.cdasws_ver }}
         pip install cdflib==${{ matrix.cdflib_ver }}
+        pip install netCDF4==${{ matrix.netcdf_ver }}
+        pip install pysat==${{ matrix.pysat_ver }}
         pip install --upgrade-strategy only-if-needed .[test]
 
     - name: Install standard dependencies

@@ -38,10 +38,10 @@ keywords = [
 ]
 dependencies = [
   "beautifulsoup4",
-  "cdasws",
-  "cdflib >= 1.0.2",
+  "cdasws >= 1.7.42",
+  "cdflib >= 1.0.4",
   "lxml",
-  "netCDF4",
+  "netCDF4 >= 1.6",
   "numpy",
   "pandas",
   "pysat >= 3.2",
