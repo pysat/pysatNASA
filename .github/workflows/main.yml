@@ -23,7 +23,7 @@ jobs:
             xarray_ver: "2022.12.0"
             cdasws_ver: "1.7.42"
             cdflib_ver: "1.0.4"
-            netcdf_ver: "1.6"
+            netcdf_ver: "1.6.2"
             pysat_ver: "3.2"
             os: ubuntu-latest
           - test_config: "Ops"
