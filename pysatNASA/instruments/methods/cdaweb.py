@@ -648,7 +648,7 @@ def _get_file(remote_file, data_path, fname, temp_path=None, zip_method=None):
         with zipfile.ZipFile(dl_fname, 'r') as open_zip:
             open_zip.extractall(data_path)
     elif zip_method == 'gz':
-        dest = os.path.join(data_path, fname.replace('.gz',''))
+        dest = os.path.join(data_path, fname.replace('.gz', ''))
         with gzip.open(dl_fname, 'rb') as open_gz:
             with open(dest, 'wb') as open_file:
                 shutil.copyfileobj(open_gz, open_file)
