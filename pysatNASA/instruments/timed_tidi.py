@@ -72,7 +72,7 @@ _test_dates = {jj: {kk: dt.datetime(2019, 1, 1) for kk in inst_ids[jj]}
 
 # Use standard init routine
 def init(self, module=mm_timed, name=name):
-    """Initialization function to set parameters upon first import."""
+    """Initialize instrument support and set parameters upon first import."""
     mm_nasa.init(self, module=module, name=name)
 
     # Same timing cold/warm for Michigan files.
@@ -82,6 +82,7 @@ def init(self, module=mm_timed, name=name):
         self.multi_file_day = True
 
     return
+
 
 # No cleaning, use standard warning function instead
 clean = mm_nasa.clean_warn
@@ -211,7 +212,7 @@ def load(fnames, tag='', inst_id=''):
             ff = [t.drop_dims(['time']).drop_vars(names2avoid) for t in data]
             ff = xr.concat(ff, 'nrecs_size')
             ee = [t.drop_dims(['nrecs_size']).drop_vars(names2avoid)
-                    for t in data]
+                  for t in data]
             ee = xr.concat(ee, 'time')
             data = xr.merge([ff, ee, hh[0]])
 
