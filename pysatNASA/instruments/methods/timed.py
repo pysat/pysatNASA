@@ -13,7 +13,8 @@
 
 rules_url = {'guvi': 'http://guvitimed.jhuapl.edu/home_guvi-datausage',
              'saber': 'https://saber.gats-inc.com/data_services.php',
-             'see': 'https://www.timed.jhuapl.edu/WWW/scripts/mdc_rules.pl'}
+             'see': 'https://www.timed.jhuapl.edu/WWW/scripts/mdc_rules.pl',
+             'tidi': 'https://tidi.engin.umich.edu/conditions-of-use/'}
 
 ackn_str = "".join(["This Thermosphere Ionosphere Mesosphere Energetics ",
                     "Dynamics (TIMED) satellite data is provided through ",
@@ -51,4 +52,10 @@ refs = {'guvi': ''.join(['Larry J. Paxton, Andrew B. Christensen, David C. ',
                          'W. K., and Woodraska, D. L. (2005),',
                          'Solar EUV Experiment (SEE): Mission',
                          'overview and first results, J. Geophys.',
-                         'Res., 110, A01312, doi:10.1029/2004JA010765.'))}
+                         'Res., 110, A01312, doi:10.1029/2004JA010765.')),
+        'tidi': ' '.join(('Killeen, T. L., Skinner, W. R., Johnson,',
+                          'R. M., Edmonson, C. J., Wu, Q., Niciejewski,',
+                          'R. J., Grassl, H. J., Gell, D. A., Hansen,',
+                          'P. E., Harvey, J. D., Kafkalidis, J. F. (1999),',
+                          'TIMED Doppler Interferometer, Proc. SPIE,',
+                          '3756, 289–315.'))}

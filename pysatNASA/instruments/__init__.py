@@ -23,7 +23,7 @@ __all__ = ['ace_epam_l2', 'ace_mag_l2', 'ace_sis_l2', 'ace_swepam_l2',
            'icon_mighti', 'igs_gps', 'iss_fpmu', 'jpl_gps', 'maven_insitu_kp',
            'maven_mag', 'maven_sep', 'mgs_mag', 'omni_hro',
            'reach_dosimeter', 'ses14_gold', 'timed_guvi', 'timed_saber',
-           'timed_see']
+           'timed_see', 'timed_tidi']
 
 for inst in __all__:
     exec("from pysatNASA.instruments import {x}".format(x=inst))

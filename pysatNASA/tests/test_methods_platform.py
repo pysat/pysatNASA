@@ -20,7 +20,7 @@ class TestTIMEDMethods(object):
 
     def setup_method(self):
         """Set up the unit test environment for each method."""
-        self.names = ['see', 'saber', 'guvi']
+        self.names = ['see', 'saber', 'guvi', 'tidi']
         self.module = methods.timed
         self.platform_str = '(TIMED)'
         return
