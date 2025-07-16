@@ -32,7 +32,7 @@ Python 3.9+.
 | numpy            |                   |                  |
 | pandas           |                   |                  |
 | requests         |                   |                  |
-| scipy>=1.10.0    |                   |                  |
+| scipy>=1.11.0    |                   |                  |
 | xarray           |                   |                  |
 
 ## PyPi Installation
